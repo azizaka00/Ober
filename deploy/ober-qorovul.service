@@ -1,0 +1,6 @@
+[Unit]
+Description=OBER — tiriklik tekshiruvi
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ober-qorovul.sh

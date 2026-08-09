@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eff2f7">
+<meta name="description" content="OBER bozor bo'limlari — transport, uy va bog', elektronika, xizmatlar va boshqa kategoriyalar bo'yicha qidiruv.">
+<title>OBER — kategoriyalar</title>
+<link rel="icon" href="/brend/icon.png">
+<link rel="canonical" href="https://ober.uz/kategoriyalar">
+<link rel="preload" href="/shrift/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/shrift/onest.css">
+<style>
+  /* RANGLAR VA O'LCHAMLAR index.html BILAN BIR XIL (2026-08-02 qoida) */
+  :root{
+    --navy:#0b2559;
+    --navy-dark:#081b42;
+    --navy-soft:#eaeff8;
+    --bg:#eff2f7;
+    --surface:#fff;
+    --surface-2:#f7f9fc;
+    --text:#101828;
+    --muted:#667085;
+    --line:#e3e8f0;
+    --line-strong:#cdd6e4;
+    --green:#0f7a4a;
+    --green-soft:#e6f4ec;
+    --red:#c0392b;
+    --amber:#f5a623;
+    --amber-soft:#fdf3de;
+    --shadow:0 16px 48px rgba(11,37,89,.08);
+    --shadow-card:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
+    --shadow-hover:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(11,37,89,.10);
+    --ease:cubic-bezier(.2,0,0,1);
+    --r-kichik:10px;
+    --r-orta:14px;
+    --r-katta:20px;
+    --r-pill:999px;
+    --radius:var(--r-orta);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;
+    min-width:320px;
+    overflow-x:hidden;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Onest,"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+  }
+  button,input,select{font:inherit}
+  button,a,select{touch-action:manipulation}
+  a{color:inherit}
+  [hidden]{display:none!important}
+  :focus-visible{outline:3px solid rgba(11,37,89,.24);outline-offset:3px}
+
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    border-bottom:1px solid var(--line);
+    background:rgba(239,242,247,.88);
+    backdrop-filter:blur(16px) saturate(1.05);
+    -webkit-backdrop-filter:blur(16px) saturate(1.05);
+  }
+  .topbar-inner{
+    width:min(100% - 36px,980px);
+    min-height:72px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .brand{width:94px;height:32px;display:flex;align-items:center}
+  .brand img{display:block;width:94px;height:auto}
+  .page-label{
+    padding-left:14px;
+    border-left:1px solid var(--line);
+    color:var(--muted);
+    font-size:12.5px;
+  }
+  .header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+  main{
+    width:min(100% - 36px,980px);
+    margin:0 auto;
+    padding:34px 0 96px;
+  }
+  .page-head{
+    margin-bottom:26px;
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .page-head h1{
+    margin:0;
+    font-size:clamp(26px,4vw,34px);
+    line-height:1.1;
+    letter-spacing:-.035em;
+    color:var(--navy);
+    font-weight:770;
+  }
+  .page-head p{margin:8px 0 0;color:var(--muted);font-size:13.5px}
+
+  .kat-qidiruv{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+    padding:0 16px;
+    height:52px;
+    border:1px solid var(--line);
+    border-radius:var(--r-katta);
+    background:var(--surface);
+    box-shadow:var(--shadow-card);
+    transition:border-color 120ms var(--ease),box-shadow 120ms var(--ease);
+  }
+  .kat-qidiruv:focus-within{border-color:var(--navy);box-shadow:0 0 0 4px rgba(11,37,89,.07),var(--shadow-card)}
+  .kat-qidiruv svg{flex:none;color:var(--muted)}
+  .kat-qidiruv input{
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:var(--text);
+    font-size:15px;
+  }
+  .kat-qidiruv input::placeholder{color:var(--muted)}
+  .kat-topilmadi{
+    padding:36px 20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13.5px;
+  }
+  .kat-topilmadi strong{display:block;color:var(--navy);font-size:16px;margin-bottom:5px}
+
+  .kat-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-auto-rows:8px;
+    column-gap:14px;
+    row-gap:0;
+    align-items:start;
+  }
+  .kat-karta{
+    position:relative;
+    display:block;
+    margin-bottom:14px;
+    padding:20px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--surface);
+    box-shadow:var(--shadow-card);
+    text-decoration:none;
+    transition:transform 120ms var(--ease),box-shadow 120ms var(--ease),border-color 120ms var(--ease);
+  }
+  .kat-karta::before{
+    content:"";position:absolute;left:20px;top:0;width:52px;height:3px;
+    border-radius:0 0 999px 999px;background:linear-gradient(90deg,var(--navy),#6f91c1)
+  }
+  .kat-karta:hover{transform:translateY(-2px);border-color:rgba(11,37,89,.25);box-shadow:var(--shadow-hover)}
+  .kat-karta:active{transform:scale(.98)}
+  .kat-bosh{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .kat-nom{margin:0;font-size:16.5px;font-weight:740;letter-spacing:-.015em;color:var(--navy)}
+  .kat-son{
+    flex:0 0 auto;
+    padding:3px 9px;
+    border-radius:var(--r-pill);
+    background:var(--navy-soft);
+    color:var(--navy);
+    font-size:11px;
+    font-weight:750;
+  }
+  .kat-namuna{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .kat-chip{
+    padding:4px 10px;
+    border-radius:var(--r-pill);
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    color:var(--muted);
+    font-size:11.5px;
+    box-shadow:0 1px 3px rgba(11,37,89,.05);
+    transition:border-color 120ms var(--ease),color 120ms var(--ease),background 120ms var(--ease);
+  }
+  .kat-karta:hover .kat-chip{border-color:rgba(11,37,89,.18);color:var(--navy)}
+  .kat-ok{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    color:var(--navy);
+    font-size:12px;
+    font-weight:750;
+  }
+  .kat-ok::after{
+    content:"";
+    display:inline-block;
+    width:7px;height:7px;
+    margin-left:6px;
+    border-top:1.8px solid currentColor;
+    border-right:1.8px solid currentColor;
+    transform:rotate(45deg);
+    transition:transform 120ms var(--ease);
+  }
+  .kat-karta:hover .kat-ok::after{transform:translateX(3px) rotate(45deg)}
+
+  .yuklanmoqda{
+    padding:60px 20px;
+    color:var(--muted);
+    font-size:13.5px;
+    text-align:center;
+  }
+  .error-box{
+    padding:18px;
+    border:1px solid #efc6c1;
+    border-radius:var(--radius);
+    background:#fdf0ef;
+    color:#842b21;
+  }
+
+  @media (max-width:900px){
+    .kat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:600px){
+    .topbar-inner{width:min(100% - 28px,980px);min-height:64px}
+    .brand,.brand img{width:86px}
+    .page-label{display:none}
+    main{width:min(100% - 28px,980px);padding-top:22px}
+    .kat-grid{grid-template-columns:1fr;grid-auto-rows:auto;row-gap:14px}
+    .kat-karta{grid-row:auto!important;margin-bottom:0}
+    .kat-karta{padding:17px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+</style>
+<link rel="stylesheet" href="/ober-ui.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/" aria-label="OBER bosh sahifa">
+      <img src="/brend/logo.png" alt="ober" width="94" height="29">
+    </a>
+    <span class="page-label">kategoriyalar</span>
+    <div class="header-actions">
+      <div class="lang-slot"></div>
+    </div>
+  </div>
+</header>
+
+<main id="asosiy" aria-live="polite">
+  <div class="page-head">
+    <div>
+      <h1>Kategoriyalar</h1>
+      <p>Bo'limni tanlang — shu bo'yicha bozordan qidiramiz.</p>
+    </div>
+  </div>
+  <div class="kat-qidiruv">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <input id="kat-qidir" type="search" placeholder="Kategoriya qidirish…" autocomplete="off" aria-label="Kategoriya qidirish">
+  </div>
+  <div id="kat-joy" class="yuklanmoqda">Bozor bo'limlari yuklanmoqda…</div>
+  <div class="kat-topilmadi" id="kat-topilmadi" hidden>
+    <strong>Hech narsa topilmadi</strong>
+    Boshqa so'z bilan urinib ko'ring.
+  </div>
+</main>
+
+<script src="/i18n.js"></script>
+<script src="/tabbar.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s || "").replace(/[&<>"']/g, c => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+})[c]);
+
+(async () => {
+  const joy = $("#kat-joy");
+  try {
+    const r = await fetch("/api/kategoriyalar");
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    if (!d.length) throw new Error();
+    joy.className = "kat-grid";
+    const masonry = () => {
+      if (matchMedia("(max-width:600px)").matches) return;
+      joy.querySelectorAll(".kat-karta").forEach(karta => {
+        karta.style.gridRowEnd = "auto";
+        const span = Math.ceil((karta.offsetHeight + 14) / 8);
+        karta.style.gridRowEnd = `span ${span}`;
+      });
+    };
+    const masonryReja = () => {
+      requestAnimationFrame(() => requestAnimationFrame(masonry));
+      setTimeout(masonry, 360);
+    };
+    // Jonli filtr: yozilgan so'z bo'yicha kartalar saralanadi
+    const chiz = (soz) => {
+      const sozlar = soz.toLowerCase().split(/\s+/).filter(Boolean);
+      let mos = d;
+      if (sozlar.length) {
+        mos = d.filter(g => {
+          const matn = (g.nom + " " + (g.namuna || []).join(" ")).toLowerCase();
+          return sozlar.every(s => matn.includes(s));
+        });
+      }
+      joy.innerHTML = mos.map(g => `
+        <a class="kat-karta" href="/?q=${encodeURIComponent(g.q)}">
+          <div class="kat-bosh">
+            <h2 class="kat-nom">${esc(g.nom)}</h2>
+            <span class="kat-son">${g.soni} ta bo'lim</span>
+          </div>
+          ${(g.namuna || []).length
+            ? `<div class="kat-namuna">${g.namuna.map(n => `<span class="kat-chip">${esc(n)}</span>`).join("")}</div>`
+            : ""}
+          <div class="kat-ok">Shu bo'limdan qidirish</div>
+        </a>`).join("");
+      const boSh = $("#kat-topilmadi");
+      if (boSh) boSh.hidden = mos.length > 0;
+      if (sozlar.length) joy.style.display = mos.length ? "grid" : "none";
+      else joy.style.display = "grid";
+      masonryReja();
+    };
+    chiz("");
+    const qidir = $("#kat-qidir");
+    if (qidir) {
+      qidir.addEventListener("input", () => chiz(qidir.value));
+      qidir.addEventListener("search", () => chiz(qidir.value));
+    }
+    let resizeTimer;
+    addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(masonryReja, 120);
+    }, {passive:true});
+  } catch (e) {
+    joy.className = "";
+    joy.innerHTML = `<div class="error-box" role="alert">
+      Bo'limlarni hozir yuklay olmadik. Internetni tekshirib, sahifani yangilang.
+    </div>`;
+  }
+})();
+</script>
+</body>
+</html>

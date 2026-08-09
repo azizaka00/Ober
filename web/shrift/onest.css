@@ -1,0 +1,76 @@
+/* ONEST — O'Z SERVERIMIZDA, O'ZGARUVCHAN (variable) SHRIFT.
+ *
+ * NEGA KO'CHIRILDI (2026-08-04)
+ * Ilgari shrift Google Fonts CDN'idan kelardi. Uchta sabab:
+ *   1. Qoida 2: "Tashqi kutubxona yo'q." Shrift ham bog'liqlik.
+ *   2. Har ochilishda ikkita begona domenga ulanish kerak edi
+ *      (fonts.googleapis.com + fonts.gstatic.com): ikki DNS so'rovi,
+ *      ikki TLS qo'l berish. O'zbekistondagi mobil internetda bu
+ *      matn chiqishini sezilarli kechiktiradi.
+ *   3. Google Fonts sekinlashsa yoki to'silsa, sayt tizim shriftiga
+ *      tushib qoladi — ya'ni har qanday boshqa saytga o'xshab qoladi.
+ *
+ * NEGA BITTA FAYL, BESHTA EMAS
+ * Birinchi urinishda Google'ning CSS'i qanday bo'lsa shunday
+ * ko'chirilgan edi: 5 qalinlik x 4 alifbo = 20 fayl. Keyin tekshirdim —
+ * `md5sum` beshala lotin faylini BIR XIL deb chiqardi:
+ *
+ *     d5c8e706...  onest-400-latin.woff2
+ *     d5c8e706...  onest-500-latin.woff2   <- o'sha faylning o'zi
+ *     d5c8e706...  onest-700-latin.woff2   <- o'sha faylning o'zi
+ *
+ * Onest — o'zgaruvchan shrift: bitta fayl 400 dan 800 gacha hamma
+ * qalinlikni ichiga oladi. Brauzer uchun esa har URL alohida fayl,
+ * ya'ni u bir xil 32 KB ni BESH MARTA yuklab olardi: 160 KB o'rniga
+ * 32 KB yetarli ekan.
+ *
+ * `font-weight: 400 800` — bu oraliq, bitta qiymat emas. Shu yozuv
+ * brauzerga "bu fayl hamma qalinlikni beradi" deb aytadi.
+ *
+ * `unicode-range` tufayli brauzer faqat kerakli alifboni yuklaydi:
+ * o'zbekcha sahifada kirill fayllari umuman so'ralmaydi. O'zbek lotin
+ * harflari (oʻ, gʻ — U+02BB, U+02BC) `latin` to'plamida bor.
+ *
+ * Manba: Google Fonts, SIL Open Font License.
+ */
+
+/* Lotin — o'zbekcha interfeys va e'lonlarning ko'pchiligi shu yerda. */
+@font-face{
+  font-family:Onest;
+  font-style:normal;
+  font-weight:400 800;
+  font-display:swap;
+  src:url(/shrift/onest-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* Kirill — ruscha interfeys va OLX'dagi ruscha sarlavhalar. */
+@font-face{
+  font-family:Onest;
+  font-style:normal;
+  font-weight:400 800;
+  font-display:swap;
+  src:url(/shrift/onest-cyrillic.woff2) format('woff2');
+  unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;
+}
+
+/* Kengaytirilgan lotin — kamdan-kam, lekin e'lon sarlavhalarida
+   turkcha yoki boshqa harflar uchrab turadi. */
+@font-face{
+  font-family:Onest;
+  font-style:normal;
+  font-weight:400 800;
+  font-display:swap;
+  src:url(/shrift/onest-latin-ext.woff2) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+/* Kengaytirilgan kirill — 4 KB, ehtiyot uchun. */
+@font-face{
+  font-family:Onest;
+  font-style:normal;
+  font-weight:400 800;
+  font-display:swap;
+  src:url(/shrift/onest-cyrillic-ext.woff2) format('woff2');
+  unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;
+}

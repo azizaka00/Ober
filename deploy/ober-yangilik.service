@@ -1,0 +1,29 @@
+[Unit]
+Description=OBER — issiq e'lonlar va Telegram yangiligi
+After=network-online.target ober-server.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ober
+WorkingDirectory=/home/ober/ober/app
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 yangilik.py issiq-kuzat
+
+# Sikl o'zi ichida cheksiz aylanadi. Baribir qulab tushsa — qayta boshlaymiz.
+Restart=always
+RestartSec=60
+
+# Serverdan past ustuvorlik: qidiruv sekinlashmasin.
+# Yig'ish diskni band qiladi, foydalanuvchi esa kutib turmasligi kerak.
+Nice=10
+IOSchedulingClass=idle
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/ober/ober/data
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>E'lon — OBER</title>
+<meta name="description" content="OBER bozoridagi e'lon">
+<link rel="stylesheet" href="/shrift/onest.css">
+<style>
+  :root{
+    --navy:#0b2559;
+    --navy-dark:#081b42;
+    --navy-soft:#eaeff8;
+    --bg:#eff2f7;
+    --surface:#fff;
+    --surface-2:#f7f9fc;
+    --text:#101828;
+    --muted:#667085;
+    --line:#e3e8f0;
+    --line-strong:#cdd6e4;
+    --green:#0f7a4a;
+    --green-soft:#e6f4ec;
+    --red:#c0392b;
+    --amber:#f5a623;
+    --amber-soft:#fdf3de;
+    --shadow:0 16px 48px rgba(11,37,89,.08);
+    --shadow-card:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
+    --content:1180px;
+    --radius:16px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+    font-size:15px;
+  }
+  a{color:var(--navy);text-decoration:none}
+
+  /* ── TEPA PANEL ─────────────────────────────────────────────── */
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    border-bottom:1px solid var(--line);
+    background:rgba(251,251,250,.96);
+    backdrop-filter:saturate(130%) blur(14px);
+  }
+  .topbar-inner{
+    width:min(100% - 36px,var(--content));
+    min-height:64px;
+    margin:auto;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--navy);font-size:20px}
+  .brand img{display:block}
+  .top-actions{display:flex;align-items:center;gap:8px}
+  .top-action{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:14px;font-weight:600;color:var(--navy);
+    padding:8px 14px;border-radius:10px;border:1px solid transparent;
+    transition:background 160ms var(--ease);
+  }
+  .top-action:hover{background:var(--navy-soft)}
+  .top-action.primary{background:var(--navy);color:#fff}
+  .top-action.primary:hover{background:var(--navy-dark)}
+
+  /* ── ASOSIY ─────────────────────────────────────────────────── */
+  .sahifa{
+    width:min(100% - 36px,var(--content));
+    margin:28px auto 64px;
+  }
+  .orqaga{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:14px;font-weight:600;color:var(--muted);
+    margin-bottom:18px;padding:6px 10px;border-radius:8px;
+    transition:color 160ms var(--ease),background 160ms var(--ease);
+  }
+  .orqaga:hover{color:var(--navy);background:var(--navy-soft)}
+
+  .elon-tuzilma{
+    display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;
+    align-items:start;
+  }
+
+  /* ── RASMLAR ───────────────────────────────────────────────── */
+  .rasm-quti{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .rasm-katta{
+    aspect-ratio:4/3;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .rasm-katta img{width:100%;height:100%;object-fit:cover;display:block}
+  .rasm-katta .yoq{
+    color:var(--muted);font-size:14px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .rasm-tex{
+    display:flex;gap:8px;padding:12px;flex-wrap:wrap;
+    border-top:1px solid var(--line);
+  }
+  .rasm-tex button{
+    width:72px;height:56px;border-radius:8px;overflow:hidden;padding:0;
+    border:2px solid var(--line);background:var(--surface-2);cursor:pointer;
+    transition:border-color 160ms var(--ease),transform 160ms var(--ease);
+  }
+  .rasm-tex button:hover{transform:translateY(-1px)}
+  .rasm-tex button.faol{border-color:var(--navy)}
+  .rasm-tex img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* ── MA'LUMOT ──────────────────────────────────────────────── */
+  .elon-karta{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:28px;
+    box-shadow:var(--shadow-card);
+  }
+  .elon-badge{
+    display:inline-block;font-size:11px;font-weight:800;letter-spacing:.6px;
+    color:var(--navy);background:var(--navy-soft);
+    padding:4px 10px;border-radius:999px;margin-bottom:14px;text-transform:uppercase;
+  }
+  .elon-nom{font-size:24px;font-weight:800;line-height:1.25;letter-spacing:-.2px}
+  .elon-narx{
+    font-size:26px;font-weight:800;color:var(--navy);margin-top:14px;
+  }
+  .kelishiladi{
+    display:inline-block;font-size:12px;font-weight:700;color:var(--amber);
+    background:var(--amber-soft);padding:3px 9px;border-radius:6px;margin-left:8px;vertical-align:3px;
+  }
+  .elon-meta{
+    display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;
+    font-size:13.5px;color:var(--muted);
+  }
+  .elon-meta span{display:inline-flex;align-items:center;gap:6px}
+  .elon-tavsif{
+    margin-top:20px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14.5px;color:#344054;white-space:pre-line;
+  }
+  .sotuvchi{
+    margin-top:20px;padding:16px;border-radius:12px;
+    background:var(--surface-2);border:1px solid var(--line);
+  }
+  .sotuvchi h3{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .sotuvchi-nom{font-size:16px;font-weight:700}
+  .sotuvchi-izoh{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .tel-yashirilgan{
+    display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;
+  }
+  .tel-ochish{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:14px;font-weight:700;color:var(--navy);
+    background:var(--navy-soft);border:1px solid rgba(11,37,89,.14);
+    padding:9px 16px;border-radius:10px;cursor:pointer;
+    transition:background 160ms var(--ease),transform 160ms var(--ease);
+  }
+  .tel-ochish:hover{background:#dfe7f4;transform:translateY(-1px)}
+  .tel-ochish:active{transform:translateY(0)}
+  .tel-ochish svg{flex:none}
+  .tel-raqam{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:16px;font-weight:700;color:var(--navy);
+  }
+  .tel-raqam svg{flex:none}
+
+  .xabar-yopilgan{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:40px 28px;text-align:center;
+  }
+  .xabar-yopilgan h1{font-size:20px;font-weight:800}
+  .xabar-yopilgan p{color:var(--muted);margin-top:8px;font-size:14px}
+
+  .yuklanmoqda{
+    display:flex;justify-content:center;align-items:center;min-height:60vh;
+    color:var(--muted);font-size:14px;gap:10px;
+  }
+  .spinner{
+    width:18px;height:18px;border-radius:50%;
+    border:2px solid var(--line-strong);border-top-color:var(--navy);
+    animation:aylana .8s linear infinite;
+  }
+  @keyframes aylana{to{transform:rotate(360deg)}}
+
+  @media (max-width:880px){
+    .elon-tuzilma{grid-template-columns:1fr}
+    .sahifa{margin-top:16px}
+    .elon-nom{font-size:20px}
+    .elon-narx{font-size:22px}
+    .elon-karta{padding:20px}
+    .rasm-katta{aspect-ratio:1/1}
+    .topbar-inner{width:min(100% - 28px,var(--content));gap:10px}
+    .top-actions{gap:4px}
+    .top-action{padding:7px 9px;font-size:12px}
+  }
+</style>
+<link rel="stylesheet" href="/ober-ui.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/" aria-label="OBER bosh sahifa">
+      <img src="/brend/logo.png" alt="ober" width="94" height="29">
+    </a>
+    <div class="top-actions">
+      <a class="top-action" href="/"><span>Qidiruv</span></a>
+      <a class="top-action primary" href="/sotuvchi"><span>Profil</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="sahifa" id="sahifa">
+  <div class="yuklanmoqda"><div class="spinner"></div> E'lon ochilmoqda...</div>
+</main>
+
+<script src="/i18n.js"></script>
+<script src="/tabbar.js"></script>
+<script>
+(function(){
+  var SAHIFA = document.getElementById("sahifa");
+  var id = Number((location.pathname.match(/^\/elon\/(\d+)/) || [])[1] || 0);
+
+  function som(n){
+    if(!n) return "";
+    var s = String(n).replace(/[^\d]/g, "");
+    if(!s) return "";
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, " ").replace(/^/, "") + " so'm";
+  }
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(m){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m];
+    });
+  }
+  function telHavola(telefon){
+    var r = String(telefon || "").replace(/[^\d+]/g, "");
+    if(!r) return "";
+    return "tel:" + r;
+  }
+  function sanaMatn(s){
+    if(!s) return "";
+    var iso = String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(!iso) return "";
+    var d = new Date(+iso[1], +iso[2] - 1, +iso[3]);
+    var bugun = new Date(); bugun.setHours(0,0,0,0);
+    var kun = Math.round((bugun - d) / 86400000);
+    if(kun <= 0) return "Bugun";
+    if(kun === 1) return "Kecha";
+    if(kun < 7) return kun + " kun oldin";
+    var OYLAR = ["yanvar","fevral","mart","aprel","may","iyun","iyul",
+      "avgust","sentabr","oktabr","noyabr","dekabr"];
+    return (+iso[3]) + " " + OYLAR[+iso[2] - 1];
+  }
+
+  if(!id){
+    SAHIFA.innerHTML = '<div class="xabar-yopilgan"><h1>E\'lon topilmadi</h1>' +
+      '<p>Havola noto\'g\'ri bo\'lishi mumkin. Bosh sahifadan qidirib ko\'ring.</p>' +
+      '<p style="margin-top:16px"><a href="/">← Bosh sahifaga</a></p></div>';
+    return;
+  }
+
+  fetch("/api/elon/" + id).then(function(r){
+    if(!r.ok) throw new Error("topilmadi");
+    return r.json();
+  }).then(function(e){
+    if(e.ochirilgan){
+      SAHIFA.innerHTML = '<div class="xabar-yopilgan"><h1>Bu e\'lon yopilgan</h1>' +
+        '<p>E\'lon olib tashlangan yoki sotilgan bo\'lishi mumkin.</p>' +
+        '<p style="margin-top:16px"><a href="/">← Bosh sahifaga</a></p></div>';
+      document.title = "E'lon yopilgan — OBER";
+      return;
+    }
+
+    // Rasmlar: rasmlar_ober massivi + bitta rasm. FAQAT o'z serverimiz
+    // papkalari — tashqi `//sayt.com/...` yoki `data:` qabul qilinmaydi
+    // (2026-08-06 kod-review).
+    var rasmlar = [];
+    try{ rasmlar = JSON.parse(e.rasmlar_ober || "[]"); }catch(_){}
+    if(e.rasm && rasmlar.indexOf(e.rasm) === -1) rasmlar.unshift(e.rasm);
+    rasmlar = rasmlar.filter(function(x){
+      return typeof x === "string" &&
+        (x.indexOf("/chat-uploads/") === 0 || x.indexOf("/elon-rasmlar/") === 0);
+    });
+
+    var joy = [e.viloyat, e.shahar, e.tuman].filter(Boolean).join(", ");
+    var narx = e.kelishiladi
+      ? '<span class="kelishiladi">KELISHILADI</span>'
+      : som(e.narx_som);
+    var sotuvchiBlok = e.egasi_nomi ? (
+      '<div class="sotuvchi">' +
+        '<h3>SOTUVCHI</h3>' +
+        '<div class="sotuvchi-nom">' + esc(e.egasi_nomi || "Sotuvchi") + '</div>' +
+        '<div class="tel-yashirilgan">' +
+          '<a class="tel-ochish" href="/?q=' + encodeURIComponent(e.nom || "") + '">OBER ichida so‘rash</a>' +
+        '</div>' +
+        '<div class="sotuvchi-izoh">Telefon raqami ochilmaydi. Taklif va yozishma OBER ichida qoladi.</div>' +
+      '</div>'
+    ) : '';
+
+    // Rasm galereyasi HTML
+    var rasmKatta = rasmlar.length
+      ? '<img src="' + esc(rasmlar[0]) + '" alt="' + esc(e.nom) + '">'
+      : '<div class="yoq">Rasm yo\'q</div>';
+    var rasmTex = rasmlar.length > 1
+      ? '<div class="rasm-tex">' + rasmlar.map(function(x, i){
+          return '<button type="button" class="' + (i === 0 ? "faol" : "") + '" data-rasm="' + i + '" aria-label="Rasm ' + (i+1) + '">' +
+            '<img src="' + esc(x) + '" alt="" loading="lazy"></button>';
+        }).join("") + '</div>'
+      : "";
+
+    SAHIFA.innerHTML =
+      '<a class="orqaga" href="/">← Qidiruvga qaytish</a>' +
+      '<div class="elon-tuzilma">' +
+        '<div class="rasm-quti">' +
+          '<div class="rasm-katta" id="rasm-katta">' + rasmKatta + '</div>' +
+          rasmTex +
+        '</div>' +
+        '<div class="elon-karta">' +
+          '<span class="elon-badge">OBER</span>' +
+          '<h1 class="elon-nom">' + esc(e.nom) + '</h1>' +
+          '<div class="elon-narx">' + narx + '</div>' +
+          '<div class="elon-meta">' +
+            (joy ? '<span>📍 ' + esc(joy) + '</span>' : "") +
+            (e.kategoriya ? '<span>🏷 ' + esc(e.kategoriya) + '</span>' : "") +
+            (sanaMatn(e.sana) ? '<span>🕐 ' + esc(sanaMatn(e.sana)) + '</span>' : "") +
+          '</div>' +
+          (e.tavsif ? '<div class="elon-tavsif">' + esc(e.tavsif) + '</div>' : "") +
+          sotuvchiBlok +
+        '</div>' +
+      '</div>';
+
+    document.title = (e.nom || "E'lon") + " — OBER";
+
+    // Galereya: kichik rasmga bosilganda katta rasm almashadi
+    var katta = document.getElementById("rasm-katta");
+    var tugmalar = document.querySelectorAll(".rasm-tex button");
+    tugmalar.forEach(function(t){
+      t.addEventListener("click", function(){
+        tugmalar.forEach(function(x){ x.classList.remove("faol"); });
+        t.classList.add("faol");
+        var idx = Number(t.getAttribute("data-rasm"));
+        katta.innerHTML = '<img src="' + esc(rasmlar[idx]) + '" alt="' + esc(e.nom) + '">';
+      });
+    });
+  }).catch(function(){
+    SAHIFA.innerHTML = '<div class="xabar-yopilgan"><h1>E\'lon topilmadi</h1>' +
+      '<p>Bu e\'lon mavjud emas yoki o\'chirilgan bo\'lishi mumkin.</p>' +
+      '<p style="margin-top:16px"><a href="/">← Bosh sahifaga</a></p></div>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+# OBER — GIT'GA HECH QACHON TUSHMAYDIGAN FAYLLAR
+#
+# NEGA ALOHIDA FAYL (2026-08-09)
+# `D:\SUNIYAGENT` NAIZA repositoriysi (github.com/azizaka00/naiza), `ober/`
+# esa uning ICHIDA turadi. Ildizdagi `.gitignore` NAIZA tuzilmasi uchun
+# yozilgan va OBER papkalarini qamramaydi:
+#
+#   ober/data/bot-token.txt   -> Telegram bot kaliti
+#   ober/tmp/vizual_token.txt -> JONLI sotuvchi sessiya tokenlari
+#   ober/data/ober.db         -> 400 MB dan katta baza
+#
+# Bu fayl o'sha teshikni yopadi.
+
+# ── SIRLAR ───────────────────────────────────────────────────────────
+# Telegram bot kaliti. Bu chiqsa begona odam bot nomidan sotuvchilarga
+# xabar yozadi va kirish kodlarini o'qiydi.
+data/bot-token.txt
+data/*token*
+data/*.env
+*.env
+
+# Sinov skriptlari yozib qoldirgan JONLI sessiya tokenlari. Bular bilan
+# begona odam sotuvchi kabinetiga kiradi.
+tmp/*token*
+tmp/*.token
+
+# ── BAZA VA YIG'ILGAN MA'LUMOT ───────────────────────────────────────
+# 400 MB+ — GitHub baribir qabul qilmaydi, ustiga foydalanuvchi
+# ma'lumotlari (telefon, chat) bor.
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/zaxira/
+
+# Begona saytlardan yuklab olingan HTML nusxalar (debug uchun edi).
+data/zond/
+
+# Chatda yuborilgan rasmlar — foydalanuvchi ma'lumoti.
+data/chat-uploads/
+data/elon-rasmlar/
+
+# Navbatchi almashuv fayllari.
+data/buyruq.txt
+data/javob.txt
+
+# ── SOTUVCHILARGA MUROJAAT RO'YXATI ──────────────────────────────────
+# 2026-08-09 `git status` tekshiruvida topildi. Ichida OLX
+# sotuvchilarining nomlari va telefon raqamlari bor. Ikki sabab bilan
+# chiqarilmaydi: (1) ochiq ma'lumotni maqsadli ro'yxatga yig'ish —
+# alohida maxfiylik masalasi, (2) bu bizning bozorga chiqish
+# taktikamiz, raqobatchiga ko'rsatmaymiz.
+data/jalb-qilish.txt
+
+# ── ISHLAB CHIQARILGAN VA JURNAL FAYLLARI ────────────────────────────
+# Bular kod emas, natija. Har ishga tushirishda qaytadan yasaladi.
+# KIRISH fayllari qoladi: telegram-kanallar.txt, olx-daraxt.txt,
+# kategoriyalar.txt — ularsiz yig'uvchi ishlamaydi.
+*.log
+data/jurnal.txt
+data/hisobot.txt
+data/talab.txt
+data/sinov-natija.txt
+data/tozalash-natija.txt
+data/telegram-natija.txt
+data/telegram-chuqur.txt
+data/telegram-tozalash.txt
+data/lugat-sinov.txt
+data/qidiruv-sinov.txt
+data/nomalum-sozlar.txt
+data/namuna-narx-sahifa.html
+data/qidiruv-kesh.version
+# Indeksdan HISOBLANADI (`soz_kategoriya.py`), qo'lda yozilmaydi.
+data/soz-kategoriya.json
+
+# ── YUKLAB OLINADIGAN, SAQLANMAYDIGAN ────────────────────────────────
+# Shrift Google'dan bir marta olinadi: `deploy/shrift-yuklab-ol.sh`.
+web/shrift/*.woff2
+
+# ── VAQTINCHALIK ─────────────────────────────────────────────────────
+tmp/
+__pycache__/
+*.pyc
+# Yozish yarim uzilganda qoladigan fayllar.
+*.tmp.*
+# Buyruqda `>` adashib yozilgan tasodifiy fayl (2026-08-09).
+app/xaridor
+
+# ── OG'IR BINARY FAYLLAR ─────────────────────────────────────────────
+# ~50 ta skrinshot va ikkita PPTX. Ular ish tarixining bir qismi,
+# lekin KOD emas. Repo ularsiz yengil va o'qishga qulay bo'ladi;
+# taqdimot arizaga alohida yuklanadi.
+# Markdown hisobotlar QOLADI — ular ishning jiddiyligini ko'rsatadi.
+audit/**/*.png
+qa/*.png
+reports/**/*.png
+reports/**/*.pptx
+reports/**/*.ndjson
+
+# ── SHAXSIY MA'LUMOT — OCHIQ REPOGA CHIQMAYDI ────────────────────────
+# 2026-08-09, commitdan oldingi oxirgi tekshiruvda topildi.
+# Ariza hujjatlarida Azizbek va Lazizbekning TELEFON RAQAMI, EMAILI va
+# TUG'ILGAN SANASI bor. Bular ariza portali uchun yozilgan, butun
+# internet uchun emas. Ochiq repoda turgan telefon raqami spam va
+# firibgarlik uchun yig'iladi.
+#
+# Fayllar diskda QOLADI — arizani to'ldirishda kerak. Faqat git'ga
+# tushmaydi.
+reports/PRESIDENT-TECH-AWARD-ARIZA.md
+reports/president-tech-award-2026/
+
+# `memory/state.md` ichida ham aloqa ma'lumoti bor (412-413 qator).
+# Bu fayl loyiha tarixi sifatida qimmatli, shuning uchun butunlay
+# chiqarib tashlamaymiz — o'sha ikki qatorni tozalab, keyin qo'shamiz.
+memory/state.md
+
+# ── BEGONA MUALLIFLARNING SKILL FAYLLARI ─────────────────────────────
+# `design-taste-frontend` va boshqalar — boshqa mualliflarniki,
+# ikki nusxada yotibdi. O'z kodimiz emas.
+.agents/skills/
+.claude/skills/
+skills-lock.json
+reports/**/*.png

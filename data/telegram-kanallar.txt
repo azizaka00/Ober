@@ -1,0 +1,64 @@
+# OBER — TELEGRAM SAVDO KANALLARI
+#
+# Har qatorda bitta kanal. `#` bilan boshlangan qator o'qilmaydi.
+# Aziz bergan ro'yxat, 2026-08-03.
+#
+# DIQQAT: guruhlar (chat) va kanallar farq qiladi. Ochiq KANALda
+# `t.me/s/<nom>` sahifasi bo'ladi, GURUHda odatda bo'lmaydi. Guruhlar
+# 0 natija bersa - bu xato emas, shunchaki o'qib bo'lmaydi.
+#
+# Har yurishdan keyin "e'lon ulushi" foizga qarang: 25% dan past
+# bo'lsa, o'sha kanal indeksga axlat qo'shayotgan bo'lishi mumkin.
+
+# ── 1. MASHINA BOZORI ────────────────────────────────────────────────
+Eng_Arzoni_Uz
+Avtozamok_uz
+moshina_bozorim
+moshina
+moshina_elon_bozor
+mashinalar_vodiybozor
+Vodiybozor_avto_elon
+fargona_andijon_namangan1
+avto_gm_zapchastt
+
+# ── 2. UY SOTISH VA IJARA ────────────────────────────────────────────
+uybozorim
+Kvartira_Toshkent_Arenda_Makler
+Toshkent_Kvartira_Arenda_Makler
+arenda_uylari
+
+# ── 3. POLIGRAFIYA VA PRINT ──────────────────────────────────────────
+PrintMasterss
+pruzb
+
+# ── 4. AI, DASTURLASH, DIZAYN, SMM ───────────────────────────────────
+AiCreators_chat
+grafikdizaynerlar
+
+# ── 5. BOG'CHA BEZAKLARI ─────────────────────────────────────────────
+bogchabezaklari
+
+# ── 6. KOMPYUTER VA PRINTERLAR ───────────────────────────────────────
+kompyuter_printerlar
+
+# ── 7. ISH VA VAKANSIYALAR ───────────────────────────────────────────
+ishchi_bormi_ishbor
+
+# ── 8. AVIACHIPTALAR ─────────────────────────────────────────────────
+engarzonbiletchi
+
+# ── 9. MAISHIY TEXNIKA ───────────────────────────────────────────────
+engarzonbozoruz
+
+# ── 10. DACHALAR ─────────────────────────────────────────────────────
+DACHAB0R_UZZ
+
+# ── 11. USTALAR (ta'mirlash, fasad) ──────────────────────────────────
+kafel_malyarka
+Travertin_fasad_chirchiq
+
+# ── 12. ARZON TOVARLAR ───────────────────────────────────────────────
+sharabaraofficial
+
+# ── SINOV UCHUN (tekshirilgan, ishlaydi) ─────────────────────────────
+roboshopuz

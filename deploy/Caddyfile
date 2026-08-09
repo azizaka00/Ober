@@ -1,0 +1,95 @@
+# OBER — HTTPS va tashqi kirish.
+#
+# IKKI BLOK, ATAYLAB.
+#
+# 2026-08-03: ober.uz ro'yxatdan o'tdi, lekin `.UZ` administratori
+# faollashtirishini kutyapti (ish kunlari, moderatsiyadan keyin, keyin
+# 24 soatgacha). Agar Caddyfile'da faqat domen bloki bo'lsa, o'sha
+# vaqtgacha IP orqali kirish ham ishlamay qolardi.
+#
+# Shuning uchun ikkalasi ham turadi:
+#   - domen bloki: sertifikat bilan, domen faollashgach O'ZI ishlaydi
+#   - :80 bloki:   IP orqali kirish, hozir ishlayotgan yo'l
+#
+# Caddy sertifikatni ololmasa xato yozadi va qayta urinib turadi.
+# Bu normal — domen tayyor bo'lishi bilan o'zi hal bo'ladi.
+
+# www -> ober.uz. BITTA kanonik manzil.
+#
+# 2026-08-04: Aziz iPhone'da tekshirdi — `ober.uz` ochilmadi, lekin
+# `www.ober.uz` ochildi. Sayt aybdor emas edi (telefon DNS'ida eski
+# NXDOMAIN javobi qolgan), lekin bu bir narsani ko'rsatdi: ikkala
+# manzil ham TENG ishlayotgan edi. Google uchun bu ikkita HAR XIL
+# sayt: reyting ikkiga bo'linadi, ulashilgan havolalar chalkashadi.
+#
+# Endi bittasi asosiy (ober.uz — qisqa, brend nomi), ikkinchisi unga
+# 301 bilan yo'naltiriladi. 301 = "butunlay ko'chdi", Google reytingni
+# ham ko'chiradi. 302 bo'lsa ko'chirmaydi.
+www.ober.uz {
+	redir https://ober.uz{uri} permanent
+}
+
+ober.uz {
+	encode gzip zstd
+
+	reverse_proxy 127.0.0.1:8800 {
+		# HAQIQIY IP MANZILNI UZATISH.
+		#
+		# 2026-08-04: Python serveri tezlik chegarasini
+		# `client_address` dan olardi. Caddy orqasida esa u HAR DOIM
+		# 127.0.0.1 — ya'ni butun sayt bitta hisobni bo'lishardi.
+		# Amalda OBER soatiga atigi 5 ta sotuvchi va 20 ta so'rov
+		# qabul qila olardi, oltinchisiga esa "Juda tez-tez" deb
+		# javob berardi. Aziz aynan shunga duch keldi.
+		#
+		# Caddy XFF ni o'zi qo'yadi va mijoz yozgan soxta qiymatni
+		# tashlab yuboradi (sinab ko'rildi: `X-Forwarded-For: 1.2.3.4`
+		# yuborildi, serverga faqat haqiqiy IP yetdi).
+		#
+		# Shunday bo'lsa ham buni ANIQ yozib qo'yamiz: Caddy versiyasi
+		# yoki sozlamasi o'zgarsa, xavfsizlik tasodifga qolmasin.
+		# `{remote_host}` — ulanishning haqiqiy manbai, uni mijoz
+		# o'zgartira olmaydi.
+		header_up X-Forwarded-For {remote_host}
+	}
+
+	request_body {
+		max_size 6MB
+	}
+
+	header {
+		# Sayt boshqa saytning ichiga qo'yilmasin
+		X-Frame-Options DENY
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	log {
+		output file /var/log/caddy/ober.log {
+			roll_size 20mb
+			roll_keep 5
+		}
+	}
+}
+
+# IP orqali kirish. Domen faollashgandan keyin ham qoladi:
+# eski havolalar va sinov uchun qulay.
+:80 {
+	encode gzip zstd
+
+	reverse_proxy 127.0.0.1:8800 {
+		# Yuqoridagi blok bilan bir xil sabab: busiz bu yo'ldan
+		# kirgan hamma tashrifchi bitta tezlik hisobini bo'lishadi.
+		header_up X-Forwarded-For {remote_host}
+	}
+
+	request_body {
+		max_size 6MB
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		-Server
+	}
+}

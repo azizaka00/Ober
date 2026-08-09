@@ -1,0 +1,10 @@
+[Unit]
+Description=OBER — har 2 daqiqada tiriklik tekshiruvi
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=2min
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target

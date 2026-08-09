@@ -1,0 +1,25 @@
+[Unit]
+Description=OBER - sutkalik to'liq e'lonlar yangiligi
+After=network-online.target ober-server.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ober
+WorkingDirectory=/home/ober/ober/app
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 yangilik.py toliq-kuzat
+
+Restart=always
+RestartSec=120
+Nice=15
+IOSchedulingClass=idle
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/ober/ober/data
+
+[Install]
+WantedBy=multi-user.target

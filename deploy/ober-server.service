@@ -1,0 +1,33 @@
+[Unit]
+Description=OBER — qidiruv serveri
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ober
+WorkingDirectory=/home/ober/ober/app
+Environment=PYTHONUNBUFFERED=1
+Environment=OBER_NO_BROWSER=1
+Environment=OBER_HOST=127.0.0.1
+Environment=OBER_PORT=8800
+# Ixtiyoriy: fayl bo'lmasa server oddiy matnli qidiruv bilan ishlayveradi.
+# Kalit repozitoriyga yoki deploy papkasiga yozilmaydi.
+EnvironmentFile=-/etc/ober-ai.env
+ExecStart=/usr/bin/python3 server.py
+
+# HECH QACHON O'LMASIN. Aziz, 2026-08-02: "yangi e'lonlarni har doim
+# tugmani bosib kiritishimiz kerak, orqada qolib ketyapti". Serverning
+# butun ma'nosi shu — hech kim hech narsa bosmasligi kerak.
+Restart=always
+RestartSec=5
+
+# Xavfsizlik: jarayon o'z papkasidan tashqariga yozolmaydi
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/ober/ober/data
+
+[Install]
+WantedBy=multi-user.target

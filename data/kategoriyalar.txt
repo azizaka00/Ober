@@ -1,0 +1,806 @@
+# OBER — OLX kategoriyalari (avtomatik topilgan)
+# Qo'lda tahrirlamang: kategoriya_top.py qayta yozadi.
+# Jami: 802
+
+transport/avtobusy|Transport / Avtobuslar
+transport/avtozapchasti-i-aksessuary/aksessuary-dlya-avto|Transport / Avto ehtiyot qismlari va aksessuarlar / Avtomashina uchun aksessuarlar
+transport/avtozapchasti-i-aksessuary/avtozapchasti|Transport / Avto ehtiyot qismlari va aksessuarlar / Avto ehtiyot qismlar
+transport/avtozapchasti-i-aksessuary/avtozvuk|Transport / Avto ehtiyot qismlari va aksessuarlar / Avtotovush
+transport/avtozapchasti-i-aksessuary/gps-navigatory-avtoregistratory|Transport / Avto ehtiyot qismlari va aksessuarlar / GPS-navigatorlar/avtoregistratorlar
+transport/avtozapchasti-i-aksessuary/transport-na-zapchasti|Transport / Avto ehtiyot qismlari va aksessuarlar / Ehtiyot qismlarga ajratilgan transport
+transport/drugoy-transport|Transport / Boshqa transport
+transport/gruzovye-avtomobili|Transport / Yuk mashinalari
+transport/legkovye-avtomobili/aito|Transport / Yengil avtomashinalar / Aito
+transport/legkovye-avtomobili/audi|Transport / Yengil avtomashinalar / Audi
+transport/legkovye-avtomobili/avatr|Transport / Yengil avtomashinalar / Avatr
+transport/legkovye-avtomobili/baic|Transport / Yengil avtomashinalar / Baic
+transport/legkovye-avtomobili/baw|Transport / Yengil avtomashinalar / Baw
+transport/legkovye-avtomobili/beijing|Transport / Yengil avtomashinalar / Beijing
+transport/legkovye-avtomobili/bestune|Transport / Yengil avtomashinalar / Bestune
+transport/legkovye-avtomobili/bmw|Transport / Yengil avtomashinalar / Bmw
+transport/legkovye-avtomobili/buick|Transport / Yengil avtomashinalar / Buick
+transport/legkovye-avtomobili/byd|Transport / Yengil avtomashinalar / BYD
+transport/legkovye-avtomobili/cadillac|Transport / Yengil avtomashinalar / Cadillac
+transport/legkovye-avtomobili/changan|Transport / Yengil avtomashinalar / Changan
+transport/legkovye-avtomobili/cherry|Transport / Yengil avtomashinalar / Chery
+transport/legkovye-avtomobili/chevrolet|Transport / Yengil avtomashinalar / Chevrolet
+transport/legkovye-avtomobili/citroen|Transport / Yengil avtomashinalar / Citroen
+transport/legkovye-avtomobili/daewoo|Transport / Yengil avtomashinalar / Daewoo
+transport/legkovye-avtomobili/deepal|Transport / Yengil avtomashinalar / Deepal
+transport/legkovye-avtomobili/denza|Transport / Yengil avtomashinalar / Denza
+transport/legkovye-avtomobili/donfeng|Transport / Yengil avtomashinalar / Dongfeng
+transport/legkovye-avtomobili/drugie|Transport / Yengil avtomashinalar / Boshqalar
+transport/legkovye-avtomobili/enovate|Transport / Yengil avtomashinalar / Enovate
+transport/legkovye-avtomobili/faw|Transport / Yengil avtomashinalar / Faw
+transport/legkovye-avtomobili/fiat|Transport / Yengil avtomashinalar / Fiat
+transport/legkovye-avtomobili/ford|Transport / Yengil avtomashinalar / Ford
+transport/legkovye-avtomobili/foton|Transport / Yengil avtomashinalar / Foton
+transport/legkovye-avtomobili/gac|Transport / Yengil avtomashinalar / GAC
+transport/legkovye-avtomobili/gaz|Transport / Yengil avtomashinalar / Gaz
+transport/legkovye-avtomobili/geely|Transport / Yengil avtomashinalar / Geely
+transport/legkovye-avtomobili/genesis|Transport / Yengil avtomashinalar / Genesis
+transport/legkovye-avtomobili/great_wall|Transport / Yengil avtomashinalar / Great Wall
+transport/legkovye-avtomobili/haval|Transport / Yengil avtomashinalar / Haval
+transport/legkovye-avtomobili/honda|Transport / Yengil avtomashinalar / Honda
+transport/legkovye-avtomobili/hongqi|Transport / Yengil avtomashinalar / Hongqi
+transport/legkovye-avtomobili/huawei|Transport / Yengil avtomashinalar / Huawei
+transport/legkovye-avtomobili/hyundai|Transport / Yengil avtomashinalar / Hyundai
+transport/legkovye-avtomobili/infiniti|Transport / Yengil avtomashinalar / Infiniti
+transport/legkovye-avtomobili/isuzu|Transport / Yengil avtomashinalar / Isuzu
+transport/legkovye-avtomobili/izh|Transport / Yengil avtomashinalar / Izh
+transport/legkovye-avtomobili/jac|Transport / Yengil avtomashinalar / JAC
+transport/legkovye-avtomobili/jeep|Transport / Yengil avtomashinalar / Jeep
+transport/legkovye-avtomobili/jetour|Transport / Yengil avtomashinalar / Jetour
+transport/legkovye-avtomobili/kaiyi|Transport / Yengil avtomashinalar / Kaiyi
+transport/legkovye-avtomobili/kgm|Transport / Yengil avtomashinalar / KGM
+transport/legkovye-avtomobili/kia|Transport / Yengil avtomashinalar / Kia
+transport/legkovye-avtomobili/land_rover|Transport / Yengil avtomashinalar / Land Rover
+transport/legkovye-avtomobili/leapmotor|Transport / Yengil avtomashinalar / Leapmotor
+transport/legkovye-avtomobili/lexus|Transport / Yengil avtomashinalar / Lexus
+transport/legkovye-avtomobili/li|Transport / Yengil avtomashinalar / Li
+transport/legkovye-avtomobili/lincoln|Transport / Yengil avtomashinalar / Lincoln
+transport/legkovye-avtomobili/lynk|Transport / Yengil avtomashinalar / Lynk
+transport/legkovye-avtomobili/mazda|Transport / Yengil avtomashinalar / Mazda
+transport/legkovye-avtomobili/mercedes|Transport / Yengil avtomashinalar / Mercedes
+transport/legkovye-avtomobili/mg|Transport / Yengil avtomashinalar / MG
+transport/legkovye-avtomobili/mitsubishi|Transport / Yengil avtomashinalar / Mitsubishi
+transport/legkovye-avtomobili/moskvich|Transport / Yengil avtomashinalar / Moskvich
+transport/legkovye-avtomobili/neta|Transport / Yengil avtomashinalar / Neta
+transport/legkovye-avtomobili/nio|Transport / Yengil avtomashinalar / Nio
+transport/legkovye-avtomobili/nissan|Transport / Yengil avtomashinalar / Nissan
+transport/legkovye-avtomobili/opel|Transport / Yengil avtomashinalar / Opel
+transport/legkovye-avtomobili/ora|Transport / Yengil avtomashinalar / ORA
+transport/legkovye-avtomobili/peugeot|Transport / Yengil avtomashinalar / Peugeot
+transport/legkovye-avtomobili/porsche|Transport / Yengil avtomashinalar / Porsche
+transport/legkovye-avtomobili/rang_rover|Transport / Yengil avtomashinalar / Rang rover
+transport/legkovye-avtomobili/renault|Transport / Yengil avtomashinalar / Renault
+transport/legkovye-avtomobili/rox_stone|Transport / Yengil avtomashinalar / Rox Stone
+transport/legkovye-avtomobili/skoda|Transport / Yengil avtomashinalar / Skoda
+transport/legkovye-avtomobili/soueast|Transport / Yengil avtomashinalar / Soueast
+transport/legkovye-avtomobili/suzuki|Transport / Yengil avtomashinalar / Suzuki
+transport/legkovye-avtomobili/swm|Transport / Yengil avtomashinalar / SWM
+transport/legkovye-avtomobili/tesla|Transport / Yengil avtomashinalar / Tesla
+transport/legkovye-avtomobili/toyota|Transport / Yengil avtomashinalar / Toyota
+transport/legkovye-avtomobili/uaz|Transport / Yengil avtomashinalar / Uaz
+transport/legkovye-avtomobili/vaz|Transport / Yengil avtomashinalar / Vaz
+transport/legkovye-avtomobili/volkswagen|Transport / Yengil avtomashinalar / Volkswagen
+transport/legkovye-avtomobili/volvo|Transport / Yengil avtomashinalar / Volvo
+transport/legkovye-avtomobili/voyah|Transport / Yengil avtomashinalar / Voyah
+transport/legkovye-avtomobili/weltmeister|Transport / Yengil avtomashinalar / Weltmeister
+transport/legkovye-avtomobili/wuling|Transport / Yengil avtomashinalar / Wuling
+transport/legkovye-avtomobili/xiaomi|Transport / Yengil avtomashinalar / Xiaomi
+transport/legkovye-avtomobili/xpeng|Transport / Yengil avtomashinalar / Xpeng
+transport/legkovye-avtomobili/zaz|Transport / Yengil avtomashinalar / Zaz
+transport/legkovye-avtomobili/zeekr|Transport / Yengil avtomashinalar / Zeekr
+transport/moto/kvadrotsikly|Transport / Moto / Kvadrosikllar
+transport/moto/mopedy-skutery|Transport / Moto / Mopedlar-skuterlar
+transport/moto/moto-prochee|Transport / Moto / Boshqa moto
+transport/moto/mototsikly|Transport / Moto / Motosikllar
+transport/motozapchasti-i-aksessuary/moto-aksessuary|Transport / Moto ehtiyot qismlari va aksessuarlar / Moto aksessuarlar
+transport/motozapchasti-i-aksessuary/motoekipirovka|Transport / Moto ehtiyot qismlari va aksessuarlar / Moto kiyim-bosh va anjomlar
+transport/motozapchasti-i-aksessuary/motozapchasti|Transport / Moto ehtiyot qismlari va aksessuarlar / Moto ehtiyot qismlar
+transport/pritsepy|Transport / Tirkamalar
+transport/prochie-zapchasti|Transport / Boshqa ehtiyot qismlar
+transport/selhoztehnika|Transport / Qishloq xo'jalik texnikasi
+transport/shiny-diski-i-kolesa/avtoshiny|Transport / Shinalar, disklar va g'ildiraklar / Avtoshinalar
+transport/shiny-diski-i-kolesa/diski|Transport / Shinalar, disklar va g'ildiraklar / Disklar
+transport/shiny-diski-i-kolesa/kolesa-v-sbore|Transport / Shinalar, disklar va g'ildiraklar / Yig'ilgan g'ildiraklar
+transport/shiny-diski-i-kolesa/kolpaki|Transport / Shinalar, disklar va g'ildiraklar / Qalpoqlar
+transport/shiny-diski-i-kolesa/motoshiny|Transport / Shinalar, disklar va g'ildiraklar / Motoshinalar
+transport/spetstehnika/avtocrane|Transport / Maxsus texnika / Avtokran
+transport/spetstehnika/commercial|Transport / Maxsus texnika / Yuk mashinalari
+transport/spetstehnika/concrete_mixer|Transport / Maxsus texnika / Beton qorgichlar
+transport/spetstehnika/excavators|Transport / Maxsus texnika / Ekskavatorlar
+transport/spetstehnika/graders|Transport / Maxsus texnika / Greyderlar
+transport/spetstehnika/hauler|Transport / Maxsus texnika / Tyagach
+transport/spetstehnika/loaders|Transport / Maxsus texnika / Yuklagich
+transport/spetstehnika/vehicle_others|Transport / Maxsus texnika / Boshqalar
+transport/vodnyy-transport|Transport / Suv transporti
+transport/zapchasti-dlya-spets-sh-tehniki|Transport / Maxsus texnika uchun qismlar
+elektronika/aksessuary-i-komplektuyuschie|Elektr jihozlari / Aksessuarlar va komplekt jihozlar
+elektronika/audiotehnika/akusticheskie-sistemy|Elektr jihozlari / Audiotexnika / Akustika tizimlari
+elektronika/audiotehnika/cd-md-vinilovye-proigryvateli|Elektr jihozlari / Audiotexnika / Cd/md/vinil ovoz chiqargichlar
+elektronika/audiotehnika/magnitoly|Elektr jihozlari / Audiotexnika / Magnitolalar
+elektronika/audiotehnika/mp3-pleery|Elektr jihozlari / Audiotexnika / Mp3 pleterlari
+elektronika/audiotehnika/muzykalnye-tsentry|Elektr jihozlari / Audiotexnika / Musiqa markazlari
+elektronika/audiotehnika/naushniki|Elektr jihozlari / Audiotexnika / Naushniklar
+elektronika/audiotehnika/portativnaya-akustika|Elektr jihozlari / Audiotexnika / Portativ akustika
+elektronika/audiotehnika/prochaya-audiotehnika|Elektr jihozlari / Audiotexnika / Boshqa audiotexnika
+elektronika/audiotehnika/radiopriemniki|Elektr jihozlari / Audiotexnika / Radiopriyomniklar
+elektronika/audiotehnika/usiliteli-resivery|Elektr jihozlari / Audiotexnika / Ovoz kuchaytirgichlar-resiverlar
+elektronika/foto-video/aksessuary-dlya-foto-videokamer|Elektr jihozlari / Foto/ video / Foto/ videokameralar uchun aksessuarlar
+elektronika/foto-video/fotovspyshki|Elektr jihozlari / Foto/ video / Fotochaqnagichlar
+elektronika/foto-video/obektivy|Elektr jihozlari / Foto/ video / Obyektivlar
+elektronika/foto-video/plenochnye-fotoapparaty|Elektr jihozlari / Foto/ video / Plenkali fotoapparatlar
+elektronika/foto-video/shtativy-monopody|Elektr jihozlari / Foto/ video / Shtativlar/ monopodlar
+elektronika/foto-video/teleskopy-binokli|Elektr jihozlari / Foto/ video / Teleskoplar/binokllar
+elektronika/foto-video/tsifrovye-fotoapparaty|Elektr jihozlari / Foto/ video / Raqamli fotoapparatlar
+elektronika/foto-video/videokamery|Elektr jihozlari / Foto/ video / Videokameralar
+elektronika/igry-i-igrovye-pristavki/aksessuary|Elektr jihozlari / O'yinlar va o'yin anjomlari / Aksessuarlar
+elektronika/igry-i-igrovye-pristavki/igry-dlya-pc|Elektr jihozlari / O'yinlar va o'yin anjomlari / PC uchun o'yinlar
+elektronika/igry-i-igrovye-pristavki/igry-dlya-pristavok|Elektr jihozlari / O'yinlar va o'yin anjomlari / Pristavka uchun o'yinlar
+elektronika/igry-i-igrovye-pristavki/pristavki|Elektr jihozlari / O'yinlar va o'yin anjomlari / Pristavkalar
+elektronika/individualnyy-uhod/blood_pressure_monitors|Elektr jihozlari / Yakka tartibdagi parvarish / Tonometrlar
+elektronika/individualnyy-uhod/britvy-epilyatory-mashinki-dlya-strizhki|Elektr jihozlari / Yakka tartibdagi parvarish / Britvalar,epilyatorlar, soch olish mashinalari
+elektronika/individualnyy-uhod/feny-ukladka-volos|Elektr jihozlari / Yakka tartibdagi parvarish / Fenlar, soch turmaklash
+elektronika/individualnyy-uhod/massagers|Elektr jihozlari / Yakka tartibdagi parvarish / Massaj apparatlari
+elektronika/individualnyy-uhod/nebulizers|Elektr jihozlari / Yakka tartibdagi parvarish / Ingalatorlar
+elektronika/individualnyy-uhod/oxygen_concentrators|Elektr jihozlari / Yakka tartibdagi parvarish / Kislorod apparatlari va kontsentratorlari
+elektronika/individualnyy-uhod/prochaya-tehnika-dlya-individualnogo-uhoda|Elektr jihozlari / Yakka tartibdagi parvarish / Yakka parvarish uchun boshqa texnika
+elektronika/individualnyy-uhod/vesy|Elektr jihozlari / Yakka tartibdagi parvarish / Tarozilar
+elektronika/klimaticheskoe-oborudovanie/air_conditioners|Elektr jihozlari / Iqlim qurilmalari / Konditsionerlar
+elektronika/klimaticheskoe-oborudovanie/air_humidifiers|Elektr jihozlari / Iqlim qurilmalari / Havoni namlagichlar
+elektronika/klimaticheskoe-oborudovanie/air_purifiers_and_ozonators|Elektr jihozlari / Iqlim qurilmalari / Havoni tozalagichlar va ozonatorlar
+elektronika/klimaticheskoe-oborudovanie/fans|Elektr jihozlari / Iqlim qurilmalari / Ventilyatorlar
+elektronika/klimaticheskoe-oborudovanie/heaters|Elektr jihozlari / Iqlim qurilmalari / Isitgichlar
+elektronika/klimaticheskoe-oborudovanie/others_climate_electronics|Elektr jihozlari / Iqlim qurilmalari / Boshqa
+elektronika/klimaticheskoe-oborudovanie/spare_parts_and_accessories|Elektr jihozlari / Iqlim qurilmalari / Ehtiyot qismlar va aksessuarlar
+elektronika/klimaticheskoe-oborudovanie/thermometers_and_hygrometers|Elektr jihozlari / Iqlim qurilmalari / Termometrlar va gigrometrlar
+elektronika/kompyutery/aksessuary|Elektr jihozlari / Kompyuterlar / Aksessuarlar
+elektronika/kompyutery/drugoe|Elektr jihozlari / Kompyuterlar / Boshqalar
+elektronika/kompyutery/komplektuyuschie|Elektr jihozlari / Kompyuterlar / Komplekt jihozlar
+elektronika/kompyutery/monitory|Elektr jihozlari / Kompyuterlar / Monitorlar
+elektronika/kompyutery/nastolnye/all_in_one_pc|Elektr jihozlari / Kompyuterlar / Stolga qo'yiladigan / Monoblok
+elektronika/kompyutery/nastolnye/desktop_pc|Elektr jihozlari / Kompyuterlar / Stolga qo'yiladigan / Sistemali blok
+elektronika/kompyutery/nastolnye/others_pc|Elektr jihozlari / Kompyuterlar / Stolga qo'yiladigan / Boshqa
+elektronika/kompyutery/noutbuki|Elektr jihozlari / Kompyuterlar / Noutbuklar
+elektronika/kompyutery/periferiynye-ustroystva|Elektr jihozlari / Kompyuterlar / Periferiya qurilmalari
+elektronika/kompyutery/planshetnye-kompyutery|Elektr jihozlari / Kompyuterlar / Planshet kompyuterlar
+elektronika/kompyutery/rashodnye-materialy|Elektr jihozlari / Kompyuterlar / Chiqim materiallari
+elektronika/kompyutery/servery|Elektr jihozlari / Kompyuterlar / Serverlar
+elektronika/kompyutery/vneshnie-nakopiteli|Elektr jihozlari / Kompyuterlar / Tashqi jamlagichlar
+elektronika/prochaja-electronika|Elektr jihozlari / Boshqa elektronika
+elektronika/smart_devices/fitness_trackers|Elektr jihozlari / Aqlli qurilmalar / Fitness-brasletlar
+elektronika/smart_devices/other_smartcategory|Elektr jihozlari / Aqlli qurilmalar / Boshqa
+elektronika/smart_devices/smart_home|Elektr jihozlari / Aqlli qurilmalar / Aqlli uy
+elektronika/smart_devices/smart_watches|Elektr jihozlari / Aqlli qurilmalar / Aqlli soatlar
+elektronika/tehnika-dlya-doma/filtry-dlya-vody/others_water_filters|Elektr jihozlari / Uy uchun texnika / Suv uchun filtrlar / Boshqa
+elektronika/tehnika-dlya-doma/filtry-dlya-vody/water_coolers|Elektr jihozlari / Uy uchun texnika / Suv uchun filtrlar / Suv sovutgichlar (kulerlar)
+elektronika/tehnika-dlya-doma/filtry-dlya-vody/water_filters_filters|Elektr jihozlari / Uy uchun texnika / Suv uchun filtrlar / Suv filtrlari
+elektronika/tehnika-dlya-doma/prochaya-tehnika-dlya-doma|Elektr jihozlari / Uy uchun texnika / Uy uchun boshqa texnika
+elektronika/tehnika-dlya-doma/pylesosy|Elektr jihozlari / Uy uchun texnika / Pilesoslar
+elektronika/tehnika-dlya-doma/shveynye-mashiny-i-overloki|Elektr jihozlari / Uy uchun texnika / Tikuv mashinalari,overloklar
+elektronika/tehnika-dlya-doma/stiralnye-mashiny|Elektr jihozlari / Uy uchun texnika / Kir yuvish mashinalari
+elektronika/tehnika-dlya-doma/utyugi|Elektr jihozlari / Uy uchun texnika / Dazmollar
+elektronika/tehnika-dlya-doma/voltage_stabilizers|Elektr jihozlari / Uy uchun texnika / Kuchlanish stabilizatorlari
+elektronika/tehnika-dlya-doma/vyazalnye-mashiny|Elektr jihozlari / Uy uchun texnika / To'quv mashinalari
+elektronika/tehnika-dlya-kuhni/air_fryers_electric_grills|Elektr jihozlari / Oshxona uchun texnika / Aero-grillar, elektr-grillar
+elektronika/tehnika-dlya-kuhni/deep_fryers|Elektr jihozlari / Oshxona uchun texnika / Friturlar
+elektronika/tehnika-dlya-kuhni/elektrochayniki|Elektr jihozlari / Oshxona uchun texnika / Elektr choynaklari
+elektronika/tehnika-dlya-kuhni/hlebopechki|Elektr jihozlari / Oshxona uchun texnika / Non pechlari
+elektronika/tehnika-dlya-kuhni/holodilniki|Elektr jihozlari / Oshxona uchun texnika / Muzlatgichlar
+elektronika/tehnika-dlya-kuhni/kofevarki-kofemolki|Elektr jihozlari / Oshxona uchun texnika / Kofedamlagichlar-kofemolkalar
+elektronika/tehnika-dlya-kuhni/kuhonnye-kombayny-i-izmelchiteli|Elektr jihozlari / Oshxona uchun texnika / Oshxona kombaynlari-maydalagichlar
+elektronika/tehnika-dlya-kuhni/mikrovolnovye-pechi|Elektr jihozlari / Oshxona uchun texnika / Mikroto'lqinli pechlar
+elektronika/tehnika-dlya-kuhni/parovarki|Elektr jihozlari / Oshxona uchun texnika / Parovarkalar/multivarkalar
+elektronika/tehnika-dlya-kuhni/plity-pechi|Elektr jihozlari / Oshxona uchun texnika / Plitalar-pechlar
+elektronika/tehnika-dlya-kuhni/posudomoechnye-mashiny|Elektr jihozlari / Oshxona uchun texnika / Idish-tovoq yuvuvchi mashinalar
+elektronika/tehnika-dlya-kuhni/prochaya-tehnika-dlya-kuhni|Elektr jihozlari / Oshxona uchun texnika / Oshxona uchun boshqa texnika
+elektronika/tehnika-dlya-kuhni/toasters_waffle_makers_sandwich_makers|Elektr jihozlari / Oshxona uchun texnika / Tosterlar, vafli tayyorlagichlar, sendvich tayyorlagichlar
+elektronika/tehnika-dlya-kuhni/vytyazhki|Elektr jihozlari / Oshxona uchun texnika / Vityajkalar
+elektronika/telefony/aksessuary|Elektr jihozlari / Telefonlar / Aksessuarlar/ ehtiyot qismlari
+elektronika/telefony/mobilnye-telefony|Elektr jihozlari / Telefonlar / Mobil telefonlar
+elektronika/telefony/prochie-telefony|Elektr jihozlari / Telefonlar / Boshqa telefonlar
+elektronika/telefony/sim-karty-tarify-nomera|Elektr jihozlari / Telefonlar / Sim-kartalar, tariflar, raqamlar
+elektronika/telefony/statsionarnye-telefony|Elektr jihozlari / Telefonlar / Stasionar telefonlar
+elektronika/telefony/walkie_talkies|Elektr jihozlari / Telefonlar / Ratsiyalar
+elektronika/tv-videotehnika/aksessuary-dlya-tv-videotehniki/cables|Elektr jihozlari / Tv/ videotexnika / TV uchun aksessuarlar, video / Kabellar
+elektronika/tv-videotehnika/aksessuary-dlya-tv-videotehniki/mounts|Elektr jihozlari / Tv/ videotexnika / TV uchun aksessuarlar, video / Kronshteynlar
+elektronika/tv-videotehnika/aksessuary-dlya-tv-videotehniki/others_tv_accessories|Elektr jihozlari / Tv/ videotexnika / TV uchun aksessuarlar, video / Boshqa
+elektronika/tv-videotehnika/aksessuary-dlya-tv-videotehniki/remote_controls|Elektr jihozlari / Tv/ videotexnika / TV uchun aksessuarlar, video / Pultlar
+elektronika/tv-videotehnika/aksessuary-dlya-tv-videotehniki/smart_tv_boxes|Elektr jihozlari / Tv/ videotexnika / TV uchun aksessuarlar, video / Smart TV bokslar
+elektronika/tv-videotehnika/dvd-pleery|Elektr jihozlari / Tv/ videotexnika / Media ovoz chiqargichlar
+elektronika/tv-videotehnika/prochaya-tv-videotehnika|Elektr jihozlari / Tv/ videotexnika / Boshqa videotexnika
+elektronika/tv-videotehnika/projectors|Elektr jihozlari / Tv/ videotexnika / Proyektorlar
+elektronika/tv-videotehnika/sputnikovoe-tv|Elektr jihozlari / Tv/ videotexnika / Yo'ldoshli TV
+elektronika/tv-videotehnika/televizory|Elektr jihozlari / Tv/ videotexnika / Televizorlar
+nedvizhimost/doma/arenda-dolgosrochnaya|Ko'chmas mulk / Xususiy uylar / Ijara uzoq muddatga
+nedvizhimost/doma/obmen|Ko'chmas mulk / Xususiy uylar / Ayirboshlash
+nedvizhimost/doma/prodazha|Ko'chmas mulk / Xususiy uylar / Sotish
+nedvizhimost/garazhi-stoyanki/arenda|Ko'chmas mulk / Garajlar / turargohlar / Ijara
+nedvizhimost/garazhi-stoyanki/prodazha|Ko'chmas mulk / Garajlar / turargohlar / Sotish
+nedvizhimost/kommercheskie-pomeshcheniya/arenda|Ko'chmas mulk / Tijorat binolari / Ijara
+nedvizhimost/kommercheskie-pomeshcheniya/prodazha|Ko'chmas mulk / Tijorat binolari / Sotish
+nedvizhimost/kvartiry/arenda-dolgosrochnaya|Ko'chmas mulk / Kvartiralar / Ijara uzoq muddatga
+nedvizhimost/kvartiry/obmen|Ko'chmas mulk / Kvartiralar / Ayirboshlash
+nedvizhimost/kvartiry/prodazha|Ko'chmas mulk / Kvartiralar / Sotish
+nedvizhimost/posutochno_pochasovo/dachi|Ko'chmas mulk / Sutkalik  ijarasi / Uy / Dacha
+nedvizhimost/posutochno_pochasovo/hostel|Ko'chmas mulk / Sutkalik  ijarasi / Hostel
+nedvizhimost/posutochno_pochasovo/kvartira|Ko'chmas mulk / Sutkalik  ijarasi / Kvartiralar
+nedvizhimost/posutochno_pochasovo/oteli|Ko'chmas mulk / Sutkalik  ijarasi / Mehmonxonalar / Otellar
+nedvizhimost/posutochno_pochasovo/sanatorii|Ko'chmas mulk / Sutkalik  ijarasi / Dam olish maskanlari
+nedvizhimost/zemlja/arenda|Ko'chmas mulk / Yer uchastkasi / Ijara
+nedvizhimost/zemlja/prodazha|Ko'chmas mulk / Yer uchastkasi / Sotish
+dom-i-sad/hozyaystvennyy-inventar/air_fresheners_and_disinfectants|Uy va bog' / Xo'jalik jihozlari, maishiy kimyo / Havo yangilash va dezinfeksiya
+dom-i-sad/hozyaystvennyy-inventar/cleaning_supplies|Uy va bog' / Xo'jalik jihozlari, maishiy kimyo / Tozalash uchun
+dom-i-sad/hozyaystvennyy-inventar/containers_and_storage|Uy va bog' / Xo'jalik jihozlari, maishiy kimyo / Konteyner va idishlar
+dom-i-sad/hozyaystvennyy-inventar/for_pools|Uy va bog' / Xo'jalik jihozlari, maishiy kimyo / Basseynlar uchun
+dom-i-sad/hozyaystvennyy-inventar/laundry_and_drying|Uy va bog' / Xo'jalik jihozlari, maishiy kimyo / Kir yuvish va quritish uchun
+dom-i-sad/hozyaystvennyy-inventar/others_xoz_inventory|Uy va bog' / Xo'jalik jihozlari, maishiy kimyo / Boshqa
+dom-i-sad/instrumenty/benzoinstrument|Uy va bog' / Jihozlar / Benzoinstrument
+dom-i-sad/instrumenty/elektroinstrument/angle_grinders|Uy va bog' / Jihozlar / Elektr jihozlar / Bulg‘orlar
+dom-i-sad/instrumenty/elektroinstrument/construction_mixers|Uy va bog' / Jihozlar / Elektr jihozlar / Qurilish mikserlari
+dom-i-sad/instrumenty/elektroinstrument/construction_vacuum_cleaners|Uy va bog' / Jihozlar / Elektr jihozlar / Qurilish changyutgichlari
+dom-i-sad/instrumenty/elektroinstrument/drills_and_screwdrivers|Uy va bog' / Jihozlar / Elektr jihozlar / Drellar va shurupburagichlar
+dom-i-sad/instrumenty/elektroinstrument/heat_guns|Uy va bog' / Jihozlar / Elektr jihozlar / Qurilish fenlari
+dom-i-sad/instrumenty/elektroinstrument/impact_wrenches|Uy va bog' / Jihozlar / Elektr jihozlar / Gaykovyortlar
+dom-i-sad/instrumenty/elektroinstrument/jackhammers|Uy va bog' / Jihozlar / Elektr jihozlar / Beton sindirgich bolg‘alar (otboyniy molotok)
+dom-i-sad/instrumenty/elektroinstrument/others_electrotools|Uy va bog' / Jihozlar / Elektr jihozlar / Boshqa
+dom-i-sad/instrumenty/elektroinstrument/rotary_hammers|Uy va bog' / Jihozlar / Elektr jihozlar / Perforatorlar
+dom-i-sad/instrumenty/elektroinstrument/routers|Uy va bog' / Jihozlar / Elektr jihozlar / Frezerlar
+dom-i-sad/instrumenty/elektroinstrument/saws|Uy va bog' / Jihozlar / Elektr jihozlar / Arralar
+dom-i-sad/instrumenty/elektroinstrument/spare_parts_and_accessories_electro|Uy va bog' / Jihozlar / Elektr jihozlar / Ehtiyot qismlar va butlovchi buyumlar
+dom-i-sad/instrumenty/elektroinstrument/tile_cutters|Uy va bog' / Jihozlar / Elektr jihozlar / Plitka kesgichlar
+dom-i-sad/instrumenty/measuring_tools|Uy va bog' / Jihozlar / O‘lchov asboblari
+dom-i-sad/instrumenty/pnevmoinstrument|Uy va bog' / Jihozlar / Pnevmoinstrument
+dom-i-sad/instrumenty/prochiy-instrument|Uy va bog' / Jihozlar / Boshqa jihozlar
+dom-i-sad/instrumenty/ruchnoy-instrument/carpentry_and_locksmith_tools|Uy va bog' / Jihozlar / Qo'l jihozlari / Duradgor va slesar asboblari
+dom-i-sad/instrumenty/ruchnoy-instrument/cutting_tools|Uy va bog' / Jihozlar / Qo'l jihozlari / Kesuvchi asboblar
+dom-i-sad/instrumenty/ruchnoy-instrument/electrical_installation_tools|Uy va bog' / Jihozlar / Qo'l jihozlari / Elektr o‘rnatish asboblari
+dom-i-sad/instrumenty/ruchnoy-instrument/impact_and_lever_tools|Uy va bog' / Jihozlar / Qo'l jihozlari / Uruvchi va leverli asboblar
+dom-i-sad/instrumenty/ruchnoy-instrument/jacks|Uy va bog' / Jihozlar / Qo'l jihozlari / Domkratlar
+dom-i-sad/instrumenty/ruchnoy-instrument/others_ruchnoy_tool|Uy va bog' / Jihozlar / Qo'l jihozlari / Boshqa
+dom-i-sad/instrumenty/ruchnoy-instrument/painting_tools|Uy va bog' / Jihozlar / Qo'l jihozlari / Bo‘yoq ishlarida ishlatiladigan asboblar
+dom-i-sad/instrumenty/ruchnoy-instrument/pliers_and_joint_tools|Uy va bog' / Jihozlar / Qo'l jihozlari / Sharnirli-qisqichli asboblar
+dom-i-sad/instrumenty/ruchnoy-instrument/tool_sets|Uy va bog' / Jihozlar / Qo'l jihozlari / Asbob to‘plamlari
+dom-i-sad/instrumenty/welding_equipment|Uy va bog' / Jihozlar / Payvandlash uskunalari
+dom-i-sad/kantstovary-rashodnye-materialy/arts_and_crafts|Uy va bog' / Kanstovarlar-chiqim materiallari / Ijod va hobbi
+dom-i-sad/kantstovary-rashodnye-materialy/consumables|Uy va bog' / Kanstovarlar-chiqim materiallari / Sarf materiallari
+dom-i-sad/kantstovary-rashodnye-materialy/office_supplies|Uy va bog' / Kanstovarlar-chiqim materiallari / Ofis anjomlari
+dom-i-sad/kantstovary-rashodnye-materialy/others_stationery|Uy va bog' / Kanstovarlar-chiqim materiallari / Boshqa
+dom-i-sad/kantstovary-rashodnye-materialy/paper_products|Uy va bog' / Kanstovarlar-chiqim materiallari / Qog‘oz mahsulotlari
+dom-i-sad/kantstovary-rashodnye-materialy/writing_supplies|Uy va bog' / Kanstovarlar-chiqim materiallari / Yozuv anjomlari
+dom-i-sad/komnatnye-rasteniya/cacti_and_succulents|Uy va bog' / Xona o'simliklari / Kaktyuslar va sukkulentlar
+dom-i-sad/komnatnye-rasteniya/money_tree|Uy va bog' / Xona o'simliklari / Pul daraxti (Crassula)
+dom-i-sad/komnatnye-rasteniya/monsteras|Uy va bog' / Xona o'simliklari / Monstera o‘simliklari
+dom-i-sad/komnatnye-rasteniya/orchids|Uy va bog' / Xona o'simliklari / Orxideyalar
+dom-i-sad/komnatnye-rasteniya/others_komnatnye_rasteniya|Uy va bog' / Xona o'simliklari / Boshqa
+dom-i-sad/komnatnye-rasteniya/palms_and_ficus|Uy va bog' / Xona o'simliklari / Palmalar va fikuslar
+dom-i-sad/mebel/kuhonnaya-mebel|Uy va bog' / Mebel / Oshxona mebeli
+dom-i-sad/mebel/mebel-dlya-gostinoy|Uy va bog' / Mebel / Mehmonxona uchun mebel
+dom-i-sad/mebel/mebel-dlya-prihozhey|Uy va bog' / Mebel / Dahliz uchun mebel
+dom-i-sad/mebel/mebel-dlya-spalni|Uy va bog' / Mebel / Yotoqxona uchun mebel
+dom-i-sad/mebel/mebel-dlya-vannoy-komnaty|Uy va bog' / Mebel / Vannaxona mebeli
+dom-i-sad/mebel/mebel-na-zakaz|Uy va bog' / Mebel / Pristavkalarni ta'mirlash
+dom-i-sad/mebel/ofisnaya-mebel|Uy va bog' / Mebel / Ofis mebeli
+dom-i-sad/mebel/sadovaya-mebel|Uy va bog' / Mebel / Bog‘ mebeli
+dom-i-sad/mebel/spetsializirovannaya-mebel|Uy va bog' / Mebel / Maxsus mebel
+dom-i-sad/pools|Uy va bog' / Basseynlar
+dom-i-sad/posuda-kuhonnaya-utvar/dining_tableware|Uy va bog' / Idish-tovoq, oshxona anjomlari / Ovqatlanish idish-tovoqlari
+dom-i-sad/posuda-kuhonnaya-utvar/disposable_tableware|Uy va bog' / Idish-tovoq, oshxona anjomlari / Bir martalik idish-tovoqlar
+dom-i-sad/posuda-kuhonnaya-utvar/kitchen_accessories|Uy va bog' / Idish-tovoq, oshxona anjomlari / Oshxona aksessuarlari
+dom-i-sad/posuda-kuhonnaya-utvar/kitchen_cookware|Uy va bog' / Idish-tovoq, oshxona anjomlari / Oshxona idish-tovoqlari
+dom-i-sad/posuda-kuhonnaya-utvar/others_posuda_utvar|Uy va bog' / Idish-tovoq, oshxona anjomlari / Boshqa
+dom-i-sad/predmety-interera/dekor-okon/blinds|Uy va bog' / Interyer jihozlari / Derazalar dekori / Jalyuzilar
+dom-i-sad/predmety-interera/dekor-okon/curtains|Uy va bog' / Interyer jihozlari / Derazalar dekori / Pardalar
+dom-i-sad/predmety-interera/dekor-okon/rods|Uy va bog' / Interyer jihozlari / Derazalar dekori / Karnizlar
+dom-i-sad/predmety-interera/holiday_decor|Uy va bog' / Interyer jihozlari / Bayramona bezaklar
+dom-i-sad/predmety-interera/home_fragrances_and_candles|Uy va bog' / Interyer jihozlari / Uy uchun aromatlar va shamlar
+dom-i-sad/predmety-interera/inye-predmety-interera|Uy va bog' / Interyer jihozlari / Иные предметы интерьера
+dom-i-sad/predmety-interera/paintings_posters_and_frames|Uy va bog' / Interyer jihozlari / Rasm, poster va ramkalar
+dom-i-sad/predmety-interera/rugs|Uy va bog' / Interyer jihozlari / Gilamlar
+dom-i-sad/predmety-interera/storage_items|Uy va bog' / Interyer jihozlari / Saqlash buyumlari
+dom-i-sad/predmety-interera/svetilniki/ceiling_and_wall_lights|Uy va bog' / Interyer jihozlari / Chiroqlar / Shift va devor chiroqlari
+dom-i-sad/predmety-interera/svetilniki/led_lights|Uy va bog' / Interyer jihozlari / Chiroqlar / LED chiroqlar
+dom-i-sad/predmety-interera/svetilniki/lighting_components|Uy va bog' / Interyer jihozlari / Chiroqlar / Butlovchi qismlar
+dom-i-sad/predmety-interera/svetilniki/lighting_others|Uy va bog' / Interyer jihozlari / Chiroqlar / Boshqa
+dom-i-sad/predmety-interera/svetilniki/outdoor_lights|Uy va bog' / Interyer jihozlari / Chiroqlar / Tashqi chiroqlar
+dom-i-sad/predmety-interera/svetilniki/string_lights|Uy va bog' / Interyer jihozlari / Chiroqlar / Girlyandalar
+dom-i-sad/predmety-interera/svetilniki/table_and_floor_lamps|Uy va bog' / Interyer jihozlari / Chiroqlar / Stol va pol chiroqlari
+dom-i-sad/predmety-interera/tekstil|Uy va bog' / Interyer jihozlari / Tekstil
+dom-i-sad/predmety-interera/vases_and_artificial_flowers|Uy va bog' / Interyer jihozlari / Vazalar va sun’iy gullar
+dom-i-sad/prochie-tovary-dlya-doma|Uy va bog' / Uy uchun boshqa mahsulotlar
+dom-i-sad/produkty-pitaniya-napitki/beverages|Uy va bog' / Oziq-ovqat / Ichimliklar / Ichimliklar
+dom-i-sad/produkty-pitaniya-napitki/confectionery|Uy va bog' / Oziq-ovqat / Ichimliklar / Shirinliklar
+dom-i-sad/produkty-pitaniya-napitki/dairy_cheese_and_eggs|Uy va bog' / Oziq-ovqat / Ichimliklar / Sut mahsulotlari, pishloqlar, tuxum
+dom-i-sad/produkty-pitaniya-napitki/fruits_and_berries|Uy va bog' / Oziq-ovqat / Ichimliklar / Mevalar va rezavorlar
+dom-i-sad/produkty-pitaniya-napitki/groceries|Uy va bog' / Oziq-ovqat / Ichimliklar / Baqaleya mahsulotlari
+dom-i-sad/produkty-pitaniya-napitki/honey|Uy va bog' / Oziq-ovqat / Ichimliklar / Asal
+dom-i-sad/produkty-pitaniya-napitki/others_food_drinks|Uy va bog' / Oziq-ovqat / Ichimliklar / Boshqa
+dom-i-sad/produkty-pitaniya-napitki/tea_coffee_cocoa|Uy va bog' / Oziq-ovqat / Ichimliklar / Choy, qahva, kakao
+dom-i-sad/produkty-pitaniya-napitki/vegetables_and_greens|Uy va bog' / Oziq-ovqat / Ichimliklar / Sabzavot va ko‘katlar
+dom-i-sad/sad-ogorod/fertilizers|Uy va bog' / Bog'-tomorqa / O‘g‘itlar
+dom-i-sad/sad-ogorod/garden_others|Uy va bog' / Bog'-tomorqa / Boshqa
+dom-i-sad/sad-ogorod/lawn|Uy va bog' / Bog'-tomorqa / Maysazor
+dom-i-sad/sad-ogorod/microclimate|Uy va bog' / Bog'-tomorqa / Mikroklimat jihozlari
+dom-i-sad/sad-ogorod/pots_and_planters|Uy va bog' / Bog'-tomorqa / Guldonlar va kashpo
+dom-i-sad/sad-ogorod/seeds_and_seedlings|Uy va bog' / Bog'-tomorqa / Urug‘ va ko‘chatlar
+dom-i-sad/sad-ogorod/soils_and_substrates|Uy va bog' / Bog'-tomorqa / Tuproq va substratlar
+dom-i-sad/sadovyy-inventar/barbecues_and_grills|Uy va bog' / Bog' anjomlari / Mangallar va grillar
+dom-i-sad/sadovyy-inventar/garden_umbrellas_and_sun_canopies|Uy va bog' / Bog' anjomlari / Bog‘ soyabonlari va quyoshdan himoya tentalari
+dom-i-sad/sadovyy-inventar/lawn_mowers|Uy va bog' / Bog' anjomlari / Maysa o‘rish moslamalari
+dom-i-sad/sadovyy-inventar/others_garden_inventory|Uy va bog' / Bog' anjomlari / Boshqa
+dom-i-sad/sadovyy-inventar/pumps|Uy va bog' / Bog' anjomlari / Nasoslar
+dom-i-sad/sadovyy-inventar/sprayers|Uy va bog' / Bog' anjomlari / Purkovchi moslamalar
+dom-i-sad/sadovyy-inventar/step_ladders_and_ladders|Uy va bog' / Bog' anjomlari / Stremyankalar va narvonlar
+dom-i-sad/sadovyy-inventar/watering_hoses|Uy va bog' / Bog' anjomlari / Sug‘orish shlanglari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elektrika/cables_and_accessories|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Elektrika / Kabel va butlovchi qismlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elektrika/distribution_boards|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Elektrika / Taqqoslash shkaflari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elektrika/others_electrics|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Elektrika / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elektrika/power_network_protection|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Elektrika / Elektr tarmog‘ini himoya qilish vositalari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elektrika/sockets_and_switches|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Elektrika / Rozetka va o‘chirgichlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elektrika/switching_and_control|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Elektrika / Ulanish va boshqaruv qurilmalari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elementy-krepezha/bolts|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Biriktirish elementlari / Boltlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elementy-krepezha/clamps|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Biriktirish elementlari / Qisqichlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elementy-krepezha/locks|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Biriktirish elementlari / Qulflar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elementy-krepezha/others_krepezh|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Biriktirish elementlari / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/elementy-krepezha/rebar_clips|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Biriktirish elementlari / Armatura uchun fiksatorlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/kirpich-beton-penobloki/bricks|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / G'isht, betoni, penobloklar / G‘isht
+dom-i-sad/tovari-dlya-stroitelstva-remonta/kirpich-beton-penobloki/cement_and_dry_mix|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / G'isht, betoni, penobloklar / Sement va quruq aralashmalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/kirpich-beton-penobloki/cinder_blocks|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / G'isht, betoni, penobloklar / Shlakobloklar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/kirpich-beton-penobloki/concrete_and_concrete_products|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / G'isht, betoni, penobloklar / Beton va beton buyumlari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/kirpich-beton-penobloki/foam_and_aerated_blocks|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / G'isht, betoni, penobloklar / Penoblok va gazobloklar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/kirpich-beton-penobloki/others_cement_bricks_etc|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / G'isht, betoni, penobloklar / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/lakokrasochnye-materialy/enamels|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Lak-bo'yoq materiallari / Emallar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/lakokrasochnye-materialy/oils_varnishes_and_treatments|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Lak-bo'yoq materiallari / Moylar, laklar, shimdirgichlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/lakokrasochnye-materialy/others_lakokrasochniye|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Lak-bo'yoq materiallari / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/lakokrasochnye-materialy/paints|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Lak-bo'yoq materiallari / Bo‘yoqlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/lakokrasochnye-materialy/primers|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Lak-bo'yoq materiallari / Gruntovkalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/lakokrasochnye-materialy/solvents_and_cleaners|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Lak-bo'yoq materiallari / Eritgichlar, tozalagichlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/meshes_and_reinforcing_materials|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / To‘rlar va armaturalovchi materiallar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/metalloprokat-armatura/fittings|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Metalloprokat-armatura / Armatura
+dom-i-sad/tovari-dlya-stroitelstva-remonta/metalloprokat-armatura/metal_pipes|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Metalloprokat-armatura / Metall quvurlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/metalloprokat-armatura/others_metalloprokat|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Metalloprokat-armatura / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/metalloprokat-armatura/rolled_metal|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Metalloprokat-armatura / Metalloprokat
+dom-i-sad/tovari-dlya-stroitelstva-remonta/metalloprokat-armatura/trusses_frames_and_blanks|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Metalloprokat-armatura / Fermalar, karkaslar, zagotovkalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/metalloprokat-armatura/wire_and_mesh|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Metalloprokat-armatura / Sim va to‘r
+dom-i-sad/tovari-dlya-stroitelstva-remonta/okna-steklo-zerkala/doors_and_accessories|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Derazalar-oynalar / Eshiklar va jihozlari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/okna-steklo-zerkala/glass|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Derazalar-oynalar / Shishalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/okna-steklo-zerkala/mirrors|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Derazalar-oynalar / Ko‘zgular
+dom-i-sad/tovari-dlya-stroitelstva-remonta/okna-steklo-zerkala/others_windows_doors_etc|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Derazalar-oynalar / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/okna-steklo-zerkala/windows_and_accessories|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Derazalar-oynalar / Oynalar va jihozlari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otdelochnye-i-oblitsovochnye-materialy/decorative_elements|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Pardozlash materiallari / Dekorativ elementlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otdelochnye-i-oblitsovochnye-materialy/drywall|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Pardozlash materiallari / Gipsokarton
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otdelochnye-i-oblitsovochnye-materialy/facade_materials|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Pardozlash materiallari / Fasad materiallari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otdelochnye-i-oblitsovochnye-materialy/floor_coverings|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Pardozlash materiallari / Pol qoplamalari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otdelochnye-i-oblitsovochnye-materialy/others_finishing|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Pardozlash materiallari / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otdelochnye-i-oblitsovochnye-materialy/tiles|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Pardozlash materiallari / Plitka
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otdelochnye-i-oblitsovochnye-materialy/wallpaper|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Pardozlash materiallari / Oboylar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otoplenie/heating_boilers|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Isitish / Isitish qozonlari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otoplenie/heating_radiators|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Isitish / Isitish radiatorlari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otoplenie/heating_system_automation|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Isitish / Isitish tizimlari uchun avtomatika
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otoplenie/others_heating|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Isitish / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otoplenie/stoves_and_fireplaces|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Isitish / Pech va kaminlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/otoplenie/underfloor_heating|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Isitish / Issiq pol
+dom-i-sad/tovari-dlya-stroitelstva-remonta/pilomaterialy/logs|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Arra materiallari / Yog‘och loglar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/pilomaterialy/others_lumber|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Arra materiallari / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/pilomaterialy/planks|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Arra materiallari / Taxtalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/pilomaterialy/timber_and_slats|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Arra materiallari / Brus va reyka
+dom-i-sad/tovari-dlya-stroitelstva-remonta/pilomaterialy/wall_panels|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Arra materiallari / Vagonka (yog‘och qoplama)
+dom-i-sad/tovari-dlya-stroitelstva-remonta/pilomaterialy/wood_boards|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Arra materiallari / Yog‘och plitalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/plastics_polycarbonate_and_sheet_materials|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Plastik / polikarbonat / list materiallar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/prochie-stroymaterialy|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Boshqa qurilish materiallari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/bathtubs|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Vannalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/faucets|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Aralashtrigichlar va smesitellar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/main_water_filters|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Magistral suv filtrlari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/others_santexnika|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/pumping_equipment|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Nasos uskunalari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/sewerage_and_plumbing|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Kanalizatsiya va vodoprovod
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/shower_equipment|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Dush uskunalari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/sinks_and_basin|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Umyvalnik va moykalar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/toilets_bidets_urinals|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Unitazlar, bide va pissuarlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/towel_warmers|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Sochiq quritgichlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/santehnika/water_heaters|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Santexnika / Suv isitgichlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/ventilyatsiya/air_ducts|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Ventilyatsiya / Havo o‘tkazgichlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/ventilyatsiya/exhaust_fans|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Ventilyatsiya / Chiqindi havoni chiqarish ventilyatorlari
+dom-i-sad/tovari-dlya-stroitelstva-remonta/ventilyatsiya/others_ventilation|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Ventilyatsiya / Boshqa
+dom-i-sad/tovari-dlya-stroitelstva-remonta/ventilyatsiya/ventilation_accessories|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Ventilyatsiya / Ventilyatsiya uchun butlovchi qismlar
+dom-i-sad/tovari-dlya-stroitelstva-remonta/ventilyatsiya/ventilation_grilles|Uy va bog' / Qurilish/ta‘mirlash uchun tovarlar / Ventilyatsiya / Ventilyatsiya panjarlari
+moda-i-stil/aksessuary/bizhuteriya|Moda va stil / Aksessuarlar / Bijuteriya
+moda-i-stil/aksessuary/drugie-aksessuary|Moda va stil / Aksessuarlar / Boshqa aksessuarlar
+moda-i-stil/aksessuary/sumki|Moda va stil / Aksessuarlar / Sumkalar
+moda-i-stil/aksessuary/yuvelirnye-izdeliya|Moda va stil / Aksessuarlar / Zargarlik buyumlari
+moda-i-stil/dlya-svadby/svadebnye-aksessuary|Moda va stil / To'y uchun / To'y aksessuarlari
+moda-i-stil/dlya-svadby/svadebnye-platya|Moda va stil / To'y uchun / To'y liboslari
+moda-i-stil/krasota-zdorove/dietary_supplements|Moda va stil / Go'zallik-salomatlik / Biologik faol qo‘shimchalar
+moda-i-stil/krasota-zdorove/kosmetika|Moda va stil / Go'zallik-salomatlik / Pardoz anjomlari
+moda-i-stil/krasota-zdorove/parfyumeriya|Moda va stil / Go'zallik-salomatlik / Parfyumeriya
+moda-i-stil/krasota-zdorove/prochie-tovary-dlya-krasoty-i-zdorovya|Moda va stil / Go'zallik-salomatlik / Go'zallik va salomatlik uchun boshqa mahsulotlar
+moda-i-stil/krasota-zdorove/sredstva-po-uhodu|Moda va stil / Go'zallik-salomatlik / Parvarish vositalari
+moda-i-stil/krasota-zdorove/tovary-dlya-invalidov|Moda va stil / Go'zallik-salomatlik / Nogironlar uchun mahsulotlar
+moda-i-stil/moda-raznoe|Moda va stil / Moda, turli-tumanliklar
+moda-i-stil/naruchnye-chasy|Moda va stil / Qo'l soatlari
+moda-i-stil/odezhda/golovnye-ubory|Moda va stil / Kiyim-kechak / Bosh kiyimlar
+moda-i-stil/odezhda/muzhskaya-obuv|Moda va stil / Kiyim-kechak / Erkaklar oyoq kiyimi
+moda-i-stil/odezhda/muzhskaya-odezhda|Moda va stil / Kiyim-kechak / Erkaklar kiyimi
+moda-i-stil/odezhda/muzhskoe-bele|Moda va stil / Kiyim-kechak / Erkaklar ich kiyimi
+moda-i-stil/odezhda/odezhda-dlya-beremennyh|Moda va stil / Kiyim-kechak / Homiladorlik uchun kiyimlar
+moda-i-stil/odezhda/zhenskaya-obuv|Moda va stil / Kiyim-kechak / Ayollar oyoq kiyimi
+moda-i-stil/odezhda/zhenskaya-odezhda/women_blazers_and_jackets|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Pidjak va jaketlar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_blouses_and_shirts|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Bluzkalar va ko‘ylaklar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_bodysuits|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Bodi
+moda-i-stil/odezhda/zhenskaya-odezhda/women_dresses|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Ko‘ylaklar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_jeans|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Jinsilar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_jumpsuits|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Kombinezonlar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_loungewear|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Uy kiyimlari
+moda-i-stil/odezhda/zhenskaya-odezhda/women_muslim_clothing|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Musulmon ayol kiyimlari
+moda-i-stil/odezhda/zhenskaya-odezhda/women_other|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Boshqa
+moda-i-stil/odezhda/zhenskaya-odezhda/women_outerwear|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Ustki kiyimlar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_pants|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Shimlar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_shorts|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Shortlar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_skirts|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Yubkalar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_sportswear|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Sport kiyimlari
+moda-i-stil/odezhda/zhenskaya-odezhda/women_suits|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Kostyumlar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_sweaters_cardigans_and_hoodies|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Sviterlar, kardiganlar, hudilar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_tops_and_tshirts|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Maykalar va futbolkalar
+moda-i-stil/odezhda/zhenskaya-odezhda/women_traditional_clothing|Moda va stil / Kiyim-kechak / Ayollar kiyimi / Ayollar milliy kiyimlari
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_beach_dresses_and_tunics|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Plyaj liboslari va tunikalar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_bras|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Byustgalterlar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_corsets|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Korselar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_lingerie_sets|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Ichki kiyim to‘plamlari
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_other_underwear|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Boshqa
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_panties|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Ichki kiyimlar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_pareos_and_cover_ups|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Plyaj pareo va nakidkalar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_shapewear|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Korreksion ichki kiyimlar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_shaping_corsets|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Korreksion korselar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_socks_tights_and_stockings|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Paypoq, kolgotka, choklar
+moda-i-stil/odezhda/zhenskoe-bele-kupalniki/women_swimwear|Moda va stil / Kiyim-kechak / Ayollar ich kiyimi / Suzish kiyimlari
+moda-i-stil/podarki|Moda va stil / Sovg'alar
+detskiy-mir/detskaya-mebel/bumpers_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Karavot panellari
+detskiy-mir/detskaya-mebel/closets_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar shkaflari
+detskiy-mir/detskaya-mebel/complect_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar mebel to‘plamlari
+detskiy-mir/detskaya-mebel/cradles_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar karavotlari va beshiklar
+detskiy-mir/detskaya-mebel/dressers_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar komodlari
+detskiy-mir/detskaya-mebel/headsets_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar garniturlari
+detskiy-mir/detskaya-mebel/lounge_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar shezlonglari
+detskiy-mir/detskaya-mebel/manej_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar manejlari
+detskiy-mir/detskaya-mebel/mattress_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar matraslari
+detskiy-mir/detskaya-mebel/others_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Boshqa
+detskiy-mir/detskaya-mebel/seats_chairs_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar stullari va stollari
+detskiy-mir/detskaya-mebel/seats_kids_furniture|Bolalar dunyosi / Bolalar mebeli / Bolalar kreslolari
+detskiy-mir/detskaya-obuv/obuv-dlya-devochek/boots_kids_girls|Bolalar dunyosi / Bolalar oyoq kiyimi / Qizchalar uchun poyafzal / Etiklar va botinkalar
+detskiy-mir/detskaya-obuv/obuv-dlya-devochek/home_shoes_kids_girls|Bolalar dunyosi / Bolalar oyoq kiyimi / Qizchalar uchun poyafzal / Uy oyoq kiyimi
+detskiy-mir/detskaya-obuv/obuv-dlya-devochek/other_shoes_kids_girls|Bolalar dunyosi / Bolalar oyoq kiyimi / Qizchalar uchun poyafzal / Boshqa
+detskiy-mir/detskaya-obuv/obuv-dlya-devochek/sandals_kids_girls|Bolalar dunyosi / Bolalar oyoq kiyimi / Qizchalar uchun poyafzal / Sandallar va shippaklar
+detskiy-mir/detskaya-obuv/obuv-dlya-devochek/shoes_kids_girls|Bolalar dunyosi / Bolalar oyoq kiyimi / Qizchalar uchun poyafzal / Tuflilar va bosonojkalar
+detskiy-mir/detskaya-obuv/obuv-dlya-devochek/sneakers_kids_girls|Bolalar dunyosi / Bolalar oyoq kiyimi / Qizchalar uchun poyafzal / Krossovkalar va kedlar
+detskiy-mir/detskaya-obuv/obuv-dlya-devochek/sport_shoes_kids_girls|Bolalar dunyosi / Bolalar oyoq kiyimi / Qizchalar uchun poyafzal / Sport oyoq kiyimi
+detskiy-mir/detskaya-obuv/obuv-dlya-malchikov/boots_kids_boys|Bolalar dunyosi / Bolalar oyoq kiyimi / O’g‘il bolalar uchun poyafzal / Etiklar
+detskiy-mir/detskaya-obuv/obuv-dlya-malchikov/home_shoes_kids_boys|Bolalar dunyosi / Bolalar oyoq kiyimi / O’g‘il bolalar uchun poyafzal / Uy oyoq kiyimi
+detskiy-mir/detskaya-obuv/obuv-dlya-malchikov/other_shoes_kids_boys|Bolalar dunyosi / Bolalar oyoq kiyimi / O’g‘il bolalar uchun poyafzal / Boshqa
+detskiy-mir/detskaya-obuv/obuv-dlya-malchikov/sandals_kids_boys|Bolalar dunyosi / Bolalar oyoq kiyimi / O’g‘il bolalar uchun poyafzal / Sandallar va shippaklar
+detskiy-mir/detskaya-obuv/obuv-dlya-malchikov/shoes_kids_boys|Bolalar dunyosi / Bolalar oyoq kiyimi / O’g‘il bolalar uchun poyafzal / Botinkalar va tuflilar
+detskiy-mir/detskaya-obuv/obuv-dlya-malchikov/sneakers_kids_boys|Bolalar dunyosi / Bolalar oyoq kiyimi / O’g‘il bolalar uchun poyafzal / Krossovkalar va kedlar
+detskiy-mir/detskaya-obuv/obuv-dlya-malchikov/sport_shoes_kids_boys|Bolalar dunyosi / Bolalar oyoq kiyimi / O’g‘il bolalar uchun poyafzal / Sport oyoq kiyimi
+detskiy-mir/detskaya-obuv/obuv-dlya-malyshey/boots_kids_baby|Bolalar dunyosi / Bolalar oyoq kiyimi / Kichkintoylar uchun poyafzal / Etiklar
+detskiy-mir/detskaya-obuv/obuv-dlya-malyshey/others_kids_baby_shoes|Bolalar dunyosi / Bolalar oyoq kiyimi / Kichkintoylar uchun poyafzal / Boshqa
+detskiy-mir/detskaya-obuv/obuv-dlya-malyshey/pinets_kids_baby|Bolalar dunyosi / Bolalar oyoq kiyimi / Kichkintoylar uchun poyafzal / Krossovkalar va kedlar
+detskiy-mir/detskaya-obuv/obuv-dlya-malyshey/sandals_kids_baby|Bolalar dunyosi / Bolalar oyoq kiyimi / Kichkintoylar uchun poyafzal / Sandallar va shippaklar
+detskiy-mir/detskaya-obuv/obuv-dlya-malyshey/shoes_kids_baby|Bolalar dunyosi / Bolalar oyoq kiyimi / Kichkintoylar uchun poyafzal / Botinkalar
+detskiy-mir/detskaya-obuv/obuv-dlya-malyshey/sneakers_kids_baby_shoes|Bolalar dunyosi / Bolalar oyoq kiyimi / Kichkintoylar uchun poyafzal / Krossovka va kedalar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/accessories_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Aksessuarlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/beachwear_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Plyaj kiyimlari
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/blouses_and_shirts_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Bluzkalar va ko‘ylaklar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/dresses_and_trousers_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Ko‘ylaklar va yubkalar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/jackets_and_suits_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Pidjaklar va kostyumlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/jumpsuit_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Kombinezonlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/other_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Boshqa
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/outerwear_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Ustki kiyim
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/sweaters_and_hoodies_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Sviterlar va tolstovkalar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/t-shirts_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Futbolkalar va toplar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/trousers_and_shortskids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Shim va shortiklar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-devochek/underwear_and_home_clothes_kids_girls|Bolalar dunyosi / Bolalar kiyimi / Qizlar uchun kiyim-kechak / Ichki kiyim va uy kiyimi
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/accessories|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Aksessuarlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/beachwear|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Plyaj kiyimlari
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/jackets_and_suits|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Pidjaklar va kostyumlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/jumpsuit|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Kombinezonlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/linen_and_home_clothes|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Ichki kiyim va uy kiyimi
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/other|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Boshqa
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/outerwear|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Ustki kiyim
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/shirts|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Ko‘ylaklar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/sweaters_and_hoodies|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Sviterlar va tolstovkalar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/t-shirts|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Futbolkalar va maykalar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-malchikov/trousers_and_shorts|Bolalar dunyosi / Bolalar kiyimi / O'g'il bolalar kiyimi / Shim va shortiklar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/accessories_kids_newborns|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Aksessuarlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/boots_kids_newborns|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Etiklar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/envelope_kids_newborns|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Chiqish konverti
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/jumpsuit_kids_newborns|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Kombinezonlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/other_kids_newborns|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Boshqa
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/outerwear_kids_newborns|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Ustki kiyim
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/sets_kids_newborns|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Komplektlar
+detskiy-mir/detskaya-odezhda/odezhda-dlya-novorozhdennyh/slips_and_bodysuits|Bolalar dunyosi / Bolalar kiyimi / Chaqaloqlar kiyimi / Sliplar va bodilar
+detskiy-mir/detskie-avtokresla|Bolalar dunyosi / Bolalar avtoo'rindiqlari
+detskiy-mir/detskie-kolyaski/accessories_strollers|Bolalar dunyosi / Bolalar kolyaskalari / Aksessuarlar va butlovchi qismlar
+detskiy-mir/detskie-kolyaski/basinnet_strollers|Bolalar dunyosi / Bolalar kolyaskalari / Beshik kolyaskalar
+detskiy-mir/detskie-kolyaski/simple_strollers|Bolalar dunyosi / Bolalar kolyaskalari / Oddiy kolyaskalar
+detskiy-mir/detskie-kolyaski/transformer_strollers|Bolalar dunyosi / Bolalar kolyaskalari / Transformerlashadigan kolyaskalar
+detskiy-mir/detskie-kolyaski/twin_strollers|Bolalar dunyosi / Bolalar kolyaskalari / Egizaklar uchun kolyaskalar
+detskiy-mir/detskiy-transport/bicycles_children|Bolalar dunyosi / Bolalar transporti / Bolalar velosipedlari va yugurish velosipedlari
+detskiy-mir/detskiy-transport/electro_children|Bolalar dunyosi / Bolalar transporti / Bolalar elektromobillari
+detskiy-mir/detskiy-transport/others_children_transport|Bolalar dunyosi / Bolalar transporti / Boshqa
+detskiy-mir/detskiy-transport/parts_children|Bolalar dunyosi / Bolalar transporti / Ehtiyot qismlar va aksessuarlar
+detskiy-mir/detskiy-transport/rollers_children|Bolalar dunyosi / Bolalar transporti / Bolalar roliklari
+detskiy-mir/detskiy-transport/scooters_children|Bolalar dunyosi / Bolalar transporti / Bolalar samokatlari
+detskiy-mir/detskiy-transport/walkers_children|Bolalar dunyosi / Bolalar transporti / Bolalar yuritkichlari
+detskiy-mir/igrushki/barbie_accessories_toys|Bolalar dunyosi / O'yinchoqlar / Qo‘g‘irchoqlar va aksessuarlar
+detskiy-mir/igrushki/cars_toys|Bolalar dunyosi / O'yinchoqlar / Mashinalar va texnika
+detskiy-mir/igrushki/constructors_toys|Bolalar dunyosi / O'yinchoqlar / Konstruktorlar
+detskiy-mir/igrushki/creator_toys|Bolalar dunyosi / O'yinchoqlar / Ijodiy mahsulotlar
+detskiy-mir/igrushki/developing_toys|Bolalar dunyosi / O'yinchoqlar / Chaqaloqlar uchun rivojlantiruvchi o‘yinchoqlar
+detskiy-mir/igrushki/figures_toys|Bolalar dunyosi / O'yinchoqlar / O‘yinchoq figuralar
+detskiy-mir/igrushki/others_toys|Bolalar dunyosi / O'yinchoqlar / Boshqa
+detskiy-mir/igrushki/puzzles_toys|Bolalar dunyosi / O'yinchoqlar / Pazzllar va boshqotirmalar
+detskiy-mir/igrushki/rattles_toys|Bolalar dunyosi / O'yinchoqlar / Qo‘ng‘iroqchalar va tish chiqarish o‘yinchoqlari
+detskiy-mir/igrushki/robots_toys|Bolalar dunyosi / O'yinchoqlar / Robotlar va transformatorlar
+detskiy-mir/igrushki/soft_toys|Bolalar dunyosi / O'yinchoqlar / Yumshoq o‘yinchoqlar
+detskiy-mir/igrushki/table_toys|Bolalar dunyosi / O'yinchoqlar / Stol o‘yinlari
+detskiy-mir/igrushki/weapons_toys|Bolalar dunyosi / O'yinchoqlar / O‘yinchoq qurollar
+detskiy-mir/kormlenie/baby_bottles_and_nipples|Bolalar dunyosi / Oziqlantirish / Bolalar butilkalar va so‘rg‘ichlar
+detskiy-mir/kormlenie/baby_food|Bolalar dunyosi / Oziqlantirish / Bolalar ovqatlari
+detskiy-mir/kormlenie/bottle_warmer_sterilizer|Bolalar dunyosi / Oziqlantirish / Butilka isitgichlari va sterilizator
+detskiy-mir/kormlenie/breast_pumps|Bolalar dunyosi / Oziqlantirish / Sut sog‘ish moslamalari
+detskiy-mir/kormlenie/kids_tableware|Bolalar dunyosi / Oziqlantirish / Bolalar idish-tovoqlari
+detskiy-mir/kormlenie/kids_vitamins|Bolalar dunyosi / Oziqlantirish / Bolalar vitaminlari
+detskiy-mir/kormlenie/others_children_feeding|Bolalar dunyosi / Oziqlantirish / Boshqa
+detskiy-mir/prochie-detskie-tovary|Bolalar dunyosi / Boshqa bolalar mahsulotlari
+detskiy-mir/tovary-dlya-shkolnikov/drawing_supplies|Bolalar dunyosi / Maktab o'quvchilari uchun mahsulotlar / Chizmachilik anjomlari
+detskiy-mir/tovary-dlya-shkolnikov/others_goods_for_school|Bolalar dunyosi / Maktab o'quvchilari uchun mahsulotlar / Boshqa
+detskiy-mir/tovary-dlya-shkolnikov/school_backpacks|Bolalar dunyosi / Maktab o'quvchilari uchun mahsulotlar / Maktab ryukzaklari
+detskiy-mir/tovary-dlya-shkolnikov/school_stationery|Bolalar dunyosi / Maktab o'quvchilari uchun mahsulotlar / Maktab kanselyariyasi
+detskiy-mir/tovary-dlya-shkolnikov/school_textbooks_and_study_guides|Bolalar dunyosi / Maktab o'quvchilari uchun mahsulotlar / Maktab darsliklari va o‘quv qo‘llanmalari
+uslugi/avto-moto-uslugi/avtoelektrik|Xizmatlar / Avto-moto xizmatlar / Avto elektrik xizmatlari
+uslugi/avto-moto-uslugi/avtomoyki-himchistki|Xizmatlar / Avto-moto xizmatlar / Avto moyka / detailing / ximchistka
+uslugi/avto-moto-uslugi/drugoe|Xizmatlar / Avto-moto xizmatlar / Boshqa avto / moto xizmatlari
+uslugi/avto-moto-uslugi/kuzovnoy-remont-malyarka|Xizmatlar / Avto-moto xizmatlar / Kuzov ta'mirlash / bo'yash ishlari
+uslugi/avto-moto-uslugi/remont-avto|Xizmatlar / Avto-moto xizmatlar / Avtotamirlash
+uslugi/avto-moto-uslugi/remont-moto-velo-elektrotransporta|Xizmatlar / Avto-moto xizmatlar / Mototsikl / velosiped / skuterlarni ta'mirlash
+uslugi/bytovye-uslugi/drugoe|Xizmatlar / Maishiy xizmatlar / Boshqa maishiy xizmatlar
+uslugi/bytovye-uslugi/izgotovlenie-klyuchey-vskrytie-zamkov|Xizmatlar / Maishiy xizmatlar / Kalit yasash / qulfni ochish
+uslugi/bytovye-uslugi/master-na-chas|Xizmatlar / Maishiy xizmatlar / Universal usta
+uslugi/bytovye-uslugi/poshiv-remont-odezhdy-obuvi|Xizmatlar / Maishiy xizmatlar / Tikuvchi / kiyim / poyabzal ta'mirlash
+uslugi/bytovye-uslugi/remont-chasov|Xizmatlar / Maishiy xizmatlar / Soat ta'mirlash
+uslugi/bytovye-uslugi/restavratsiya-razborka-sborka-mebeli|Xizmatlar / Maishiy xizmatlar / Mebelni yig'ish / mebelchi / mebelni tiklash
+uslugi/delovye-uslugi/drugoe|Xizmatlar / Biznes uchun xizmatlari / Boshqa biznes xizmatlari
+uslugi/delovye-uslugi/marketing|Xizmatlar / Biznes uchun xizmatlari / Marketing xizmatlari
+uslugi/delovye-uslugi/naruzhnaya-reklama-vyveski|Xizmatlar / Biznes uchun xizmatlari / Tashqi reklama / banner
+uslugi/delovye-uslugi/poligrafiya-dizayn-pechat|Xizmatlar / Biznes uchun xizmatlari / Poligrafiya / dizayn / taklifnoma
+uslugi/delovye-uslugi/sozdanie-saytov-avtomatizatsiya|Xizmatlar / Biznes uchun xizmatlari / Veb-sayt yaratish / avtomatlashtirish
+uslugi/dostavka-edy|Xizmatlar / Taomlar yetkazish
+uslugi/finansovye-uslugi|Xizmatlar / Buxgalteriya / moliyaviy xizmatlar
+uslugi/krasota-zdorove/drugoe|Xizmatlar / Go'zallik-salomatlik / Boshqa go'zallik xizmatlari
+uslugi/krasota-zdorove/epilyatsiya-depilyatsiya|Xizmatlar / Go'zallik-salomatlik / Epilyatsiya / depilatsiya
+uslugi/krasota-zdorove/meditsina-kosmetologiya|Xizmatlar / Go'zallik-salomatlik / Kosmetologiya / tibbiy xizmatlar
+uslugi/krasota-zdorove/nogtevoy-servis|Xizmatlar / Go'zallik-salomatlik / Manikyur
+uslugi/krasota-zdorove/parikmaher|Xizmatlar / Go'zallik-salomatlik / Sartarosh xizmatlari
+uslugi/krasota-zdorove/psiholog|Xizmatlar / Go'zallik-salomatlik / Psixolog xizmatlari
+uslugi/krasota-zdorove/sauny-bani-spa|Xizmatlar / Go'zallik-salomatlik / Saunalar / vannalar / SPA
+uslugi/krasota-zdorove/stilist-vizazhist|Xizmatlar / Go'zallik-salomatlik / Stilist / vizajist xizmatlari
+uslugi/krasota-zdorove/tatu-pirsing|Xizmatlar / Go'zallik-salomatlik / Tatuirovka / pirsing
+uslugi/krasota-zdorove/uhod-brovi-resnitsy|Xizmatlar / Go'zallik-salomatlik / Qosh va kipriklarni parvarish qilish
+uslugi/nyani-sidelki|Xizmatlar / Enaga / kasalga qarovchilar
+uslugi/oborudovanie/drobilki-izmelchiteli|Xizmatlar / Uskunalarni sotish / Maydalagichlar
+uslugi/oborudovanie/drugoe|Xizmatlar / Uskunalarni sotish / Boshqa uskunalar
+uslugi/oborudovanie/generatory-transformatory|Xizmatlar / Uskunalarni sotish / Generatorlar va transformatorlar
+uslugi/oborudovanie/kompressory|Xizmatlar / Uskunalarni sotish / Kompressorlar
+uslugi/oborudovanie/medical_equipment/drugoe|Xizmatlar / Uskunalarni sotish / Tibbiy uskunalar / Boshqa tibbiy uskunalar
+uslugi/oborudovanie/medical_equipment/electrophoresis|Xizmatlar / Uskunalarni sotish / Tibbiy uskunalar / Elektroforez va fizioterapiya uskunalari
+uslugi/oborudovanie/medical_equipment/medical_beds|Xizmatlar / Uskunalarni sotish / Tibbiy uskunalar / Tibbiy krovatlar
+uslugi/oborudovanie/medical_equipment/ultrasound_equipment|Xizmatlar / Uskunalarni sotish / Tibbiy uskunalar / Ultratovush uskunalari
+uslugi/oborudovanie/pishchevoe-oborudovanie|Xizmatlar / Uskunalarni sotish / Oziq-ovqat uskunalari
+uslugi/oborudovanie/stanki|Xizmatlar / Uskunalarni sotish / Stanoglar
+uslugi/oborudovanie/stellazhi-vitriny|Xizmatlar / Uskunalarni sotish / Raflar va vitrinalar
+uslugi/obrazovanie/avtoshkoly-avtoinstruktory|Xizmatlar / Ta'lim / kurslar / repetitorlik / sport / Avtomaktab / avtoinstruktor
+uslugi/obrazovanie/drugoe|Xizmatlar / Ta'lim / kurslar / repetitorlik / sport / Boshqa ta'lim xizmatlari
+uslugi/obrazovanie/it-kursy|Xizmatlar / Ta'lim / kurslar / repetitorlik / sport / IT kurslari
+uslugi/obrazovanie/repetitory|Xizmatlar / Ta'lim / kurslar / repetitorlik / sport / Repetitorlar
+uslugi/obrazovanie/sportivnye-sektsii-tantsy|Xizmatlar / Ta'lim / kurslar / repetitorlik / sport / Sport mashqlari / raqslar
+uslugi/obrazovanie/uroki-muzyki|Xizmatlar / Ta'lim / kurslar / repetitorlik / sport / Musiqa darslari
+uslugi/obrazovanie/yazykovye-kursy|Xizmatlar / Ta'lim / kurslar / repetitorlik / sport / Chet tili kurslari
+uslugi/obsluzhivanie-remont-tehniki/bytovaya-tehnika|Xizmatlar / Texnika xizmati / ta'mirlash / Maishiy texnika
+uslugi/obsluzhivanie-remont-tehniki/foto-video-audio-tehnika|Xizmatlar / Texnika xizmati / ta'mirlash / Foto / video / audiotexnika
+uslugi/obsluzhivanie-remont-tehniki/igrovye-pristavki|Xizmatlar / Texnika xizmati / ta'mirlash / O'yin konsollari
+uslugi/obsluzhivanie-remont-tehniki/klimaticheskaya-tehnika|Xizmatlar / Texnika xizmati / ta'mirlash / Iqlim texnikasi ta’miri va o‘rnatish
+uslugi/obsluzhivanie-remont-tehniki/kompyuternaya-tehnika-igrovye-pristavki|Xizmatlar / Texnika xizmati / ta'mirlash / Noutbuklar / kompyuter uskunalari
+uslugi/obsluzhivanie-remont-tehniki/mobilnye-ustroystva-telefoniya|Xizmatlar / Texnika xizmati / ta'mirlash / Mobil telefonlar / planshetlar
+uslugi/obsluzhivanie-remont-tehniki/postavka-remont-obsluzhivanie-oborudovaniya|Xizmatlar / Texnika xizmati / ta'mirlash / Boshqa texnikalarni ta'mirlash
+uslugi/obsluzhivanie-remont-tehniki/remont-i-ustanovka-sputnikovogo-tv|Xizmatlar / Texnika xizmati / ta'mirlash / Yo‘ldosh TV ta’mirlash va o‘rnatish
+uslugi/perevozki-arenda-transporta/drugoe|Xizmatlar / Tashishlar-transport ijarasi / Boshqa transport xizmatlari
+uslugi/perevozki-arenda-transporta/evakuator|Xizmatlar / Tashishlar-transport ijarasi / Evakuator xizmatlari
+uslugi/perevozki-arenda-transporta/gruzchiki|Xizmatlar / Tashishlar-transport ijarasi / Yuklagich xizmatlari
+uslugi/perevozki-arenda-transporta/gruzoperevozki|Xizmatlar / Tashishlar-transport ijarasi / Yuk tashish xizmatlari
+uslugi/perevozki-arenda-transporta/passazhirskie-perevozki|Xizmatlar / Tashishlar-transport ijarasi / Yo'lovchi tashish xizmatlari
+uslugi/perevozki-arenda-transporta/prokat-avto|Xizmatlar / Tashishlar-transport ijarasi / Avto ijara / Rent car
+uslugi/perevozki-arenda-transporta/prokat-spetstehniki|Xizmatlar / Tashishlar-transport ijarasi / Maxsus transport ijarasi
+uslugi/perevozki-arenda-transporta/taksi-transfer|Xizmatlar / Tashishlar-transport ijarasi / Taksi / transfer
+uslugi/perevozki-arenda-transporta/trezviy-voditel-peregon|Xizmatlar / Tashishlar-transport ijarasi / Peregon
+uslugi/prochie-usligi|Xizmatlar / Boshqa xizmatlar
+uslugi/prodazha-biznesa|Xizmatlar / Biznesni sotish
+uslugi/prokat-tovarov/drugoe|Xizmatlar / Mahsulotlar prokati / Boshqa tovarlarni ijaraga olish
+uslugi/prokat-tovarov/elektronika|Xizmatlar / Mahsulotlar prokati / Yuk tashish xizmatlari
+uslugi/prokat-tovarov/instrument-oborudovaniye|Xizmatlar / Mahsulotlar prokati / Asboblar va uskunalar ijaraga olish
+uslugi/prokat-tovarov/odezhda|Xizmatlar / Mahsulotlar prokati / Maxsus transport ijarasi
+uslugi/prokat-tovarov/tovary-dlya-meropriyatiy|Xizmatlar / Mahsulotlar prokati / Tadbirlar uchun tovarlar ijarasi
+uslugi/razvlechenie-foto-video/drugoe|Xizmatlar / Tadbirni tashkil etish / fotosurat / video / Tadbirlar uchun boshqa xizmatlar
+uslugi/razvlechenie-foto-video/foto-video|Xizmatlar / Tadbirni tashkil etish / fotosurat / video / Foto / video xizmatlari
+uslugi/razvlechenie-foto-video/kulinarnye-uslugi|Xizmatlar / Tadbirni tashkil etish / fotosurat / video / Keytering, oshpaz
+uslugi/razvlechenie-foto-video/organizatsiya-meropriyatiy|Xizmatlar / Tadbirni tashkil etish / fotosurat / video / Tadbirni tashkil etish
+uslugi/sportivnye-kompleksy|Xizmatlar / Sport majmuasi
+uslugi/stroitelstvo-otdelka-remont/dizayn-arhitektura|Xizmatlar / Qurilish / ta'mirlash / usta / Dizayn, arxitektura
+uslugi/stroitelstvo-otdelka-remont/drugoe|Xizmatlar / Qurilish / ta'mirlash / usta / Boshqa qurilish va ta'mirlash xizmatlari
+uslugi/stroitelstvo-otdelka-remont/elektrika|Xizmatlar / Qurilish / ta'mirlash / usta / Elektrik xizmatlar
+uslugi/stroitelstvo-otdelka-remont/gotovye-konstruktsii|Xizmatlar / Qurilish / ta'mirlash / usta / Tayyor qurilmalar
+uslugi/stroitelstvo-otdelka-remont/okna-dveri-balkony|Xizmatlar / Qurilish / ta'mirlash / usta / Oyna va eshiklarni yasash
+uslugi/stroitelstvo-otdelka-remont/otdelka-remont|Xizmatlar / Qurilish / ta'mirlash / usta / Pardozlash, ta'mirlash
+uslugi/stroitelstvo-otdelka-remont/santehnika-kommunikatsii|Xizmatlar / Qurilish / ta'mirlash / usta / Santexnika-kommunikatsiyalar
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/almaznoe-burenie-rezka|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Olmosli burg'ulash/ beton kesish
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/asfaltirovanie|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Asfalt
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/drugoe_1|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Boshqa qurilish xizmatlari
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/fundamentnye-raboty|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Fundament
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/kladochnye-raboty|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / G'ish terish
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/krovelnye-raboty|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Tom yopish
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/pod-klyuch|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Umumiy qurilish, podklyuch
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/styazhka-pola|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Styajka
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/svarochnye-raboty|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Payvandlash, svarka
+uslugi/stroitelstvo-otdelka-remont/stroitelnye-uslugi/zemlyanye-raboty|Xizmatlar / Qurilish / ta'mirlash / usta / Qurilish xizmatlari / Tuproq ishlari
+uslugi/stroitelstvo-otdelka-remont/ventilyatsiya-konditsionirovanie|Xizmatlar / Qurilish / ta'mirlash / usta / Ventilyatsiya-konditsionerlar
+uslugi/syre-materialy|Xizmatlar / Xomashyo / materiallar
+uslugi/turizm/drugoe|Xizmatlar / Turizm / Boshqa
+uslugi/turizm/gidy-ekskursovody|Xizmatlar / Turizm / Gid, ekskursiya, tour
+uslugi/turizm/goryashchiy-tury-pakety|Xizmatlar / Turizm / Goryashiy turi / Tur paket
+uslugi/turizm/palomnichestvo|Xizmatlar / Turizm / Ziyorat
+uslugi/turizm/vizy-immigratsiya|Xizmatlar / Turizm / Viza rasmiylashtirish, immigratsiya
+uslugi/turizm/vnutrenniy-turizm|Xizmatlar / Turizm / Ichki turizm
+uslugi/uborka-vyvoz-musora/dezinfektsiya-dezinsektsiya|Xizmatlar / Tozalash / axlat tashish / dezinfektsiyalash / Dezinfektsiya / dezinseksiya
+uslugi/uborka-vyvoz-musora/drugoe|Xizmatlar / Tozalash / axlat tashish / dezinfektsiyalash / Boshqa
+uslugi/uborka-vyvoz-musora/himchistka-stirka|Xizmatlar / Tozalash / axlat tashish / dezinfektsiyalash / Ximchistka / yuvish
+uslugi/uborka-vyvoz-musora/uborka-klining|Xizmatlar / Tozalash / axlat tashish / dezinfektsiyalash / Tozalash / yig'ishtirish
+uslugi/uborka-vyvoz-musora/vyvoz-musora-assenizator|Xizmatlar / Tozalash / axlat tashish / dezinfektsiyalash / Chiqindilarni tashish / Assenizator xizmati
+uslugi/uslugi-dlya-zhivotnyh|Xizmatlar / Hayvonlar uchun xizmatlar
+uslugi/uslugi-perevodchikov-nabor-teksta|Xizmatlar / Tarjima / yozuv xizmatlari
+uslugi/yuridicheskie-uslugi|Xizmatlar / Yuridik xizmatlar
+rabota/avtoservis|Ish / Avtoservis
+rabota/bary-restorany-razvlecheniya/administrator-restorana|Ish / Barlar-restoranlar / Administrator / menejer
+rabota/bary-restorany-razvlecheniya/barmen-barista|Ish / Barlar-restoranlar / Barmen / barista
+rabota/bary-restorany-razvlecheniya/drugoe|Ish / Barlar-restoranlar / Boshqa
+rabota/bary-restorany-razvlecheniya/kassir|Ish / Barlar-restoranlar / Kassir
+rabota/bary-restorany-razvlecheniya/oficiant|Ish / Barlar-restoranlar / Ofitsiant
+rabota/bary-restorany-razvlecheniya/pekar-konditer|Ish / Barlar-restoranlar / Nonvoy / qandolatchi
+rabota/bary-restorany-razvlecheniya/povar|Ish / Barlar-restoranlar / Shef-povar / oshpaz
+rabota/bary-restorany-razvlecheniya/shashlychnik-mangalshchik-fast-fud|Ish / Barlar-restoranlar / Shashlikchi / mangalchi / fast food
+rabota/bary-restorany-razvlecheniya/uborshchica|Ish / Barlar-restoranlar / Farrosh / idish yuvuvchi
+rabota/cekretariat-aho|Ish / Menejment / HR menejer / Ofis
+rabota/chastichnaya-zanyatost|Ish / Qisman bandlik
+rabota/domashniy-personal/domrabotnica|Ish / Uy xodimlari / Uy tozalovchi / xizmatchi
+rabota/domashniy-personal/drugoe|Ish / Uy xodimlari / Boshqa
+rabota/domashniy-personal/nyanya|Ish / Uy xodimlari / Enaga / qarovchi
+rabota/drugie-sfery-zanyatiy|Ish / Boshqa mashg'ulotlar
+rabota/it-telekom-kompyutery/dizayner|Ish / It-telekom-kompyuterlar / Dizayner
+rabota/it-telekom-kompyutery/drugoe|Ish / It-telekom-kompyuterlar / Boshqa
+rabota/it-telekom-kompyutery/operator|Ish / It-telekom-kompyuterlar / Call center operatori
+rabota/it-telekom-kompyutery/programmist-razrabotchik|Ish / It-telekom-kompyuterlar / Programmist / dasturchi
+rabota/krasota-fitnes-sport/administrator|Ish / Go'zallik-fitnes-sport / Administrator
+rabota/krasota-fitnes-sport/drugoe|Ish / Go'zallik-fitnes-sport / Boshqa
+rabota/krasota-fitnes-sport/kosmetolog|Ish / Go'zallik-fitnes-sport / Kosmetolog
+rabota/krasota-fitnes-sport/leshmeyker-brovist|Ish / Go'zallik-fitnes-sport / Leshmeyker / brovist
+rabota/krasota-fitnes-sport/master-manikyura-pedikyura|Ish / Go'zallik-fitnes-sport / Manikyur va pedikyur masteri
+rabota/krasota-fitnes-sport/parikmakher|Ish / Go'zallik-fitnes-sport / Sartarosh
+rabota/krasota-fitnes-sport/stilist|Ish / Go'zallik-fitnes-sport / Stilist
+rabota/krasota-fitnes-sport/trener-massazhist|Ish / Go'zallik-fitnes-sport / Murabbiy / trener / massajist
+rabota/kultura-iskusstvo|Ish / Madaniyat-san'at
+rabota/marketing-reklama-dizayn/dizayner-videomontazher|Ish / Marketing-reklama-dizayn / Dizayner / video montaj
+rabota/marketing-reklama-dizayn/drugoe|Ish / Marketing-reklama-dizayn / Boshqa
+rabota/marketing-reklama-dizayn/marketolog|Ish / Marketing-reklama-dizayn / Marketolog
+rabota/marketing-reklama-dizayn/mobilograf|Ish / Marketing-reklama-dizayn / Mobilograf
+rabota/marketing-reklama-dizayn/smm-targetolog-kontent|Ish / Marketing-reklama-dizayn / SMM / kontent menejeri / targetolog
+rabota/meditsina-farmatsiya/drugoe|Ish / Tibbiyot-farmatsiya / Boshqa
+rabota/meditsina-farmatsiya/farmacevt|Ish / Tibbiyot-farmatsiya / Farmatsevt
+rabota/meditsina-farmatsiya/medsestra-medbrat|Ish / Tibbiyot-farmatsiya / Hamshira / medbrat
+rabota/meditsina-farmatsiya/sanitarka|Ish / Tibbiyot-farmatsiya / Sanitarka
+rabota/meditsina-farmatsiya/stomatolog|Ish / Tibbiyot-farmatsiya / Tish shifokori
+rabota/meditsina-farmatsiya/vrach|Ish / Tibbiyot-farmatsiya / Shifokor
+rabota/nedvizhimost|Ish / Ko'chmas mulk
+rabota/obrazovanie/administrator|Ish / Ta'lim / Administrator
+rabota/obrazovanie/drugoe|Ish / Ta'lim / Boshqa
+rabota/obrazovanie/prepodavatel-uchitel-pedagog|Ish / Ta'lim / O'qituvchi / pedagog
+rabota/obrazovanie/repetitor|Ish / Ta'lim / Repetitor
+rabota/obrazovanie/vospitatel-detskogo-sada|Ish / Ta'lim / Tarbiyachi / bog'cha opa
+rabota/ohrana-bezopasnost|Ish / Qo'riqlash-xavfsizlik
+rabota/proizvodstvo-energetika/drugoe|Ish / Ishlab chiqarish-energetika / Boshqa
+rabota/proizvodstvo-energetika/energetik|Ish / Ishlab chiqarish-energetika / Energetik
+rabota/proizvodstvo-energetika/konstruktor-tekhnolog|Ish / Ishlab chiqarish-energetika / Konstruktor / texnolog
+rabota/proizvodstvo-energetika/malyar|Ish / Ishlab chiqarish-energetika / Malyar
+rabota/proizvodstvo-energetika/master-mebeli|Ish / Ishlab chiqarish-energetika / Mebel ustasi / duradgor
+rabota/proizvodstvo-energetika/mekhanik|Ish / Ishlab chiqarish-energetika / Mexanik
+rabota/proizvodstvo-energetika/raznorabochiy|Ish / Ishlab chiqarish-energetika / Raznorabochiy
+rabota/proizvodstvo-energetika/sborshchik|Ish / Ishlab chiqarish-energetika / Yig'uvchi
+rabota/proizvodstvo-energetika/shveya-portnoy|Ish / Ishlab chiqarish-energetika / Tikuvchi / bichuvchi
+rabota/proizvodstvo-energetika/slesar|Ish / Ishlab chiqarish-energetika / Chilangar / slesar
+rabota/proizvodstvo-energetika/svarshchik|Ish / Ishlab chiqarish-energetika / Svarshik-payvandchi
+rabota/proizvodstvo-energetika/tokar|Ish / Ishlab chiqarish-energetika / Tokar
+rabota/roznichnaya-torgovlya-prodazhi/drugoe|Ish / Chakana savdo-sotuvlar / Boshqa
+rabota/roznichnaya-torgovlya-prodazhi/kassir|Ish / Chakana savdo-sotuvlar / Kassir
+rabota/roznichnaya-torgovlya-prodazhi/menedzher-supervayzer|Ish / Chakana savdo-sotuvlar / Menejer / supervayzer
+rabota/roznichnaya-torgovlya-prodazhi/operator-menedzher-prodazh|Ish / Chakana savdo-sotuvlar / Operator / savdo menejeri
+rabota/roznichnaya-torgovlya-prodazhi/prodavec-konsultant|Ish / Chakana savdo-sotuvlar / Sotuvchi-maslahatchi
+rabota/roznichnaya-torgovlya-prodazhi/torgoviy-predstavitel|Ish / Chakana savdo-sotuvlar / Savdo agenti
+rabota/servis-i-byt|Ish / Xizmat ko'rsatish / tozalash ishlari
+rabota/stroitelstvo/drugoe|Ish / Qurilish / Boshqa
+rabota/stroitelstvo/elektrik|Ish / Qurilish / Elektrik
+rabota/stroitelstvo/inzhener|Ish / Qurilish / Muhandis-injiner
+rabota/stroitelstvo/malyar-shtukatur|Ish / Qurilish / Malyar-suvoqchi
+rabota/stroitelstvo/raznorabochiy-podsobnik|Ish / Qurilish / Raznorabochiy / yordamchi
+rabota/stroitelstvo/santekhnik|Ish / Qurilish / Santexnik
+rabota/stroitelstvo/svarshchik|Ish / Qurilish / Svarshik-payvandchi
+rabota/transport-logistika/dispetcher|Ish / Transport / logistika / ombor / Dispetcher / logist
+rabota/transport-logistika/drugoe|Ish / Transport / logistika / ombor / Boshqa
+rabota/transport-logistika/ekspeditor|Ish / Transport / logistika / ombor / Ekspeditor
+rabota/transport-logistika/kurer|Ish / Transport / logistika / ombor / Kuryer
+rabota/transport-logistika/taksist|Ish / Transport / logistika / ombor / Taksi
+rabota/transport-logistika/voditel|Ish / Transport / logistika / ombor / Haydovchi-shafyor
+rabota/turizm-otdyh-razvlecheniya/administrator|Ish / Turizm / mehmonxona / o'yin-kulgi / Administrator
+rabota/turizm-otdyh-razvlecheniya/drugoe|Ish / Turizm / mehmonxona / o'yin-kulgi / Boshqa
+rabota/turizm-otdyh-razvlecheniya/gornichnaya|Ish / Turizm / mehmonxona / o'yin-kulgi / Farrosh
+rabota/turizm-otdyh-razvlecheniya/turoperator|Ish / Turizm / mehmonxona / o'yin-kulgi / Turoperator / turizm menejeri
+rabota/yurisprudentsiya-i-buhgalteriya|Ish / Yurist / buxgalteriya / moliya
+hobbi-otdyh-i-sport/antikvariat-kollektsii/antikvarnaya-mebel|Xobbi, dam olish sport / Antikvar kolleksiyalar / Antikvar mebellar
+hobbi-otdyh-i-sport/antikvariat-kollektsii/bukinistika|Xobbi, dam olish sport / Antikvar kolleksiyalar / Bukinistika
+hobbi-otdyh-i-sport/antikvariat-kollektsii/kollektsionirovanie|Xobbi, dam olish sport / Antikvar kolleksiyalar / Kolleksiyalash
+hobbi-otdyh-i-sport/antikvariat-kollektsii/podelki-rukodelie|Xobbi, dam olish sport / Antikvar kolleksiyalar / Qo'lda tayyorlangan mahsulotlar
+hobbi-otdyh-i-sport/antikvariat-kollektsii/predmety-iskusstva|Xobbi, dam olish sport / Antikvar kolleksiyalar / San'at buyumlari
+hobbi-otdyh-i-sport/antikvariat-kollektsii/zhivopis|Xobbi, dam olish sport / Antikvar kolleksiyalar / Rassomlik
+hobbi-otdyh-i-sport/bilety|Xobbi, dam olish sport / Chiptalar
+hobbi-otdyh-i-sport/cd-dvd-plastinki|Xobbi, dam olish sport / Cd-dvd-plastinkalar, kassetalar
+hobbi-otdyh-i-sport/drugoe|Xobbi, dam olish sport / Boshqalar
+hobbi-otdyh-i-sport/knigi-zhurnaly|Xobbi, dam olish sport / Kitoblar-jurnallar
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/aksessuary-dlya-muzykalnyh-instrumentov|Xobbi, dam olish sport / Musiqa anjomlari / Musiqa asboblari uchun aksessuarlar
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/duhovye-instrumenty|Xobbi, dam olish sport / Musiqa anjomlari / Puflab chalinadigan musiqa asboblari
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/gitary|Xobbi, dam olish sport / Musiqa anjomlari / Gitaralari
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/kombousiliteli|Xobbi, dam olish sport / Musiqa anjomlari / Kombo ovoz kuchaytirgichlar
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/pianino-fortepiano-royali|Xobbi, dam olish sport / Musiqa anjomlari / Pianino, fortepiano, royal
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/prochee|Xobbi, dam olish sport / Musiqa anjomlari / Boshqalar
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/sintezatory|Xobbi, dam olish sport / Musiqa anjomlari / Sintezatorlar
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/skripki|Xobbi, dam olish sport / Musiqa anjomlari / Скрипки
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/studiynoe-oborudovanie|Xobbi, dam olish sport / Musiqa anjomlari / Studiya jihozlari
+hobbi-otdyh-i-sport/muzykalnye-instrumenty/udarnye-instrumenty|Xobbi, dam olish sport / Musiqa anjomlari / Urib chalinadigan musiqa asboblari
+hobbi-otdyh-i-sport/sport-otdyh/atletika-fitnes|Xobbi, dam olish sport / Sport-dam olish / Atletika-fitnes
+hobbi-otdyh-i-sport/sport-otdyh/edinoborstva-boks|Xobbi, dam olish sport / Sport-dam olish / Yakka kurash-boks
+hobbi-otdyh-i-sport/sport-otdyh/futbol|Xobbi, dam olish sport / Sport-dam olish / Futbol
+hobbi-otdyh-i-sport/sport-otdyh/igry-s-raketkoy|Xobbi, dam olish sport / Sport-dam olish / Raketka bilan o'yinlar
+hobbi-otdyh-i-sport/sport-otdyh/konki|Xobbi, dam olish sport / Sport-dam olish / Konkilar
+hobbi-otdyh-i-sport/sport-otdyh/lyzhi-snoubordy|Xobbi, dam olish sport / Sport-dam olish / Chang'i-snoubordlar
+hobbi-otdyh-i-sport/sport-otdyh/nastolnye-igry|Xobbi, dam olish sport / Sport-dam olish / Stol o'yinlari
+hobbi-otdyh-i-sport/sport-otdyh/ohota-rybalka|Xobbi, dam olish sport / Sport-dam olish / Ov-baliq ovi
+hobbi-otdyh-i-sport/sport-otdyh/prochie-vidy-sporta|Xobbi, dam olish sport / Sport-dam olish / Boshqa sport turlari
+hobbi-otdyh-i-sport/sport-otdyh/radioupravlyaemye-modeli|Xobbi, dam olish sport / Sport-dam olish / Radio boshqariladigan modellar
+hobbi-otdyh-i-sport/sport-otdyh/rolikovye-konki|Xobbi, dam olish sport / Sport-dam olish / Rolikli konkilar
+hobbi-otdyh-i-sport/sport-otdyh/sportivnoe-pitanie|Xobbi, dam olish sport / Sport-dam olish / Sportcha oziqlanish
+hobbi-otdyh-i-sport/sport-otdyh/tovari-dlya-turizma|Xobbi, dam olish sport / Sport-dam olish / Sayohat uchun tovarlar
+hobbi-otdyh-i-sport/sport-otdyh/velo|Xobbi, dam olish sport / Sport-dam olish / Velo
+hobbi-otdyh-i-sport/sport-otdyh/vodnye-vidy-sporta|Xobbi, dam olish sport / Sport-dam olish / Suv sporti turlari
+zhivotnye/akvariumnye-rybki|Hayvonlar / Akvarium baliqlari
+zhivotnye/byuro-nahodok|Hayvonlar / Topilmalar idorasi
+zhivotnye/drugie-zhivotnye|Hayvonlar / Boshqa hayvonlar
+zhivotnye/gryzuny|Hayvonlar / Kemiruvchilar
+zhivotnye/koshki|Hayvonlar / Mushuklar
+zhivotnye/ptitsy|Hayvonlar / Qushlar
+zhivotnye/selskohozyaystvennye-zhivotnye|Hayvonlar / Qishloq xo'jalik hayvonlari
+zhivotnye/sobaki|Hayvonlar / Itlar
+zhivotnye/tovary-dlya-zhivotnyh/pet_carriers|Hayvonlar / Hayvonlar uchun mahsulotlar / Hayvonlar uchun sumkalar
+zhivotnye/tovary-dlya-zhivotnyh/pet_clothing|Hayvonlar / Hayvonlar uchun mahsulotlar / Hayvonlar uchun kiyim-kechak
+zhivotnye/tovary-dlya-zhivotnyh/pet_food|Hayvonlar / Hayvonlar uchun mahsulotlar / Hayvonlar uchun oziq-ovqat
+zhivotnye/tovary-dlya-zhivotnyh/pet_house|Hayvonlar / Hayvonlar uchun mahsulotlar / Hayvonlar uchun uycha
+zhivotnye/tovary-dlya-zhivotnyh/pet_others|Hayvonlar / Hayvonlar uchun mahsulotlar / Boshqa
+zhivotnye/vyazka|Hayvonlar / To'qish
+zhivotnye/zhivotnye-darom|Hayvonlar / Tekinga hayvonlar
+otdam-darom|Tekinga beraman
+obmen-barter|Ayirboshlash

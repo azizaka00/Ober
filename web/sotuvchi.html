@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eff2f7">
+<meta name="description" content="OBER profili — mos xaridor so‘rovlariga bir tegishda javob bering.">
+<title>OBER — profil</title>
+<link rel="icon" href="/brend/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OBER">
+<meta property="og:title" content="OBER profili">
+<meta property="og:description" content="Mos xaridor so'rovlariga bir tegishda javob bering. Kategoriya daraxti yo'q.">
+<meta property="og:image" content="/brend/seller-navy-panel.webp">
+<!-- Shrift o'z serverimizda (2026-08-04). Sabab `web/shrift/onest.css`
+     boshida yozilgan. -->
+<link rel="preload" href="/shrift/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/shrift/onest.css">
+<style>
+  /* RANGLAR VA O'LCHAMLAR `index.html` BILAN BIR XIL.
+     2026-08-02: bu sahifaning foni iliq krem (#f7f5ef), xaridor
+     sahifasiniki sovuq kulrang edi. Radius 26px - bizning shkalada
+     bunday qiymat yo'q. Ya'ni bir saytning ikki sahifasi ikki boshqa
+     mahsulotdek ko'rinardi. Bitta joydan o'zgartirish uchun qiymatlar
+     aynan bir xil yozilgan. */
+  :root{
+    --navy:#0b2559;
+    --navy-dark:#081b42;
+    --navy-soft:#eaeff8;
+    --bg:#eff2f7;
+    --surface:#fff;
+    --surface-2:#f7f9fc;
+    --text:#101828;
+    --muted:#667085;
+    --line:#e3e8f0;
+    --line-strong:#cdd6e4;
+    --green:#0f7a4a;
+    --green-soft:#e6f4ec;
+    --red:#c0392b;
+    --red-soft:#fdf0ef;
+    --amber:#f5a623;
+    --amber-soft:#fdf3de;
+    --shadow:0 16px 48px rgba(11,37,89,.08);
+    --shadow-card:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
+    --shadow-hover:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(11,37,89,.10);
+    --ease:cubic-bezier(.2,0,0,1);
+    --r-kichik:10px;
+    --r-orta:14px;
+    --r-katta:20px;
+    --r-pill:999px;
+    --radius:var(--r-orta);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  /* Fon rasmi va 18 soniyalik cheksiz animatsiya olib tashlandi.
+     `fixed` fon telefonda sekin skrollga sabab bo'ladi, cheksiz
+     animatsiya esa batareyani yeydi - ikkalasi ham hech qanday
+     ma'lumot bermaydi. */
+  body{
+    margin:0;
+    min-width:320px;
+    overflow-x:hidden;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Onest,"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+  }
+  /* Narxlar va sonlar ustma-ust tursin */
+  .narx,.answer-price,.count-box strong,.talab-son strong,.price-row input{
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  }
+  /* Bosilganda javob bersin - telefonda hover yo'q */
+  button:not([disabled]):active,.request:active{transform:translateY(1px)}
+  button{transition:transform .06s var(--ease)}
+  button,input,select{font:inherit}
+  button,a,select{touch-action:manipulation}
+  button{border:0}
+  [hidden]{display:none!important}
+  a{color:inherit}
+  :focus-visible{outline:3px solid rgba(11,37,89,.24);outline-offset:3px}
+  .sr-only{
+    position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
+    margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
+    white-space:nowrap!important;border:0!important
+  }
+
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    border-bottom:1px solid rgba(255,255,255,.34);
+    background:rgba(247,245,239,.76);
+    backdrop-filter:blur(16px) saturate(1.05);
+    -webkit-backdrop-filter:blur(16px) saturate(1.05);
+    animation:topbar-in 620ms var(--ease) both;
+  }
+  .topbar-inner{
+    width:min(100% - 36px,980px);
+    min-height:78px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .brand{width:104px;height:34px;display:flex;align-items:center}
+  .brand img{display:block;width:104px;height:auto}
+  .cabinet-label{
+    padding-left:14px;
+    border-left:1px solid var(--line);
+    color:var(--muted);
+    font-size:12.5px;
+  }
+  .header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .buyer-link,.logout{
+    min-height:44px;
+    padding:0 12px;
+    border-radius:var(--r-kichik);
+    display:inline-flex;
+    align-items:center;
+    background:transparent;
+    color:var(--navy);
+    font-size:12.5px;
+    font-weight:700;
+    text-decoration:none;
+    cursor:pointer;
+  }
+  .logout{color:var(--muted)}
+  .buyer-link:hover,.logout:hover{background:var(--navy-soft)}
+
+  main{width:min(100% - 36px,980px);margin:0 auto;padding:32px 0 80px}
+  .onboarding{
+    display:grid;
+    grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);
+    gap:22px;
+    align-items:start;
+  }
+  .intro-panel{
+    min-height:570px;
+    padding:38px;
+    border-radius:var(--radius);
+    background:var(--navy) url("/brend/seller-navy-panel.webp") 68% 28%/cover no-repeat;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+    box-shadow:0 26px 58px rgba(8,27,66,.22),inset 0 1px 0 rgba(255,255,255,.14);
+    transform-origin:50% 12%;
+    animation:panel-in 760ms var(--ease) both;
+  }
+  .intro-mark{
+    width:82px;
+    height:82px;
+    border-radius:var(--r-katta);
+    background:url("/brend/icon.png") center/cover no-repeat;
+    box-shadow:0 18px 38px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.2);
+    animation:mark-in 700ms 180ms var(--ease) both;
+  }
+  .intro-panel h1{
+    margin:34px 0 14px;
+    font-size:clamp(28px,4vw,40px);
+    line-height:1.08;
+    letter-spacing:-.035em;
+    font-weight:740;
+    animation:copy-in 650ms 260ms var(--ease) both;
+  }
+  .intro-panel p{margin:0;color:rgba(255,255,255,.78);font-size:13.5px;animation:copy-in 650ms 330ms var(--ease) both}
+  .intro-steps{
+    margin:34px 0 0;
+    padding:0;
+    list-style:none;
+    counter-reset:steps;
+    display:grid;
+    gap:16px;
+  }
+  .intro-steps li{
+    counter-increment:steps;
+    display:grid;
+    grid-template-columns:30px 1fr;
+    gap:11px;
+    align-items:start;
+    color:rgba(255,255,255,.8);
+    font-size:12.5px;
+    animation:copy-in 560ms var(--ease) both;
+  }
+  .intro-steps li:nth-child(1){animation-delay:410ms}
+  .intro-steps li:nth-child(2){animation-delay:485ms}
+  .intro-steps li:nth-child(3){animation-delay:560ms}
+  .intro-steps li::before{
+    content:counter(steps);
+    width:28px;
+    height:28px;
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#fff;
+    font-size:11px;
+    font-weight:750;
+  }
+  .intro-foot{margin-top:38px!important;font-size:11.5px!important}
+
+  .register-card{
+    padding:38px;
+    border:1px solid rgba(255,255,255,.88);
+    border-radius:var(--radius);
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:var(--shadow);
+    animation:card-in 760ms 180ms var(--ease) both;
+  }
+  .section-kicker{
+    margin:0 0 8px;
+    color:var(--navy);
+    font-size:11.5px;
+    font-weight:780;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .register-card h2{
+    margin:0;
+    font-size:24px;
+    line-height:1.15;
+    letter-spacing:-.025em;
+  }
+  .lead{margin:8px 0 26px;color:var(--muted);font-size:13px}
+  .field-group{margin-top:18px}
+  label{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin:0 0 7px;
+    color:var(--text);
+    font-size:12.5px;
+    font-weight:700;
+  }
+  label span{color:var(--muted);font-size:11px;font-weight:500}
+  input,select{
+    width:100%;
+    min-height:50px;
+    padding:0 14px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--r-kichik);
+    outline:0;
+    background:#fff;
+    color:var(--text);
+    transition:border-color 180ms var(--ease),box-shadow 180ms var(--ease),transform 180ms var(--ease),background 180ms var(--ease);
+  }
+  input:focus,select:focus{border-color:#1b4da2;box-shadow:0 0 0 4px rgba(34,94,190,.10),0 10px 24px rgba(8,27,66,.08);transform:translateY(-2px);background:#fff}
+  input::placeholder{color:#9a9fa8}
+  .field-group:focus-within label{color:var(--navy)}
+  input.has-value,select.has-value{border-color:#b9c8de;background:#fcfdff}
+  .location-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .understood{
+    margin-top:13px;
+    padding:11px 13px;
+    border-radius:var(--r-kichik);
+    background:var(--navy-soft);
+    color:var(--navy);
+    font-size:12.5px;
+    animation:understood-in 420ms var(--ease) both;
+  }
+  .understood.error{background:var(--red-soft);color:var(--red)}
+  .primary-btn{
+    width:100%;
+    min-height:52px;
+    margin-top:22px;
+    border-radius:var(--r-kichik);
+    background:var(--navy);
+    color:#fff;
+    font-weight:760;
+    cursor:pointer;
+    overflow:hidden;
+    position:relative;
+    isolation:isolate;
+    box-shadow:0 12px 26px rgba(8,27,66,.22);
+    transition:background 160ms var(--ease),transform 160ms var(--ease),box-shadow 160ms var(--ease);
+  }
+  .primary-btn::after{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    top:-30%;
+    bottom:-30%;
+    left:-34%;
+    width:22%;
+    background:rgba(255,255,255,.16);
+    filter:blur(8px);
+    transform:skewX(-18deg);
+    animation:cta-light 4.2s 1.4s ease-in-out infinite;
+  }
+  .primary-btn:hover{background:var(--navy-dark);box-shadow:0 15px 32px rgba(8,27,66,.28);transform:translateY(-2px)}
+  .primary-btn:active{transform:scale(.99)}
+  .primary-btn:disabled{opacity:.55;cursor:wait}
+
+  /* ── KABINET YORLIQLARI — So'rovlar / E'lonlarim ──────────────────
+     2026-08-06: kabinetga "E'lonlarim" qo'shilgach hammasi bitta
+     sahifada aralashib qolardi. Endi ikkita yorliq — bo'limlar alohida,
+     boshqasi yuklanayotganda eskisi o'chmaydi. */
+  .kabinet-tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:22px;
+    padding:4px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--surface-2);
+    width:fit-content;
+    max-width:100%;
+  }
+  .kabinet-tab{
+    min-height:40px;
+    padding:0 18px;
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    color:var(--muted);
+    font:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background 120ms var(--ease),color 120ms var(--ease);
+  }
+  .kabinet-tab:hover{color:var(--navy)}
+  .kabinet-tab.faol{
+    background:var(--navy);
+    color:#fff;
+    box-shadow:0 4px 12px rgba(11,37,89,.18);
+  }
+  @media (max-width:520px){
+    .kabinet-tabs{width:100%;display:grid;grid-template-columns:1fr 1fr}
+    .kabinet-tab{padding:0 10px}
+  }
+
+  /* E'LONLARIM — kartalar ro'yxati */
+  .elon-karta{
+    display:grid;
+    grid-template-columns:96px 1fr auto;
+    gap:14px;
+    align-items:center;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
+  }
+  .elon-karta + .elon-karta{margin-top:10px}
+  .elon-rasm{
+    width:96px;height:72px;
+    border-radius:10px;
+    object-fit:cover;
+    background:#eef0f3;
+    display:block;
+  }
+  .elon-rasm.yoq{display:grid;place-items:center;background:#f2f3f5;
+    background-image:url("/brend/icon.png");background-size:40px;
+    background-repeat:no-repeat;background-position:center}
+  .elon-nom{margin:0 0 5px;font-size:14.5px;font-weight:650;line-height:1.35}
+  .elon-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .elon-narx{font-size:15.5px;font-weight:780;letter-spacing:-.02em}
+  .elon-holat{padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:750}
+  .elon-holat.faol{background:var(--green-soft);color:var(--green)}
+  .elon-holat.ochirildi{background:#f0f0ee;color:#667085}
+  .elon-holat.sotildi{background:var(--amber-soft);color:#8d5b00}
+  .elon-tugmalar{display:flex;flex-direction:column;gap:6px}
+  .elon-tugma{
+    min-height:36px;padding:0 14px;
+    border:1px solid var(--line-strong);border-radius:10px;
+    background:#fff;font:inherit;font-size:12px;font-weight:700;
+    color:var(--navy);cursor:pointer;white-space:nowrap;
+  }
+  .elon-tugma:hover{background:var(--navy-soft)}
+  .elon-tugma.ochir{color:var(--red)}
+  .elon-bosh{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:14px;
+  }
+  .elon-bosh h1{margin:0;font-size:22px;letter-spacing:-.025em}
+  .elon-bosh p{margin:3px 0 0;color:var(--muted);font-size:12.5px}
+  .yangi-elon-btn{
+    min-height:44px;padding:0 20px;
+    border-radius:10px;background:var(--navy);color:#fff;
+    font:inherit;font-size:13.5px;font-weight:750;cursor:pointer;
+    white-space:nowrap;
+  }
+  .yangi-elon-btn:hover{background:var(--navy-dark)}
+  @media (max-width:560px){
+    .elon-karta{grid-template-columns:84px 1fr}
+    .elon-tugmalar{grid-column:1/-1;flex-direction:row;justify-content:flex-end}
+    .elon-bosh{flex-direction:column;align-items:flex-start}
+  }
+
+  /* E'LON FORMASI */
+  .elon-forma{
+    max-width:640px;
+    margin:0 auto;
+    padding:24px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:#fff;
+    box-shadow:0 1px 2px rgba(11,37,89,.05),0 10px 30px rgba(11,37,89,.07);
+  }
+  .elon-forma h1{margin:0 0 6px;font-size:22px;letter-spacing:-.025em}
+  .elon-forma>p{margin:0 0 20px;color:var(--muted);font-size:13px}
+  .forma-qator{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .forma-qator .to\.liq{grid-column:1/-1}
+  .forma-maydon{margin-bottom:12px}
+  .forma-maydon label{
+    display:block;margin-bottom:5px;
+    color:var(--navy);font-size:12px;font-weight:750;
+  }
+  .forma-maydon input,.forma-maydon select,.forma-maydon textarea{
+    width:100%;min-height:46px;padding:0 13px;
+    border:1px solid var(--line-strong);border-radius:10px;
+    background:#fff;font:inherit;font-size:14px;outline:0;
+  }
+  .forma-maydon textarea{min-height:90px;padding:11px 13px;resize:vertical}
+  .forma-maydon input:focus,.forma-maydon select:focus,
+  .forma-maydon textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,37,89,.07)}
+  .forma-narx-qator{display:flex;align-items:center;gap:10px}
+  .kelishiladi-chip{
+    min-height:46px;padding:0 14px;white-space:nowrap;
+    border:1px solid var(--line-strong);border-radius:10px;
+    background:#fff;color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;
+  }
+  .kelishiladi-chip.faol{border-color:var(--navy);color:var(--navy);background:var(--navy-soft)}
+  .forma-rasmlar{display:flex;gap:8px;flex-wrap:wrap}
+  .forma-rasm{
+    width:76px;height:76px;border-radius:10px;object-fit:cover;
+    border:1px solid var(--line);
+  }
+  .forma-rasm-joy{
+    width:76px;height:76px;border-radius:10px;
+    border:1px dashed var(--line-strong);
+    display:grid;place-items:center;
+    color:var(--muted);font-size:10.5px;text-align:center;
+    cursor:pointer;
+  }
+  .forma-rasm-joy:hover{border-color:var(--navy);color:var(--navy)}
+  .forma-izoh{margin:14px 0 0;color:var(--muted);font-size:12.5px}
+  .forma-izoh.xato{color:var(--red)}
+  .forma-saqlash{
+    margin-top:18px;width:100%;min-height:48px;
+    border-radius:10px;background:var(--navy);color:#fff;
+    font:inherit;font-size:14px;font-weight:760;cursor:pointer;
+  }
+  .forma-saqlash:hover{background:var(--navy-dark)}
+  .forma-saqlash:disabled{opacity:.6;cursor:wait}
+  .forma-orqaga{
+    display:inline-block;margin-bottom:16px;padding:0;
+    border:0;background:none;color:var(--navy);
+    font:inherit;font-size:13px;font-weight:700;cursor:pointer;
+  }
+
+  /* PROFIL KARTASI — sahifa boshida avatar + ism (2026-08-08).
+     Ism bosh harfi avatarda — rasm yuklash shart emas, OBER
+     minimalistik uslubda qoladi. */
+  .profil-karta{
+    margin:0 0 20px;
+    padding:16px 18px;
+    display:flex;align-items:center;gap:14px;
+    border:1px solid var(--line);
+    border-radius:var(--r-orta);
+    background:#fff;
+    box-shadow:var(--shadow-card);
+  }
+  .profil-avatar{
+    width:48px;height:48px;flex:none;
+    border-radius:50%;
+    background:var(--navy);
+    color:#fff;
+    display:grid;place-items:center;
+    font-size:19px;font-weight:800;letter-spacing:.02em;
+    box-shadow:0 4px 10px rgba(11,37,89,.18);
+  }
+  .profil-bosh{min-width:0}
+  .profil-nom{margin:0;font-size:16.5px;font-weight:760;letter-spacing:-.015em;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .profil-izoh{margin:3px 0 0;color:var(--muted);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .dashboard-head{
+    margin-bottom:22px;
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .dashboard-head h1{
+    margin:0;
+    font-size:clamp(26px,4vw,36px);
+    line-height:1.1;
+    letter-spacing:-.035em;
+  }
+  .dashboard-head p{margin:7px 0 0;color:var(--muted);font-size:13px}
+  .count-box{
+    min-width:122px;
+    padding:13px 16px;
+    border:1px solid var(--line);
+    border-radius:var(--r-orta);
+    background:#fff;
+    text-align:right;
+  }
+  .count-box strong{display:block;color:var(--navy);font-size:24px;line-height:1}
+
+  /* TELEGRAMGA ULASH — sotuvchi so'rovni o'tkazib yubormasligi uchun */
+  .tg-card{
+    margin:0 0 20px;
+    padding:18px 20px;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:16px;
+    border:1px solid #cbd5e5;
+    border-radius:var(--r-orta);
+    background:linear-gradient(180deg,#f6f9ff,#fff);
+  }
+  .tg-card h2{margin:2px 0 6px;font-size:17px;letter-spacing:-.02em}
+  .tg-card p{margin:0;color:var(--muted);font-size:12.5px;max-width:52ch}
+  .tg-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:48px;padding:0 22px;
+    border-radius:var(--r-kichik);
+    background:var(--navy);color:#fff;
+    font-weight:750;text-decoration:none;white-space:nowrap;
+  }
+  .tg-btn:hover{background:var(--navy-dark)}
+  @media (max-width:520px){
+    .tg-card{flex-direction:column;align-items:stretch}
+    .tg-btn{width:100%}
+  }
+  .count-box span{color:var(--muted);font-size:10.5px}
+
+  /* TALAB BLOKI — kabinetdagi eng qimmatli jumla.
+     Bezaksiz: bitta qator raqam va odamlar aynan qanday yozgani.
+     Reklama emas, hisobot. */
+  .talab{
+    margin:0 0 14px;padding:14px 16px;
+    border:1px solid #cbd5e5;border-radius:var(--r-orta);background:var(--navy-soft);
+  }
+  .talab-son{margin:0;font-size:13.5px;color:var(--navy);line-height:1.5}
+  .talab-son strong{font-weight:780}
+  .talab-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .talab-chip{
+    padding:4px 9px;border-radius:var(--r-pill);background:#fff;
+    border:1px solid #dbe3ef;color:#48566d;font-size:11.5px;
+  }
+  @media (max-width:520px){
+    .talab{padding:12px 13px}
+    .talab-son{font-size:13px}
+  }
+
+  .requests{display:grid;gap:12px}
+  .request{
+    padding:20px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--surface);
+    transition:transform 120ms var(--ease),box-shadow 120ms var(--ease),border-color 120ms var(--ease),opacity 200ms var(--ease);
+  }
+  .request:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(8,27,66,.08)}
+  .request.near{border-color:#acd4bd}
+  .request.done{transform:translateY(6px);opacity:0}
+  .request-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+  .request-text{
+    margin:0;
+    font-size:18px;
+    line-height:1.35;
+    letter-spacing:-.015em;
+    font-weight:680;
+  }
+  .age{flex:0 0 auto;color:var(--muted);font-size:11px}
+  .meta{
+    margin-top:8px;
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:7px;
+    color:var(--muted);
+    font-size:11.5px;
+  }
+  .badge{
+    min-height:25px;
+    padding:4px 8px;
+    border-radius:var(--r-pill);
+    background:#f0f0ee;
+    color:#575d67;
+    font-size:10.5px;
+    font-weight:750;
+  }
+  .badge.near{background:var(--green-soft);color:var(--green)}
+  .badge.budget{background:var(--amber-soft);color:#8d5b00}
+  /* CHAT KOMPOSERI (2026-08-07). Ilgari bu yerda uchta tugma turardi:
+     BOR / YO'Q / O'XSHASHI BOR — keyin narx qatori ochilardi. Ya'ni
+     sotuvchi oldida qaror shakli bor edi, xaridor bilan yozishma esa
+     boshqa sahifada. Endi so'rov kartasining o'zida chat komposeri
+     bor: narx + xabar + rasm + "Chatga yuborish". Birinchi yuborish
+     suhbatni ochadi va xaridor bilan yozishma shu yerda davom etadi. */
+  .chat-composer{
+    margin-top:14px;
+    display:grid;
+    gap:8px;
+    animation:narx-ochil 180ms var(--ease) both;
+  }
+  /* IKKI QATORLI IXCHAM CHAT-KOMPOSER (2026-08-07):
+     mobil'da 4 qatorli vertikal forma 269px edi — karta ekranni
+     bosib ketardi. Endi: qator1 = narx + rasm yonma-yon,
+     qator2 = xabar + yuborish yonma-yon, rad pastda kichik.
+     Umumiy balandlik ~150px. */
+  .chat-composer-top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
+  .chat-composer-bottom{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
+  .chat-composer input[type=text],.chat-composer input:not([type=file]){
+    height:46px;min-height:46px;width:100%;border:1px solid var(--line-strong);
+    border-radius:var(--r-kichik);padding:0 13px;background:#fff;
+    color:var(--text);font:inherit;font-size:13.5px;box-sizing:border-box;
+  }
+  .chat-composer input:focus{border-color:var(--navy);outline:none;
+    box-shadow:0 0 0 3px rgba(34,94,190,.12)}
+  .chat-composer .offer-note{border-radius:var(--r-kichik)}
+  .offer-photo{
+    height:46px;border:1px dashed var(--line-strong);border-radius:var(--r-kichik);
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    color:var(--navy);background:var(--navy-soft);font-size:12px;font-weight:760;
+    cursor:pointer;position:relative;overflow:hidden;white-space:nowrap;padding:0 14px;
+    box-sizing:border-box;
+  }
+  .offer-photo input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}
+  .offer-photo-ikon{display:inline-flex;flex:none}
+  .offer-photo-matn{display:inline}
+  .send-btn{
+    min-height:46px;
+    padding:0 18px;
+    border-radius:var(--r-kichik);
+    background:var(--navy);
+    color:#fff;
+    font-weight:750;
+    cursor:pointer;
+    transition:background 120ms var(--ease),transform 120ms var(--ease);
+  }
+  .send-btn:hover{background:var(--navy-dark)}
+  .send-btn:active{transform:scale(.98)}
+  .decline-btn{
+    justify-self:start;
+    min-height:38px;padding:0 8px;border:0;background:transparent;
+    color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;
+    border-radius:var(--r-kichik);
+  }
+  .decline-btn:hover{background:var(--red-soft);color:var(--red)}
+  /* NARX QATORI — ochilishi.
+     2026-08-04 gacha bu yerda `max-height` va `margin` animatsiyada edi.
+     Ikkalasi ham LAYOUT xossasi: brauzer har kadrda butun sahifani
+     qaytadan hisoblaydi. Aynan shu narsa 2026-08-02 da hero bilan
+     bo'lgan — sekin telefonda animatsiya osilib qolgan va kontent ekran
+     ostida qolib ketgan edi.
+
+     Bundan tashqari `max-height:230px` degan taxminiy raqam bor edi:
+     ichidagi matn undan uzun bo'lsa, qator kesilib qolardi.
+
+     Endi joy DARHOL ochiladi (layout bir marta hisoblanadi), kontent esa
+     `opacity` va `transform` bilan suriladi — ikkalasi ham GPU'da,
+     sahifani qayta hisoblamaydi. Balandlik chegarasi yo'q. */
+  @keyframes narx-ochil{
+    from{opacity:0;transform:translateY(-6px)}
+    to{opacity:1;transform:none}
+  }
+  .success{
+    min-height:120px;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    color:var(--green);
+    font-weight:700;
+    animation:success-in 420ms var(--ease);
+  }
+  @keyframes topbar-in{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+  @keyframes panel-in{from{opacity:0;transform:translateY(26px) scale(.985);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+  @keyframes mark-in{from{opacity:0;transform:translateY(12px) scale(.9) rotate(-4deg)}to{opacity:1;transform:none}}
+  @keyframes copy-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes card-in{from{opacity:0;transform:translateY(34px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+  @keyframes understood-in{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes success-in{0%{opacity:0;transform:scale(.95)}70%{transform:scale(1.015)}100%{opacity:1;transform:none}}
+  @keyframes cta-light{0%,62%{left:-34%;opacity:0}68%{opacity:1}84%,100%{left:116%;opacity:0}}
+
+  .empty{
+    min-height:520px;
+    padding:54px 24px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#fff;
+    display:grid;
+    place-items:center;
+    text-align:center;
+  }
+  .empty-inner{max-width:440px}
+  .empty-mark{
+    width:94px;
+    height:94px;
+    margin:0 auto 22px;
+    border-radius:var(--r-katta);
+    background:url("/brend/icon.png") center/cover no-repeat;
+    box-shadow:0 10px 30px rgba(8,27,66,.12);
+  }
+  .empty h1{margin:0 0 8px;font-size:25px;letter-spacing:-.03em}
+  .empty p{margin:0;color:var(--muted);font-size:13.5px}
+  .empty-note{
+    margin-top:24px!important;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-size:11.5px!important;
+  }
+  .error-box{
+    padding:18px;
+    border:1px solid #efc6c1;
+    border-radius:var(--radius);
+    background:var(--red-soft);
+    color:#842b21;
+  }
+  .loading{display:grid;gap:12px}
+  .loading-card{
+    height:190px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#fff;
+    opacity:.62;
+  }
+
+  @media (max-width:760px){
+    main{width:min(100% - 28px,980px);padding-top:14px}
+    .topbar-inner{width:min(100% - 36px,980px);min-height:68px}
+    /* TELEFONDA SHAKL BIRINCHI.
+       2026-08-02 o'lchov (390 px): birinchi maydon 692 px da, "Ro'yxatdan
+       o'tish" tugmasi 1100 px da edi. Ekran 844 px. Ya'ni sotuvchi
+       sahifani ochganda shaklni umuman ko'rmasdi, faqat reklama matnini.
+       Bu sahifada shakl - mahsulotning o'zi.
+       Odam "Sotuvchimisiz?" tugmasini bosib kelgan, ya'ni uni qayta
+       ishontirish shart emas. Tanishtiruv paneli shaklning ostiga tushadi. */
+    .onboarding{grid-template-columns:1fr}
+    .register-card{order:-1;padding:22px;border-radius:var(--r-katta)}
+    .intro-panel{min-height:0;padding:24px;border-radius:var(--r-katta);
+      background-position:64% 24%}
+    .intro-mark{display:none}
+    .intro-panel h1{max-width:320px;margin:0 0 10px;font-size:24px}
+    .intro-panel>div>p{max-width:310px;font-size:13px}
+    .intro-steps{grid-template-columns:1fr;margin-top:16px;gap:8px}
+    .intro-foot{display:none}
+  }
+  @media (max-width:520px){
+    .brand,.brand img{width:98px}
+    .cabinet-label{display:none}
+    .buyer-link{display:none}
+    .logout{padding-inline:8px}
+    .intro-steps{grid-template-columns:1fr}
+    .location-fields{grid-template-columns:1fr}
+    .dashboard-head{align-items:flex-start}
+    .dashboard-head p{max-width:220px}
+    .count-box{min-width:88px;padding:11px 12px}
+    .request{padding:16px}
+    .request-text{font-size:16px}
+    .offer-photo-matn{display:none}
+    .offer-photo{min-width:48px;padding:0 12px}
+    .field-group label{display:block}
+    .field-group label span{display:block;margin-top:2px;text-align:left}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    .intro-panel,.register-card,.primary-btn:hover,input:focus,select:focus{transform:none!important;filter:none!important}
+  }
+</style>
+<link rel="stylesheet" href="/ober-ui.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/" aria-label="OBER bosh sahifa">
+      <img src="/brend/logo.png" alt="ober" width="94" height="29">
+    </a>
+    <span class="cabinet-label">Profil</span>
+    <div class="header-actions">
+      <div class="lang-slot"></div>
+      <a class="buyer-link" href="/">Xaridor sahifasi</a>
+      <a class="buyer-link" id="xabarlar-link" href="/takliflar?rol=sotuvchi" hidden>Chat</a>
+      <button class="logout" id="chiq" type="button" hidden>Chiqish</button>
+    </div>
+  </div>
+</header>
+
+<main id="asosiy" aria-live="polite"></main>
+
+<script src="/i18n.js"></script>
+<script src="/tabbar.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const tr = text => window.OBER_I18N.t(text);
+const LOCALE = window.OBER_I18N.locale;
+const formatInt = n => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
+const som = n => Number(n) ? formatInt(n) + tr(" so‘m") : "";
+let MEN = localStorage.getItem("ober_sotuvchi");
+if(/^\d+$/.test(MEN || "")){
+  localStorage.removeItem("ober_sotuvchi");
+  MEN = null;
+}
+let DARAXT = [];
+let yuklanmoqda = false;
+
+function esc(s){
+  return String(s || "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function maydonEffektlari(){
+  document.querySelectorAll(".register-card input, .register-card select").forEach(maydon => {
+    const yangila = () => maydon.classList.toggle("has-value", Boolean(maydon.value.trim()));
+    maydon.addEventListener("input", yangila);
+    maydon.addEventListener("change", yangila);
+    yangila();
+  });
+}
+
+// TALAB — sotuvchini qaytaradigan yagona sabab.
+//
+// Kabinet ishlaydi, lekin so'rov bo'lmasa bo'sh sahifa ko'rinadi va odam
+// boshqa qaytmaydi. Bizda esa `qidiruvlar` jadvalida javob bor: uning
+// yo'nalishida odamlar nimani, qayerda, necha marta qidirgani.
+//
+// Raqamlar HAQIQIY. Bo'rttirilmaydi va yumaloqlanmaydi. Bitta yolg'on son
+// butun ishonchni buzadi, sotuvchi buni birinchi kuniyoq sezadi.
+async function talabniChiz(){
+  const quti = $("#talab-quti");
+  if(!quti) return;
+  try{
+    const r = await fetch("/api/sotuvchi/talab?id=" + encodeURIComponent(MEN));
+    if(!r.ok) return;
+    const t = await r.json();
+    if(!t || !t.jami) return;              // ma'lumot yo'q - jim turamiz
+
+    const joy = t.hududda && t.tuman
+      ? `, shundan <strong>${t.hududda} ta</strong> ${esc(t.tuman)}da`
+      : "";
+    const namuna = (t.namunalar || []).length
+      ? `<div class="talab-chips">${t.namunalar
+          .map(s => `<span class="talab-chip">${esc(s)}</span>`).join("")}</div>`
+      : "";
+
+    quti.innerHTML = `<section class="talab">
+      <p class="talab-son">Oxirgi ${t.kun} kunda sizning yo‘nalishingizda
+        <strong>${t.jami} marta</strong> qidirishdi${joy}.</p>
+      ${namuna}
+    </section>`;
+  }catch(e){ console.error("[ober] talab:", e); }
+}
+
+// KIRISH EKRANI — boshqa qurilmadan kabinetga kirish.
+// 2026-08-06: kabinet endi telefon raqam + bir martalik kod bilan ochiladi.
+// Kod Telegram orqali yuboriladi (SMS xizmati yo'q). Bu sahifada avval
+// kirish ko'rsatiladi; "yangi sotuvchi" bo'lsa ro'yxatdan o'tishga o'tadi.
+function kirishEkrani(){
+  $("#chiq").hidden = true;
+  $("#xabarlar-link").hidden = true;
+  $("#asosiy").innerHTML = `<div class="onboarding">
+    <section class="intro-panel">
+      <div>
+        <div class="intro-mark" aria-hidden="true"></div>
+        <h1>Kabinetingiz bitta raqamga bog‘langan.</h1>
+        <p>Telefon raqamingiz va Telegram orqali kelgan kod bilan istalgan
+           qurilmadan kirasiz. Savdo xabarlari OBER ichida qoladi.</p>
+        <ol class="intro-steps">
+          <li>Telefon raqamingizni kiriting.</li>
+          <li>Kod Telegram’ga keladi.</li>
+          <li>Kodni kiriting — kabinet ochiladi.</li>
+        </ol>
+      </div>
+      <p class="intro-foot">Ro‘yxatdan o‘tganmisiz? Shu raqam orqali kiring.</p>
+    </section>
+
+    <section class="register-card">
+      <h2>Kabinetga kirish</h2>
+      <p class="lead">Telefon raqamingizni yozing. Bir martalik kod
+        Telegram’ga yuboriladi.</p>
+
+      <div class="field-group">
+        <label for="kirish-aloqa">Telefon raqami</label>
+        <input id="kirish-aloqa" placeholder="+998 ..." inputmode="tel" autocomplete="tel">
+      </div>
+
+      <div id="kirish-xabar" aria-live="polite"></div>
+      <button class="primary-btn" id="kirish-boshlash" type="button">Kod olish</button>
+
+      <div class="field-group" id="kirish-kod-quti" hidden>
+        <label for="kirish-kod">Telegram’ga kelgan kod <span>6 raqam</span></label>
+        <input id="kirish-kod" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+      </div>
+      <button class="primary-btn" id="kirish-tasdiq" type="button" hidden>Kirish</button>
+
+      <div class="understood" style="margin-top:14px">
+        Yangi sotuvchimisiz?
+        <button class="link-btn" id="royxatga" type="button" style="background:none;border:0;color:var(--navy);font-weight:780;cursor:pointer;padding:0;font-size:12.5px">Ro‘yxatdan o‘tish</button>
+      </div>
+    </section>
+  </div>`;
+
+  $("#kirish-boshlash").onclick = kirishKod;
+  $("#kirish-aloqa").addEventListener("keydown", e => { if(e.key === "Enter") kirishKod(); });
+  $("#kirish-tasdiq").onclick = kirishTasdiq;
+  $("#kirish-kod").addEventListener("keydown", e => { if(e.key === "Enter") kirishTasdiq(); });
+  $("#royxatga").onclick = royxatEkrani;
+  maydonEffektlari();
+}
+
+async function kirishKod(){
+  const aloqa = $("#kirish-aloqa").value.trim();
+  const xabar = $("#kirish-xabar");
+  if(!aloqa){
+    xabar.innerHTML = '<div class="understood error">Telefon raqamini to‘ldiring.</div>';
+    $("#kirish-aloqa").focus();
+    return;
+  }
+  const button = $("#kirish-boshlash");
+  button.disabled = true;
+  try{
+    const r = await fetch("/api/sotuvchi/kirish", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({aloqa})
+    });
+    const d = await r.json().catch(() => ({}));
+    if(!r.ok || !d.ok){
+      xabar.innerHTML = `<div class="understood error">${esc(d.xato || "Kod yuborilmadi")}</div>`;
+      if(r.status === 404){
+        // Ro'yxatdan o'tmagan — to'g'ridan-to'g'ri ro'yxatga o'tamiz.
+        localStorage.setItem("ober_kirish_aloqa", aloqa);
+        setTimeout(royxatEkrani, 350);
+      }
+      return;
+    }
+    xabar.innerHTML = '<div class="understood">Kod Telegram’ga yuborildi. Telegram’ni oching.</div>';
+    $("#kirish-kod-quti").hidden = false;
+    $("#kirish-tasdiq").hidden = false;
+    $("#kirish-kod").focus();
+  }catch(e){
+    xabar.innerHTML = `<div class="understood error">${esc(e.message || "Aloqa xatosi. Qayta urinib ko‘ring.")}</div>`;
+  }finally{
+    button.disabled = false;
+  }
+}
+
+async function kirishTasdiq(){
+  const aloqa = $("#kirish-aloqa").value.trim();
+  const kod = $("#kirish-kod").value.trim();
+  const xabar = $("#kirish-xabar");
+  if(!aloqa || !kod){
+    xabar.innerHTML = '<div class="understood error">Telefon raqami va kodni to‘ldiring.</div>';
+    return;
+  }
+  const button = $("#kirish-tasdiq");
+  button.disabled = true;
+  try{
+    const r = await fetch("/api/sotuvchi/tasdiq", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({aloqa, kod})
+    });
+    const d = await r.json().catch(() => ({}));
+    if(!r.ok || !d.ok){
+      xabar.innerHTML = `<div class="understood error">${esc(d.xato || "Kod noto‘g‘ri")}</div>`;
+      return;
+    }
+    MEN = String(d.token || "");
+    localStorage.setItem("ober_sotuvchi", MEN);
+    xabar.innerHTML = '<div class="understood">Kirdingiz. Kabinet ochilmoqda…</div>';
+    setTimeout(() => {
+      if(new URLSearchParams(location.search).get("yangi") === "1"){
+        elonlarim().then(() => elonForma());
+      } else sorovlar();
+    }, 400);
+  }catch(e){
+    xabar.innerHTML = `<div class="understood error">${esc(e.message || "Aloqa xatosi. Qayta urinib ko‘ring.")}</div>`;
+  }finally{
+    button.disabled = false;
+  }
+}
+
+function royxatEkrani(){
+  $("#chiq").hidden = true;
+  $("#xabarlar-link").hidden = true;
+  // Kirish ekranida raqam yozilgan bo'lsa — ro'yxat shaklida to'ldirib qo'yamiz
+  const oldin = localStorage.getItem("ober_kirish_aloqa") || "";
+  $("#asosiy").innerHTML = `<div class="onboarding">
+    <section class="intro-panel">
+      <div>
+        <div class="intro-mark" aria-hidden="true"></div>
+        <h1>Kerakli xaridor sizni o‘zi topadi.</h1>
+        <p>Sizning mahsulot yoki xizmatingizga mos so‘rov kelganda, chatda javob yozing.</p>
+        <ol class="intro-steps">
+          <li>Nima sotishingizni o‘z so‘zingiz bilan yozing.</li>
+          <li>Faqat sizga mos xaridor so‘rovlarini ko‘ring.</li>
+          <li>Chatda narx va xabarni 10 soniyada yuboring.</li>
+        </ol>
+      </div>
+      <p class="intro-foot">Kategoriya daraxti va uzoq anketa yo‘q.</p>
+    </section>
+
+    <section class="register-card">
+      <!-- Sarlavha ustidagi yorliq olib tashlandi (dizayn qoidalari 4.2).
+           Undagi ma'lumot ("30 soniya, kategoriya tanlash yo'q") yo'qolmadi:
+           u izohga ko'chdi, chunki bu haqiqiy farq, bezak emas. -->
+      <h2>Sotuvchi sifatida boshlang</h2>
+      <p class="lead">30 soniyada tayyor. Kategoriya daraxti va uzun anketa yo‘q.
+        Odamlar qanday so‘rasa, shunday yozing.</p>
+
+      <div class="field-group">
+        <label for="nom">Ismingiz yoki biznes nomi</label>
+        <input id="nom" placeholder="Masalan: Aziz yoki Print House" autocomplete="name">
+      </div>
+
+      <div class="field-group">
+        <label for="nima">Nima sotasiz yoki qanday xizmat ko‘rsatasiz? <span>o‘z so‘zingiz bilan</span></label>
+        <!-- Namuna uchta HAR XIL sohadan tanlandi: mebel (savdo),
+             maishiy texnika (ta'mir), kandolat (uy biznesi). Ilgari
+             bu yerda "Banner chop etish, fara yoki stop" turardi —
+             ikkalasi ham tor soha edi va sotuvchiga "bu sayt faqat
+             avtoqism uchun ekan" degan taassurot berardi. -->
+        <input id="nima" placeholder="Masalan: mebel yasayman yoki texnika tuzataman" autocomplete="off">
+      </div>
+
+      <div class="field-group">
+        <label for="viloyat">Qayerdasiz? <span>yaqin so‘rovlar uchun</span></label>
+        <div class="location-fields">
+          <select id="viloyat"><option value="">Viloyatni tanlang</option></select>
+          <select id="joy" hidden><option value="">Shahar / tuman</option></select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="aloqa">Telefon raqami <span>faqat kirish va xavfsizlik uchun, xaridorga ko‘rsatilmaydi</span></label>
+        <input id="aloqa" placeholder="+998 ..." inputmode="tel" autocomplete="tel" value="${esc(oldin)}">
+      </div>
+
+      <div class="understood" style="margin-top:14px">
+        Allaqachon ro‘yxatdan o‘tganmisiz?
+        <button class="link-btn" id="kirishga" type="button" style="background:none;border:0;color:var(--navy);font-weight:780;cursor:pointer;padding:0;font-size:12.5px">Kirish</button>
+      </div>
+
+      <div id="tushundik" aria-live="polite"></div>
+      <button class="primary-btn" id="boshlash" type="button">Mos so‘rovlarni ko‘rish</button>
+    </section>
+  </div>`;
+
+  $("#boshlash").onclick = royxat;
+  $("#aloqa").addEventListener("keydown", e => { if(e.key === "Enter") royxat(); });
+  const kirishga = $("#kirishga");
+  if(kirishga) kirishga.onclick = () => {
+    localStorage.removeItem("ober_kirish_aloqa");
+    kirishEkrani();
+  };
+  maydonEffektlari();
+  joylarniOl();
+}
+
+async function joylarniOl(){
+  try{
+    const r = await fetch("/api/holat");
+    if(!r.ok) throw new Error();
+    const d = await r.json();
+    DARAXT = d.daraxt || [];
+    DARAXT.forEach(v => $("#viloyat").add(new Option(v.viloyat, v.viloyat)));
+    $("#viloyat").onchange = () => {
+      const select = $("#joy");
+      const topildi = DARAXT.find(x => x.viloyat === $("#viloyat").value);
+      select.innerHTML = '<option value="">Shahar / tuman</option>';
+      if(!topildi){ select.hidden = true; return; }
+      topildi.joylar.forEach(j => select.add(new Option(j, j)));
+      select.hidden = false;
+    };
+  }catch(_){}
+}
+
+async function royxat(){
+  const nom = $("#nom").value.trim();
+  const nima = $("#nima").value.trim();
+  const aloqa = $("#aloqa").value.trim();
+  const tuman = $("#joy").value || $("#viloyat").value;
+  const xabar = $("#tushundik");
+  if(!nom || !nima || !tuman || !aloqa){
+    xabar.innerHTML = '<div class="understood error">Nom, yo‘nalish, joy va telefon raqamini to‘ldiring.</div>';
+    (!nom ? $("#nom") : !nima ? $("#nima") : !tuman ? $("#viloyat") : $("#aloqa")).focus();
+    return;
+  }
+  const button = $("#boshlash");
+  button.disabled = true;
+  try{
+    const r = await fetch("/api/sotuvchi/royxat", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        nom,nima,aloqa,tuman
+      })
+    });
+    const d = await r.json();
+    if(!r.ok || !d.ok) throw new Error(d.xato || "Ro‘yxatdan o‘tib bo‘lmadi");
+    const qismlar = (d.qismlar || []).join(", ");
+    const yonalishlar = (d.yonalishlar || []).join(", ");
+    const modellar = (d.modellar || []).length ? " · " + d.modellar.join(", ") : "";
+    xabar.innerHTML = `<div class="understood">Tushundik: <strong>${esc(yonalishlar || qismlar)}</strong>${esc(modellar)}</div>`;
+    // 2026-08-06: kabinet endi sessiya TOKENI bilan ochiladi.
+    // Eski qurilmada ID raqami saqlangan bo'lsa ham qabul qilinadi.
+    MEN = String(d.token || "");
+    localStorage.setItem("ober_sotuvchi", MEN);
+    // ?yangi=1 dan kelgan bo'lsa ro'yxatdan o'tgach e'lon formasiga
+    // boramiz — odam ikkita qadam bilan e'lon qo'yadi.
+    setTimeout(() => {
+      if(new URLSearchParams(location.search).get("yangi") === "1"){
+        elonlarim().then(() => elonForma());
+      } else sorovlar();
+    }, 700);
+  }catch(e){
+    xabar.innerHTML = `<div class="understood error">${esc(e.message || "Aloqa xatosi. Qayta urinib ko‘ring.")}</div>`;
+    button.disabled = false;
+  }
+}
+
+function chiqish(){
+  // 2026-08-06: tokenni SERVERDA ham o'chirish kerak — localStorage'ni
+  // tozalash bilan sessiya bazada tirik qolardi. Endi chiqish tugmasi
+  // tokenni serverga yuboradi va u o'chiriladi. So'rov xato bersa ham
+  // lokal tozalanadi (muhim emas — token yolg'iz qolsa ham ishlamaydi).
+  const token = MEN || localStorage.getItem("ober_sotuvchi") || "";
+  if(token){
+    fetch("/api/sotuvchi/chiqish", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({token})
+    }).catch(()=>{});
+  }
+  localStorage.removeItem("ober_sotuvchi");
+  MEN = null;
+  $("#xabarlar-link").hidden = true;
+  royxatEkrani();
+}
+
+function loading(){
+  $("#asosiy").innerHTML = `<div class="loading" aria-label="So‘rovlar yuklanmoqda">
+    <div class="loading-card"></div><div class="loading-card"></div>
+  </div>`;
+}
+
+// Telegram savdo kanali emas: faqat boshqa qurilmadan xavfsiz kirish
+// kodini olish uchun akkauntga bir marta bog'lanadi.
+let tgHolat = null;
+async function telegramTaklif(){
+  if(!MEN) return;
+  // Natija keshlanadi, lekin blok HAR chizilishda qayta qo'yiladi —
+  // ro'yxat yangilanganda tugma yo'qolib qolmasligi uchun.
+  if(tgHolat){ tgChiz(tgHolat); return; }
+  try{
+    const r = await fetch("/api/sotuvchi/telegram?id=" + encodeURIComponent(MEN));
+    tgHolat = await r.json();
+    tgChiz(tgHolat);
+  }catch(e){}
+}
+
+function tgChiz(d){
+  const q = $("#tg-quti");
+  if(!q || !d || !d.yoqilgan || d.ulangan || !d.havola) return;
+  q.innerHTML = `<section class="tg-card">
+    <div>
+      <p class="section-kicker">Akkaunt xavfsizligi</p>
+      <h2>Kirishni tiklashni yoqing</h2>
+      <p>Telegram faqat bir martalik kirish kodlari uchun. So‘rov, taklif
+         va yozishmalar OBER ichida qoladi.</p>
+    </div>
+    <a class="tg-btn" href="${d.havola}" target="_blank" rel="noopener">Kirishga bog‘lash</a>
+  </section>`;
+}
+
+// ── KABINET YORLIQLARI (2026-08-06) ────────────────────────────────────
+// Ikkita bo'lim: So'rovlar (eski kabinet) va E'lonlarim (marketplace).
+// Har bo'lim o'z funksiyasi bilan to'liq qayta chiziladi — holatni
+// ushlab turish shart emas, API ishonchli manba.
+// PROFIL KARTASI — avatar (ism bosh harfi) + ism + izoh (2026-08-08).
+// O'z profilini kabinetning istalgan bo'limida ko'rsatish uchun.
+// API token orqali: nom, nima_sotadi, tuman, yo'nalishlar.
+let profilYuklandi = false;
+let profilKesh = null; // {sid, d} — boshqa sotuvchi kirsa eski keshi ishlatilmasin
+
+function profilKarta(d){
+  const nom = (d?.nom || "").trim();
+  const harf = nom ? nom.replace(/^\s+/, "").charAt(0).toUpperCase() : "?";
+  const izoh = [d?.nima_sotadi, d?.tuman].filter(Boolean).join(" · ");
+  return `<div class="profil-karta">
+    <div class="profil-avatar" aria-hidden="true">${esc(harf)}</div>
+    <div class="profil-bosh">
+      <div class="profil-nom">${esc(nom || "Profil")}</div>
+      ${izoh ? `<div class="profil-izoh">${esc(izoh)}</div>` : ""}
+    </div>
+  </div>`;
+}
+
+async function profilniChiz(){
+  if(!MEN) return;
+  const quti = $("#profil-quti");
+  if(!quti) return;
+  if(profilKesh && profilKesh.sid === MEN){
+    // Kesh bor va aynan shu sotuvchiki — tab almashganda ham darhol chiqadi
+    quti.innerHTML = profilKarta(profilKesh.d);
+    return;
+  }
+  if(profilYuklandi) return; // hozir yuklanmoqda — keyingi chaqiriqda keshdan
+  profilYuklandi = true;
+  quti.innerHTML = `<div class="profil-karta">
+    <div class="profil-avatar" aria-hidden="true">…</div>
+    <div class="profil-bosh"><div class="profil-nom">…</div><div class="profil-izoh"></div></div>
+  </div>`;
+  try{
+    const r = await fetch("/api/sotuvchi/profil?id=" + encodeURIComponent(MEN));
+    if(!r.ok) throw new Error();
+    const d = await r.json();
+    profilKesh = {sid: MEN, d};
+    const q2 = $("#profil-quti");
+    if(q2) q2.innerHTML = profilKarta(d);
+  }catch(e){
+    const q2 = $("#profil-quti");
+    if(q2) q2.innerHTML = "";
+  }finally{
+    profilYuklandi = false;
+  }
+}
+
+function tabPaneli(faol){
+  return `<div class="kabinet-tabs" role="tablist" aria-label="Profil bo‘limlari">
+    <button class="kabinet-tab${faol === "sorovlar" ? " faol" : ""}" type="button"
+      role="tab" aria-selected="${faol === "sorovlar"}" onclick="sorovlar()">So‘rovlar</button>
+    <button class="kabinet-tab${faol === "elonlar" ? " faol" : ""}" type="button"
+      role="tab" aria-selected="${faol === "elonlar"}" onclick="elonlarim()">E‘lonlarim</button>
+  </div>
+  <div id="profil-quti"></div>`;
+}
+
+async function sorovlar(){
+  if(!MEN || yuklanmoqda || document.querySelector(".chat-composer input:focus")) return;
+  yuklanmoqda = true;
+  if(!$("#asosiy").children.length) loading();
+  $("#chiq").hidden = false;
+  $("#xabarlar-link").hidden = false;
+  $("#xabarlar-link").href = "/takliflar?rol=sotuvchi";
+  try{
+    const r = await fetch("/api/sotuvchi/sorovlar?id=" + encodeURIComponent(MEN));
+    if(!r.ok) throw new Error("So‘rovlar olinmadi");
+    const d = await r.json();
+    if(!d.length){
+      $("#asosiy").innerHTML = `${tabPaneli("sorovlar")}
+        <div id="talab-quti"></div>
+        <div id="tg-quti"></div>
+        <section class="empty">
+        <div class="empty-inner">
+          <h1>Hozircha yangi so‘rov yo‘q</h1>
+          <p>Sizning yo‘nalishingizda xaridor so‘rov qoldirsa, shu yerda paydo bo‘ladi.</p>
+          <p class="empty-note">Yangi javob Chat nishonida ko‘rinadi. Savdo OBER ichida qoladi.</p>
+        </div>
+      </section>`;
+      telegramTaklif();
+      talabniChiz();
+      profilniChiz();
+      return;
+    }
+    $("#asosiy").innerHTML = `${tabPaneli("sorovlar")}
+      <div class="dashboard-head">
+      <div><h1>Xaridorlar kutyapti</h1>
+        <p>Chatda yozing — javob xaridorga OBER ichida boradi.</p></div>
+      <div class="count-box"><strong>${d.length}</strong><span>ochiq so‘rov</span></div>
+    </div>
+    <div id="talab-quti"></div>
+    <div id="tg-quti"></div>
+    <div class="requests">${d.map(sorovKarta).join("")}</div>`;
+    bindPriceEnter();
+    telegramTaklif();
+    talabniChiz();
+    profilniChiz();
+  }catch(e){
+    $("#asosiy").innerHTML = `<div class="error-box" role="alert">
+      So‘rovlarni hozir yuklay olmadik. Internetni tekshirib, sahifani yangilang.
+    </div>`;
+  }finally{
+    yuklanmoqda = false;
+  }
+}
+
+// ── E'LONLARIM — o'z marketplace'i (2026-08-06) ─────────────────────────
+async function elonlarim(){
+  if(!MEN || yuklanmoqda) return;
+  yuklanmoqda = true;
+  $("#chiq").hidden = false;
+  $("#xabarlar-link").hidden = false;
+  $("#xabarlar-link").href = "/takliflar?rol=sotuvchi";
+  try{
+    const r = await fetch("/api/sotuvchi/elonlari?id=" + encodeURIComponent(MEN));
+    if(r.status === 401){ kirishEkrani(); return; }
+    if(!r.ok) throw new Error("E'lonlar olinmadi");
+    const d = await r.json();
+    const kartalar = d.length ? d.map(elonKarta).join("") : `<section class="empty">
+      <div class="empty-inner">
+        <h1>Hali e'lon yo‘q</h1>
+        <p>Birinchi e'loningizni joylashtiring — qidiruvda darhol chiqadi.</p>
+      </div>
+    </section>`;
+    $("#asosiy").innerHTML = `${tabPaneli("elonlar")}
+      <div class="elon-bosh">
+        <div><h1>E‘lonlarim</h1><p>O‘z e’lonlaringiz qidiruvda boshqa manbalar bilan birga chiqadi.</p></div>
+        <button class="yangi-elon-btn" type="button" onclick="elonForma()">+ Yangi e‘lon</button>
+      </div>
+      <div id="elon-ro" class="elonlar">${kartalar}</div>`;
+    profilniChiz();
+  }catch(e){
+    $("#asosiy").innerHTML = `<div class="error-box" role="alert">
+      E’lonlarni hozir yuklay olmadik. Internetni tekshirib, sahifani yangilang.
+    </div>`;
+  }finally{
+    yuklanmoqda = false;
+  }
+}
+
+function elonKarta(e){
+  const narx = e.narx_som ? som(e.narx_som) : (e.kelishiladi ? "Kelishiladi" : "");
+  const holat = e.elon_holati === "sotildi" ? "Sotildi"
+    : e.elon_holati === "ochirildi" ? "Yashirin" : "Faol";
+  return `<article class="elon-karta">
+    <span class="elon-rasm${e.rasm ? "" : " yoq"}"${e.rasm ? ` style="background-image:url('${esc(e.rasm)}')"` : ""}></span>
+    <div>
+      <h2 class="elon-nom">${esc(e.nom)}</h2>
+      <div class="elon-meta">
+        <span class="elon-narx">${esc(narx)}</span>
+        <span class="elon-holat ${esc(e.elon_holati || "faol")}">${esc(holat)}</span>
+        ${e.tuman ? `<span style="color:var(--muted);font-size:11.5px">${esc(e.tuman)}</span>` : ""}
+      </div>
+    </div>
+    <div class="elon-tugmalar">
+      <a class="elon-tugma" href="/elon/${Number(e.id)}">Ko‘rish</a>
+      ${e.elon_holati === "faol" ? `
+      <button class="elon-tugma" type="button" onclick="elonForma(${Number(e.id)})">Tahrirlash</button>
+      <button class="elon-tugma ochir" type="button" onclick="elonOchir(${Number(e.id)})">O‘chirish</button>` : ""}
+    </div>
+  </article>`;
+}
+
+async function elonOchir(id){
+  if(!confirm("E’lon o‘chirilsinmi? Qidiruvdan tushadi.")) return;
+  try{
+    const r = await fetch(`/api/elon/${id}`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({amal: "ochir", sotuvchi_id: MEN})
+    });
+    if(!r.ok) throw new Error("O‘chirilmadi");
+    elonlarim();
+  }catch(e){
+    alert("E’lon o‘chirilmadi. Qayta urinib ko‘ring.");
+  }
+}
+
+let elonFormaRasmlar = [];
+let elonTahrirId = null;
+
+function elonForma(id){
+  elonTahrirId = id || null;
+  elonFormaRasmlar = [];
+  $("#asosiy").innerHTML = `${tabPaneli("elonlar")}
+    <button class="forma-orqaga" type="button" onclick="elonlarim()">← E’lonlarim</button>
+    <div class="elon-forma">
+      <h1>${id ? "E’lonni tahrirlash" : "Yangi e’lon"}</h1>
+      <p>Nom va narx yetarli. Rasm va tavsif ixtiyoriy.</p>
+      <div class="forma-maydon">
+        <label for="f-nom">Nima sotyapsiz?</label>
+        <input id="f-nom" placeholder="Masalan: 3 kishilik burchak divan" maxlength="120">
+      </div>
+      <div class="forma-qator">
+        <div class="forma-maydon">
+          <label for="f-narx">Narx (so‘m)</label>
+          <div class="forma-narx-qator">
+            <input id="f-narx" inputmode="numeric" placeholder="1 500 000" style="flex:1">
+            <button class="kelishiladi-chip" id="f-kelish" type="button"
+              onclick="this.classList.toggle('faol');document.getElementById('f-narx').disabled=this.classList.contains('faol')">Kelishiladi</button>
+          </div>
+        </div>
+        <div class="forma-maydon">
+          <label for="f-tuman">Qayerdasiz?</label>
+          <input id="f-tuman" placeholder="Masalan: Toshkent, Chilonzor" maxlength="80">
+        </div>
+      </div>
+      <div class="forma-maydon">
+        <label for="f-tavsif">Tavsif (ixtiyoriy)</label>
+        <textarea id="f-tavsif" maxlength="2000" placeholder="Holati, yetkazish, qo‘shimcha ma’lumot..."></textarea>
+      </div>
+      <div class="forma-maydon">
+        <label>Rasmlar (ixtiyoriy, 5 tagacha)</label>
+        <div class="forma-rasmlar" id="f-rasmlar"></div>
+      </div>
+      <p class="forma-izoh" id="f-izoh"></p>
+      <button class="forma-saqlash" id="f-saqlash" type="button" onclick="elonSaqlash()">
+        ${id ? "Saqlash" : "Joylashtirish"}</button>
+    </div>`;
+  profilniChiz();
+  if(id){
+    fetch("/api/elon/" + id).then(r => r.ok ? r.json() : null).then(e => {
+      if(!e || e.ochirilgan) return;
+      $("#f-nom").value = e.nom || "";
+      if(e.narx_som){ $("#f-narx").value = formatInt(e.narx_som); }
+      else { document.getElementById("f-kelish").classList.add("faol"); $("#f-narx").disabled = true; }
+      $("#f-tuman").value = e.tuman || e.viloyat || "";
+      $("#f-tavsif").value = e.tavsif || "";
+      try{ elonFormaRasmlar = JSON.parse(e.rasmlar_ober || "[]"); }catch(_){ elonFormaRasmlar = []; }
+      elonRasmlarniChiz();
+    });
+  } else {
+    elonRasmlarniChiz();
+  }
+}
+
+function elonRasmlarniChiz(){
+  const quti = $("#f-rasmlar");
+  if(!quti) return;
+  quti.innerHTML = elonFormaRasmlar.map((r, i) =>
+    `<span class="forma-rasm" style="background-image:url('${esc(r)}')"></span>`
+  ).join("") + (elonFormaRasmlar.length < 5 ? `
+    <label class="forma-rasm-joy" for="f-fayl">Rasm<br>qo‘shish
+      <input id="f-fayl" type="file" accept="image/jpeg,image/png,image/webp" hidden
+        onchange="elonRasmTanlandi(this)">
+    </label>` : "");
+}
+
+function elonRasmTanlandi(input){
+  const fayl = input.files && input.files[0];
+  if(!fayl) return;
+  if(fayl.size > 5 * 1024 * 1024){ alert("Rasm 5 MB dan kichik bo‘lishi kerak"); input.value = ""; return; }
+  const oqir = new FileReader();
+  oqir.onload = () => { elonFormaRasmlar.push(oqir.result); elonRasmlarniChiz(); };
+  oqir.readAsDataURL(fayl);
+  input.value = "";
+}
+
+async function elonSaqlash(){
+  const nom = $("#f-nom").value.trim();
+  const narx = $("#f-narx").disabled ? "" : $("#f-narx").value.trim();
+  const izoh = $("#f-izoh");
+  if(nom.length < 3){ izoh.textContent = "Nima sotyotganingizni yozing."; izoh.className = "forma-izoh xato"; return; }
+  const tugma = $("#f-saqlash");
+  tugma.disabled = true; tugma.textContent = "Yuborilmoqda…";
+  const tana = {
+    sotuvchi_id: MEN,
+    nom,
+    narx,
+    tuman: $("#f-tuman").value.trim(),
+    tavsif: $("#f-tavsif").value.trim(),
+    // Hammasi yuboriladi: eski `/chat-uploads/` yo'llari va yangi
+    // data-URL lar. Server eskilarni qayta saqlamaydi, yangilarini
+    // saqlaydi — tahrirlashda rasmlar yo'qolib qolmasin (2026-08-06).
+    rasmlar: elonFormaRasmlar
+  };
+  try{
+    const r = await fetch(elonTahrirId ? `/api/elon/${elonTahrirId}` : "/api/elon", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(tana)
+    });
+    const d = await r.json().catch(() => ({}));
+    if(r.status === 401){ kirishEkrani(); return; }
+    if(!r.ok){ izoh.textContent = d.xato || "Saqlanmadi. Qayta urinib ko‘ring."; izoh.className = "forma-izoh xato"; return; }
+    elonlarim();
+  }catch(e){
+    izoh.textContent = "Aloqa xatosi. Qayta urinib ko‘ring.";
+    izoh.className = "forma-izoh xato";
+  }finally{
+    tugma.disabled = false; tugma.textContent = elonTahrirId ? "Saqlash" : "Joylashtirish";
+  }
+}
+
+function sorovKarta(s){
+  return `<article class="request${s.yaqin ? " near" : ""}" id="s${Number(s.id)}">
+    <div class="request-top">
+      <h2 class="request-text">${esc(s.matn)}</h2>
+      ${s.vaqt ? `<span class="age">${esc(s.vaqt)}</span>` : ""}
+    </div>
+    <div class="meta">
+      ${s.tuman ? `<span>${esc(s.tuman)}</span>` : ""}
+      ${s.yaqin ? '<span class="badge near">YAQIN</span>' : ""}
+      ${s.byudjet ? `<span class="badge budget">BYUDJET ${som(s.byudjet)}</span>` : ""}
+    </div>
+    <div class="chat-composer" id="n${Number(s.id)}">
+      <div class="chat-composer-top">
+        <label class="sr-only" for="p${Number(s.id)}">Narxi</label>
+        <input id="p${Number(s.id)}" placeholder="Narxi (so‘m)" inputmode="numeric" data-request="${Number(s.id)}">
+        <label class="offer-photo" id="fl${Number(s.id)}">
+          <span class="offer-photo-ikon" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.8-2.6h6.4L17 7.5h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/><circle cx="12" cy="12.5" r="3.4"/></svg></span>
+          <span class="offer-photo-matn" id="flt${Number(s.id)}">Rasm qo‘shish</span>
+          <input id="f${Number(s.id)}" type="file" accept="image/jpeg,image/png,image/webp" onchange="rasmTanlandi(${Number(s.id)},this)">
+        </label>
+      </div>
+      <div class="chat-composer-bottom">
+        <label class="sr-only" for="i${Number(s.id)}">Xaridorga xabar</label>
+        <input class="offer-note" id="i${Number(s.id)}" placeholder="Xabar yozing…">
+        <button class="send-btn" type="button" onclick="javob(${Number(s.id)},'bor')">Yuborish</button>
+      </div>
+      <button class="decline-btn" type="button" onclick="javob(${Number(s.id)},'yoq')">Bu menda yo‘q</button>
+    </div>
+  </article>`;
+}
+
+function bindPriceEnter(){
+  document.querySelectorAll("[data-request]").forEach(input => {
+    input.addEventListener("keydown", e => {
+      if(e.key === "Enter"){
+        e.preventDefault();
+        const id = Number(input.dataset.request);
+        javob(id, "bor");
+      }
+    });
+  });
+}
+
+function rasmTanlandi(id, input){
+  const file = input.files && input.files[0];
+  const matn = $("#flt" + id);
+  if(!matn) return;
+  if(!file){ matn.textContent = "Rasm qo‘shish"; return; }
+  if(!["image/jpeg","image/png","image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024){
+    input.value = "";
+    matn.textContent = "5 MB gacha";
+    return;
+  }
+  matn.textContent = "Rasm tayyor";
+}
+
+function rasmData(id){
+  const file = $("#f" + id)?.files?.[0];
+  if(!file) return Promise.resolve("");
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("Rasmni o‘qib bo‘lmadi"));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function javob(id, holat){
+  const karta = $("#s" + id);
+  if(!karta) return;
+  const tugmalar = karta.querySelectorAll("button");
+  const narxInput = $("#p" + id);
+  const xabar = $("#i" + id)?.value.trim() || "";
+  if(holat !== "yoq" && !xabar && !narxInput?.value.trim()){
+    // Chatga yuborishda kamida narx yoki xabar bo‘lishi kerak
+    narxInput?.focus();
+    return;
+  }
+  narxInput?.removeAttribute("aria-invalid");
+  tugmalar.forEach(x => x.disabled = true);
+  try{
+    const rasm = await rasmData(id);
+    const r = await fetch("/api/sotuvchi/javob", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        sorov_id:id,
+        sotuvchi_id:MEN,
+        holat,
+        narx:narxInput ? narxInput.value : "",
+        izoh:xabar,
+        rasm_data:rasm
+      })
+    });
+    const d = await r.json().catch(() => ({}));
+    if(!r.ok || d.ok === false) throw new Error(d.xato || "Javob yuborilmadi");
+    const chatga = d.suhbat_id
+      ? `<br><a class="buyer-link" href="/takliflar?rol=sotuvchi">Chatni ochish</a>`
+      : "";
+    karta.innerHTML = `<div class="success">${holat === "yoq" ? "Javob yuborildi" : "Chatga yuborildi"}${chatga}</div>`;
+    setTimeout(() => {
+      karta.classList.add("done");
+      setTimeout(sorovlar, 850);
+    }, 850);
+  }catch(e){
+    tugmalar.forEach(x => x.disabled = false);
+    const meta = karta.querySelector(".meta");
+    meta.insertAdjacentHTML("beforeend", `<span class="badge" style="color:var(--red)">${esc(e.message)}</span>`);
+  }
+}
+
+$("#chiq").addEventListener("click", chiqish);
+// 2026-08-06: kabinetga kirish endi telefon + kod orqali. Eski qurilmada
+// localStorage'da ID raqami saqlangan bo'lsa ham ishlaydi.
+//
+// 2026-08-07: pastki tab bardagi ➕ (`?yangi=1`) — e'lon formasini
+// DARHOL ochadi. Kirgan bo'lsa e'lonlarim bo'limiga boramiz va forma
+// ochiladi; kirmagan bo'lsa kirish ekrani (keyin ro'yxatdan o'tib
+// e'lon qo'yadi).
+const yangiRejim = new URLSearchParams(location.search).get("yangi") === "1";
+if(MEN){
+  if(yangiRejim){ elonlarim().then(() => elonForma()); }
+  else sorovlar();
+} else {
+  kirishEkrani();
+}
+setInterval(() => { if(MEN) sorovlar(); }, 20000);
+</script>
+</body>
+</html>

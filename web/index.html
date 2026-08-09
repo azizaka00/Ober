@@ -1,0 +1,2682 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#DCEAF5">
+<meta name="description" content="OBER — mahsulot, xizmat va ishlarni topadigan teskari bozor. Siz yozasiz, bozor javob beradi.">
+<title>OBER — siz yozasiz, bozor javob beradi</title>
+<link rel="icon" href="/brend/icon.png">
+
+<!-- KANONIK MANZIL. Sayt uchta manzilda ochiladi: ober.uz,
+     www.ober.uz va IP orqali. Google uchun bu UCHTA HAR XIL SAYT —
+     reyting uchalasiga bo'linib ketadi va hech biri yuqoriga chiqmaydi.
+     Bu qator "asli qaysi biri" degan savolga javob beradi.
+     Caddy tomonda www -> ober.uz ga 301 bilan yo'naltiriladi. -->
+<link rel="canonical" href="https://ober.uz/">
+
+<!-- ULASHISH KARTASI.
+     Bu bizga boshqalardan ko'proq kerak: O'zbekistonliklarning har
+     to'rtinchisi Telegram orqali xarid qiladi va havola aynan Telegramda
+     ulashiladi. Busiz kanalga tashlangan ober.uz quruq matn bo'lib
+     ko'rinadi - rasmsiz, tavsifsiz. Bir marta sozlanadi, har ulashishda
+     ishlaydi. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OBER">
+<meta property="og:title" content="Siz yozasiz. Bozor javob beradi.">
+<meta property="og:description" content="OLX va Telegramdagi e'lonlar bitta qidiruvda. Topilmasa - sotuvchilarning o'zidan so'raymiz.">
+<!-- MUTLAQ manzil, nisbiy emas. Telegram va Facebook rasmni O'Z
+     serveridan oladi va nisbiy yo'lni ("/brend/...") hal qila olmaydi -
+     karta rasmsiz chiqadi. 2026-08-04 da tuzatildi. -->
+<meta property="og:image" content="https://ober.uz/brend/ober-market-street-desktop.webp">
+<meta property="og:url" content="https://ober.uz/">
+<meta property="og:locale" content="uz_UZ">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- SHRIFT. Ilgari tizim shrifti edi: Windowsda bir xil, telefonda
+     boshqa, Macda uchinchi xil. Sayt hech qachon TANLANGANDEK
+     ko'rinmasdi. Onest kirillcha uchun maxsus qilingan va kam
+     uchraydi - Inter esa hamma joyda va aynan shuning uchun "AI
+     qilgan" tuyuladi.
+
+     2026-08-04: shrift O'Z SERVERIMIZGA ko'chirildi. Ilgari uni Google
+     Fonts berardi — ya'ni har ochilishda ikkita begona domenga ulanish
+     (ikki DNS, ikki TLS). Bu ham 2-qoidani buzardi, ham matn chiqishini
+     kechiktirardi, ham Google O'zbekistonda sekinlashsa saytimiz
+     boshqacha ko'rinardi.
+
+     `preload` — brauzer CSS ni o'qib chiqmasdan turib shriftni yuklay
+     boshlaydi. Bitta fayl yetarli: Onest o'zgaruvchan shrift, 400 dan
+     800 gacha hamma qalinlik shu 32 KB ichida. -->
+<link rel="preload" href="/shrift/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/shrift/onest.css">
+<!-- Fon rasmlarini oldindan yuklash olib tashlandi: rasmning o'zi
+     ishlatilmaydi. Qolganida brauzer har ochilishda bir necha yuz
+     kilobaytni behuda yuklab olardi. -->
+<style>
+  :root{
+    /* ── SIRT IYERARXIYASI ────────────────────────────────────────
+       2026-08-02, Aziz: "oppoq oddiy noprofessional bo'lib turibdi".
+       To'g'ri edi. Sahifa foni #fbfbfa, kartalar #fff - ikkalasi
+       deyarli bir xil. Karta fondan ajralmasa, sahifa yassi va
+       tugallanmagan ko'rinadi.
+
+       Endi uch pog'ona: fon (eng past) -> karta -> ko'tarilgan panel.
+       Va kulranglar BIR OILADAN. Ilgari #e8e8e6 (iliq) va #d7d9dc
+       (sovuq) aralash edi - bu ham saranjomsizlik hissini berardi. */
+    --navy:#0b2559;
+    --navy-dark:#081b42;
+    --navy-soft:#eaeff8;
+    --bg:#eff2f7;          /* sahifa foni - sezilarli darajada pastroq */
+    --surface:#fff;        /* karta */
+    --surface-2:#f7f9fc;   /* ikkilamchi panel */
+    --text:#101828;
+    --muted:#667085;
+    --line:#e3e8f0;
+    --line-strong:#cdd6e4;
+    --green:#0f7a4a;
+    --green-soft:#e6f4ec;
+    --red:#c0392b;
+    --amber:#f5a623;
+    --amber-soft:#fdf3de;
+
+    /* Soyalar QORA emas, ko'kimtir. Oq sahifada sof qora soya kir
+       bo'lib ko'rinadi; fon rangiga bo'yalgani tabiiy tuyuladi. */
+    --shadow:0 16px 48px rgba(11,37,89,.08);
+    --shadow-card:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
+    --shadow-hover:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(11,37,89,.10);
+    --ease:cubic-bezier(.2,0,0,1);
+
+    /* BURCHAK SHKALASI — to'rtta qiymat, boshqasi yo'q.
+       2026-08-02 audit: faylda 13 xil radius bor edi (2, 4, 8, 11, 12,
+       13, 14, 16, 18, 22, 24, 99, 999). Hech qanday tizim yo'q edi.
+       Bu ko'zga tashlanmaydi, lekin sayt saranjom emasdek tuyulishining
+       asosiy sababi aynan shu. Yangi qiymat qo'shilmaydi. */
+    --r-kichik:10px;    /* input, kichik tugma, belgi */
+    --r-orta:14px;      /* karta, panel */
+    --r-katta:20px;     /* katta panel, qidiruv qutisi */
+    --r-pill:999px;     /* chip, yumaloq tugma */
+
+    --radius:var(--r-orta);   /* eski nom, mos kelishi uchun */
+    --content:1180px;
+    --panel-h:73px;        /* natijadagi tepa panel balandligi — sticky top */
+    --boshqaruv-bar:58px;  /* saralash qatori balandligi (padding 12+8+38 tugma) — filtr shu ostida yopishadi */
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+
+  /* RAQAMLAR USTMA-UST TURSIN.
+     OBER - narx sayti: har kartada, har qatorda son bor. Oddiy shriftda
+     "1" boshqa raqamlardan tor bo'ladi va ustun qiyshayadi. Jadval
+     raqamlari (tabular figures) hammasini bir xil kenglikka keltiradi.
+     Kichik narsa, lekin ro'yxatni saranjom qiladi. */
+  .card-price,.jonli-narx,.topildi,.yana-izoh,.database-trust,
+  .answer-price,.count-box strong,.talab-son strong{
+    font-variant-numeric:tabular-nums;
+    font-feature-settings:"tnum" 1;
+  }
+  body{
+    margin:0;
+    min-width:320px;
+    overflow-x:hidden;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Onest,"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+  }
+  button,input,select{font:inherit}
+  button,a,select{touch-action:manipulation}
+  button{border:0}
+  a{color:inherit}
+  :focus-visible{outline:3px solid rgba(11,37,89,.24);outline-offset:3px}
+
+  /* BOSILGANDA JAVOB BERSIN.
+     2026-08-02 audit: butun faylda atigi 2 ta `:active` qoidasi bor edi.
+     Ya'ni tugmalarning deyarli hammasi bosilganda hech narsa qilmasdi.
+     Bu sezilmaydi, lekin bo'lmasa sayt "o'lik" tuyuladi. Telefonda
+     ayniqsa muhim: u yerda hover yo'q, bosish yagona javob. */
+  button:not([disabled]):active,
+  .sample:active,
+  .jonli-karta:active,
+  .card:active{transform:translateY(1px)}
+  button,.sample,.jonli-karta{transition:transform .06s var(--ease)}
+  @media (prefers-reduced-motion:reduce){
+    button:active,.sample:active,.jonli-karta:active,.card:active{transform:none}
+  }
+
+  /* `hidden` HAR DOIM ISHLASIN.
+     2026-08-02: eski javoblar bloki `hidden` bilan yopilgan deb
+     o'ylardik, lekin `.answer-list{display:grid}` uni qaytarib ochib
+     yuborardi — telefonda 227 px joyni bekorga egallardi. HTML atributi
+     CSS'dan kuchsiz; shuning uchun aniq yozib qo'yamiz. */
+  [hidden]{display:none!important}
+  .sr-only{
+    position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
+    margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
+    white-space:nowrap!important;border:0!important
+  }
+
+  .topbar{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    z-index:20;
+    border-bottom:1px solid transparent;
+    background:transparent;
+    transition:background 180ms var(--ease),border-color 180ms var(--ease);
+  }
+  body.is-results .topbar{
+    position:sticky;
+    border-color:var(--line);
+    background:rgba(251,251,250,.96);
+    backdrop-filter:saturate(130%) blur(14px);
+  }
+  .topbar-inner{
+    width:min(100% - 36px,var(--content));
+    min-height:72px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .brand{
+    width:94px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    flex:0 0 auto;
+  }
+  .brand img{display:block;width:94px;height:auto}
+  .top-actions{display:flex;align-items:center;gap:18px}
+  .mobile-label{display:none}
+  .messages-link{
+    min-height:38px;padding:0 12px;border:1px solid rgba(8,40,95,.14);
+    border-radius:var(--r-pill);background:rgba(255,255,255,.58);color:var(--navy);
+    text-decoration:none;display:inline-flex;align-items:center;font-size:12px;font-weight:760
+  }
+  .seller-link{
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:0 2px;
+    color:var(--navy);
+    font-size:13.5px;
+    font-weight:700;
+    text-decoration:none;
+  }
+  .seller-link::after{
+    content:"";
+    width:8px;
+    height:8px;
+    border-top:1.8px solid currentColor;
+    border-right:1.8px solid currentColor;
+    transform:rotate(45deg);
+    transition:transform 120ms var(--ease);
+  }
+  .seller-link:hover::after{transform:translateX(3px) rotate(45deg)}
+
+  /* HERO BUTUN EKRANNI EGALLAMAYDI.
+     2026-08-02, Aziz: "bo'sh va zerikarli, AI qilgani bilinib turibdi".
+     Sabab: hero 100svh edi va ichida faqat sarlavha bilan qidiruv qutisi
+     turardi — qolgan ~400 px shunchaki fon rasmi. Bozor saytida birinchi
+     ekranda TOVAR ko'rinishi kerak, va'da emas. */
+  .hero{
+    position:relative;
+    min-height:0;
+    overflow:hidden;
+    padding:96px 18px 40px;
+    border-bottom:1px solid transparent;
+    display:flex;
+    justify-content:center;
+    background-color:#dceaf5;
+    /* min-height va padding ANIMATSIYA QILINMAYDI.
+       2026-08-02: bu ikkisi transition'da edi va natija chiqqach hero
+       to'liq ekranni egallab turardi — kartalar 1159 px pastda qolardi.
+       Layout xossasini animatsiya qilish har kadrda qayta hisob talab
+       qiladi va sekin qurilmada osilib qoladi. Yig'ilish darhol
+       bo'ladi; yumshoqlik faqat rang va soyada qoladi. */
+    transition:border-color 220ms var(--ease),background-color 220ms var(--ease);
+  }
+  /* FON RASMI OLIB TASHLANDI.
+     U AI generatsiya qilgan "ideal ko'cha" edi: yuvilgan rang, detalsiz,
+     har AI saytida uchraydigan estetika. Sahifadagi eng katta "bu AI
+     qilgan" belgisi aynan o'sha edi. O'rniga jimgina gradient — u
+     kontentga xalaqit bermaydi va o'zini ko'rsatmaydi. */
+  /* Hero foni - yumshoq ko'k nur. Rasm emas, shovqin emas: qidiruv
+     qutisi turgan joyni ajratib turadi va sahifaga chuqurlik beradi. */
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    background:
+      linear-gradient(180deg,rgba(244,248,253,.84),rgba(241,245,250,.94)),
+      url("/brend/ober-market-street-desktop.webp") center 54%/cover no-repeat,
+      linear-gradient(#f4f7fc,var(--bg));
+    filter:saturate(.72) contrast(.94);
+    transition:opacity 180ms var(--ease);
+  }
+  /* Qidiruv qutisi - sahifadagi asosiy element. Unga eng katta
+     ko'tarilish beriladi, chunki odam birinchi navbatda unga qaraydi. */
+  .search-panel{box-shadow:0 2px 6px rgba(11,37,89,.06),0 18px 40px rgba(11,37,89,.10)}
+  body.is-results .hero{
+    min-height:0;
+    padding-top:34px;
+    padding-bottom:34px;
+    border-color:var(--line);
+    background:var(--bg);
+  }
+  body.is-results .hero::before{opacity:0;pointer-events:none}
+  .hero-inner{
+    position:relative;
+    z-index:1;
+    width:min(100%,900px);
+    text-align:center;
+    transform:translateY(0);
+    transition:transform 220ms var(--ease);
+  }
+  body.is-results .hero-inner{transform:translateY(-4px)}
+  .eyebrow{
+    margin:0 0 12px;
+    color:var(--navy);
+    font-size:11.5px;
+    font-weight:800;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+  }
+  .hero h1{
+    max-width:780px;
+    margin:0 auto 16px;
+    font-size:clamp(30px,5.2vw,50px);
+    line-height:1.05;
+    letter-spacing:-.04em;
+    font-weight:770;
+    color:var(--navy);
+    text-wrap:balance;
+  }
+  .hero-copy{
+    max-width:600px;
+    margin:0 auto 26px;
+    color:var(--muted);
+    font-size:16px;
+    text-wrap:balance;
+  }
+  body.is-results .eyebrow,
+  body.is-results .hero-copy{display:none}
+  body.is-results .hero h1{
+    margin-bottom:18px;
+    font-size:20px;
+    line-height:1.2;
+  }
+
+  .search-panel{
+    width:min(100%,800px);
+    margin-inline:auto;
+    padding:7px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--r-katta);
+    background:var(--surface);
+    box-shadow:0 2px 8px rgba(11,37,89,.07),0 26px 60px rgba(11,37,89,.16);
+    display:flex;
+    gap:8px;
+    text-align:left;
+    transition:border-color 120ms var(--ease),box-shadow 120ms var(--ease);
+  }
+  .search-panel:focus-within{
+    border-color:var(--navy);
+    box-shadow:0 0 0 4px rgba(11,37,89,.09),0 2px 8px rgba(11,37,89,.07),0 26px 60px rgba(11,37,89,.16);
+  }
+  .search-icon{
+    position:relative;
+    width:48px;
+    min-width:48px;
+    color:var(--navy);
+  }
+  .search-icon::before{
+    content:"";
+    position:absolute;
+    left:14px;
+    top:16px;
+    width:15px;
+    height:15px;
+    border:2px solid currentColor;
+    border-radius:50%;
+  }
+  .search-icon::after{
+    content:"";
+    position:absolute;
+    left:29px;
+    top:33px;
+    width:8px;
+    height:2px;
+    border-radius:2px;
+    background:currentColor;
+    transform:rotate(45deg);
+  }
+  .search-panel input{
+    flex:1;
+    min-width:0;
+    height:56px;
+    padding:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:var(--text);
+    font-size:17px;
+    font-weight:550;
+  }
+  .search-panel input::placeholder{color:#989ea8;font-weight:450}
+  .primary-btn{
+    min-width:134px;
+    min-height:56px;
+    padding:0 28px;
+    border-radius:var(--r-orta);
+    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+    color:#fff;
+    font-weight:780;
+    box-shadow:0 10px 24px rgba(8,27,66,.30),inset 0 1px 0 rgba(255,255,255,.10);
+    cursor:pointer;
+    transition:background 120ms var(--ease),box-shadow 120ms var(--ease),transform 120ms var(--ease);
+  }
+  .primary-btn:hover{background:var(--navy-dark);box-shadow:0 12px 28px rgba(8,27,66,.36),inset 0 1px 0 rgba(255,255,255,.12)}
+  .primary-btn:active{transform:scale(.98);box-shadow:0 6px 14px rgba(8,27,66,.24)}
+  .primary-btn:disabled{opacity:.55;cursor:wait}
+  .image-search-btn{
+    position:relative;
+    width:56px;
+    min-width:56px;
+    height:56px;
+    border:1px solid transparent;
+    border-radius:var(--r-orta);
+    background:transparent;
+    color:var(--navy);
+    cursor:pointer;
+    transition:background 120ms var(--ease),border-color 120ms var(--ease),transform 120ms var(--ease);
+  }
+  .image-search-btn:hover{border-color:var(--line-strong);background:var(--navy-soft)}
+  .image-search-btn:active{transform:scale(.96)}
+  .image-search-btn:disabled{opacity:.45;cursor:wait}
+  .image-search-btn::before{
+    content:"";
+    position:absolute;
+    left:16px;
+    top:18px;
+    width:22px;
+    height:17px;
+    border:2px solid currentColor;
+    border-radius:5px;
+  }
+  .image-search-btn::after{
+    content:"";
+    position:absolute;
+    left:23px;
+    top:22px;
+    width:8px;
+    height:8px;
+    border:2px solid currentColor;
+    border-radius:50%;
+    box-shadow:-5px -7px 0 -3px currentColor;
+  }
+  .visual-search{
+    width:min(100%,800px);
+    margin:10px auto 0;
+    padding:9px 10px;
+    border:1px solid rgba(11,37,89,.13);
+    border-radius:var(--r-orta);
+    background:rgba(255,255,255,.82);
+    display:grid;
+    grid-template-columns:48px minmax(0,1fr) auto;
+    align-items:center;
+    gap:10px;
+    text-align:left;
+    box-shadow:0 8px 24px rgba(11,37,89,.08);
+    animation:previewIn 180ms var(--ease) both;
+  }
+  @keyframes previewIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+  .visual-search img{
+    width:48px;
+    height:48px;
+    border-radius:10px;
+    object-fit:cover;
+    background:var(--surface-2);
+  }
+  .visual-search-copy{min-width:0}
+  .visual-search-copy strong,
+  .visual-search-copy span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .visual-search-copy strong{color:var(--navy);font-size:13px}
+  .visual-search-copy span{margin-top:3px;color:var(--muted);font-size:11.5px}
+  .visual-remove{
+    width:38px;
+    height:38px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--r-pill);
+    background:var(--surface);
+    color:var(--muted);
+    font-size:20px;
+    line-height:1;
+    cursor:pointer;
+  }
+  .visual-remove:hover{border-color:var(--navy);color:var(--navy)}
+  .visual-status{
+    width:min(100%,800px);
+    min-height:22px;
+    margin:7px auto 0;
+    color:var(--muted);
+    font-size:12px;
+    text-align:left;
+  }
+  .visual-status[hidden]{display:none}
+  .visual-status.loading{color:var(--navy)}
+  .visual-status.success{color:#087f5b}
+  .visual-status.error{color:#b42318}
+  .search-panel.is-dragging{border-color:var(--navy);background:var(--navy-soft)}
+
+  .location-row{
+    margin-top:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .location-label{color:var(--muted);font-size:12.5px;font-weight:650}
+  .select-wrap{position:relative}
+  .select-wrap::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    right:14px;
+    width:7px;
+    height:7px;
+    border-right:1.5px solid var(--muted);
+    border-bottom:1.5px solid var(--muted);
+    pointer-events:none;
+    transform:translateY(-70%) rotate(45deg);
+  }
+  .location-row select{
+    min-height:44px;
+    max-width:230px;
+    padding:0 34px 0 14px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--r-pill);
+    appearance:none;
+    background:var(--surface);
+    color:var(--text);
+    font-size:12.5px;
+    box-shadow:0 1px 3px rgba(11,37,89,.06);
+    cursor:pointer;
+  }
+  .location-note{color:var(--muted);font-size:11.5px}
+  .samples{
+    margin-top:16px;
+    display:flex;
+    justify-content:center;
+    gap:7px;
+    flex-wrap:wrap;
+  }
+  .sample{
+    min-height:36px;
+    padding:0 14px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--r-pill);
+    background:var(--surface);
+    color:var(--muted);
+    font-size:12px;
+    box-shadow:0 1px 3px rgba(11,37,89,.05);
+    cursor:pointer;
+    transition:color 120ms var(--ease),border-color 120ms var(--ease),background 120ms var(--ease),box-shadow 120ms var(--ease);
+  }
+  .sample:hover{border-color:var(--navy);background:var(--navy-soft);color:var(--navy);box-shadow:0 3px 8px rgba(11,37,89,.08)}
+  .database-trust{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    min-height:32px;
+    margin:20px 0 0;
+    padding:0 16px;
+    border:1px solid rgba(11,37,89,.10);
+    border-radius:var(--r-pill);
+    background:rgba(255,255,255,.65);
+    color:var(--muted);
+    font-size:12px;
+  }
+  .database-trust strong{color:var(--navy)}
+  /* Namuna so'rovlar va e'lon soni FAQAT bosh sahifada ko'rinadi.
+     Ilgari ikkala qoida ham `display:none` edi — ya'ni kontent yozilgan,
+     lekin hech qachon chiqmagan. Bosh sahifaning bo'shligi qisman
+     shundan edi. */
+  body.is-results .samples,
+  body.is-results .database-trust{display:none}
+
+  /* NATIJA CHIQQANDA REKLAMA YO'QOLADI.
+     2026-08-02 o'lchov: qidiruvdan keyin birinchi karta 1076 px da edi,
+     ekran esa 896 px. Ya'ni xaridor "Topish"ni bosgach natijani emas,
+     "OBER qanday ishlaydi" va "Nega OBER?" jadvalini ko'rardi.
+     Bu bo'limlar tanishtirish uchun — natija bor odamga kerak emas. */
+  body.is-results .qadamlar{display:none}
+
+  /* ── FOOTER ────────────────────────────────────────────────────
+     2026-08-06 audit: sahifa jonli bo'limdan keyin tugab qolardi — aloqa,
+     kompaniya ma'lumoti, maxfiylik sahifalari yo'q edi. Minimal footer:
+     brend, qisqa tavsif, aloqa, sahifalar. Ishonch uchun yetarli. */
+  .footer{
+    background:var(--surface-2);
+    border-top:1px solid var(--line);
+  }
+  .footer-ic{
+    width:min(100% - 36px,var(--content));
+    margin-inline:auto;
+    padding:30px 0 40px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:12px 24px;
+  }
+  .footer-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--navy);
+    font-weight:800;
+    text-decoration:none;
+  }
+  .footer-brand img{width:104px;height:auto;display:block}
+  .footer-tavsif{
+    margin:0;
+    color:var(--muted);
+    font-size:12.5px;
+    max-width:380px;
+  }
+  .footer-sahifalar{
+    margin-left:auto;
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+  }
+  .footer-sahifalar a{
+    padding:8px 10px;
+    border-radius:var(--r-kichik);
+    color:var(--navy);
+    font-size:12.5px;
+    font-weight:700;
+    text-decoration:none;
+  }
+  .footer-sahifalar a:hover{background:var(--navy-soft)}
+  @media (max-width:620px){
+    .footer-sahifalar{margin-left:0;width:100%}
+    .footer-tavsif{order:2;width:100%}
+  }
+
+  /* ── OBER QANDAY ISHLAYDI ─────────────────────────────────────
+     2026-08-08: hero va jonli bo'lim bilan uyg'unlashdi — raqamlar
+     hero CTA kabi gradient (navy→navy-dark) va ko'taruvchi soyada,
+     sarlavhalar navy (jonli h2 bilan bir xil urg'u). */
+  .qadamlar{background:var(--surface);border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line)}
+  .qadam-ic{width:min(100% - 36px,var(--content));margin-inline:auto;
+    padding:52px 0 58px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);
+    gap:clamp(36px,6vw,76px);align-items:start}
+  .qadam-royxat{list-style:none;margin:0;padding:0;display:grid;
+    grid-template-columns:1fr;gap:0}
+  .qadam-royxat li{position:relative;padding:18px 0;display:grid;
+    grid-template-columns:54px minmax(0,1fr);column-gap:16px;align-items:start}
+  .qadam-royxat li+li{border-top:1px solid var(--line)}
+  .qadam-raqam{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:50%;
+    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+    color:#fff;font-weight:800;font-size:15px;
+    box-shadow:0 6px 14px rgba(8,27,66,.22);
+    margin:0;grid-column:1;grid-row:1/3;
+  }
+  .qadam-royxat h3{grid-column:2;margin:0 0 6px;font-size:18px;letter-spacing:-.025em;color:var(--navy)}
+  .qadam-royxat p{grid-column:2;margin:0;color:var(--muted);font-size:13.5px;line-height:1.6;max-width:55ch}
+
+  .farq{margin:0;padding:24px 24px 18px;border:1px solid var(--line);
+    border-radius:var(--r-katta);background:var(--surface-2);box-shadow:var(--shadow-card)}
+  .farq h3{margin:0 0 14px;font-size:20px;letter-spacing:-.025em;color:var(--navy)}
+  .farq-jadval{width:100%;border-collapse:collapse;font-size:13.5px;
+    max-width:620px}
+  .farq-jadval th,.farq-jadval td{padding:9px 10px;text-align:center;
+    border-bottom:1px solid var(--line)}
+  .farq-jadval td:first-child,.farq-jadval th:first-child{
+    text-align:left;color:var(--text)}
+  .farq-jadval th{color:var(--muted);font-size:12px;font-weight:650}
+  .farq-jadval th.biz{color:var(--navy);font-weight:800;font-size:13.5px}
+  .farq-jadval td.biz{color:var(--green);font-weight:800;font-size:15px}
+
+  @media (max-width:760px){
+    .qadam-ic{padding:30px 0 38px;display:grid;grid-template-columns:1fr;gap:28px}
+    .qadam-royxat li{padding:15px 0;grid-template-columns:48px minmax(0,1fr);column-gap:12px}
+    .qadam-raqam{width:36px;height:36px}
+    .farq{padding:20px 16px 14px}
+  }
+
+  /* ── SARALASH VA FILTR ──────────────────────────────────────── */
+  /* Yopishqoqlik TEPA PANELDAN KEYIN boshlanadi.
+     2026-08-02 o'lchov: `top:0` edi va sarlavha paneli (sticky, z-index 20)
+     saralash qatorini butunlay yopib qo'yardi — tugmalar ko'rinmasdi ham,
+     bosilmasdi ham. Panel balandligi bitta o'zgaruvchida turadi. */
+  /* Boshqaruv paneli — sticky. Yopishqoqlik TEPA PANELDAN KEYIN
+     boshlanadi (2026-08-02 o'lchov: `top:0` edi va panel butunlay
+     yopib turardi). Panel balandligi --panel-h o'zgaruvchisida.
+     2026-08-08: natija soni navy (hero h1 bilan birlik), saralash
+     tugmalari chiplar uslubida, narx filtri bitta pill — hero'dagi
+     qidiruv qutisi bilan bir xil til. */
+  /* 2026-08-08: qator alohida blokda — .boshqaruv-yopishqoq (soni +
+     saralash), filtr .boshqaruv'da. Desktop'da ikkalasi sticky va
+     ustma-ust turadi (avvalgi bitta panel holati saqlanadi); telefonda
+     faqat qator sticky, filtr ko'tarilib ketadi (quyida @media).
+     .boshqaruv-yopishqoq balandligi o'zgaruvchida — filtr sticky top
+     shunga mos turadi. */
+  .boshqaruv-yopishqoq{
+    position:sticky;top:var(--panel-h,73px);z-index:6;
+    padding:12px 0 8px;
+    background:var(--bg);
+  }
+  .boshqaruv{
+    position:sticky;top:calc(var(--panel-h,73px) + var(--boshqaruv-bar,58px));z-index:5;
+    margin:0 0 16px;padding:12px 0 12px;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+    box-shadow:0 10px 24px rgba(11,37,89,.05);
+  }
+  .boshqaruv-qator{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:14px;flex-wrap:wrap;
+  }
+  .topildi{margin:0;font-size:13px;color:var(--muted)}
+  .topildi strong{color:var(--navy);font-size:17px;font-weight:780;letter-spacing:-.02em}
+  .tartiblar{display:flex;gap:6px;flex-wrap:wrap}
+  .tartib-btn{
+    min-height:38px;padding:0 15px;border-radius:var(--r-pill);
+    border:1px solid var(--line-strong);background:var(--surface);
+    box-shadow:0 1px 3px rgba(11,37,89,.05);
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    cursor:pointer;white-space:nowrap;transition:color 120ms var(--ease),border-color 120ms var(--ease),background 120ms var(--ease),box-shadow 120ms var(--ease);
+  }
+  .tartib-btn:hover{border-color:var(--navy);color:var(--navy);box-shadow:0 3px 8px rgba(11,37,89,.08)}
+  .tartib-btn.tanlangan{
+    background:var(--navy);border-color:var(--navy);color:#fff;font-weight:750;
+    box-shadow:0 4px 10px rgba(8,27,66,.20);
+  }
+  .filtrlar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+  /* Narx filtri — bitta pill: "Narx [dan] — [gacha]". Hero'dagi qidiruv
+     qutisi kabi oq sirt, ichida label va ikkita maydon. */
+  .filtr-narx{
+    display:flex;align-items:center;
+    min-height:38px;
+    border:1px solid var(--line-strong);border-radius:var(--r-pill);
+    background:var(--surface);
+    box-shadow:0 1px 3px rgba(11,37,89,.05);
+    overflow:hidden;
+    transition:border-color 120ms var(--ease),box-shadow 120ms var(--ease);
+  }
+  .filtr-narx:focus-within{
+    border-color:var(--navy);
+    box-shadow:0 0 0 3px rgba(11,37,89,.08);
+  }
+  .filtr-narx-bosh{
+    padding:0 4px 0 14px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:650;
+    white-space:nowrap;
+  }
+  .filtr-narx input{
+    width:72px;min-height:36px;padding:0 6px;
+    border:0;outline:0;
+    background:transparent;
+    font:inherit;font-size:13px;color:var(--text);
+  }
+  .filtr-narx input::placeholder{color:#989ea8}
+  .filtr-narx-tire{
+    width:14px;height:1px;flex:none;
+    background:var(--line-strong);
+  }
+  .byudjet-eslatma{
+    margin:10px 0 0;padding:9px 14px;
+    border:1px solid rgba(11,37,89,.12);border-radius:var(--r-kichik);
+    background:var(--navy-soft);
+    font-size:12.5px;color:var(--muted);line-height:1.5;
+  }
+  .byudjet-eslatma strong{color:var(--navy)}
+  .byudjet-ochir{
+    padding:0;border:0;background:none;color:var(--navy);
+    font:inherit;font-size:12.5px;font-weight:700;
+    text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+  @media (max-width:620px){
+    /* 2026-08-08: telefonda endi FAQAT saralash qatori yopishqoq.
+       Avval butun panel static edi — scroll'da saralash ko'tarilib
+       ketardi, qaytish uchun tepaga qaytish kerak edi. Butun panelni
+       sticky qilish ham bo'lmaydi (ustunga tizilganda ~150 px — tepa
+       panel bilan birga 667 px ekranning uchdan birini yeydi).
+       Yechim: .boshqaruv-yopishqoq (soni + tugmalar) bitta yupqa
+       qatorda sticky — ~46 px. Narx filtri alohida blokda, normal
+       oqimda qoladi, scroll'da ko'tarilib ketadi.
+       MUHIM: sticky o'z ota-onasi chegarasidan chiqmaydi — qator
+       alohida div (ota-onasi main, uzun), filtr alohida section. */
+    .boshqaruv-yopishqoq{
+      /* top:0 — telefonda topbar absolute (2026-08-04 qaror), scroll'da
+         ko'tarilib ketadi. Shuning uchun bar ekran tepasiga yopishadi.
+         top:65px bo'lsa, topbar ketgach 65px bo'sh joy qolib ketardi. */
+      position:sticky;top:0;z-index:6;
+      margin:0 calc(-1 * var(--ich,14px));
+      padding:10px var(--ich,14px);
+      background:var(--bg);
+      border-bottom:1px solid var(--line);
+      box-shadow:0 10px 20px -16px rgba(11,37,89,.14);
+    }
+    .boshqaruv{position:static;top:auto;padding:2px 0 12px}
+    .boshqaruv-qator{
+      flex-direction:row;align-items:center;gap:12px;flex-wrap:nowrap;
+    }
+    .topildi{flex:0 0 auto;margin:0;font-size:12px;white-space:nowrap}
+    .topildi strong{font-size:14px}
+    .tartiblar,.filtrlar{
+      overflow-x:auto;flex-wrap:nowrap;
+      -webkit-overflow-scrolling:touch;
+      /* Kulrang skroll chizig'i o'rniga o'ngdagi yumshoq soya:
+         "yana bor, suring" degani, lekin joy egallamaydi. */
+      scrollbar-width:none;
+      -webkit-mask-image:linear-gradient(to right,#000 88%,transparent);
+      mask-image:linear-gradient(to right,#000 88%,transparent);
+    }
+    .tartiblar{flex:1 1 auto}
+    .filtrlar{margin-top:10px;width:100%}
+    .tartiblar::-webkit-scrollbar,
+    .filtrlar::-webkit-scrollbar{display:none}
+  }
+
+  /* ── SOTUVCHILARDAN SO'RASH ─────────────────────────────────────
+     2026-08-02 o'lchov: bu blok sahifaning 10 072-pikselida edi —
+     60 ta e'londan keyin. Hech kim u yerga yetib bormasdi, ya'ni
+     OBER'ning teskari bozor qismi amalda ishlamayotgan edi.
+     Endi uch joyda, lekin JIM: bir xil ko'k tugma, qisqa jumla,
+     hech qanday bezak yoki undov belgisi. Yuborilgach hammasi
+     yo'qoladi va o'rniga bitta holat kartasi qoladi. */
+  .sora-chiziq,
+  .sora-orta{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:13px 16px;
+    border:1px solid #cbd5e5;border-radius:var(--r-orta);
+    background:var(--navy-soft);
+  }
+  .sora-chiziq{margin:0 0 16px}
+  .sora-orta{grid-column:1/-1;margin:4px 0}
+  .sora-chiziq p,.sora-orta p{
+    margin:0;font-size:13.5px;font-weight:640;color:var(--navy)}
+  .sora-btn{
+    min-height:42px;padding:0 20px;
+    border:0;border-radius:var(--r-kichik);background:var(--navy);
+    color:#fff;font:inherit;font-size:13px;font-weight:730;
+    cursor:pointer;white-space:nowrap;transition:background .12s;
+  }
+  .sora-btn:hover{background:#0a1f47}
+  .sora-btn[disabled]{opacity:.6;cursor:default}
+  /* IXTIYORIY ISM (2026-08-08) — xaridor yozsa, sotuvchi chatda
+     'Xaridor · Ism' deb ko'radi. Bir tegishlik jarayon buzilmaydi:
+     maydon bo'sh qolsa ham so'rov yuboriladi. */
+  .sora-ism-qator{
+    display:flex;align-items:center;gap:10px;flex:1;
+    justify-content:flex-end;
+  }
+  .sora-ism-input{
+    flex:1;min-width:0;max-width:230px;min-height:42px;padding:0 13px;
+    border:1px solid var(--line-strong);border-radius:var(--r-kichik);
+    background:#fff;font:inherit;font-size:13px;color:var(--text);
+  }
+  .sora-ism-input:focus{border-color:var(--navy);outline:none;
+    box-shadow:0 0 0 3px rgba(34,94,190,.10)}
+  @media (max-width:620px){
+    .sora-ism-qator{flex-direction:column;align-items:stretch;width:100%}
+    .sora-ism-input{max-width:none}
+    .sora-ism-qator .sora-btn{width:100%}
+  }
+  /* ISM OYNASI — telefonda suzuvchi tugma birinchi bosilganda.
+     Keyingi safar ism eslab qolinadi va tugma yana bir tegishda
+     yuboradi. */
+  .ism-oyna{
+    position:fixed;inset:0;z-index:70;display:grid;place-items:end center;
+    background:rgba(8,27,66,.42);padding:16px;
+  }
+  .ism-oyna[hidden]{display:none}
+  .ism-oyna-ichida{
+    position:relative;
+    width:min(100%,430px);padding:22px;border-radius:var(--r-katta);
+    background:#fff;box-shadow:0 24px 60px rgba(8,27,66,.28);
+    animation:ism-in 200ms var(--ease);
+  }
+  .ism-oyna-yopish{
+    position:absolute;top:10px;right:10px;width:32px;height:32px;
+    border:0;border-radius:50%;background:transparent;color:var(--muted);
+    font-size:13px;cursor:pointer;
+  }
+  .ism-oyna-yopish:hover{background:#f0f0ee;color:var(--navy)}
+  @keyframes ism-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .ism-oyna-ichida h3{margin:0 0 6px;font-size:18px;letter-spacing:-.02em}
+  .ism-oyna-ichida p{margin:0 0 16px;color:var(--muted);font-size:13px}
+  .ism-oyna-ichida input{
+    width:100%;min-height:48px;padding:0 14px;margin-bottom:12px;
+    border:1px solid var(--line-strong);border-radius:var(--r-kichik);
+    font:inherit;font-size:14px;outline:0;
+  }
+  .ism-oyna-ichida input:focus{border-color:var(--navy);
+    box-shadow:0 0 0 3px rgba(34,94,190,.10)}
+  .ism-oyna-ichida .sora-btn{width:100%;min-height:48px;font-size:14.5px}
+
+  /* Telefonda: tepadagi qator yo'q, pastda bitta tugma suzib turadi.
+     Ekranda allaqachon so'rash tugmasi ko'rinib tursa — yashirinadi,
+     ya'ni bir vaqtda ikkita bir xil tugma chiqmaydi. */
+  .tez-sora{
+    position:fixed;left:14px;right:14px;bottom:14px;z-index:30;
+    display:block;opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateY(calc(100% + 24px));
+    transition:opacity 180ms var(--ease),transform 220ms var(--ease),visibility 180ms;
+  }
+  .tez-sora .sora-btn{
+    width:100%;min-height:50px;font-size:14.5px;
+    box-shadow:0 12px 32px rgba(8,27,66,.30);
+  }
+  .tez-sora.korin{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+  @media (min-width:621px){.tez-sora{display:none!important}}
+  @media (max-width:620px){
+    .sora-chiziq{display:none}
+    .sora-orta{flex-direction:column;align-items:stretch;gap:10px;padding:14px}
+    .sora-orta .sora-btn{width:100%}
+
+    /* TELEFONDA YOPISHQOQ ELEMENT — BITTA.
+       2026-08-04 o'lchov (412x674): natija sahifasida ikkitasi bor edi —
+       tepa panel (sticky, 65 px) va suzuvchi so'rash tugmasi (fixed,
+       50 px). Birgalikda 115 px, ya'ni ekranning 17% i doimiy band.
+       674 px li telefonda bu bitta karta demak.
+
+       Qaysi biri qoladi? Suzuvchi tugma. Tepa panelda logotip, til va
+       ikkita havola bor — ular ro'yxatni ko'rayotganda kerak emas,
+       tepaga surish bilan qaytadi. Suzuvchi tugma esa OBER'ni oddiy
+       e'lonlar ro'yxatidan ajratib turadigan yagona harakat: indeksda
+       topilmasa, sotuvchilardan so'rash. U yo'qolsa mahsulotning
+       teskari bozor qismi telefonda umuman ishlamaydi.
+
+       `body.is-results .topbar` ni bekor qilish uchun tanlagich xuddi
+       shunday og'ir bo'lishi shart — `.topbar` yolg'iz o'zi yetmaydi. */
+    body.is-results .topbar{position:absolute}
+  }
+
+  .yana-qator{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    margin:26px 0 8px;
+  }
+  .yana-btn{
+    min-height:46px;padding:0 26px;
+    border:1px solid var(--line-strong);border-radius:var(--r-kichik);background:#fff;
+    font:inherit;font-size:13.5px;font-weight:720;color:var(--navy);
+    cursor:pointer;transition:.12s;
+  }
+  .yana-btn:hover{border-color:var(--navy);background:var(--navy-soft)}
+  .yana-btn[disabled]{opacity:.6;cursor:default}
+  .yana-izoh{color:var(--muted);font-size:12.5px}
+
+  /* ── HOZIR BOZORDA — haqiqiy e'lonlar lentasi ───────────────────
+     2026-08-08: hero bilan birlikda ko'rinishi uchun — sarlavha
+     hero h1 bilan bir xil navy urg'uda, yonida "yangi" ma'nosidagi
+     yashil nuqta (rang qoidasi: yashil faqat ma'no tashiganda).
+     Hero pastki navy nuri jonli bo'limga yumshoq oqib o'tadi —
+     chegara chizig'i yo'q (2026-08-08: 1px border-top olib
+     tashlandi, hero bilan bo'lim bitta uzluksiz blokdek ko'rinadi).
+     Kartalar asosiy natija kartalari bilan bir xil radiusda (r-orta). */
+  .jonli{position:relative;background:var(--bg)}
+  body.is-results .jonli{display:none}
+  /* Hero'dagi pastki navy nurining davomi — bo'lim boshida yumshoq
+     yorug'lik. `z-index:0` + `.jonli-ic` ustida `z-index:1` —
+     yorug'lik kartalarning ustiga chiqmaydi. */
+  .jonli::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:150px;
+    z-index:0;
+    background:radial-gradient(46rem 20rem at 50% -20%, rgba(11,37,89,.07) 0%, transparent 62%);
+    pointer-events:none;
+  }
+  .jonli-ic{position:relative;z-index:1;width:min(100% - 36px,var(--content));
+    margin-inline:auto;padding:26px 0 34px}
+  .jonli-bosh{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .jonli-bosh h2{margin:0;font-size:19px;letter-spacing:-.02em;color:var(--navy);font-weight:750}
+  /* Yashil nuqta — "hozir qo'shilmoqda" ma'nosi. `oberPulse` allaqachon
+     jonli qidiruvda ishlatiladi; transform+opacity — ruxsat etilgan. */
+  .jonli-nuqta{
+    display:inline-block;
+    width:9px;height:9px;border-radius:50%;
+    background:var(--green);
+    margin-right:8px;
+    vertical-align:2px;
+    animation:oberPulse 1.6s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion:reduce){.jonli-nuqta{animation:none;opacity:.75}}
+  .jonli-bosh p{margin:0;color:var(--muted);font-size:12.5px}
+  /* Gorizontal lenta: ekranda nechta sig'sa shuncha, qolgani suriladi.
+     To'r qilib qo'ysak, kam e'londa bo'sh katak qoladi — bu esa
+     "rejalashtirmagan" degan taassurot beradi. */
+  .jonli-lenta{
+    display:grid;grid-auto-flow:column;grid-auto-columns:170px;gap:12px;
+    overflow-x:auto;padding-bottom:6px;
+    scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(to right,#000 92%,transparent);
+    mask-image:linear-gradient(to right,#000 92%,transparent);
+  }
+  .jonli-lenta::-webkit-scrollbar{display:none}
+  .jonli-skeleton{
+    height:195px;border:1px solid rgba(10,43,99,.08);border-radius:var(--r-orta);
+    background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(225,233,244,.72));
+    box-shadow:var(--shadow-card)
+  }
+  .jonli-karta{
+    display:block;border:1px solid var(--line);border-radius:var(--r-orta);
+    background:var(--surface);overflow:hidden;text-decoration:none;
+    color:inherit;box-shadow:var(--shadow-card);
+    transition:border-color .12s,transform .12s,box-shadow .12s;
+  }
+  .jonli-karta:hover{border-color:var(--line-strong);transform:translateY(-2px);
+    box-shadow:var(--shadow-hover)}
+  .jonli-karta img{width:100%;height:118px;object-fit:cover;display:block;
+    background:#eef0f3;transition:transform 200ms var(--ease)}
+  .jonli-karta:hover img{transform:scale(1.015)}
+  .jonli-tana{padding:9px 10px 11px}
+  .jonli-nom{
+    margin:0 0 4px;font-size:12.5px;line-height:1.3;font-weight:600;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;min-height:32px;
+  }
+  .jonli-narx{margin:0;font-size:13.5px;font-weight:750;letter-spacing:-.01em}
+  .jonli-joy{margin:3px 0 0;font-size:11px;color:var(--muted)}
+  @media (max-width:620px){
+    .jonli-ic{width:min(100% - 28px,var(--content));padding:18px 0 24px}
+    .jonli-lenta{grid-auto-columns:144px;gap:10px}
+    .jonli-karta img{height:100px}
+  }
+
+  .responses-wrap,
+  .results{width:min(100% - 36px,var(--content));margin-inline:auto}
+  .responses-wrap:empty{display:none}
+  .responses-wrap{margin-top:24px}
+  .return-card{
+    padding:18px;
+    border:1px solid #b9dec9;
+    border-radius:var(--radius);
+    background:var(--green-soft);
+  }
+  .return-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .return-head h2{margin:0;font-size:16px;letter-spacing:-.01em}
+
+  /* YIG'ILGAN javob paneli — bitta qator, bosilsa ochiladi */
+  .return-card{position:relative}
+  .return-card.compact{padding:0}
+  .return-bar{
+    width:100%;display:flex;align-items:center;gap:10px;
+    padding:14px 46px 14px 18px;
+    background:transparent;border:0;cursor:pointer;
+    font:inherit;text-align:left;color:var(--text);
+  }
+  .return-nuqta{
+    width:8px;height:8px;border-radius:50%;background:#0F7A4A;flex:none;
+    animation:oberPulse 1.6s ease-in-out infinite;
+  }
+  .return-matn{flex:1;min-width:0;font-size:13.5px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .return-koc{
+    flex:none;font-size:12px;font-weight:750;color:var(--navy);
+    border:1px solid #b9dec9;border-radius:var(--r-pill);padding:5px 12px;background:#fff;
+  }
+  .return-yopish{position:absolute;top:4px;right:4px;margin:0}
+  .return-card .answer-list{padding:0 18px 16px}
+  .quiet-btn{
+    min-width:44px;min-height:44px;margin:-10px -10px 0 0;border-radius:50%;
+    background:transparent;color:var(--muted);font-size:20px;cursor:pointer
+  }
+
+  .results{
+    min-height:260px;
+    /* Pastdagi 72 px suzuvchi tugma uchun: u 50 px + 14 px chekka = 64 px
+       joy egallaydi. Busiz ro'yxatning oxirgi elementi ("Yana 60 ta
+       ko'rsatish") tugma ostida qolib ketadi va bosib bo'lmaydi.
+       2026-08-04: telefon uchun `padding-bottom:88px` @media ichida
+       yozilgan edi, LEKIN u faylda YUQORIROQDA turardi va shu qator uni
+       bekor qilardi. Ya'ni tuzatish yozilgan, ammo hech qachon
+       ishlamagan. Endi bitta joyda, hamma kenglik uchun. */
+    padding:30px 0 72px;
+  }
+  .results:empty{display:none}
+  .result-enter{animation:rise 220ms var(--ease) both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .summary-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.55fr) minmax(260px,.75fr);
+    gap:16px;
+    margin-bottom:16px;
+    /* Kartalar mazmuniga qarab bo'ysunsin. Ilgari cho'zilib ketardi va
+       "So'rovni tushundik" kartasining ichida katta bo'shliq qolardi —
+       buzilgandek ko'rinardi (2026-08-02 vizual tekshiruv). */
+    align-items:start;
+  }
+  .price-card,
+  .understood-card,
+  .request-card,
+  .empty-card{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--surface);
+    box-shadow:var(--shadow-card);
+  }
+  .price-card{padding:24px}
+  .section-kicker{
+    margin:0 0 8px;color:var(--muted);font-size:11.5px;font-weight:750;
+    letter-spacing:.08em;text-transform:uppercase
+  }
+  .price-range{
+    margin:0;
+    color:var(--navy);
+    font-size:clamp(25px,4vw,38px);
+    line-height:1.08;
+    letter-spacing:-.04em;
+    font-weight:760;
+  }
+  .price-caption{margin:7px 0 0;color:var(--muted);font-size:12.5px}
+  .histogram{
+    height:74px;
+    margin:24px 0 8px;
+    padding-top:8px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:flex-end;
+    gap:5px;
+  }
+  .histogram span{
+    flex:1;
+    min-height:5px;
+    border-radius:4px 4px 0 0;
+    background:var(--navy);
+    opacity:.18;
+  }
+  .histogram span.peak{opacity:1}
+  .hist-axis{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}
+  .price-metrics{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:22px;
+  }
+  .metric{padding-top:12px;border-top:1px solid var(--line)}
+  .metric span{display:block;color:var(--muted);font-size:11px}
+  .metric strong{display:block;margin-top:2px;font-size:13.5px}
+
+  .understood-card{padding:12px 16px}
+  .understood-card h2{margin:0 0 8px;font-size:18px;letter-spacing:-.02em}
+  .understood-copy{margin:0;color:var(--muted);font-size:12.5px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .empty-card .chips{margin-top:20px;justify-content:center}
+  .chip{
+    min-height:30px;
+    padding:5px 10px;
+    border-radius:var(--r-pill);
+    background:var(--navy-soft);
+    color:var(--navy);
+    font-size:11.5px;
+    font-weight:720;
+  }
+  .chip.cut{background:#f2f2f0;color:#575d67}
+
+  .request-card{
+    margin-bottom:24px;
+    padding:22px;
+    display:grid;
+    grid-template-columns:minmax(200px,.7fr) minmax(0,1.3fr);
+    gap:24px;
+    align-items:center;
+    border-color:#cbd5e5;
+  }
+  .request-card h2{margin:0 0 6px;font-size:18px;letter-spacing:-.02em}
+  .request-card p{margin:0;color:var(--muted);font-size:12.5px}
+  .request-fields{display:grid;grid-template-columns:1.3fr .8fr .8fr auto;gap:8px}
+  /* IKKINCHI QADAM — bitta tegish, shakl yo'q */
+  .request-actions{display:grid;gap:8px;justify-items:start;align-content:center}
+  .request-actions .send-btn{min-width:220px}
+
+  /* JONLI QATLAM — ko'rinishi shart, aks holda biz OLX'ning nusxasimiz */
+  .live-wait{
+    grid-column:1/-1;
+    display:flex;align-items:center;gap:8px;
+    margin-top:4px;padding:10px 14px;
+    border-radius:var(--r-kichik);background:#eef2f9;
+    color:var(--navy);font-size:12.5px;font-weight:640;
+  }
+  .live-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--navy);
+    animation:oberPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes oberPulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.live-dot{animation:none;opacity:.7}}
+
+  .notify-offer{
+    grid-column:1/-1;
+    display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    margin-top:10px;padding:12px 14px;
+    border:1px dashed #cbd5e5;border-radius:var(--r-kichik);
+    font-size:12.5px;color:var(--muted);
+  }
+  .notify-yes{
+    min-height:40px;padding:0 16px;
+    border:1px solid var(--navy);border-radius:var(--r-kichik);
+    background:#fff;color:var(--navy);
+    font:inherit;font-weight:700;cursor:pointer;
+  }
+  .notify-yes:hover{background:var(--navy);color:#fff}
+  .field{
+    width:100%;
+    min-width:0;
+    min-height:48px;
+    padding:0 13px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--r-kichik);
+    background:#fff;
+    color:var(--text);
+    outline:0;
+  }
+  .field:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,37,89,.07)}
+  .send-btn{
+    min-height:48px;
+    padding:0 18px;
+    border-radius:var(--r-kichik);
+    background:var(--navy);
+    color:#fff;
+    font-weight:740;
+    cursor:pointer;
+  }
+  .form-note{grid-column:1/-1;margin:0!important;min-height:18px}
+  .form-note.error{color:var(--red)}
+  .request-card.done{
+    display:block;
+    border-color:#b9dec9;
+    background:var(--green-soft);
+  }
+  .request-card.done h2{color:var(--green)}
+
+  .list-head{
+    margin:0 0 14px;
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .list-head h2{margin:0;font-size:20px;letter-spacing:-.025em}
+  .list-head p{margin:0;color:var(--muted);font-size:12.5px}
+  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  /* Karta ODATIY HOLATDA ham fondan ko'tarilib turadi. Ilgari faqat
+     hover'da soya bor edi - ya'ni telefonda hech qachon. Sahifa yassi
+     ko'rinishining asosiy sababi shu edi. */
+  .card{
+    min-width:0;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--surface);
+    box-shadow:var(--shadow-card);
+    transition:transform 120ms var(--ease),box-shadow 120ms var(--ease),border-color 120ms var(--ease);
+  }
+  .card:hover{transform:translateY(-2px);border-color:var(--line-strong);
+    box-shadow:var(--shadow-hover)}
+  .card:active{transform:scale(.98)}
+  .card.near{border-color:#acd4bd}
+  .card-link{display:block;color:inherit;text-decoration:none}
+  .media{
+    position:relative;
+    aspect-ratio:4/3;
+    overflow:hidden;
+    background:#f0f1f3;
+  }
+  .media img{width:100%;height:100%;display:block;object-fit:cover;transition:transform 200ms var(--ease)}
+  .card:hover .media img{transform:scale(1.015)}
+  .no-photo{
+    width:100%;
+    height:100%;
+    display:grid;
+    place-items:center;
+    background-color:#f2f3f5;
+    background-image:url("/brend/icon.png");
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:78px;
+  }
+  .no-photo::after{
+    content:"rasm yo‘q";
+    margin-top:106px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:650;
+  }
+  .card-body{padding:15px}
+  .card-title{
+    min-height:41px;
+    margin:0 0 11px;
+    overflow:hidden;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    font-size:14.5px;
+    line-height:1.4;
+    font-weight:650;
+  }
+  .card-price{font-size:19px;font-weight:780;letter-spacing:-.025em}
+  .negotiable{margin-left:5px;color:#9a6200;font-size:10.5px;font-weight:720}
+  .card-meta{
+    margin-top:11px;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    align-items:center;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .meta-location{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .meta-location.near{color:var(--green);font-weight:700}
+  .badge{padding:3px 7px;border-radius:var(--r-pill);background:#f0f0ee;font-size:10px;font-weight:750}
+  /* Telegram belgisi asosiy ko'k rangdan foydalanadi. Bugun men bu yerga
+     beshinchi urg'u rangi (#1f6fa8) qo'shgan edim - o'z qoidamizni o'zim
+     buzdim. Bitta palitra, bitta urg'u. */
+  .badge.tg{background:var(--navy-soft);color:var(--navy);font-weight:750}
+  .badge.shop{background:var(--green-soft);color:var(--green)}
+  .badge.new{background:var(--amber-soft);color:#8d5b00}
+
+  .empty-card{
+    padding:42px 24px;
+    text-align:center;
+  }
+  .empty-mark{
+    width:94px;height:94px;margin:0 auto 20px;border-radius:var(--r-katta);
+    background:url("/brend/icon.png") center/cover no-repeat;
+    box-shadow:0 10px 30px rgba(8,27,66,.12)
+  }
+  .empty-card h2{margin:0 0 8px;font-size:24px;letter-spacing:-.03em}
+  .empty-card>p{max-width:480px;margin:0 auto;color:var(--muted);font-size:13.5px}
+  .empty-card>.chips{justify-content:center;margin-top:18px}
+  .empty-card .request-card{margin:28px auto 0;max-width:950px;text-align:left}
+  .error-box{
+    padding:18px;border:1px solid #efc6c1;border-radius:var(--radius);
+    background:#fdf0ef;color:#842b21
+  }
+  .error-box strong{display:block;margin-bottom:5px;color:#702119;font-size:15px}
+  .error-box p{margin:0;max-width:62ch;font-size:13.5px;line-height:1.5}
+  .error-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:14px}
+  .retry-btn{
+    min-height:40px;padding:0 15px;border:0;border-radius:var(--r-kichik);
+    background:var(--navy);color:#fff;font:inherit;font-size:12.5px;font-weight:750;
+    cursor:pointer;transition:background 140ms var(--ease),transform 140ms var(--ease)
+  }
+  .retry-btn:hover{background:var(--navy-dark);transform:translateY(-1px)}
+
+  .skeleton-summary{
+    display:grid;grid-template-columns:1.55fr .75fr;gap:16px;margin-bottom:16px
+  }
+  .skeleton-card,
+  .skeleton-tile{
+    overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:#fff
+  }
+  .skeleton-card{height:278px;padding:24px}
+  .skeleton-tile{height:330px}
+  .skeleton-line,.skeleton-image{
+    position:relative;overflow:hidden;border-radius:var(--r-kichik);background:#eceeF1
+  }
+  .skeleton-line::after,.skeleton-image::after{
+    content:"";position:absolute;inset:0;
+    background:#f6f7f8;
+    animation:skeleton-fade 1.1s ease-in-out infinite alternate
+  }
+  @keyframes skeleton-fade{to{opacity:.2}}
+  .skeleton-line{height:14px;margin-bottom:12px}
+  .skeleton-line.big{width:62%;height:34px;margin-top:18px}
+  .skeleton-line.short{width:42%}
+  .skeleton-image{height:190px;border-radius:0}
+  .skeleton-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .skeleton-tile .skeleton-line{margin:14px}
+
+  .answer-list{margin-top:14px;display:grid;gap:8px}
+  .answer-heading{
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding:2px 2px 5px;color:var(--muted);font-size:11.5px
+  }
+  .answer-heading strong{color:var(--green);font-size:13px;font-weight:780}
+  .answer{
+    padding:13px 14px;
+    border:1px solid #b9dec9;
+    border-radius:var(--r-kichik);
+    background:#fff;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:12px;
+    align-items:center;
+  }
+  .answer.flash{animation:answer-flash 400ms var(--ease)}
+  @keyframes answer-flash{0%{background:#ccebd9}100%{background:#fff}}
+  .answer-price{font-size:17px;font-weight:780}
+  .answer-meta{margin-top:3px;color:var(--muted);font-size:12px}
+  .answer-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  /* Qo'ng'iroq — ASOSIY harakat, shuning uchun to'ldirilgan navy.
+     Yozish — ikkilamchi, kontur. */
+  .call-btn{
+    min-height:44px;padding:0 16px;border:0;border-radius:var(--r-kichik);
+    background:var(--navy);color:#fff;
+    font:inherit;font-size:12.5px;font-weight:780;
+    cursor:pointer;white-space:nowrap;
+    display:inline-flex;align-items:center;text-decoration:none;
+  }
+  .call-btn:hover{background:var(--navy-dark)}
+  .call-ready{letter-spacing:.01em}
+  .answer-open{
+    min-height:44px;padding:0 13px;border-radius:var(--r-kichik);
+    border:1px solid var(--line-strong);background:#fff;
+    color:var(--navy);text-decoration:none;display:inline-flex;align-items:center;
+    font-size:11.5px;font-weight:780;white-space:nowrap
+  }
+  .answer-open:hover{border-color:var(--navy)}
+
+  @media (max-width:900px){
+    .summary-grid,.skeleton-summary{grid-template-columns:1fr}
+    .request-card{grid-template-columns:1fr}
+    .request-fields{grid-template-columns:1fr 1fr}
+    .request-fields .field:first-child{grid-column:1/-1}
+    .cards,.skeleton-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:600px){
+    .topbar-inner{width:min(100% - 28px,var(--content));min-height:64px}
+    .brand,.brand img{width:86px}
+    .top-actions{gap:6px}
+    .messages-link{padding-inline:9px}
+    .seller-link{font-size:12px;gap:5px}
+    .desktop-label{display:none}.mobile-label{display:inline}
+    /* Telefonda ham hero butun ekranni egallamaydi. Bu qoida desktop
+       tuzatilgandan keyin ham eski holida qolib ketgan edi: 100svh va
+       390 px pastki to'ldirma — ya'ni telefonda muammo saqlanib
+       turgandi. Media so'rovlarni birga tekshirish kerak. */
+    .hero{padding:60px 14px 24px}
+    .hero::before{
+      background:
+        linear-gradient(180deg,rgba(244,248,253,.86),rgba(241,245,250,.96)),
+        url("/brend/ober-market-street-mobile.webp") center 45%/cover no-repeat,
+        linear-gradient(#f4f7fc,var(--bg));
+    }
+    body.is-results .hero{padding:22px 14px 24px}
+    .hero h1{font-size:clamp(28px,8.5vw,32px)}
+    body.is-results .hero h1{font-size:18px}
+    .hero-copy{font-size:14.5px;margin-bottom:20px}
+    .search-panel{border-radius:var(--r-orta);padding:6px}
+    .search-icon{width:40px;min-width:40px}
+    .search-panel input{height:52px;font-size:16px}
+    .image-search-btn{width:52px;min-width:52px;height:52px;border-radius:var(--r-kichik)}
+    .image-search-btn::before{left:14px;top:16px}
+    .image-search-btn::after{left:21px;top:20px}
+    .primary-btn{min-width:88px;min-height:52px;padding:0 16px;border-radius:var(--r-kichik)}
+    .location-row{align-items:stretch}
+    .location-label,.location-note{width:100%;text-align:center}
+    .select-wrap{flex:1;min-width:0}
+    .location-row select{width:100%;max-width:none}
+    .samples{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:-14px;padding:0 14px 5px;scrollbar-width:none}
+    .samples::-webkit-scrollbar{display:none}
+    .sample{flex:0 0 auto}
+    .database-trust{max-width:100%;padding:6px 12px;min-height:34px;line-height:1.35}
+    .database-trust strong{white-space:nowrap}
+    .responses-wrap,.results{width:min(100% - 28px,var(--content))}
+    .results{padding-top:20px}
+    .price-card{padding:18px}
+
+    /* TELEFONDA BIRINCHI EKRANDA E'LON KO'RINSIN.
+       2026-08-02 o'lchov (390 px): birinchi karta 1010 px da edi, ekran
+       841 px. Ya'ni qidirgan odam bitta ham mahsulot ko'rmasdi. */
+    .understood-card{padding:10px 12px}
+    .boshqaruv{padding:8px 0}
+    .boshqaruv .topildi{font-size:13px}
+    .filtrlar{margin-top:7px}
+    .tartib-btn{
+      height:34px;min-height:34px;padding:0 12px;font-size:12px}
+    .filtr-narx{min-height:34px;height:34px}
+    .filtr-narx input{width:60px;min-height:32px;font-size:12px}
+    .filtr-narx-bosh{padding-left:12px;font-size:11.5px}
+    .price-metrics{grid-template-columns:1fr 1fr}
+    .price-metrics .metric:last-child{grid-column:1/-1}
+    .request-card{padding:18px;gap:18px}
+    .request-fields{grid-template-columns:1fr}
+    .request-fields .field:first-child{grid-column:auto}
+    .cards,.skeleton-grid{grid-template-columns:1fr}
+    .list-head{align-items:flex-start;flex-direction:column;gap:3px}
+    .card{display:grid;grid-template-columns:124px 1fr}
+    .card-link{display:contents}
+    .media{height:100%;min-height:150px;aspect-ratio:auto}
+    .no-photo{background-size:58px}
+    .no-photo::after{margin-top:82px}
+    .card-title{min-height:39px;font-size:14px}
+    .card-body{padding:13px}
+    .card-price{font-size:17px}
+    .skeleton-tile{height:160px;display:grid;grid-template-columns:124px 1fr}
+    .skeleton-image{height:100%}
+  }
+  @media (max-width:390px){
+    .brand,.brand img{width:84px}
+    .search-icon{display:none}
+    .primary-btn{min-width:82px;padding-inline:13px}
+    .price-range{font-size:25px}
+    .card{grid-template-columns:112px 1fr}
+    .card-meta .badge{display:none}
+  }
+  /* Kichik balandlikdagi desktop ekranlarda hero cho'zilmasin.
+     2026-08-08 o'lchov (1366x700): eski `padding-bottom:260px`
+     hero'ni 704px ga cho'zardi — butun ekranni egallab, jonli
+     bo'limni ekrandan chiqarib yuborardi. Bu 3.1-qoidaga zid
+     ("birinchi ekranda tovar ko'rinishi kerak"). O'chirildi. */
+  @media (max-height:720px) and (min-width:601px){
+    .hero{padding-top:84px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+</style>
+<link rel="stylesheet" href="/ober-ui.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/" aria-label="OBER bosh sahifa">
+      <img src="/brend/logo.png" alt="ober" width="94" height="29">
+    </a>
+    <div class="top-actions">
+      <div class="lang-slot"></div>
+      <a class="messages-link" id="takliflar-link" href="/takliflar?demo=1"><span class="desktop-label">Chat</span><span class="mobile-label">Chat</span></a>
+      <a class="seller-link" href="/sotuvchi"><span class="desktop-label">Profil</span><span class="mobile-label">Profil</span></a>
+    </div>
+  </div>
+</header>
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-inner">
+    <!-- "KERAKLISI SHU YERDA" yorlig'i olib tashlandi. Sarlavha ustidagi
+         kichkina katta harfli yozuv — AI qurgan saytning eng ko'p
+         uchraydigan belgisi. Sarlavhaning o'zi yetarli. -->
+    <h1 id="hero-title">Siz yozasiz. Bozor javob beradi.</h1>
+    <p class="hero-copy">Divanmi, mashinami, usta kerakmi — bitta qidiruvda.</p>
+
+    <div class="search-panel" role="search">
+      <span class="search-icon" aria-hidden="true"></span>
+      <label class="sr-only" for="q">Nima kerakligini yozing</label>
+      <input id="q" placeholder="Masalan: 25 m² banner" autocomplete="off" enterkeyhint="search">
+      <input id="image-search-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+      <button class="image-search-btn" id="image-search-btn" type="button"
+              aria-label="Rasm bilan qidirish" title="Rasm bilan qidirish"></button>
+      <button class="primary-btn" id="btn" type="button">Topish</button>
+    </div>
+    <div class="visual-search" id="visual-search" hidden>
+      <img id="visual-preview" alt="Qidiruv uchun tanlangan rasm">
+      <div class="visual-search-copy">
+        <strong id="visual-name">Rasm tanlandi</strong>
+        <span>Izoh yozishingiz mumkin yoki darhol qidiring</span>
+      </div>
+      <button class="visual-remove" id="visual-remove" type="button"
+              aria-label="Rasmni olib tashlash" title="Rasmni olib tashlash">×</button>
+    </div>
+    <p class="visual-status" id="visual-status" role="status" aria-live="polite" hidden></p>
+
+    <div class="location-row">
+      <span class="location-label">Qayerdan qidiramiz?</span>
+      <span class="select-wrap">
+        <label class="sr-only" for="viloyat">Viloyat</label>
+        <select id="viloyat"><option value="">Butun O‘zbekiston</option></select>
+      </span>
+      <span class="select-wrap" id="joy-wrap" hidden>
+        <label class="sr-only" for="joy">Shahar yoki tuman</label>
+        <select id="joy"><option value="">Butun viloyat</option></select>
+      </span>
+      <span class="location-note">yaqin e’lonlar tepaga chiqadi</span>
+    </div>
+
+    <div class="samples" id="tez" aria-label="Namuna so‘rovlar"></div>
+    <p class="database-trust" id="holat" aria-live="polite">Bozor ma’lumoti yuklanmoqda…</p>
+  </div>
+</section>
+
+<!-- HAQIQIY E'LONLAR — bosh sahifadagi eng muhim blok.
+     Va'da emas, isbot. Shablonni takrorlash oson; 126 ming o'zbek
+     e'lonini rasmi va narxi bilan takrorlab bo'lmaydi. -->
+<section class="jonli" id="jonli" aria-label="Bugun qo‘shilgan e’lonlar">
+  <div class="jonli-ic">
+    <div class="jonli-bosh">
+      <h2><span class="jonli-nuqta" aria-hidden="true"></span>Hozir bozorda</h2>
+      <p id="jonli-izoh">Eng so‘nggi qo‘shilgan e’lonlar</p>
+    </div>
+    <div class="jonli-lenta" id="jonli-lenta" aria-busy="true">
+      <span class="jonli-skeleton"></span><span class="jonli-skeleton"></span>
+      <span class="jonli-skeleton"></span><span class="jonli-skeleton"></span>
+      <span class="jonli-skeleton"></span><span class="jonli-skeleton"></span>
+    </div>
+  </div>
+</section>
+
+<!-- OBER NIMA QILADI — uch qadam.
+     2026-08-02 vizual tekshiruv: bosh sahifada hero va qidiruv
+     qutisidan boshqa hech narsa yo'q edi. Birinchi marta kirgan odam
+     nima bo'lishini bilmaydi va OLX deb o'ylaydi.
+     Carwow ham, Thumbtack ham modelini uch qadamda tushuntiradi. -->
+<section class="qadamlar" id="qadamlar" aria-label="OBER qanday ishlaydi">
+  <div class="qadam-ic">
+    <ol class="qadam-royxat">
+      <li>
+        <span class="qadam-raqam">1</span>
+        <h3>Nima kerakligini yozing</h3>
+        <p>O‘zbekcha, ruscha, aralash — qanday yozsangiz ham tushunamiz. Ro‘yxatdan o‘tish shart emas.</p>
+      </li>
+      <li>
+        <span class="qadam-raqam">2</span>
+        <h3>Butun bozorni bir joyda ko‘ring</h3>
+        <p>Arzonidan, yangisidan yoki yaqinidan saralab ko‘ring. Ochiq e’lonlarning hammasi ko‘rinadi.</p>
+      </li>
+      <li>
+        <span class="qadam-raqam">3</span>
+        <h3>Sotuvchilardan javob oling</h3>
+        <p>Bir tegish — so‘rov mos sotuvchilarga boradi. Telefon raqami so‘ralmaydi.</p>
+      </li>
+    </ol>
+
+    <!-- FARQIMIZ ochiq aytilsin. Carwow raqobatchilarini nomma-nom
+         solishtiradi; biz ham shunday qilamiz, chunki odam "nega OLX
+         emas?" degan savolga javob topmasa, qaytmaydi. -->
+    <div class="farq">
+      <h3>Nega OBER?</h3>
+      <table class="farq-jadval">
+        <tr><th></th><th class="biz">OBER</th><th>OLX</th><th>Telegram</th></tr>
+        <tr><td>Barcha manba bitta joyda</td><td class="biz">✓</td><td></td><td></td></tr>
+        <tr><td>Bir so‘rovda butun bozor</td><td class="biz">✓</td><td></td><td></td></tr>
+        <tr><td>Bugun bor-yo‘qligini so‘raydi</td><td class="biz">✓</td><td></td><td></td></tr>
+        <tr><td>Noto‘g‘ri modelni kesadi</td><td class="biz">✓</td><td></td><td></td></tr>
+        <tr><td>Qidirmaysiz — so‘raysiz</td><td class="biz">✓</td><td></td><td></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="responses-wrap" id="eski-javob-quti" aria-live="polite"></section>
+<main class="results" id="natija" aria-live="polite"></main>
+
+<footer class="footer" aria-label="Sayt haqida">
+  <div class="footer-ic">
+    <a class="footer-brand" href="/" aria-label="OBER bosh sahifa">
+      <img src="/brend/logo.png" alt="ober" width="104" height="32">
+    </a>
+    <p class="footer-tavsif">Ochiq bozor — OLX, Telegram va boshqa manbalar bitta qidiruvda.</p>
+    <nav class="footer-sahifalar" aria-label="Sayt sahifalari">
+      <a href="/sotuvchi">Sotuvchilar uchun</a>
+      <a href="/takliflar?demo=1">Chat demo</a>
+      <a href="/maxfiylik">Maxfiylik</a>
+      <a href="/qoidalar">Qoidalar</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="/i18n.js"></script>
+<script src="/tabbar.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const tr = text => window.OBER_I18N.t(text);
+const LOCALE = window.OBER_I18N.locale;
+const formatInt = n => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
+const TITLE = tr("OBER — siz yozasiz, bozor javob beradi");
+const som = n => Number(n) ? formatInt(n) + tr(" so‘m") : tr("narx ko‘rsatilmagan");
+// 2026-08-04: bu yerda uch marta `toLocaleString` ishlatilgan edi —
+// pastda 1310-qatorda uni NEGA ishlatmaslik kerakligi yozib qo'yilgan
+// bo'lsa ham. U tildan tilga boshqacha natija beradi: `4.2 mln` yoki
+// `4,2 mln`, `1 000` yoki `1,000`. Sayt ruschaga o'tganda raqamlar ham
+// o'zgarib ketardi. Endi format bitta — o'zimizniki.
+const ixchamSom = n => {
+  n = Number(n) || 0;
+  if(n >= 1000000){
+    const mln = Math.round(n / 100000) / 10;          // 4 201 470 -> 4.2
+    const but = Math.floor(mln);
+    const kasr = Math.round((mln - but) * 10);
+    return formatInt(but) + (kasr ? "," + kasr : "") + tr(" mln");
+  }
+  if(n >= 1000) return formatInt(Math.round(n / 1000)) + tr(" ming");
+  return formatInt(n);
+};
+// 2026-08-06 audit: barcha namunalar avtoehtiyot qism edi — sayt o'zini
+// universal bozor deb e'lon qilganiga qaramay "OBER = avtoqism" degan
+// taassurot berardi. Endi har xil soha: mebel, maishiy texnika, transport,
+// ko'chmas mulk, xizmat. Sotuvchi sahifasidagi namunalar bilan ham mos.
+const NAMUNA = ["divan","kir yuvish mashinasi","velosiped","2 xonali kvartira","telefon ekrani"];
+// MANBA OCHIQ AYTILADI. "Butun bozor bitta joyda" va'dasi shu belgida
+// ko'rinadi — xaridor qaysi bozordan kelganini bilib turishi kerak.
+const MANBA_NOM = {olx:"OLX", telegram:"Telegram", uzum:"Uzum", birbir:"BirBir", ober:"OBER"};
+let DARAXT = [];
+let faolSorov = "";
+
+function esc(s){
+  return String(s || "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+function safeUrl(value){
+  try{
+    const url = new URL(String(value || ""), location.origin);
+    return ["http:","https:"].includes(url.protocol) ? url.href : "";
+  }catch(_){ return ""; }
+}
+function joyTanlangan(){ return $("#joy").value || $("#viloyat").value; }
+
+// SANA — o'zbekcha va bir xil.
+// 2026-08-02 vizual tekshiruv: kartalarda aralash chiqardi — bir joyda
+// "2026-07-31" (quruq raqam), boshqa joyda "Сегодня в 06:41" (ruscha).
+// Manba ikki xil: yangi yig'ish ISO beradi, eskisi OLX matnini.
+const OYLAR = ["yanvar","fevral","mart","aprel","may","iyun",
+               "iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
+function sanaMatn(s){
+  s = String(s || "").trim();
+  if(!s) return "";
+  const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(iso){
+    const d = new Date(+iso[1], +iso[2] - 1, +iso[3]);
+    const bugun = new Date(); bugun.setHours(0,0,0,0);
+    const kun = Math.round((bugun - d) / 86400000);
+    if(kun <= 0) return "Bugun";
+    if(kun === 1) return "Kecha";
+    if(kun < 7) return kun + " kun oldin";
+    return `${+iso[3]} ${OYLAR[+iso[2] - 1]}`;
+  }
+  const past = s.toLowerCase();
+  if(past.startsWith("сегодня") || past.startsWith("bugun")) return "Bugun";
+  if(past.startsWith("вчера") || past.startsWith("kecha")) return "Kecha";
+  const RU = {"январ":0,"феврал":1,"март":2,"апрел":3,"ма":4,"июн":5,
+              "июл":6,"август":7,"сентябр":8,"октябр":9,"ноябр":10,"декабр":11};
+  const m = past.match(/(\d{1,2})\s+([а-я]+)/);
+  if(m){
+    const kalit = Object.keys(RU).find(k => m[2].startsWith(k));
+    if(kalit !== undefined) return `${+m[1]} ${OYLAR[RU[kalit]]}`;
+  }
+  return s;
+}
+
+$("#tez").innerHTML = NAMUNA.map(s =>
+  `<button class="sample" type="button" data-query="${esc(s)}">${esc(s)}</button>`
+).join("");
+$("#tez").addEventListener("click", e => {
+  const b = e.target.closest("[data-query]");
+  if(b) qidir(b.dataset.query);
+});
+
+function joylarniChiz(viloyat, tanla){
+  const select = $("#joy");
+  const wrap = $("#joy-wrap");
+  const topildi = DARAXT.find(x => x.viloyat === viloyat);
+  select.innerHTML = '<option value="">Butun viloyat</option>';
+  if(!topildi){ wrap.hidden = true; return; }
+  topildi.joylar.forEach(j => select.add(new Option(j, j)));
+  wrap.hidden = false;
+  if(tanla) select.value = tanla;
+}
+
+async function holatniOl(){
+  try{
+    const r = await fetch("/api/holat");
+    if(!r.ok) throw new Error("holat olinmadi");
+    const d = await r.json();
+    DARAXT = d.daraxt || [];
+    DARAXT.forEach(v => $("#viloyat").add(new Option(v.viloyat, v.viloyat)));
+    const elonSoni = Number(d.elonlar || d.jami || d.soni || 0);
+    // ANIQ RAQAM — ishonchning eng arzon shakli. "Butun bozor" degan
+    // va'dani hamma yozadi; 126 834 degan sonni yozib bo'lmaydi.
+    $("#holat").innerHTML = elonSoni
+      // formatInt — bo'shliq bilan ajratadi. `toLocaleString("uz-UZ")`
+      // vergul qo'yardi ("127,360") va bu inglizcha ko'rinardi.
+      ? `<strong>${formatInt(elonSoni)} ta</strong> ochiq e’lon · OLX va Telegram · har 45 daqiqada yangilanadi`
+      : "Ochiq e’lon narxlari va jonli sotuvchi javoblari";
+
+    const eV = localStorage.getItem("ober_viloyat") || "";
+    const eJ = localStorage.getItem("ober_joy") || "";
+    if(eV){ $("#viloyat").value = eV; joylarniChiz(eV, eJ); }
+  }catch(_){
+    $("#holat").textContent = "Ochiq e’lon narxlari va jonli sotuvchi javoblari";
+  }
+}
+
+$("#viloyat").addEventListener("change", () => {
+  localStorage.setItem("ober_viloyat", $("#viloyat").value);
+  localStorage.removeItem("ober_joy");
+  joylarniChiz($("#viloyat").value);
+  if($("#q").value.trim()) qidir();
+});
+$("#joy").addEventListener("change", () => {
+  localStorage.setItem("ober_joy", $("#joy").value);
+  if($("#q").value.trim()) qidir();
+});
+
+function skeleton(){
+  return `<div class="skeleton-summary" aria-label="Natijalar yuklanmoqda">
+    <div class="skeleton-card">
+      <div class="skeleton-line short"></div><div class="skeleton-line big"></div>
+      <div class="skeleton-line"></div><div class="skeleton-line" style="margin-top:74px"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-line short"></div><div class="skeleton-line big"></div>
+      <div class="skeleton-line"></div><div class="skeleton-line short"></div>
+    </div>
+  </div>
+  <div class="skeleton-grid">
+    ${Array.from({length:3}, () => `<div class="skeleton-tile">
+      <div class="skeleton-image"></div><div><div class="skeleton-line"></div>
+      <div class="skeleton-line short"></div></div></div>`).join("")}
+  </div>`;
+}
+
+// Nechta sahifa ochilgan. Yangi so'rovda 1 ga qaytadi.
+let joriySahifa = 1;
+// So'rov matnidan olingan byudjet chegarasi bekor qilinganmi
+let byudjetsiz = false;
+// RASM QIDIRUV HOLATI. Rasm brauzer canvasidan o'tadi: o'lchami
+// kichrayadi va EXIF/geolokatsiya metama'lumoti serverga bormaydi.
+let rasmQidiruv = {dataUrl:"", nom:"", versiya:"", tahlilKaliti:"", tahlil:null};
+
+function visualHolat(matn, tur=""){
+  const el = $("#visual-status");
+  el.hidden = !matn;
+  el.className = "visual-status" + (tur ? " " + tur : "");
+  el.textContent = matn || "";
+}
+
+function dataUrlOl(blob){
+  return new Promise((resolve,reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("Rasmni o‘qib bo‘lmadi"));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function rasmElementi(file){
+  return new Promise((resolve,reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Rasm faylini ochib bo‘lmadi")); };
+    img.src = url;
+  });
+}
+
+async function rasmniTayyorla(file){
+  if(!file || !["image/jpeg","image/png","image/webp"].includes(file.type))
+    throw new Error("Faqat JPG, PNG yoki WEBP rasm tanlang");
+  if(file.size > 8 * 1024 * 1024)
+    throw new Error("Rasm 8 MB dan kichik bo‘lishi kerak");
+  const img = await rasmElementi(file);
+  const max = 1280;
+  const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  const ctx = canvas.getContext("2d", {alpha:false});
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  const blob = await new Promise(resolve => canvas.toBlob(resolve,"image/jpeg",.82));
+  if(!blob) throw new Error("Rasmni tayyorlab bo‘lmadi");
+  if(blob.size > 4 * 1024 * 1024)
+    throw new Error("Rasmni kichraytirib bo‘lmadi. Boshqa rasm tanlang");
+  return dataUrlOl(blob);
+}
+
+async function rasmTanla(file){
+  try{
+    visualHolat("Rasm tayyorlanmoqda…","loading");
+    const dataUrl = await rasmniTayyorla(file);
+    rasmQidiruv = {
+      dataUrl,
+      nom:file.name || "Rasm",
+      versiya:`${Date.now()}-${Math.random()}`,
+      tahlilKaliti:"",
+      tahlil:null
+    };
+    $("#visual-preview").src = dataUrl;
+    $("#visual-name").textContent = file.name || tr("Rasm tanlandi");
+    $("#visual-search").hidden = false;
+    visualHolat(tr("AI rasmni mahsulot qidiruviga aylantiradi."));
+    $("#q").focus();
+  }catch(e){
+    visualHolat(e.message || tr("Rasmni tayyorlab bo‘lmadi"),"error");
+  }finally{
+    $("#image-search-input").value = "";
+  }
+}
+
+function rasmniOlibTashla(){
+  rasmQidiruv = {dataUrl:"", nom:"", versiya:"", tahlilKaliti:"", tahlil:null};
+  $("#visual-search").hidden = true;
+  $("#visual-preview").removeAttribute("src");
+  visualHolat("");
+}
+
+async function rasmBilanQidir(){
+  if(!rasmQidiruv.dataUrl){ qidir(); return; }
+  const matn = $("#q").value.trim();
+  const kalit = matn + "|" + rasmQidiruv.versiya;
+  if(rasmQidiruv.tahlil && rasmQidiruv.tahlilKaliti === kalit){
+    await qidir(rasmQidiruv.tahlil.qidiruv);
+    return;
+  }
+  $("#btn").disabled = true;
+  $("#image-search-btn").disabled = true;
+  visualHolat(tr("AI rasmni tushunyapti…"),"loading");
+  try{
+    const r = await fetch("/api/ai/rasm-qidiruv",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({rasm_data:rasmQidiruv.dataUrl,matn,
+                           til:window.OBER_I18N?.lang || "uz"})
+    });
+    const d = await r.json().catch(() => ({}));
+    if(!r.ok){
+      if(d.kod === "AI_SOZLANMAGAN" && matn){
+        visualHolat(tr("AI hali ulanmagan — yozgan matningiz bo‘yicha qidirdik."),"error");
+        await qidir(matn);
+        return;
+      }
+      throw new Error(d.xato || tr("Rasmli qidiruvni yakunlab bo‘lmadi"));
+    }
+    rasmQidiruv.tahlil = d.tahlil || {qidiruv:d.qidiruv};
+    rasmQidiruv.tahlilKaliti = kalit;
+    const t = d.tahlil || {};
+    const tushunildi = [t.brend,t.model,t.mahsulot,t.variant].filter(Boolean).join(" · ");
+    visualHolat(`${tr("AI tushundi:")} ${tushunildi || d.qidiruv}` ,"success");
+    await qidir(d.qidiruv);
+  }catch(e){
+    visualHolat(e.message || tr("Rasmli qidiruvni yakunlab bo‘lmadi"),"error");
+  }finally{
+    $("#btn").disabled = false;
+    $("#image-search-btn").disabled = false;
+  }
+}
+
+async function qidir(matn, yanami){
+  const sorov = matn !== undefined ? String(matn).trim() : $("#q").value.trim();
+  if(!sorov){ $("#q").focus(); return; }
+  if(sorov !== faolSorov){ joriySahifa = 1; byudjetsiz = false; }
+  faolSorov = sorov;
+  $("#q").value = sorov;
+  $("#btn").disabled = true;
+  document.body.classList.add("is-results");
+  // 2026-08-06 audit: qidiruv natijalari URL'da saqlanmasdi — F5'da
+  // yo'qolardi, havolani ulashib bo'lmasdi. Endi `?q=...` URL'ga yoziladi.
+  try{
+    const url = new URL(location.href);
+    url.searchParams.set("q", sorov);
+    // Tuman "viloyat|joy" shaklida saqlanadi — ?q= bilan birga ulashiladi.
+    const vil = $("#viloyat").value, joy = $("#joy").value;
+    if(vil) url.searchParams.set("tuman", joy ? vil + "|" + joy : vil);
+    else url.searchParams.delete("tuman");
+    history.replaceState(null, "", url.pathname + url.search);
+  }catch(_){}
+  // H1 natija sahifasida qidiruv so'zi bo'lsin (SEO + tushunarlilik)
+  const heroH1 = document.getElementById("hero-title");
+  if(heroH1) heroH1.textContent = `“${sorov}”`;
+  document.title = `“${sorov}” — OBER`;
+  // "Yana ko'rsatish"da skelet chizilmaydi — sahifa qisqarib, odam
+  // o'qiyotgan joyidan sakrab ketardi.
+  if(!yanami) $("#natija").innerHTML = skeleton();
+
+  const tuman = joyTanlangan();
+  try{
+    const p = new URLSearchParams({q: sorov, tartib: joriyTartib,
+                                   sahifa: String(joriySahifa)});
+    if(byudjetsiz) p.set("byudjetsiz", "1");
+    if(tuman) p.set("tuman", tuman);
+    if(filtrHolat.narx_dan) p.set("narx_dan", filtrHolat.narx_dan);
+    if(filtrHolat.narx_gacha) p.set("narx_gacha", filtrHolat.narx_gacha);
+    const r = await fetch("/api/qidir?" + p.toString());
+    if(!r.ok) throw new Error("Server javob bermadi");
+    chiz(await r.json(), tuman);
+  }catch(e){
+    // Xatoni YASHIRMAYMIZ. 2026-08-02: server yangi maydon qaytardi,
+    // brauzerdagi eski sahifa esa eskisini kutdi -> shu quti chiqdi va
+    // haqiqiy sabab hech qayerda ko'rinmadi. Endi konsolda turadi.
+    console.error("[ober] qidiruv:", e);
+    $("#natija").innerHTML = `<div class="error-box" role="alert">
+      <strong>Qidiruvga ulanib bo‘lmadi</strong>
+      <p>Internetni tekshirib, shu so‘rovni yana bir marta yuboring.</p>
+      <div class="error-actions">
+        <button class="retry-btn" id="qidir-qayta" type="button">Qayta urinish</button>
+      </div>
+    </div>`;
+    $("#qidir-qayta")?.addEventListener("click", () => qidir(faolSorov));
+  }finally{
+    $("#btn").disabled = false;
+  }
+}
+
+function histogram(natijalar, past, yuqori){
+  const barchaNarxlar = natijalar.map(x => Number(x.narx_som)).filter(Boolean).sort((a,b) => a-b);
+  const narxlar = barchaNarxlar.filter(n => (!past || n >= past) && (!yuqori || n <= yuqori));
+  if(narxlar.length < 2) return `<div class="histogram" aria-hidden="true">
+    ${Array.from({length:8},(_,i)=>`<span style="height:${18 + (i%3)*12}%"></span>`).join("")}</div>`;
+  const min = Number(past) || narxlar[0], max = Number(yuqori) || narxlar[narxlar.length - 1];
+  const bins = Array(8).fill(0);
+  narxlar.forEach(n => {
+    const index = max === min ? 3 : Math.min(7, Math.floor(((n - min) / (max - min)) * 8));
+    bins[index]++;
+  });
+  const peak = Math.max(...bins, 1);
+  return `<div class="histogram" aria-label="Narxlar taqsimoti">
+    ${bins.map(v => `<span class="${v === peak ? "peak" : ""}" style="height:${Math.max(8,Math.round(v/peak*100))}%"></span>`).join("")}
+  </div><div class="hist-axis"><span>${esc(ixchamSom(min))}</span><span>${esc(ixchamSom(max))}</span></div>`;
+}
+
+// SOTUVCHILARDAN SO'RASH — bitta harakat, uch joyda.
+//
+// Aziz, 2026-08-02: "haridorlarga osonroq bo'lishi kerak, kamroq yozuv,
+// bachkana bo'lmagan holatda". Shuning uchun uchala joyda ham bir xil
+// ko'k tugma va bitta qisqa jumla turadi — sarlavha, kicker, izoh yo'q.
+// Telefon so'ralmaydi, shakl yo'q, bitta tegish yetadi.
+const SORA_MATN = "Sotuvchilardan so‘rash";
+
+// Xaridor ismi: maydondagi qiymat localStorage'ga eslab qolinadi.
+// Bo'sh bo'lsa — eski ism qaytadi (bir marta yozgan qayta yozmaydi).
+function xaridorIsmi(){
+  const maydon = document.querySelector(".sora-ism-input:not([hidden])")
+                 || document.querySelector("#ism-kirit");
+  const qiymat = (maydon?.value || "").trim();
+  if(qiymat) localStorage.setItem("ober_sorov_ism", qiymat);
+  return localStorage.getItem("ober_sorov_ism") || "";
+}
+
+function soraChiziq(){                      // natijadan oldin, faqat desktop
+  const ism = localStorage.getItem("ober_sorov_ism") || "";
+  return `<div class="sora-chiziq">
+    <p>Bugun kimda borligini sotuvchilarning o‘zidan so‘raymiz.</p>
+    <div class="sora-ism-qator">
+      <input class="sora-ism-input" type="text" value="${esc(ism)}"
+        placeholder="Ismingiz? (ixtiyoriy)" maxlength="40" autocomplete="off"
+        aria-label="Ismingiz (ixtiyoriy)">
+      <button class="sora-btn" type="button">${SORA_MATN}</button>
+    </div>
+  </div>`;
+}
+
+function soraOrta(topilmadi){               // ro'yxat orasida yoki bo'sh natijada
+  const ism = localStorage.getItem("ober_sorov_ism") || "";
+  return `<div class="sora-orta">
+    <p>${topilmadi ? "Indeksda yo‘q — jonli so‘raymiz."
+                   : "Keraklisi topilmadimi?"}</p>
+    <div class="sora-ism-qator">
+      <input class="sora-ism-input" type="text" value="${esc(ism)}"
+        placeholder="Ismingiz? (ixtiyoriy)" maxlength="40" autocomplete="off"
+        aria-label="Ismingiz (ixtiyoriy)">
+      <button class="sora-btn" type="button">${SORA_MATN}</button>
+    </div>
+  </div>`;
+}
+
+// Barcha so'rash tugmalarini bitta amalga ulaydi va telefondagi
+// suzuvchi tugmani boshqaradi.
+function soraniUla(){
+  document.querySelectorAll(".sora-btn").forEach(b => b.onclick = sorovYubor);
+
+  let suzuvchi = $("#tez-sora");
+  if(!suzuvchi){
+    suzuvchi = document.createElement("div");
+    suzuvchi.id = "tez-sora";
+    suzuvchi.className = "tez-sora";
+    suzuvchi.innerHTML = `<button class="sora-btn" type="button">${SORA_MATN}</button>`;
+    document.body.appendChild(suzuvchi);
+  }
+  // Telefonda: ism eslab qolingan bo'lsa — bir tegishda yuboradi;
+  // aks holda avval kichik ism oynasi ochiladi (ixtiyoriy, 2026-08-08).
+  suzuvchi.querySelector(".sora-btn").onclick = () => {
+    if(localStorage.getItem("ober_sorov_ism")) sorovYubor();
+    else ismOynaniOch();
+  };
+  suzuvchi.classList.add("korin");
+
+  // Ism oynasi tugmalari.
+  const tasdiq = $("#ism-tasdiq");
+  if(tasdiq) tasdiq.onclick = () => {
+    const v = ($("#ism-kirit")?.value || "").trim();
+    if(v) localStorage.setItem("ober_sorov_ism", v);
+    ismOynaniYop();
+    sorovYubor();
+  };
+  const oyna = $("#ism-oyna");
+  if(oyna){
+    oyna.onclick = e => { if(e.target === oyna) ismOynaniYop(); };
+    oyna.querySelector(".ism-oyna-yopish").onclick = ismOynaniYop;
+  }
+
+  // Ekranda haqiqiy tugma turgan bo'lsa suzuvchisi yashirinadi —
+  // yonma-yon ikkita bir xil tugma bachkana ko'rinadi.
+  //
+  // IntersectionObserver ishlatilmaydi: `body{overflow-y:auto}` bo'lgani
+  // uchun skroll idishi body, kuzatuvchining ildizi esa oyna — 2026-08-02
+  // da sinaganda hech qachon ishlamadi. Oddiy o'lchov aniqroq.
+  if(window._soraSkroll){
+    removeEventListener("scroll", window._soraSkroll);
+    document.body.removeEventListener("scroll", window._soraSkroll);
+  }
+  let oxirgiY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  let pastgaKetmoqda = false;
+  const tekshir = () => {
+    const y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const farq = y - oxirgiY;
+    if(Math.abs(farq) > 6) pastgaKetmoqda = farq > 0;
+    oxirgiY = y;
+    const bor = [...document.querySelectorAll(".sora-orta")].some(n => {
+      const r = n.getBoundingClientRect();
+      return r.top < innerHeight - 60 && r.bottom > 0;
+    });
+    // Kartalarni pastga qarab ko‘rayotganda CTA surat va narxni yopmasin.
+    // Yuqoriga qaytilsa yoki natijaning boshida bo‘lsa yana ko‘rinadi.
+    suzuvchi.classList.toggle("korin", !bor && (!pastgaKetmoqda || y < 220));
+  };
+  window._soraSkroll = tekshir;
+  addEventListener("scroll", tekshir, {passive:true});
+  document.body.addEventListener("scroll", tekshir, {passive:true});
+  tekshir();
+}
+
+function ismOynaniOch(){
+  const oyna = $("#ism-oyna");
+  if(!oyna) return;
+  $("#ism-kirit").value = localStorage.getItem("ober_sorov_ism") || "";
+  oyna.hidden = false;
+  setTimeout(() => $("#ism-kirit")?.focus(), 40);
+}
+function ismOynaniYop(){
+  const oyna = $("#ism-oyna");
+  if(!oyna || oyna.hidden) return;
+  oyna.hidden = true;
+}
+
+// Ism yozilishi bilan eslab qolinadi; tozalansa — o'chiriladi (2026-08-08).
+// Shu tufayli telefonda suzuvchi tugma keyingi safar bir tegishda yuboradi.
+// Bir martalik ro'yxatdan o'tkazish — soraniUla() har renderda chaqiriladi,
+// shuning uchun bu yerda (skript darajasida) turishi shart.
+document.addEventListener("input", e => {
+  if(!e.target.matches(".sora-ism-input, #ism-kirit")) return;
+  const v = e.target.value.trim();
+  if(v) localStorage.setItem("ober_sorov_ism", v);
+  else localStorage.removeItem("ober_sorov_ism");
+});
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape" && $("#ism-oyna") && !$("#ism-oyna").hidden) ismOynaniYop();
+});
+
+function soraniOlib(){
+  ismOynaniYop();
+  document.querySelectorAll(".sora-chiziq,.sora-orta").forEach(e => e.remove());
+  if(window._soraSkroll){
+    removeEventListener("scroll", window._soraSkroll);
+    document.body.removeEventListener("scroll", window._soraSkroll);
+    window._soraSkroll = null;
+  }
+  const s = $("#tez-sora");
+  if(s) s.remove();
+}
+
+let soralmoqda = false;
+// Yuborilgan so'rov holati. Saralash bosilsa natija qayta chiziladi —
+// shunda "3 ta sotuvchiga yuborildi" kartasi yo'qolib, o'rniga yana
+// "So'rash" tugmasi chiqib qolmasligi uchun holat shu yerda saqlanadi.
+let sorovHolat = null;
+
+async function sorovYubor(){
+  if(soralmoqda) return;
+  const matn = (faolSorov || $("#q")?.value || "").trim();
+  if(!matn){ $("#q")?.focus(); return; }
+  soralmoqda = true;
+  const tugmalar = [...document.querySelectorAll(".sora-btn")];
+  tugmalar.forEach(b => { b.disabled = true; b.textContent = "Yuborilmoqda…"; });
+  try{
+    const r = await fetch("/api/sorov", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({matn, tuman:joyTanlangan(), ism:xaridorIsmi()})
+    });
+    const d = await r.json();
+    if(!r.ok || !d.ok) throw new Error(d.xato || "Yuborilmadi");
+    localStorage.setItem("ober_sorov", d.token);
+    localStorage.setItem("ober_sorov_id", d.id);
+    localStorage.setItem("ober_sorov_matn", matn);
+    sorovHolat = {id:d.token, yuborildi:d.yuborildi || 0,
+                  tarqatildi:d.holat === "tarqatildi"};
+    soraniOlib();
+    jonliBloknichiz(d.token, d.yuborildi || 0, d.holat === "tarqatildi");
+    kuzat(d.token, "#javoblar");
+    bildirishnomaTaklif(d.yuborildi || 0);
+  }catch(e){
+    console.error("[ober] so‘rov:", e);
+    soralmoqda = false;
+    tugmalar.forEach(b => { b.disabled = false; b.textContent = SORA_MATN; });
+    const xato = document.querySelector(".sora-orta") || document.querySelector(".sora-chiziq");
+    if(xato && !xato.querySelector(".sora-xato")){
+      const p = document.createElement("p");
+      p.className = "form-note error sora-xato";
+      p.textContent = "Yuborilmadi. Qayta urinib ko‘ring.";
+      xato.appendChild(p);
+    }
+  }
+}
+
+// JONLI QATLAM KO'RINISHI SHART.
+// Agar sahifada faqat e'lonlar ro'yxati tursa, biz OLX'ning nusxasimiz.
+// Odam biror narsa sodir bo'layotganini KO'RISHI kerak.
+function jonliBloknichiz(sorovId, yuborildi, tarqatildi){
+  // Holat kartasi NATIJANING BOSHIDA turadi — odam kutayotgan narsa
+  // ekranning pastida qolmasligi kerak.
+  const joy = $("#sorov-joy");
+  if(!joy) return;
+  const blok = document.createElement("section");
+  blok.id = "sorov-blok";
+  joy.innerHTML = "";
+  joy.appendChild(blok);
+  blok.className = "request-card done";
+  // HAQIQIY SON. 15 ta bo'lsa 15 deb yoziladi — hech qachon "30 ta" emas.
+  const sarlavha = !tarqatildi
+    ? "Yo‘nalishni aniqlashtiryapmiz"
+    : yuborildi > 0
+      ? `${yuborildi} ta sotuvchiga yuborildi`
+      : "Bu yo‘nalishda hali sotuvchi yo‘q";
+  const izoh = !tarqatildi
+    ? "Noto‘g‘ri sotuvchilarga yubormaymiz; so‘rov aniqlangach tarqatiladi."
+    : yuborildi > 0
+      ? "Javob kelishi bilan shu yerda ko‘rasiz. Sahifani yopib qaytsangiz ham saqlanadi."
+      : "So‘rovingiz saqlandi. Bu yo‘nalishda sotuvchi qo‘shilishi bilan yuboriladi.";
+  blok.innerHTML = `<div>
+      <p class="section-kicker">So‘rov qabul qilindi</p>
+      <h2>${esc(sarlavha)}</h2>
+      <p>${esc(izoh)}</p>
+    </div>
+    ${yuborildi > 0 ? `<div class="live-wait" id="jonli-holat">
+        <span class="live-dot"></span> javob kutilmoqda…
+      </div>` : ""}
+    <div class="answer-list" id="javoblar"></div>`;
+}
+
+// BILDIRISHNOMA — TO'G'RI PAYTDA so'raladi.
+// Sahifa ochilishida so'rasak ko'pchilik rad etadi va Chrome saytni
+// belgilab qo'yadi — kanal butunlay yo'qoladi. Shuning uchun faqat
+// so'rov yuborilgandan keyin, odam kutayotgan paytda so'raymiz.
+function bildirishnomaTaklif(yuborildi){
+  if(!yuborildi || !("Notification" in window)) return;
+  if(Notification.permission !== "default") return;
+  const blok = $("#sorov-blok");
+  if(!blok) return;
+  const q = document.createElement("div");
+  q.className = "notify-offer";
+  q.innerHTML = `<span>Javob kelganda xabar beraylikmi?</span>
+    <button class="notify-yes" type="button">Ha, xabar bering</button>`;
+  blok.appendChild(q);
+  q.querySelector(".notify-yes").onclick = async () => {
+    try{ await Notification.requestPermission(); }catch(e){}
+    q.remove();
+  };
+}
+
+// QO'NG'IROQ — ASOSIY HARAKAT.
+// Aziz, 2026-08-01: "rostan oladigan odam srazu telefon nomerini terib
+// aloqaga chiqishni hohlaydi". O'zbekistonda avtoqism oladigan odam
+// yozmaydi — qo'ng'iroq qiladi. Sotuvchi allaqachon "BOR" degan, ya'ni
+// raqamini yashirishning ma'nosi yo'q. Chat ikkinchi yo'l bo'lib qoladi.
+function javobHtml(x, yangi, sorovId){
+  const joy = x.tuman ? ` · ${esc(x.tuman)}` : "";
+  const tel = (x.aloqa || "").trim();
+  return `<div class="answer${yangi ? " flash" : ""}" data-javob="${Number(x.id)}">
+    <div><div class="answer-price">${x.narx ? som(x.narx) : "Bor"}
+        ${x.holat === "oxshash" ? '<span class="negotiable">O‘XSHASHI BOR</span>' : ""}
+      </div>
+      <div class="answer-meta">${esc(x.nom || "Sotuvchi")}${joy}</div></div>
+    <div class="answer-actions">
+      ${tel ? `<button class="call-btn" type="button"
+                 onclick="raqamniOch(this, ${Number(x.id)}, '${esc(tel)}')">
+                 Raqamni ko‘rish</button>` : ""}
+      <a class="answer-open" href="/takliflar">Chat</a>
+    </div>
+  </div>`;
+}
+
+// Raqam bir tegish bilan ochiladi (OLX'dagi "Показать телефон" kabi).
+// Ochilishi bizning eng kuchli natija belgisi — bitim bizdan tashqarida
+// bo'lgani uchun konversiyani boshqacha o'lchay olmaymiz.
+function raqamniOch(tugma, javobId, tel){
+  const oralik = tugma.parentElement;
+  oralik.insertAdjacentHTML("afterbegin",
+    `<a class="call-btn call-ready" href="tel:${esc(tel)}">📞 ${esc(tel)}</a>`);
+  tugma.remove();
+  fetch("/api/javob/raqam", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({javob_id:javobId})
+  }).catch(() => {});
+}
+
+const _KUZATUVLAR = {};
+
+function kuzat(sorovId, joy){
+  // Saralash o'zgarsa natija qayta chiziladi va kuzatuv qaytadan
+  // ulanadi. Eskisini to'xtatmasak har saralashda yana bitta 4 soniyalik
+  // so'rov oqimi qo'shilib boraveradi.
+  const kalit = sorovId + "|" + joy;
+  if(_KUZATUVLAR[kalit]) clearInterval(_KUZATUVLAR[kalit]);
+  let oxirgi = -1;
+  const yangila = async () => {
+    const r = await fetch("/api/sorov/javoblar?id=" + encodeURIComponent(sorovId));
+    if(!r.ok) throw new Error("Jonli e'lonlar yuklanmadi");
+    const d = await r.json();
+    // Javob ikki ko'rinishda kelishi mumkin: eski (ro'yxat) va yangi
+    // (yuborilgan soni bilan). Ikkalasi ham qo'llab-quvvatlanadi.
+    const javoblar = Array.isArray(d) ? d : (d.javoblar || []);
+    // YUBORILGAN SON YANGILANADI. Yangi sotuvchi ro'yxatdan o'tsa yoki
+    // keyingi to'lqin ketsa, sahifadagi son ham o'sishi kerak — aks holda
+    // "1 ta sotuvchiga yuborildi" yozuvi yolg'onga aylanadi.
+    //
+    // FAQAT O'Z SO'ROVI UCHUN. 2026-08-02 xato: eski so'rovning kuzatuvi
+    // (tepadagi yashil qator) ham shu sarlavhani yozardi — yangi so'rov
+    // "3 ta sotuvchiga yuborildi" degandan keyin bir zumda "1 ta"ga
+    // aylanib qolardi. Xaridor uchun bu buzilgan tizim ko'rinadi.
+    const menikimi = joy === "#javoblar";
+    if(menikimi && !Array.isArray(d) && d.yuborildi){
+      const s = document.querySelector("#sorov-blok h2");
+      if(s && /yuborildi/.test(s.textContent)){
+        s.textContent = `${d.yuborildi} ta sotuvchiga yuborildi`;
+      }
+    }
+    if(javoblar.length === oxirgi) return;
+    const yangiKeldi = oxirgi >= 0 && javoblar.length > oxirgi;
+    oxirgi = javoblar.length;
+    const el = $(joy);
+    if(el) el.innerHTML = javoblar.length
+      ? `<div class="answer-heading"><strong>Jonli takliflar</strong><span>${javobSoniMatni(javoblar.length)}</span></div>`
+        + javoblar.map((j,i) => javobHtml(j, yangiKeldi && i === javoblar.length - 1, sorovId)).join("")
+      : '<p class="form-note">Hali javob yo‘q — kutyapmiz.</p>';
+    const holat = menikimi ? $("#jonli-holat") : null;
+    if(holat) holat.style.display = javoblar.length ? "none" : "";
+    if(yangiKeldi){
+      if(navigator.vibrate) navigator.vibrate(30);
+      document.title = window.OBER_I18N.lang === "ru"
+        ? `(${javoblar.length}) OBER — новый ответ`
+        : `(${javoblar.length}) OBER — yangi javob`;
+      setTimeout(() => document.title = TITLE, 5000);
+      // Sahifa ochiq bo'lmasa ham xabar bersin (rozilik berilgan bo'lsa)
+      if("Notification" in window && Notification.permission === "granted"
+         && document.hidden){
+        try{
+          const s = javoblar[javoblar.length - 1];
+          new Notification("OBER — javob keldi", {
+            body: (s && s.narx ? som(s.narx) : "Sotuvchi javob berdi"),
+            tag: "ober-javob"
+          });
+        }catch(e){}
+      }
+    }
+  };
+  yangila().catch(() => {});
+  const taymer = setInterval(() => yangila().catch(() => {}), 4000);
+  _KUZATUVLAR[kalit] = taymer;
+  setTimeout(() => clearInterval(taymer), 15 * 60 * 1000);
+}
+
+// SARALASH VA FILTR — hisoblangan o'rtacha o'rniga.
+//
+// Aziz qarori (2026-08-02): narx oralig'i, o'rtacha narx va gistogramma
+// olib tashlandi. Sabab: OLX narxlarini oddiy odamlar o'z bilganicha
+// yozadi, shuning uchun ular ustidan hisoblangan har qanday o'rtacha
+// yolg'on chiqadi va uni cheksiz tuzatib yurishga to'g'ri keladi.
+//
+// O'rniga tanlov xaridorga beriladi. Filtr hech qachon yolg'on gapirmaydi.
+const TARTIBLAR = [
+  ["moslik", "Mosligi bo‘yicha"],
+  ["arzon",  "Avval arzoni"],
+  ["yangi",  "Avval yangisi"],
+  ["yaqin",  "Avval yaqini"],
+];
+let joriyTartib = "moslik";
+// Aziz, 2026-08-02: "Rasmli / Yangi / Do'kon" chiplari olib tashlandi.
+// Narx dan-gacha qoldi — u yagona haqiqiy filtr. Serverda uch bayroq
+// hamon bor, kerak bo'lsa qaytarish oson.
+const filtrHolat = {narx_dan:"", narx_gacha:""};
+
+function boshqaruvBloki(d){
+  // "900 ta" deb yozish yolg'on bo'lardi — chegara shuncha, aslida ko'proq.
+  const soni = formatInt(d.jami || 0) + (d.chegarada ? "+" : "");
+  const arzon = d.eng_arzon ? ` · ${som(d.eng_arzon)} dan` : "";
+  // So'rovdan olingan byudjet natijani JIMGINA cheklab turadi.
+  // Aytilmasa odam "nega kam chiqdi?" deb o'ylaydi.
+  const byudjet = d.byudjet
+    ? `<p class="byudjet-eslatma">Byudjet: <strong>${som(d.byudjet)}</strong>
+         — <button class="byudjet-ochir" type="button">Chegarasiz ko‘rish</button></p>`
+    : "";
+  const tugmalar = TARTIBLAR.map(([k, nom]) =>
+    `<button class="tartib-btn${k === joriyTartib ? " tanlangan" : ""}"
+             type="button" data-tartib="${k}">${nom}</button>`).join("");
+  // 2026-08-08: qator (soni + saralash) alohida blok — telefonda sticky
+  // bo'lishi uchun ota-onasi main (uzun) bo'lishi shart. Avval hammasi
+  // bitta .boshqaruv ichida edi va qatorning ota-onasi qisqa edi —
+  // sticky hech qachon ishlamasdi (ota-ona chegarasidan chiqmaydi).
+  // Filtr esa alohida, scroll'da ko'tarilib ketadi.
+  return `<div class="boshqaruv-yopishqoq">
+    <div class="boshqaruv-qator">
+      <p class="topildi"><strong>${soni} ta e’lon</strong>${arzon}</p>
+      <div class="tartiblar" role="group" aria-label="Saralash">${tugmalar}</div>
+    </div>
+  </div>
+  <section class="boshqaruv">
+    <div class="filtrlar">
+      <div class="filtr-narx" role="group" aria-label="Narx">
+        <span class="filtr-narx-bosh">Narx</span>
+        <label class="sr-only" for="f-dan">Narx dan</label>
+        <input id="f-dan" inputmode="numeric" placeholder="dan"
+               value="${esc(filtrHolat.narx_dan)}">
+        <span class="filtr-narx-tire" aria-hidden="true"></span>
+        <label class="sr-only" for="f-gacha">Narx gacha</label>
+        <input id="f-gacha" inputmode="numeric" placeholder="gacha"
+               value="${esc(filtrHolat.narx_gacha)}">
+      </div>
+    </div>
+    ${byudjet}
+  </section>`;
+}
+
+function boshqaruvniUla(){
+  document.querySelectorAll(".tartib-btn").forEach(b => {
+    b.onclick = () => { joriyTartib = b.dataset.tartib; qidir(); };
+  });
+  const raqam = s => (s || "").replace(/\D/g, "");
+  ["f-dan", "f-gacha"].forEach(id => {
+    const el = $("#" + id);
+    if(!el) return;
+    el.onchange = () => {
+      filtrHolat[id === "f-dan" ? "narx_dan" : "narx_gacha"] = raqam(el.value);
+      qidir();
+    };
+    el.onkeydown = e => { if(e.key === "Enter") el.blur(); };
+  });
+  // So'rovdan olingan byudjetni bekor qilish. Chegara ko'rinmasa
+  // odam natijaning nega kamligini bilmaydi - shuning uchun ochib
+  // aytamiz va bir tegishda olib tashlash imkonini beramiz.
+  const ochir = document.querySelector(".byudjet-ochir");
+  if(ochir) ochir.onclick = () => {
+    byudjetsiz = true;
+    qidir();
+  };
+}
+
+function tushunBloki(d){
+  const t = d.tushunildi || {modellar:[],qismlar:[],yonalishlar:[]};
+  const chips = [
+    ...(t.modellar || []).map(x => `<span class="chip">Mashina: ${esc(x)}</span>`),
+    ...(t.qismlar || []).map(x => `<span class="chip">Qism: ${esc(x)}</span>`),
+    ...(t.yonalishlar || []).map(x => `<span class="chip">Yo‘nalish: ${esc(x)}</span>`),
+    d.kesildi_model ? `<span class="chip cut">${formatInt(d.kesildi_model)} ta boshqa mashina chiqarildi</span>` : ""
+  ].join("");
+  // FAQAT CHIPLAR. Ilgari tepasida "Aniq qidiruv / So'rovni tushundik /
+  // Mos kelmaydigan qismlar kesildi" degan uch qator sarlavha turardi va
+  // blok 179 px joy egallardi. Chiplarning o'zi ("Mashina: cobalt",
+  // "687 ta boshqa mashina chiqarildi") aynan shu narsani aytadi.
+  //
+  // Erkin (lug'atsiz) qidiruvda aytadigan gap yo'q — blok umuman
+  // chizilmaydi, natija yuqoriga suriladi.
+  if(!chips) return "";
+  return `<section class="understood-card">
+    <div class="chips">${chips}</div>
+  </section>`;
+}
+
+function karta(e, tuman){
+  const joy = e.joy_nom || "";
+  const yaqin = Boolean(tuman && joy && joy.split(", ").includes(tuman));
+  const rasm = safeUrl(e.rasm);
+  // OBER'ning o'z e'loni — ichki sahifa /elon/{id}, tashqariga chiqmaydi.
+  const ichki = e.manba === "ober";
+  const havola = ichki ? `/elon/${Number(e.id)}` : safeUrl(e.havola);
+  return `<article class="card${yaqin ? " near" : ""}">
+    <a class="card-link" href="${esc(havola || "#")}" ${!ichki && havola ? 'target="_blank" rel="noopener noreferrer"' : ichki ? '' : 'aria-disabled="true"'}>
+      <div class="media">
+        ${rasm ? `<img src="${esc(rasm)}" loading="lazy" alt="${esc(e.nom || "Ehtiyot qism")}" onerror="this.parentElement.innerHTML='<div class=&quot;no-photo&quot;></div>'">`
+          : '<div class="no-photo"></div>'}
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">${esc(e.nom)}</h3>
+        <div><span class="card-price">${som(e.narx_som)}</span>
+          ${e.kelishiladi ? '<span class="negotiable">KELISHILADI</span>' : ""}
+        </div>
+        <div class="card-meta">
+          ${joy ? `<span class="meta-location${yaqin ? " near" : ""}">${esc(joy)}</span>` : ""}
+          ${sanaMatn(e.sana) ? `<span>${esc(sanaMatn(e.sana))}</span>` : ""}
+          ${e.biznes ? '<span class="badge shop">DO‘KON</span>' : ""}
+          ${e.holat === "yangi" ? '<span class="badge new">YANGI</span>' : ""}
+          <span class="badge${e.manba === "telegram" ? " tg" : ""}">${esc(MANBA_NOM[e.manba] || e.manba || "olx")}</span>
+        </div>
+      </div>
+    </a>
+  </article>`;
+}
+
+function chiz(d, tuman){
+  const natijalar = d.natijalar || [];
+  if(!natijalar.length){
+    const yoNalishlar = d.tushunildi?.yonalishlar || [];
+    const tanildi = yoNalishlar.length > 0;
+    $("#natija").innerHTML = `<div class="empty-card result-enter">
+      <div class="empty-mark" aria-hidden="true"></div>
+      <h2>${tanildi ? "Hozircha tayyor e’lon yo‘q" : "Bunday e’lon topilmadi"}</h2>
+      <p>${tanildi
+          ? "Yo‘nalishni tushundik. Endi mos sotuvchilardan bugungi aniq taklifni so‘raymiz."
+          : "Indeksda mos e’lon yo‘q. Boshqacha yozib ko‘ring yoki sotuvchilarning o‘zidan so‘rang."}</p>
+      ${tanildi ? `<div class="chips"><span class="chip">Yo‘nalish: ${esc(yoNalishlar.join(", "))}</span></div>` : ""}
+      <div id="sorov-joy"></div>
+      ${soraOrta(true)}
+    </div>`;
+    soraniTikla();
+    return;
+  }
+
+  // SO'RASH TUGMASI RO'YXAT ORASIGA HAM TUSHADI.
+  // Ro'yxat oxirida turgani ishlamasdi (10 072 px). 12-kartadan keyin —
+  // odam bir ekran ko'rib chiqib "shu emas" degan payt.
+  const ORALIQ = 12;
+  const kartalar = natijalar.map(e => karta(e, tuman));
+  if(kartalar.length > ORALIQ + 3) kartalar.splice(ORALIQ, 0, soraOrta(false));
+  else kartalar.push(soraOrta(false));
+
+  // "169 ta taklif" deb yozib 60 tasini ko'rsatish halol emas.
+  const qoldi = Math.max(0, Number(d.jami || 0) - natijalar.length);
+  const yana = qoldi
+    ? `<div class="yana-qator">
+         <button class="yana-btn" type="button" id="yana">
+           Yana ${formatInt(Math.min(qoldi, 60))} ta ko‘rsatish
+         </button>
+         <span class="yana-izoh">${formatInt(natijalar.length)} / ${formatInt(d.jami)}</span>
+       </div>`
+    : "";
+
+  $("#natija").innerHTML = `<div class="result-enter">
+    ${tushunBloki(d)}
+    ${boshqaruvBloki(d)}
+    <div id="sorov-joy"></div>
+    ${soraChiziq()}
+    <div class="cards">${kartalar.join("")}</div>
+    ${yana}
+  </div>`;
+  boshqaruvniUla();
+  soraniTikla();
+  const yanaTugma = $("#yana");
+  if(yanaTugma) yanaTugma.onclick = () => {
+    joriySahifa += 1;
+    yanaTugma.disabled = true;
+    yanaTugma.textContent = "Yuklanmoqda…";
+    qidir(faolSorov, true);
+  };
+}
+
+// So'rov allaqachon yuborilgan bo'lsa tugmalar emas, holat kartasi turadi.
+function soraniTikla(){
+  if(!sorovHolat){ soraniUla(); return; }
+  soraniOlib();
+  jonliBloknichiz(sorovHolat.id, sorovHolat.yuborildi, sorovHolat.tarqatildi);
+  kuzat(sorovHolat.id, "#javoblar");
+}
+
+function javobSoniMatni(n){
+  n = Number(n) || 0;
+  if(window.OBER_I18N.lang !== "ru") return `${formatInt(n)} ta javob`;
+  const oxirgi = n % 10, oxirgiIkki = n % 100;
+  const soz = oxirgi === 1 && oxirgiIkki !== 11 ? "ответ"
+    : oxirgi >= 2 && oxirgi <= 4 && !(oxirgiIkki >= 12 && oxirgiIkki <= 14)
+      ? "ответа" : "ответов";
+  return `${formatInt(n)} ${soz}`;
+}
+
+async function oldingiJavoblar(){
+  const id = localStorage.getItem("ober_sorov");
+  if(!id) return;
+  try{
+    const r = await fetch("/api/sorov/javoblar?id=" + encodeURIComponent(id));
+    if(!r.ok) return;
+    const d = await r.json();
+    const javoblar = Array.isArray(d) ? d : (d.javoblar || []);
+    if(!javoblar.length) return;
+    const saqlanganMatn = localStorage.getItem("ober_sorov_matn") || "";
+    const matn = saqlanganMatn || tr("so‘rovingiz");
+    // YIG'ILGAN HOLATDA ko'rsatiladi.
+    // 2026-08-02 vizual tekshiruv: to'liq karta telefonda birinchi
+    // ekranni butunlay egallab olardi va yangi qidiruv natijasi
+    // pastga surilib ketardi. Endi bitta qator — bosilsa ochiladi.
+    $("#eski-javob-quti").innerHTML = `<section class="return-card compact" id="eski-karta">
+      <button class="return-bar" type="button" id="eski-ochish"
+              aria-expanded="false">
+        <span class="return-nuqta"></span>
+        <span class="return-matn">“${esc(matn)}” · <b>${esc(javobSoniMatni(javoblar.length))}</b></span>
+        <span class="return-koc">${esc(tr("Ko‘rish"))}</span>
+      </button>
+      <div class="answer-list" id="eski-javoblar" hidden></div>
+      <button class="quiet-btn return-yopish" type="button"
+              aria-label="Javoblarni yopish" id="eski-yop">×</button>
+    </section>`;
+    $("#eski-ochish").onclick = function(){
+      const ro = $("#eski-javoblar");
+      const ochiq = !ro.hidden;
+      ro.hidden = ochiq;
+      this.setAttribute("aria-expanded", String(!ochiq));
+      this.querySelector(".return-koc").textContent = tr(ochiq ? "Ko‘rish" : "Yashirish");
+      $("#eski-karta").classList.toggle("compact", ochiq);
+    };
+    $("#eski-yop").onclick = () => {
+      localStorage.removeItem("ober_sorov");
+      localStorage.removeItem("ober_sorov_matn");
+      $("#eski-javob-quti").innerHTML = "";
+    };
+    kuzat(id, "#eski-javoblar");
+  }catch(_){}
+}
+
+// HOZIR BOZORDA. Bosh sahifada haqiqiy tovar ko'rinsin.
+async function jonliLenta(){
+  try{
+    const r = await fetch("/api/yangi?n=14");
+    if(!r.ok) return;
+    const royxat = await r.json();
+    if(!Array.isArray(royxat) || royxat.length < 4)
+      throw new Error("Jonli e'lonlar yetarli emas");
+    $("#jonli-lenta").innerHTML = royxat.map(e => {
+      const rasm = safeUrl(e.rasm), havola = safeUrl(e.havola);
+      if(!rasm || !havola) return "";
+      const joy = [e.tuman, e.shahar, e.viloyat].find(Boolean) || "";
+      return `<a class="jonli-karta" href="${esc(havola)}"
+                 target="_blank" rel="noopener noreferrer">
+        <img src="${esc(rasm)}" alt="${esc(e.nom || "")}" loading="lazy"
+             onerror="this.closest('.jonli-karta').remove()">
+        <div class="jonli-tana">
+          <p class="jonli-nom">${esc(e.nom || "")}</p>
+          <p class="jonli-narx">${som(e.narx_som)}</p>
+          <p class="jonli-joy">${esc(joy)}${joy && e.sana ? " · " : ""}${esc(sanaMatn(e.sana))}</p>
+        </div>
+      </a>`;
+    }).join("");
+    $("#jonli-lenta").setAttribute("aria-busy", "false");
+    $("#jonli").hidden = false;
+  }catch(e){
+    $("#jonli").hidden = true;
+    console.error("[ober] jonli lenta:", e);
+  }
+}
+
+$("#btn").addEventListener("click", rasmBilanQidir);
+$("#q").addEventListener("keydown", e => { if(e.key === "Enter") rasmBilanQidir(); });
+$("#image-search-btn").addEventListener("click", () => $("#image-search-input").click());
+$("#image-search-input").addEventListener("change", e => rasmTanla(e.target.files?.[0]));
+$("#visual-remove").addEventListener("click", rasmniOlibTashla);
+const searchPanel = document.querySelector(".search-panel");
+searchPanel.addEventListener("dragover", e => { e.preventDefault(); searchPanel.classList.add("is-dragging"); });
+searchPanel.addEventListener("dragleave", () => searchPanel.classList.remove("is-dragging"));
+searchPanel.addEventListener("drop", e => {
+  e.preventDefault();
+  searchPanel.classList.remove("is-dragging");
+  rasmTanla(e.dataTransfer?.files?.[0]);
+});
+holatniOl();
+jonliLenta();
+oldingiJavoblar();
+let saqlanganSorov = localStorage.getItem("ober_sorov") || "";
+if(/^\d+$/.test(saqlanganSorov)){
+  localStorage.removeItem("ober_sorov");
+  localStorage.removeItem("ober_sorov_id");
+  saqlanganSorov = "";
+}
+if(saqlanganSorov) $("#takliflar-link").href = "/takliflar";
+
+// 2026-08-06 audit: `?q=divan` bilan kelgan havola endi qidiruvni
+// avtomatik boshlaydi — natijalar ulashiladigan va SEO'ga ochiq bo'ladi.
+const urlSorov = new URLSearchParams(location.search).get("q");
+if(urlSorov && urlSorov.trim()){
+  const urlTuman = new URLSearchParams(location.search).get("tuman");
+  if(urlTuman){
+    // 2026-08-06 kod-review: joylar ro'yxati hali yuklanmagan bo'lishi
+    // mumkin — `joylarniChiz` ishlashi uchun `holatniOl` tugashini kutamiz.
+    // Aks holda birinchi qidiruv tuman filtrisiz ketardi.
+    (async () => {
+      try{ await holatniOl(); }catch(_){}
+      if(urlTuman.includes("|")){
+        const [vil, joy] = urlTuman.split("|");
+        if(vil && $("#viloyat").options.length > 1){
+          $("#viloyat").value = vil;
+          joylarniChiz(vil, joy || "");
+        }
+      }else{
+        localStorage.setItem("ober_viloyat", urlTuman);
+      }
+      qidir(urlSorov.trim());
+    })();
+  }else{
+    qidir(urlSorov.trim());
+  }
+}else{
+  $("#q").focus({preventScroll:true});
+}
+</script>
+<!-- IXTIYORIY ISM OYNASI — telefonda suzuvchi "Sotuvchilardan so'rash"
+     tugmasi birinchi bosilganda. Keyingi safar ism eslab qolinadi. -->
+<div class="ism-oyna" id="ism-oyna" hidden>
+  <div class="ism-oyna-ichida" role="dialog" aria-modal="true" aria-label="Ismingiz">
+    <h3>Ismingiz? (ixtiyoriy)</h3>
+    <p>Sotuvchi chatda shu nom bilan ko‘radi.</p>
+    <input id="ism-kirit" type="text" maxlength="40"
+      placeholder="Masalan: Aziz" autocomplete="given-name">
+    <button class="sora-btn" id="ism-tasdiq" type="button">Sotuvchilardan so‘rash</button>
+    <button class="ism-oyna-yopish" type="button" aria-label="Yopish">✕</button>
+  </div>
+</div>
+</body>
+</html>
