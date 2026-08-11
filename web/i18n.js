@@ -109,6 +109,10 @@
     "Kategoriya qidirish":"Поиск категории",
     "Hech narsa topilmadi":"Ничего не найдено",
     "Boshqa so‘z bilan urinib ko‘ring.":"Попробуйте другое слово.",
+    // Ikki darajali kategoriyalar (2026-08-11). Bo'sh holatda yo'l
+    // ko'rsatiladi — odamga QANDAY yozish misol bilan aytiladi.
+    "Filtrlarni tozalash":"Сбросить фильтры",
+    "Bo‘limlar":"Разделы",
     "yaqin takliflar tepaga chiqadi":"ближайшие предложения будут выше",
     "yaqin e’lonlar tepaga chiqadi":"ближайшие объявления будут выше",
     "Namuna so‘rovlar":"Примеры запросов",
@@ -518,13 +522,19 @@
       return `${match[1]} ${rusPlural(son, ["предложение", "предложения", "предложений"])} · от ${match[2].replace(/ so[‘’']m$/, " сум")}`;
     }
     if ((match = text.match(/^(\d+\+?) ta taklif$/))) return `${match[1]} ${rusPlural(parseInt(match[1], 10), ["предложение", "предложения", "предложений"])}`;
-    if ((match = text.match(/^(\d+\+?) ta e[’']lon · (.+) dan$/))) {
-      const son = parseInt(match[1], 10);
+    if ((match = text.match(/^([\d ]+\+?) ta e[’']lon · (.+) dan$/))) {
+      const son = parseInt(match[1].replace(/\s/g, ""), 10);
       return `${match[1]} ${rusPlural(son, ["объявление", "объявления", "объявлений"])} · от ${match[2].replace(/ so[‘’']m$/, " сум")}`;
     }
-    if ((match = text.match(/^(\d+\+?) ta e[’']lon$/))) return `${match[1]} ${rusPlural(parseInt(match[1], 10), ["объявление", "объявления", "объявлений"])}`;
+    if ((match = text.match(/^([\d ]+\+?) ta e[’']lon$/))) return `${match[1]} ${rusPlural(parseInt(match[1].replace(/\s/g, ""), 10), ["объявление", "объявления", "объявлений"])}`;
     if ((match = text.match(/^Kategoriya: (.+)$/))) return `Категория: ${translate(match[1])}`;
-    if ((match = text.match(/^(\d+) ta bo'lim$/))) return `${match[1]} ${rusPlural(+match[1], ['раздел', 'раздела', 'разделов'])}`;
+    if ((match = text.match(/^([\d ]+) ta bo'lim$/))) return `${match[1]} ${rusPlural(parseInt(match[1].replace(/\s/g, ""), 10), ['раздел', 'раздела', 'разделов'])}`;
+    // Bo'sh holat misoli (2026-08-11, fempty): "Qisqaroq yozing:
+    // «divan yumshoq charm» o'rniga «divan»" — ichi DINAMIK, so'rovdan
+    // keladi. Qolip tarjima qilinadi, ichi o'z holida qoladi.
+    if ((match = text.match(/^Qisqaroq yozing: «(.+)» o'rniga «(.+)»$/))) {
+      return `Пишите короче: «${match[1]}» — просто «${match[2]}»`;
+    }
     // Topildi qatorida raqam strong ichida, "· N so'm dan" esa alohida
     // text-node — uni alohida qoida bilan tarjima qilamiz.
     if ((match = text.match(/^· (.+) dan$/))) return `· от ${match[1].replace(/ so[‘’']m$/, " сум")}`;

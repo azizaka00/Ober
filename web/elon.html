@@ -323,9 +323,9 @@
           '<h1 class="elon-nom">' + esc(e.nom) + '</h1>' +
           '<div class="elon-narx">' + narx + '</div>' +
           '<div class="elon-meta">' +
-            (joy ? '<span>📍 ' + esc(joy) + '</span>' : "") +
-            (e.kategoriya ? '<span>🏷 ' + esc(e.kategoriya) + '</span>' : "") +
-            (sanaMatn(e.sana) ? '<span>🕐 ' + esc(sanaMatn(e.sana)) + '</span>' : "") +
+            (joy ? '<span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.1-7-11a7 7 0 0 1 14 0c0 5.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg> ' + esc(joy) + '</span>' : "") +
+            (e.kategoriya ? '<span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg> ' + esc(e.kategoriya) + '</span>' : "") +
+            (sanaMatn(e.sana) ? '<span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> ' + esc(sanaMatn(e.sana)) + '</span>' : "") +
           '</div>' +
           (e.tavsif ? '<div class="elon-tavsif">' + esc(e.tavsif) + '</div>' : "") +
           sotuvchiBlok +

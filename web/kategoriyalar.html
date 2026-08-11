@@ -130,26 +130,60 @@
     font-size:15px;
   }
   .kat-qidiruv input::placeholder{color:var(--muted)}
-  .kat-topilmadi{
-    padding:36px 20px;
-    text-align:center;
+
+  /* ── BREADCRUMB — 2-daraja tepasi (2026-08-11) ─────────────────────
+     dsrupt ichki sahifalaridan olingan prinsip: qayerda ekaningni
+     ko'rsat. Sahifa ichida qaytish yo'li bo'lishi ham shart. */
+  .kat-non{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 0 16px;
+    padding:0 2px;
     color:var(--muted);
     font-size:13.5px;
   }
-  .kat-topilmadi strong{display:block;color:var(--navy);font-size:16px;margin-bottom:5px}
+  .kat-non-orqaga{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 14px 7px 10px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--r-pill);
+    background:var(--surface);
+    color:var(--navy);
+    font-size:12.5px;
+    font-weight:750;
+    cursor:pointer;
+    transition:background 120ms var(--ease),border-color 120ms var(--ease);
+  }
+  .kat-non-orqaga:hover{background:var(--navy-soft);border-color:rgba(11,37,89,.25)}
+  .kat-non-orqaga:active{transform:scale(.97)}
+  .kat-non-yol{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kat-non-yol strong{color:var(--navy);font-weight:760}
+  .kat-non-son{
+    flex:none;
+    margin-left:auto;
+    padding:4px 11px;
+    border-radius:var(--r-pill);
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-size:11.5px;
+    font-weight:750;
+  }
 
+  /* ── 1-DARAJA: kartalar (ikon + nom + real son) ─────────────────── */
   .kat-grid{
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
-    grid-auto-rows:8px;
-    column-gap:14px;
-    row-gap:0;
-    align-items:start;
+    gap:14px;
   }
   .kat-karta{
     position:relative;
-    display:block;
-    margin-bottom:14px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
     padding:20px;
     border:1px solid var(--line);
     border-radius:var(--radius);
@@ -164,43 +198,25 @@
   }
   .kat-karta:hover{transform:translateY(-2px);border-color:rgba(11,37,89,.25);box-shadow:var(--shadow-hover)}
   .kat-karta:active{transform:scale(.98)}
-  .kat-bosh{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:12px;
-  }
-  .kat-nom{margin:0;font-size:16.5px;font-weight:740;letter-spacing:-.015em;color:var(--navy)}
-  .kat-son{
-    flex:0 0 auto;
-    padding:3px 9px;
-    border-radius:var(--r-pill);
+  .kat-ikon{
+    display:grid;
+    place-items:center;
+    width:48px;height:48px;
+    border-radius:var(--r-orta);
     background:var(--navy-soft);
     color:var(--navy);
-    font-size:11px;
-    font-weight:750;
+    transition:background 120ms var(--ease),color 120ms var(--ease);
   }
-  .kat-namuna{
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-  }
-  .kat-chip{
-    padding:4px 10px;
-    border-radius:var(--r-pill);
-    background:var(--surface);
-    border:1px solid var(--line-strong);
-    color:var(--muted);
-    font-size:11.5px;
-    box-shadow:0 1px 3px rgba(11,37,89,.05);
-    transition:border-color 120ms var(--ease),color 120ms var(--ease),background 120ms var(--ease);
-  }
-  .kat-karta:hover .kat-chip{border-color:rgba(11,37,89,.18);color:var(--navy)}
+  .kat-karta:hover .kat-ikon{background:var(--navy);color:#fff}
+  .kat-karta:hover .kat-ikon svg{transform:translateY(-1px)}
+  .kat-ikon svg{transition:transform 120ms var(--ease)}
+  .kat-nom{margin:0;font-size:16.5px;font-weight:740;letter-spacing:-.015em;color:var(--navy)}
+  .kat-son{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
   .kat-ok{
-    margin-top:14px;
-    padding-top:12px;
-    border-top:1px solid var(--line);
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    gap:5px;
     color:var(--navy);
     font-size:12px;
     font-weight:750;
@@ -209,13 +225,73 @@
     content:"";
     display:inline-block;
     width:7px;height:7px;
-    margin-left:6px;
     border-top:1.8px solid currentColor;
     border-right:1.8px solid currentColor;
     transform:rotate(45deg);
     transition:transform 120ms var(--ease);
   }
   .kat-karta:hover .kat-ok::after{transform:translateX(3px) rotate(45deg)}
+
+  /* ── 2-DARAJA: raqamlangan zich qatorlar (2026-08-11) ─────────────
+     dsrupt katalog ro'yxatidan olingan: 65 ta bo'limni kartalar bilan
+     ko'rsatib bo'lmaydi, qatorlar zich va skanerlanadigan. */
+  .kat-pastki{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:var(--r-katta);
+    background:var(--surface);
+    box-shadow:var(--shadow-card);
+  }
+  .kat-qator{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-height:54px;
+    padding:10px 18px;
+    text-decoration:none;
+    transition:background 120ms var(--ease);
+  }
+  .kat-qator + .kat-qator{border-top:1px solid var(--line)}
+  .kat-qator:hover{background:var(--navy-soft)}
+  .kat-qator:active{background:rgba(11,37,89,.10)}
+  .kat-qator-n{
+    flex:none;
+    width:26px;
+    color:#a3adbd;
+    font-size:11.5px;
+    font-weight:750;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:.02em;
+  }
+  .kat-qator-nom{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--text);
+    font-size:14.5px;
+    font-weight:620;
+  }
+  .kat-qator-son{
+    flex:none;
+    color:var(--muted);
+    font-size:12px;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+  }
+  .kat-qator-ok{
+    flex:none;
+    width:8px;height:8px;
+    border-top:1.8px solid var(--line-strong);
+    border-right:1.8px solid var(--line-strong);
+    transform:rotate(45deg);
+    transition:border-color 120ms var(--ease),transform 120ms var(--ease);
+  }
+  .kat-qator:hover .kat-qator-ok{border-color:var(--navy);transform:translateX(2px) rotate(45deg)}
 
   .yuklanmoqda{
     padding:60px 20px;
@@ -230,6 +306,25 @@
     background:#fdf0ef;
     color:#842b21;
   }
+
+  /* ── BO'SH HOLAT — yo'l ko'rsatiladi (dsrupt fempty prinsipi) ─────
+     "Boshqa so'z bilan urinib ko'ring" yetarli emas — odamga QANDAY
+     yozishni misol bilan aytamiz, filtr faol bo'lsa tozalash beramiz. */
+  /* BO'SH HOLAT — index.html bilan BIR XIL uslub (2026-08-11).
+     Konteyner shu sahifaga xos (mark yo'q, ixcham), ichidagi misol
+     qutisi va tozalash tugmasi esa UMUMIY komponent — ober-ui.css
+     da yashaydi. Ikkala sahifada bir xil bo'lishi uchun. */
+  .kat-topilmadi{
+    max-width:520px;
+    margin:28px auto 0;
+    padding:20px 24px 32px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13.5px;
+  }
+  .kat-topilmadi h2{display:block;color:var(--navy);font-size:17px;font-weight:760;margin:0 0 8px;letter-spacing:-.015em}
+  .kat-topilmadi .empty-misol{margin-top:14px}
+  .kat-topilmadi .empty-tozalash{margin-top:20px}
 
   @media (max-width:900px){
     .kat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -246,9 +341,18 @@
     .brand,.brand img{width:86px}
     .page-label{display:none}
     main{width:min(100% - 28px,980px);padding-top:22px}
-    .kat-grid{grid-template-columns:1fr;grid-auto-rows:auto;row-gap:14px}
-    .kat-karta{grid-row:auto!important;margin-bottom:0}
-    .kat-karta{padding:17px}
+    .kat-grid{grid-template-columns:1fr;gap:12px}
+    /* Telefonda karta gorizontal: ikon chapda, matn o'ngda — bir
+       qarashda ko'p kategoriya skanerlanadi (index.html qoidasi). */
+    .kat-karta{flex-direction:row;align-items:center;gap:14px;padding:15px 16px}
+    .kat-karta::before{left:16px;width:40px}
+    .kat-ikon{width:42px;height:42px;flex:none}
+    .kat-nom{font-size:15.5px}
+    .kat-ok{display:none}
+    .kat-qator{min-height:52px;padding:9px 14px;gap:10px}
+    .kat-qator-son{font-size:11px}
+    .kat-non{flex-wrap:wrap;row-gap:8px}
+    .kat-non-son{margin-left:0}
   }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -283,10 +387,20 @@
     </svg>
     <input id="kat-qidir" type="search" placeholder="Kategoriya qidirish…" autocomplete="off" aria-label="Kategoriya qidirish">
   </div>
+  <nav class="kat-non" id="kat-non" hidden aria-label="Bo'lim yo'li">
+    <button type="button" class="kat-non-orqaga" id="kat-orqaga">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+      Orqaga
+    </button>
+    <span class="kat-non-yol">Kategoriyalar / <strong id="kat-non-nom"></strong></span>
+    <span class="kat-non-son" id="kat-non-son"></span>
+  </nav>
   <div id="kat-joy" class="yuklanmoqda">Bozor bo'limlari yuklanmoqda…</div>
+  <div class="kat-pastki" id="kat-pastki" hidden></div>
   <div class="kat-topilmadi" id="kat-topilmadi" hidden>
-    <strong>Hech narsa topilmadi</strong>
-    Boshqa so'z bilan urinib ko'ring.
+    <h2>Hech narsa topilmadi</h2>
+    <p class="empty-misol" id="kat-misol" hidden></p>
+    <button type="button" class="empty-tozalash" id="kat-tozalash">Filtrlarni tozalash</button>
   </div>
 </main>
 
@@ -298,65 +412,165 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s || "").replace(/[&<>"']/g, c => ({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
 })[c]);
+// 12 ta SVG ikon — BIRTA OILA: 24x24, 1.8px stroke, feather uslubi.
+// Emoji ishlatilmaydi (2026-08-11 audit): emoji vizual tilni pasaytiradi.
+const IKONLAR = {
+  transport: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11 7.6 6.4A2 2 0 0 1 9.4 5.4h5.2a2 2 0 0 1 1.8 1L19 11"/><rect x="3" y="11" width="18" height="6.5" rx="2"/><circle cx="7.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/></svg>',
+  nedvizhimost: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9.5"/><path d="M10 21v-6h4v6"/></svg>',
+  elektronika: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 16.5V21"/></svg>',
+  "dom-i-sad": '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11V8.5A2.5 2.5 0 0 1 6.5 6h11A2.5 2.5 0 0 1 20 8.5V11"/><rect x="2.5" y="11" width="19" height="5.5" rx="2"/><path d="M6 16.5V20M18 16.5V20"/></svg>',
+  "detskiy-mir": '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 21 7.5v9l-9 5-9-5v-9Z"/><path d="M12 11.5 21 7.5M12 11.5 3 7.5M12 11.5v10"/></svg>',
+  "moda-i-stil": '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5 8.5 3H4.5v3L8 8.5V20.5h8V8.5L19.5 6V3h-4Z"/><path d="M8.5 3a3.5 3.5 0 0 0 7 0"/></svg>',
+  uslugi: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M20 4 8.5 15.5M14.5 14.5 20 20M8.5 8.5 12 12"/></svg>',
+  rabota: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="13.5" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2.5 13h19"/></svg>',
+  zhivotnye: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="9.5" r="2.4"/><circle cx="9" cy="4.8" r="2.4"/><circle cx="15" cy="4.8" r="2.4"/><circle cx="19" cy="9.5" r="2.4"/><path d="M12 10.5c2.4 0 4.9 2.1 4.9 5.1 0 1.6-1.3 2.9-2.9 2.9-1 0-1.8-.5-2-1.3-.2.8-1 1.3-2 1.3-1.6 0-2.9-1.3-2.9-2.9 0-3 2.5-5.1 4.9-5.1Z"/></svg>',
+  "hobbi-otdyh-i-sport": '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5v19M2.5 12h19M5 5.5c2.3 2.3 3.9 5.2 3.9 6.5s-1.6 4.2-3.9 6.5M19 5.5c-2.3 2.3-3.9 5.2-3.9 6.5s1.6 4.2 3.9 6.5"/></svg>',
+  "otdam-darom": '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13"/><path d="M12 8s-4.5 0-4.5-2.5A2.5 2.5 0 0 1 12 8Zm0 0s4.5 0 4.5-2.5A2.5 2.5 0 0 0 12 8Z"/></svg>',
+  "obmen-barter": '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 3.5 3.5 3.5-3.5 3.5"/><path d="M20.5 7H8a4.5 4.5 0 0 0-4.5 4.5M7 20.5 3.5 17l3.5-3.5"/><path d="M3.5 17H16a4.5 4.5 0 0 0 4.5-4.5"/></svg>',
+  boshqa: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>'
+};
+// Raqamlar bo'shliq bilan: 127 360 (toLocaleString ishlatilmaydi — qoida)
+const sonFormat = n => String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+let MALUMOT = [];       // API javobi
+let ochiqSlug = null;   // ochiq 2-daraja (null = 1-daraja ko'rinadi)
+let qidirSuz = "";      // qidiruv maydoni holati
+
+const joy = $("#kat-joy");
+const pastki = $("#kat-pastki");
+const non = $("#kat-non");
+const topilmadi = $("#kat-topilmadi");
+const qidir = $("#kat-qidir");
+
+function boShHolat() {
+  topilmadi.hidden = false;
+  // MISOl — index.html bilan bir xil fempty uslubi: so'rovdan
+  // aqlli qisqartirish. Qidirilgan so'zlar orasidan bozorda haqiqiy
+  // bo'lim nomi bo'la oladigan birinchisini taklif qilamiz.
+  const misol = $("#kat-misol");
+  const sozlar = qidirSuz.toLowerCase().split(/\s+/).filter(Boolean);
+  const qisqa = sozlar.find(s => !["kerak","bor","qidir","uchun","top","nima","qaysi","menga"].includes(s));
+  if (qisqa && qisqa !== qidirSuz.trim().toLowerCase()) {
+    misol.textContent = `Qisqaroq yozing: «${qidirSuz.trim()}» o'rniga «${qisqa}»`;
+    misol.hidden = false;
+  } else misol.hidden = true;
+  const tozalash = $("#kat-tozalash");
+  tozalash.hidden = !qidirSuz;
+  // Qidiruv tozalanganda oddiy holatga qaytamiz
+  tozalash.onclick = () => {
+    qidir.value = "";
+    qidirSuz = "";
+    qidir.dispatchEvent(new Event("input"));
+    qidir.focus();
+  };
+}
+
+// 1-DARAJA — kartalar (ikon + nom + real e'lon soni)
+function chizKartalar() {
+  const sozlar = qidirSuz.toLowerCase().split(/\s+/).filter(Boolean);
+  const mos = sozlar.length
+    ? MALUMOT.filter(g => {
+        const matn = (g.nom + " " + g.pastki.map(p => p.nom).join(" ")).toLowerCase();
+        return sozlar.every(s => matn.includes(s));
+      })
+    : MALUMOT;
+  joy.hidden = false;
+  pastki.hidden = true;
+  non.hidden = true;
+  joy.innerHTML = mos.map(g => `
+    <a class="kat-karta" href="/?q=${encodeURIComponent(g.q)}" data-slug="${esc(g.slug)}">
+      <span class="kat-ikon">${IKONLAR[g.slug] || IKONLAR.boshqa}</span>
+      <span class="kat-nom">${esc(g.nom)}</span>
+      <span class="kat-son">${sonFormat(g.elonlar)} ta e'lon</span>
+      <span class="kat-ok">Bo'limlar</span>
+    </a>`).join("");
+  if (!mos.length) { joy.innerHTML = ""; boShHolat(); }
+  else topilmadi.hidden = true;
+  // Karta bosilganda sahifa o'zgarmaydi — 2-daraja shu yerda ochiladi.
+  joy.querySelectorAll(".kat-karta").forEach(k => {
+    k.addEventListener("click", ev => {
+      ev.preventDefault();
+      const g = MALUMOT.find(x => x.slug === k.dataset.slug);
+      if (g) ochish(g);
+    });
+  });
+}
+
+// 2-DARAJA — raqamlangan qatorlar (dsrupt katalog uslubi)
+function chizPastki(g) {
+  joy.hidden = true;
+  pastki.hidden = false;
+  non.hidden = false;
+  $("#kat-non-nom").textContent = g.nom;
+  $("#kat-non-son").textContent = `${sonFormat(g.elonlar)} ta e'lon`;
+  const sozlar = qidirSuz.toLowerCase().split(/\s+/).filter(Boolean);
+  const mos = sozlar.length
+    ? g.pastki.filter(p => sozlar.every(s => p.nom.toLowerCase().includes(s)))
+    : g.pastki;
+  pastki.innerHTML = mos.map((p, i) => `
+    <a class="kat-qator" href="/?q=${encodeURIComponent(p.nom)}">
+      <span class="kat-qator-n">${String(i + 1).padStart(2, "0")}</span>
+      <span class="kat-qator-nom">${esc(p.nom)}</span>
+      <span class="kat-qator-son">${sonFormat(p.elonlar)} ta e'lon</span>
+      <span class="kat-qator-ok" aria-hidden="true"></span>
+    </a>`).join("");
+  if (!mos.length) { pastki.innerHTML = ""; boShHolat(); }
+  else topilmadi.hidden = true;
+}
+
+function ochish(g, push = true) {
+  ochiqSlug = g.slug;
+  chizPastki(g);
+  // `push=false` — POPSTATE payti: brauzer orqaga/oldinga tugmalari
+  // o'zi tarixni yurgizadi, biz yana yozuv qo'shsak halqa paydo
+  // bo'ladi va orqaga qaytib bo'lmaydi (2026-08-11 review topdi).
+  if (push) history.pushState({kat: g.slug}, "", `?kat=${encodeURIComponent(g.slug)}`);
+}
+
+function orqaga(push = true) {
+  ochiqSlug = null;
+  chizKartalar();
+  if (push) history.pushState({}, "", location.pathname);
+}
+
+$("#kat-orqaga").addEventListener("click", orqaga);
+qidir.addEventListener("input", () => {
+  qidirSuz = qidir.value;
+  if (ochiqSlug) {
+    const g = MALUMOT.find(x => x.slug === ochiqSlug);
+    if (g) chizPastki(g);
+  } else chizKartalar();
+});
+qidir.addEventListener("search", () => {
+  qidirSuz = qidir.value;
+  if (ochiqSlug) {
+    const g = MALUMOT.find(x => x.slug === ochiqSlug);
+    if (g) chizPastki(g);
+  } else chizKartalar();
+});
+addEventListener("popstate", () => {
+  const kat = new URLSearchParams(location.search).get("kat");
+  const g = kat && MALUMOT.find(x => x.slug === kat);
+  if (g) ochish(g, false);
+  else orqaga(false);
+});
 
 (async () => {
-  const joy = $("#kat-joy");
   try {
     const r = await fetch("/api/kategoriyalar");
     if (!r.ok) throw new Error();
     const d = await r.json();
     if (!d.length) throw new Error();
+    MALUMOT = d;
     joy.className = "kat-grid";
-    const masonry = () => {
-      if (matchMedia("(max-width:600px)").matches) return;
-      joy.querySelectorAll(".kat-karta").forEach(karta => {
-        karta.style.gridRowEnd = "auto";
-        const span = Math.ceil((karta.offsetHeight + 14) / 8);
-        karta.style.gridRowEnd = `span ${span}`;
-      });
-    };
-    const masonryReja = () => {
-      requestAnimationFrame(() => requestAnimationFrame(masonry));
-      setTimeout(masonry, 360);
-    };
-    // Jonli filtr: yozilgan so'z bo'yicha kartalar saralanadi
-    const chiz = (soz) => {
-      const sozlar = soz.toLowerCase().split(/\s+/).filter(Boolean);
-      let mos = d;
-      if (sozlar.length) {
-        mos = d.filter(g => {
-          const matn = (g.nom + " " + (g.namuna || []).join(" ")).toLowerCase();
-          return sozlar.every(s => matn.includes(s));
-        });
-      }
-      joy.innerHTML = mos.map(g => `
-        <a class="kat-karta" href="/?q=${encodeURIComponent(g.q)}">
-          <div class="kat-bosh">
-            <h2 class="kat-nom">${esc(g.nom)}</h2>
-            <span class="kat-son">${g.soni} ta bo'lim</span>
-          </div>
-          ${(g.namuna || []).length
-            ? `<div class="kat-namuna">${g.namuna.map(n => `<span class="kat-chip">${esc(n)}</span>`).join("")}</div>`
-            : ""}
-          <div class="kat-ok">Shu bo'limdan qidirish</div>
-        </a>`).join("");
-      const boSh = $("#kat-topilmadi");
-      if (boSh) boSh.hidden = mos.length > 0;
-      if (sozlar.length) joy.style.display = mos.length ? "grid" : "none";
-      else joy.style.display = "grid";
-      masonryReja();
-    };
-    chiz("");
-    const qidir = $("#kat-qidir");
-    if (qidir) {
-      qidir.addEventListener("input", () => chiz(qidir.value));
-      qidir.addEventListener("search", () => chiz(qidir.value));
+    const kat = new URLSearchParams(location.search).get("kat");
+    const g = kat && MALUMOT.find(x => x.slug === kat);
+    if (g) {
+      ochiqSlug = g.slug;
+      chizPastki(g);
+    } else {
+      chizKartalar();
     }
-    let resizeTimer;
-    addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(masonryReja, 120);
-    }, {passive:true});
   } catch (e) {
     joy.className = "";
     joy.innerHTML = `<div class="error-box" role="alert">

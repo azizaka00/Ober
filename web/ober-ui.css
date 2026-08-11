@@ -7,17 +7,63 @@
   --surface-2:#f6f8fc;
   --text:#111a2c;
   --muted:#637087;
+  --faint:#98a0af;      /* 3-darajali matn: orqa ma'lumot, placeholder */
   --line:#dfe6f0;
   --line-strong:#c9d4e3;
   --green:#08764a;
   --shadow:0 20px 56px rgba(10,43,99,.09);
   --shadow-card:0 1px 1px rgba(10,43,99,.04),0 10px 28px rgba(10,43,99,.065);
   --shadow-hover:0 2px 3px rgba(10,43,99,.04),0 20px 44px rgba(10,43,99,.12);
+  /* ASOSIY CTA HOVER SOYASI — dsrupt.ru dagi `--sh-blue` kabi glow.
+     Yagona urg'uli harakat (Topish/So'rash) hover'da ko'rinib turishi
+     uchun. Qiymat index.html dagi eski `.primary-btn:hover` soyasi —
+     vizual o'zgarish yo'q, faqat tokenlashtirildi. */
+  --cta-glow:0 12px 28px rgba(8,27,66,.36);
   --ease:cubic-bezier(.16,1,.3,1);
   --r-kichik:10px;
   --r-orta:15px;
   --r-katta:22px;
+  --r-pill:999px;
 }
+
+/* ── BO'SH HOLAT — UMUMIY KOMPONENTLAR (2026-08-11) ──────────────
+   index.html va kategoriyalar.html da bir xil uslubda. Ilgari ikki
+   sahifada ikki xil klass (empty-misol / kat-misol, empty-tozalash /
+   kat-tozalash) va ikki xil CSS bor edi — biri o'zgarsa ikkinchisi
+   ortda qolardi. Endi misol qutisi va tozalash tugmasi SHU YERDA
+   yashaydi, sahifalar faqat konteynerni chizadi.
+
+   Misol ichi ODDIY MATN — b/s teglar YO'Q: i18n leaf elementni
+   butun gap deb tarjima qiladi, ichida teglar bo'lsa bo'laklarga
+   ajralib, ruscha qolip ishlamaydi (kategoriyalar.html dagi saboq). */
+.empty-misol{
+  display:block;
+  max-width:520px;
+  margin:16px auto 0;
+  padding:12px 18px;
+  border:1px solid var(--line);
+  border-radius:var(--r-kichik);
+  background:var(--surface-2);
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.55;
+  text-align:left;
+}
+.empty-tozalash{
+  display:inline-block;
+  margin:16px auto 0;
+  padding:10px 22px;
+  border:1px solid var(--line-strong);
+  border-radius:var(--r-pill);
+  background:var(--surface);
+  color:var(--navy);
+  font-size:12.5px;
+  font-weight:750;
+  cursor:pointer;
+  transition:background 120ms var(--ease),border-color 120ms var(--ease),box-shadow 120ms var(--ease);
+}
+.empty-tozalash:hover{background:var(--navy-soft);border-color:rgba(11,37,89,.25);box-shadow:0 4px 12px rgba(11,37,89,.10)}
+.empty-tozalash:active{transform:scale(.97)}
 
 html{background:var(--bg);scrollbar-color:#bdc9da transparent}
 body{

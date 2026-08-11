@@ -477,6 +477,42 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
     # ro'yxatdagi haqiqiy eng past narx: uni xaridor bosib ko'rishi mumkin.
     narxlar = sorted(x["narx_som"] for x in natijalar if x["narx_som"])
 
+    # ── AQLLI QISQARTIRISH TAKLIFI (2026-08-11) ────────────────────────
+    # Bo'sh natijada "Qisqaroq yozing: «X» o'rniga «Y»" misoli bozor
+    # tahliliga asoslanadi: Y bozorda HAQIQATAN natija beradigan so'z
+    # bo'lishi shart. Ilgari birinchi so'z olinardi — "zanzibar giraffe"
+    # da "zanzibar" taklif qilinar, lekin u ham 0 natija berardi.
+    # Yolg'on maslahat.
+    #
+    # Endi har asl so'zni alohida `fts_erkin(limit=1)` bilan sinaymiz
+    # (har biri 1-13 ms) va natija bergan birinchi so'zni qaytaramiz.
+    # Hech biri bermasa — taklif yo'q, misol ko'rsatilmaydi.
+    #
+    # Narx filtri sabab 0 bo'lsa so'zlar ishlayotgan bo'lishi mumkin —
+    # o'shanda misol yolg'on bo'ladi ("«divan» o'rniga «divan»").
+    # Frontend narx filtri faol bo'lganda tozalash tugmasini ko'rsatadi,
+    # shuning uchun bu yerda ham filtr bo'lsa taklif hisoblanmaydi.
+    taklif = None
+    # Tuman ham "filtr": "divan" Toshkentda 0 bo'lsa, butun bozorda
+    # 14 ta — taklif "«divan» o'rniga «divan»" bo'lib yolg'on chiqadi.
+    #
+    # FAQAT TOZALANGAN SO'ZLARNI SINAYMIZ (2026-08-11 review).
+    # Xom `sorov` da to'xtash so'zlari bor: "kerak", "kim", "so'm".
+    # Ularni `sorovni_tozala` TOXTA orqali chiqarib tashlagan edi —
+    # lekin e'lon tavsiflarida ular UCHRASHI mumkin ("kerak" degan
+    # matn ko'p), va taklif "«divan kerak» o'rniga «kerak»" bo'lib
+    # chiqardi. `sorov_soz` tozalangan — faqat unga mos keladigan
+    # xom so'zlar sinanadi, asl imlo saqlanadi ("iumshok" emas).
+    if not natijalar and not narx_dan and not narx_gacha and not tuman:
+        tozalangan = set(sorov_soz)
+        for asl_soz in (sorov or "").split():
+            n = normalla(asl_soz)
+            if n not in tozalangan or not n or n.isdigit():
+                continue
+            if baza.fts_erkin([n], limit=1):
+                taklif = asl_soz
+                break
+
     return {
         "sorov": sorov,
         "tushunildi": {"modellar": sorted(sorov_modellar),
@@ -488,6 +524,8 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
         "eng_arzon": narxlar[0] if narxlar else None,
         "tartib": tartib,
         "erkin": erkin,
+        # Bo'sh natijada: "Qisqaroq yozing: «{sorov}» o'rniga «{taklif}»"
+        "taklif": taklif,
         # Chegaraga tegdimi. Tegsa ekranda "900+" deb yoziladi — "900 ta"
         # deb yozish yolg'on bo'lardi, chunki aslida ko'proq.
         "chegarada": erkin and nomzod_soni >= baza.ERKIN_CHEGARA,

@@ -386,7 +386,7 @@
     font-size:17px;
     font-weight:550;
   }
-  .search-panel input::placeholder{color:#989ea8;font-weight:450}
+  .search-panel input::placeholder{color:var(--faint);font-weight:450}
 
   /* TELEFONDA QIDIRUV MAYDONI IKKINCHI QATORGA CHIQADI (2026-08-11).
      O'lchov, 390 px ekranda: matn maydoni atigi 183 px edi — ekranning
@@ -449,7 +449,7 @@
     cursor:pointer;
     transition:background 120ms var(--ease),box-shadow 120ms var(--ease),transform 120ms var(--ease);
   }
-  .primary-btn:hover{background:var(--navy-dark);box-shadow:0 12px 28px rgba(8,27,66,.36),inset 0 1px 0 rgba(255,255,255,.12)}
+  .primary-btn:hover{background:var(--navy-dark);box-shadow:var(--cta-glow),inset 0 1px 0 rgba(255,255,255,.12)}
   .primary-btn:active{transform:scale(.98);box-shadow:0 6px 14px rgba(8,27,66,.24)}
   .primary-btn:disabled{opacity:.55;cursor:wait}
   .image-search-btn{
@@ -899,10 +899,26 @@
     cursor:pointer;white-space:nowrap;transition:color 120ms var(--ease),border-color 120ms var(--ease),background 120ms var(--ease),box-shadow 120ms var(--ease);
   }
   .tartib-btn:hover{border-color:var(--navy);color:var(--navy);box-shadow:0 3px 8px rgba(11,37,89,.08)}
+  /* TANLANGAN CHIP — GRADIENT + GLOW (dsrupt .fc.on, 2026-08-11).
+     Ilgari oddiy navy fon edi; endi urg'u CTA bilan bir xil tilda:
+     gradient + yumshoq ko'k soya. Son ham oq bo'ladi. */
   .tartib-btn.tanlangan{
-    background:var(--navy);border-color:var(--navy);color:#fff;font-weight:750;
-    box-shadow:0 4px 10px rgba(8,27,66,.20);
+    background:linear-gradient(90deg,var(--navy),#3d6bb3);
+    border-color:transparent;color:#fff;font-weight:750;
+    box-shadow:0 4px 14px rgba(11,37,89,.30);
   }
+  /* SON — fcount uslubi (dsrupt 2026-08-11): variant yonida natija
+     soni turadi, odam tanlashdan oldin nimani kutishini biladi.
+     Saralash natijani o'zgartirmaydi (faqat tartibni), shuning uchun
+     barcha chiplarda bitta son — API d.jami. */
+  .tartib-son{
+    margin-left:5px;
+    font-size:11px;font-weight:800;
+    font-variant-numeric:tabular-nums;
+    color:var(--navy);
+    opacity:.72;
+  }
+  .tartib-btn.tanlangan .tartib-son{color:#fff;opacity:.95}
   .filtrlar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
   /* Narx filtri — bitta pill: "Narx [dan] — [gacha]". Hero'dagi qidiruv
      qutisi kabi oq sirt, ichida label va ikkita maydon. */
@@ -932,7 +948,7 @@
     background:transparent;
     font:inherit;font-size:13px;color:var(--text);
   }
-  .filtr-narx input::placeholder{color:#989ea8}
+  .filtr-narx input::placeholder{color:var(--faint)}
   .filtr-narx-tire{
     width:14px;height:1px;flex:none;
     background:var(--line-strong);
@@ -1438,7 +1454,12 @@
   }
   .list-head h2{margin:0;font-size:20px;letter-spacing:-.025em}
   .list-head p{margin:0;color:var(--muted);font-size:12.5px}
-  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  /* NATIJA PANJARASI — DESKTOP 4 USTUN (2026-08-11, dsrupt audit).
+     Ilgari 3 ustun edi: audit 08-09 "katta ekranda ma'lumot zichligi
+     past" deb yozgan edi. 4 ustunda karta ~275 px — narx, hudud va
+     sana bitta qarashda ko'rinadi. 1080 gacha 3 ustun, 900 gacha 2,
+     telefonda 1 (pastdagi @media bloklari). */
+  .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
   /* Karta ODATIY HOLATDA ham fondan ko'tarilib turadi. Ilgari faqat
      hover'da soya bor edi - ya'ni telefonda hech qachon. Sahifa yassi
      ko'rinishining asosiy sababi shu edi. */
@@ -1549,6 +1570,9 @@
   .empty-card h2{margin:0 0 8px;font-size:24px;letter-spacing:-.03em}
   .empty-card>p{max-width:480px;margin:0 auto;color:var(--muted);font-size:13.5px}
   .empty-card>.chips{justify-content:center;margin-top:18px}
+  /* MISOl VA TOZALASH TUGMASI — UMUMIY KOMPONENT: ober-ui.css da.
+     Ikki sahifa (index, kategoriyalar) bir xil uslubda bo'lishi
+     uchun ular bitta joyda yashaydi (2026-08-11). */
   .empty-card .request-card{margin:28px auto 0;max-width:950px;text-align:left}
   .error-box{
     padding:18px;border:1px solid #efc6c1;border-radius:var(--radius);
@@ -1586,7 +1610,7 @@
   .skeleton-line.big{width:62%;height:34px;margin-top:18px}
   .skeleton-line.short{width:42%}
   .skeleton-image{height:190px;border-radius:0}
-  .skeleton-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .skeleton-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
   .skeleton-tile .skeleton-line{margin:14px}
 
   .answer-list{margin-top:14px;display:grid;gap:8px}
@@ -1629,6 +1653,11 @@
   }
   .answer-open:hover{border-color:var(--navy)}
 
+  /* ORALIQ BOSQICH: 4 ustun 1080 dan pastda torayib qoladi (~210 px),
+     shuning uchun 1080 gacha 3 ustun. 900 da 2 ustunga tushadi (pastda). */
+  @media (max-width:1080px){
+    .cards,.skeleton-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  }
   @media (max-width:900px){
     .summary-grid,.skeleton-summary{grid-template-columns:1fr}
     .request-card{grid-template-columns:1fr}
@@ -1701,6 +1730,7 @@
     .filtrlar{margin-top:7px}
     .tartib-btn{
       height:34px;min-height:34px;padding:0 12px;font-size:12px}
+    .tartib-son{font-size:10px;margin-left:4px}
     .filtr-narx{min-height:34px;height:34px}
     .filtr-narx input{width:60px;min-height:32px;font-size:12px}
     .filtr-narx-bosh{padding-left:12px;font-size:11.5px}
@@ -2156,7 +2186,7 @@ function skeleton(){
     </div>
   </div>
   <div class="skeleton-grid">
-    ${Array.from({length:3}, () => `<div class="skeleton-tile">
+    ${Array.from({length:4}, () => `<div class="skeleton-tile">
       <div class="skeleton-image"></div><div><div class="skeleton-line"></div>
       <div class="skeleton-line short"></div></div></div>`).join("")}
   </div>`;
@@ -2762,9 +2792,11 @@ function boshqaruvBloki(d){
     ? `<p class="byudjet-eslatma">Byudjet: <strong>${som(d.byudjet)}</strong>
          — <button class="byudjet-ochir" type="button">Chegarasiz ko‘rish</button></p>`
     : "";
+  // Saralash natijani o'zgartirmaydi (faqat tartibni) — shuning uchun
+  // har chipda bitta son: API `d.jami` (fcount uslubi, 2026-08-11).
   const tugmalar = TARTIBLAR.map(([k, nom]) =>
     `<button class="tartib-btn${k === joriyTartib ? " tanlangan" : ""}"
-             type="button" data-tartib="${k}">${nom}</button>`).join("");
+             type="button" data-tartib="${k}">${nom}<span class="tartib-son">${soni}</span></button>`).join("");
   // 2026-08-08: qator (soni + saralash) alohida blok — telefonda sticky
   // bo'lishi uchun ota-onasi main (uzun) bo'lishi shart. Avval hammasi
   // bitta .boshqaruv ichida edi va qatorning ota-onasi qisqa edi —
@@ -2876,16 +2908,41 @@ function chiz(d, tuman){
   if(!natijalar.length){
     const yoNalishlar = d.tushunildi?.yonalishlar || [];
     const tanildi = yoNalishlar.length > 0;
+    // BO'SH HOLAT — YO'L KO'RSATISH (dsrupt .fempty, 2026-08-11).
+    // Misol o'z so'rovidan EMAS, bozor tahlilidan keladi: `d.taklif`
+    // — bozorda haqiqatan natija beradigan so'z (serverda har so'z
+    // alohida sinab topiladi). Ilgari birinchi so'z olinardi — u ham
+    // 0 natija berib, yolg'on maslahat bo'lib qolardi.
+    const qisqaMisol = d.taklif
+      ? `<p class="empty-misol">Qisqaroq yozing: «${esc(faolSorov.trim())}» o'rniga «${esc(d.taklif)}»</p>`
+      : "";
+    // Narx filtri faol bo'lsa — misol YO'Q, faqat tozalash tugmasi:
+    // so'zlar ishlayotgan bo'lishi mumkin, muammo filtrda. Tuman ham
+    // shunday: "divan" Toshkentda 0 bo'lsa, butun bozorda 14 ta —
+    // misol yolg'on maslahat bo'lardi ("«divan» o'rniga «divan»").
+    const filtrFaol = Boolean(filtrHolat.narx_dan || filtrHolat.narx_gacha)
+      || Boolean(joyTanlangan());
     $("#natija").innerHTML = `<div class="empty-card result-enter">
       <div class="empty-mark" aria-hidden="true"></div>
       <h2>${tanildi ? "Hozircha tayyor e’lon yo‘q" : "Bunday e’lon topilmadi"}</h2>
       <p>${tanildi
           ? "Yo‘nalishni tushundik. Endi mos sotuvchilardan bugungi aniq taklifni so‘raymiz."
           : "Indeksda mos e’lon yo‘q. Boshqacha yozib ko‘ring yoki sotuvchilarning o‘zidan so‘rang."}</p>
+      ${!tanildi && !filtrFaol ? qisqaMisol : ""}
+      ${!tanildi && filtrFaol ? `<button class="empty-tozalash" type="button" id="empty-tozalash">Filtrlarni tozalash</button>` : ""}
       ${tanildi ? `<div class="chips"><span class="chip">Yo‘nalish: ${esc(yoNalishlar.join(", "))}</span></div>` : ""}
       <div id="sorov-joy"></div>
       ${soraOrta(true)}
     </div>`;
+    const tozala = $("#empty-tozalash");
+    if (tozala) tozala.addEventListener("click", () => {
+      filtrHolat.narx_dan = "";
+      filtrHolat.narx_gacha = "";
+      const fdan = $("#f-dan"), fgacha = $("#f-gacha");
+      if (fdan) fdan.value = "";
+      if (fgacha) fgacha.value = "";
+      qidir();
+    });
     soraniTikla();
     return;
   }

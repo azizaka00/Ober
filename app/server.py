@@ -93,6 +93,12 @@ _TEZLIK_ODATIY = (600, 3600)
 # istalgan bot o'zi sarlavha yozib chegarani aylanib o'tardi.
 _ISHONCHLI_PROKSI = {"127.0.0.1", "::1", "localhost"}
 
+# Kategoriyalar API kesh (2026-08-11). Ikki darajali e'lon soni bitta
+# SQL bilan ~0.5 s oladi (300 000+ e'lon guruhlanadi). Baza 45 daqiqada
+# yangilanadi — 5 daqiqalik kesh eskirishga yo'l qo'ymaydi, lekin har
+# sahifa ochilishida qayta hisoblashni ham kesadi.
+_KAT_KESH = {"vaqt": 0.0, "javob": None}
+
 
 def _haqiqiy_ip(ishlovchi) -> str:
     """Tashrifchining haqiqiy IP manzili.
@@ -677,71 +683,104 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         # bo'limlar ro'yxati uchun. Sahifa `?q=<nom>` bilan qidiruvni
         # ochadi — o'sha yerda xaridor bozorning o'zidan topadi.
         if u.path == "/api/kategoriyalar":
-            import kategoriyalar
-            juftlar = kategoriyalar.royxat()
-            guruhlar: dict[str, list[tuple[str, str]]] = {}
-            for yol, nom in juftlar:
-                guruh = yol.split("/", 1)[0] or "boshqa"
-                guruhlar.setdefault(guruh, []).append((yol, nom))
-            tartib = ["transport", "nedvizhimost", "elektronika",
-                      "dom-i-sad", "detskiy-mir", "moda-i-stil",
-                      "uslugi", "rabota", "zhivotnye",
-                      "hobbi-otdyh-i-sport", "otdam-darom", "obmen-barter"]
-            nomlar = {
-                "transport": "Transport",
-                "nedvizhimost": "Ko'chmas mulk",
-                "elektronika": "Elektr jihozlari",
-                "dom-i-sad": "Uy va bog'",
-                "detskiy-mir": "Bolalar dunyosi",
-                "moda-i-stil": "Moda va stil",
-                "uslugi": "Xizmatlar",
-                "rabota": "Ish",
-                "zhivotnye": "Hayvonlar",
-                "hobbi-otdyh-i-sport": "Xobbi va sport",
-                "otdam-darom": "Tekinga beraman",
-                "obmen-barter": "Ayirboshlash",
-            }
-            # `data/kategoriyalar.txt` OLX'dan avtomatik qayta yoziladi —
-            # yangi ildiz kategoriya paydo bo'lsa, u tartibda bo'lmasa ham
-            # sahifadan yo'qolib qolmasin: oxiriga qo'shamiz.
-            natija = []
-            for guruh in tartib:
-                if guruh not in guruhlar:
-                    continue
-                g = guruhlar[guruh]
-                # Qisqa nomlar: "transport/avtobusy" -> "Avtobuslar"
-                qisqa = []
-                for yol, nom in g:
-                    oxirgi = nom.split("/")[-1].strip()
-                    if oxirgi and oxirgi not in qisqa:
-                        qisqa.append(oxirgi)
-                natija.append({
-                    "slug": guruh,
-                    "nom": nomlar.get(guruh, guruh),
-                    "soni": len(g),
-                    "q": nomlar.get(guruh, guruh),
-                    "namuna": qisqa[:12],
-                })
-            for guruh, g in guruhlar.items():
-                if guruh in tartib:
-                    continue
-                qisqa = []
-                for yol, nom in g:
-                    oxirgi = nom.split("/")[-1].strip()
-                    if oxirgi and oxirgi not in qisqa:
-                        qisqa.append(oxirgi)
-                natija.append({
-                    "slug": guruh,
-                    "nom": nomlar.get(guruh, guruh),
-                    "soni": len(g),
-                    "q": nomlar.get(guruh, guruh),
-                    "namuna": qisqa[:12],
-                })
+            if not _KAT_KESH["javob"] or time.time() - _KAT_KESH["vaqt"] > 300:
+                _KAT_KESH["javob"] = self._kategoriyalar_javob()
+                _KAT_KESH["vaqt"] = time.time()
             self._yubor(200, "application/json; charset=utf-8",
-                        json.dumps(natija, ensure_ascii=False).encode())
+                        json.dumps(_KAT_KESH["javob"], ensure_ascii=False).encode())
             return
 
         self._topilmadi()
+
+    def _kategoriyalar_javob(self):
+        """Kategoriyalar ikki darajada: yuqori guruh + real e'lon sonlari.
+
+        Avval bu yerda bo'limlar soni (`len(g)`) qaytardi. 2026-08-11 dan
+        boshlab `elonlar` DB'dan hisoblanadi va har guruh ichida `pastki`
+        (2-daraja) keladi.
+        """
+        import kategoriyalar
+        juftlar = kategoriyalar.royxat()
+        guruhlar: dict[str, list[tuple[str, str]]] = {}
+        for yol, nom in juftlar:
+            guruh = yol.split("/", 1)[0] or "boshqa"
+            guruhlar.setdefault(guruh, []).append((yol, nom))
+        tartib = ["transport", "nedvizhimost", "elektronika",
+                  "dom-i-sad", "detskiy-mir", "moda-i-stil",
+                  "uslugi", "rabota", "zhivotnye",
+                  "hobbi-otdyh-i-sport", "otdam-darom", "obmen-barter"]
+        nomlar = {
+            "transport": "Transport",
+            "nedvizhimost": "Ko'chmas mulk",
+            "elektronika": "Elektr jihozlari",
+            "dom-i-sad": "Uy va bog'",
+            "detskiy-mir": "Bolalar dunyosi",
+            "moda-i-stil": "Moda va stil",
+            "uslugi": "Xizmatlar",
+            "rabota": "Ish",
+            "zhivotnye": "Hayvonlar",
+            "hobbi-otdyh-i-sport": "Xobbi va sport",
+            "otdam-darom": "Tekinga beraman",
+            "obmen-barter": "Ayirboshlash",
+        }
+        # `data/kategoriyalar.txt` OLX'dan avtomatik qayta yoziladi —
+        # yangi ildiz kategoriya paydo bo'lsa, u tartibda bo'lmasa ham
+        # sahifadan yo'qolib qolmasin: oxiriga qo'shamiz.
+        #
+        # IKKI DARAJA (2026-08-11). Kartada endi bo'limlar soni emas,
+        # REAL E'LON SONI turadi — u baza'dan olinadi:
+        #   `elonlar.kategoriya` to'liq yo'l: "Transport / Yengil
+        #   avtomashinalar / Aito". Birinchi segment yuqori guruh,
+        #   ikkinchisi 2-daraja. Nomlar `kategoriyalar.txt` bilan
+        #   aynan mos (o'lchov: 16599 | Yengil avtomashinalar).
+        # Bitta SQL ikkala darajani ham beradi (568 ms, 35 qator).
+        baza.init()
+        b1_soni: dict[str, int] = {}
+        b2_soni: dict[tuple[str, str], int] = {}
+        with baza.ulan() as c:
+            qatorlar = c.execute("""
+                SELECT substr(kategoriya,1,instr(kategoriya,' / ')-1) AS b1,
+                       CASE WHEN instr(substr(kategoriya,instr(kategoriya,' / ')+3),' / ')>0
+                            THEN substr(substr(kategoriya,instr(kategoriya,' / ')+3),1,
+                                 instr(substr(kategoriya,instr(kategoriya,' / ')+3),' / ')-1)
+                            ELSE substr(kategoriya,instr(kategoriya,' / ')+3) END AS b2,
+                       COUNT(*) n
+                FROM elonlar WHERE kategoriya LIKE '% / %'
+                GROUP BY b1,b2""").fetchall()
+        for r in qatorlar:
+            b1, b2, n = r["b1"], (r["b2"] or "").strip(), r["n"]
+            b1_soni[b1] = b1_soni.get(b1, 0) + n
+            if b2:
+                b2_soni[(b1, b2)] = b2_soni.get((b1, b2), 0) + n
+        natija = []
+        for guruh in tartib + [g for g in guruhlar if g not in tartib]:
+            g = guruhlar[guruh]
+            nom = nomlar.get(guruh, guruh)
+            # 2-daraja: daraxtdan (tartibda), DB'dagi real son bilan.
+            # Daraxtda yo'q, lekin DB'da bor bo'limlar ham qo'shiladi.
+            pastki: dict[str, dict] = {}
+            for yol, toliq in g:
+                qism = toliq.split(" / ")
+                if len(qism) < 2:
+                    continue
+                b2 = qism[1].strip()
+                if b2 and b2 not in pastki:
+                    pastki[b2] = {"nom": b2,
+                                  "elonlar": b2_soni.get((nom, b2), 0)}
+            for (b1, b2), n in b2_soni.items():
+                if b1 == nom and b2 not in pastki:
+                    pastki[b2] = {"nom": b2, "elonlar": n}
+            natija.append({
+                "slug": guruh,
+                "nom": nom,
+                "elonlar": b1_soni.get(nom, 0),
+                "bolimlar": len(g),
+                "q": nom,
+                "pastki": sorted(pastki.values(),
+                                  key=lambda x: x["elonlar"],
+                                  reverse=True),
+            })
+        return natija
 
     def do_POST(self):                         # noqa: N802
         u = urlparse(self.path)
