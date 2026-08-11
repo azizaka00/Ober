@@ -25,9 +25,18 @@
     --amber-soft:#fdf3de;
     --shadow:0 16px 48px rgba(11,37,89,.08);
     --shadow-card:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
+    --shadow-hover:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(11,37,89,.10);
+    --ease:cubic-bezier(.2,0,0,1);
+    /* Burchaklar tizimi — boshqa sahifalar bilan bir xil.
+       2026-08-11: bu yerda xom `16px` turardi (shkalada bunday qiymat
+       yo'q) va `--ease` boshqacha edi — bitta sayt ikki xil harakat
+       qilardi. */
+    --r-kichik:10px;
+    --r-orta:14px;
+    --r-katta:20px;
+    --r-pill:999px;
+    --radius:var(--r-katta);
     --content:1180px;
-    --radius:16px;
-    --ease:cubic-bezier(.4,0,.2,1);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   /* `hidden` ATRIBUTI ISHLASHI UCHUN. Bu qoida yo'q bo'lsa, `display`
@@ -49,8 +58,9 @@
   .topbar{
     position:sticky;top:0;z-index:20;
     border-bottom:1px solid var(--line);
-    background:rgba(251,251,250,.96);
-    backdrop-filter:saturate(130%) blur(14px);
+    background:rgba(255,255,255,.88);
+    backdrop-filter:saturate(140%) blur(16px);
+    -webkit-backdrop-filter:saturate(140%) blur(16px);
   }
   .topbar-inner{
     width:min(100% - 36px,var(--content));
@@ -60,16 +70,9 @@
   }
   .brand{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--navy);font-size:20px}
   .brand img{display:block}
+  /* Navigatsiya `tabbar.js` dan keladi (Qidirish · Kategoriyalar ·
+     + E'lon · Chat). Bu yerda faqat til tugmasi uchun joy. */
   .top-actions{display:flex;align-items:center;gap:8px}
-  .top-action{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:14px;font-weight:600;color:var(--navy);
-    padding:8px 14px;border-radius:10px;border:1px solid transparent;
-    transition:background 160ms var(--ease);
-  }
-  .top-action:hover{background:var(--navy-soft)}
-  .top-action.primary{background:var(--navy);color:#fff}
-  .top-action.primary:hover{background:var(--navy-dark)}
 
   /* ── ASOSIY ─────────────────────────────────────────────────── */
   .sahifa{
@@ -79,7 +82,7 @@
   .orqaga{
     display:inline-flex;align-items:center;gap:8px;
     font-size:14px;font-weight:600;color:var(--muted);
-    margin-bottom:18px;padding:6px 10px;border-radius:8px;
+    margin-bottom:18px;padding:6px 10px;border-radius:var(--r-kichik);
     transition:color 160ms var(--ease),background 160ms var(--ease);
   }
   .orqaga:hover{color:var(--navy);background:var(--navy-soft)}
@@ -104,7 +107,7 @@
     border-top:1px solid var(--line);
   }
   .rasm-tex button{
-    width:72px;height:56px;border-radius:8px;overflow:hidden;padding:0;
+    width:72px;height:56px;border-radius:var(--r-kichik);overflow:hidden;padding:0;
     border:2px solid var(--line);background:var(--surface-2);cursor:pointer;
     transition:border-color 160ms var(--ease),transform 160ms var(--ease);
   }
@@ -121,7 +124,7 @@
   .elon-badge{
     display:inline-block;font-size:11px;font-weight:800;letter-spacing:.6px;
     color:var(--navy);background:var(--navy-soft);
-    padding:4px 10px;border-radius:999px;margin-bottom:14px;text-transform:uppercase;
+    padding:4px 10px;border-radius:var(--r-pill);margin-bottom:14px;text-transform:uppercase;
   }
   .elon-nom{font-size:24px;font-weight:800;line-height:1.25;letter-spacing:-.2px}
   .elon-narx{
@@ -129,7 +132,7 @@
   }
   .kelishiladi{
     display:inline-block;font-size:12px;font-weight:700;color:var(--amber);
-    background:var(--amber-soft);padding:3px 9px;border-radius:6px;margin-left:8px;vertical-align:3px;
+    background:var(--amber-soft);padding:3px 9px;border-radius:var(--r-kichik);margin-left:8px;vertical-align:3px;
   }
   .elon-meta{
     display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;
@@ -141,7 +144,7 @@
     font-size:14.5px;color:#344054;white-space:pre-line;
   }
   .sotuvchi{
-    margin-top:20px;padding:16px;border-radius:12px;
+    margin-top:20px;padding:16px;border-radius:var(--r-orta);
     background:var(--surface-2);border:1px solid var(--line);
   }
   .sotuvchi h3{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px}
@@ -152,12 +155,12 @@
   }
   .tel-ochish{
     display:inline-flex;align-items:center;gap:8px;
-    font-size:14px;font-weight:700;color:var(--navy);
-    background:var(--navy-soft);border:1px solid rgba(11,37,89,.14);
-    padding:9px 16px;border-radius:10px;cursor:pointer;
-    transition:background 160ms var(--ease),transform 160ms var(--ease);
+    font-size:14px;font-weight:700;color:#fff;
+    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+    padding:9px 16px;border-radius:var(--r-kichik);cursor:pointer;
+    transition:box-shadow 160ms var(--ease),transform 160ms var(--ease);
   }
-  .tel-ochish:hover{background:#dfe7f4;transform:translateY(-1px)}
+  .tel-ochish:hover{box-shadow:var(--cta-glow),inset 0 1px 0 rgba(255,255,255,.12);transform:translateY(-1px)}
   .tel-ochish:active{transform:translateY(0)}
   .tel-ochish svg{flex:none}
   .tel-raqam{
@@ -193,7 +196,6 @@
     .rasm-katta{aspect-ratio:1/1}
     .topbar-inner{width:min(100% - 28px,var(--content));gap:10px}
     .top-actions{gap:4px}
-    .top-action{padding:7px 9px;font-size:12px}
   }
 </style>
 <link rel="stylesheet" href="/ober-ui.css">
@@ -205,8 +207,7 @@
       <img src="/brend/logo.png" alt="ober" width="94" height="29">
     </a>
     <div class="top-actions">
-      <a class="top-action" href="/"><span>Qidiruv</span></a>
-      <a class="top-action primary" href="/sotuvchi"><span>Profil</span></a>
+      <div class="lang-slot"></div>
     </div>
   </div>
 </header>

@@ -26,7 +26,10 @@ def main() -> None:
             "tanlangan til lokal saqlanadi")
     tekshir('lang === "ru" ? "ru-RU" : "uz-UZ"' in i18n,
             "narx va sonlar tilga mos formatlanadi")
-    tekshir('"Siz yozasiz. Bozor javob beradi.":"Вы пишете. Рынок отвечает."' in i18n,
+    # 2026-08-11: h1 ichida amber urg'u uchun span qo'shildi — tarjima
+    # ikkiga bo'lindi: "Siz yozasiz." va "Bozor javob beradi.".
+    tekshir('"Siz yozasiz.":"Вы пишете."' in i18n and
+            '"Bozor javob beradi.":"Рынок отвечает."' in i18n,
             "bosh sahifa ruscha lug‘atda bor")
     tekshir('"Sotuvchi sifatida boshlang":"Начать как продавец"' in i18n,
             "sotuvchi onboarding ruscha lug‘atda bor")

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OBER — Hero variantlari (draft)</title>
+<link rel="preload" href="/shrift/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{
+  font-family:'Onest';src:url('/shrift/onest-latin.woff2') format('woff2');
+  font-weight:400 800;font-display:swap;
+}
+:root{
+  --navy:#0a2b63;--navy-dark:#071c43;--navy-soft:#e8eef8;
+  --bg:#f1f5fa;--surface:#fcfdff;--surface-2:#f6f8fc;
+  --text:#111a2c;--muted:#637087;--faint:#98a0af;
+  --line:#dfe6f0;--line-strong:#c9d4e3;
+  --amber:#f5a623;--amber-deep:#e08d00;--amber-soft:#fdf3e3;--amber-line:#f3d9a8;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --r-kichik:10px;--r-orta:15px;--r-katta:22px;--r-pill:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Onest','Segoe UI',sans-serif;background:#0a1230;color:var(--text)}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+[hidden]{display:none!important}
+::selection{background:#cbdaf0;color:var(--navy-dark)}
+
+/* ── TANLOV PANELI (faqat draft uchun) ─────────────────────── */
+.tanlov{
+  position:fixed;left:16px;bottom:16px;z-index:99;display:flex;gap:8px;
+  background:rgba(5,10,26,.82);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.14);border-radius:var(--r-pill);
+  padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.5);
+}
+.tanlov a{
+  padding:10px 18px;border-radius:var(--r-pill);color:#cbd5e6;
+  font-size:12.5px;font-weight:700;text-decoration:none;transition:all 180ms var(--ease);
+}
+.tanlov a.on{background:var(--amber);color:#231400;box-shadow:0 6px 18px rgba(245,166,35,.35)}
+.tanlov a:hover{color:#fff}
+
+/* ── TOPBAR (ikkala variantda ham) ─────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,.86);backdrop-filter:blur(18px) saturate(160%);
+  border-bottom:1px solid rgba(10,43,99,.08);
+}
+.v-a .topbar{background:rgba(7,14,32,.72);border-color:rgba(255,255,255,.08)}
+.topbar-inner{
+  max-width:1180px;margin:0 auto;padding:0 22px;height:64px;
+  display:flex;align-items:center;gap:26px;
+}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none}
+.brand-mark{
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(160deg,var(--navy),var(--navy-dark));
+  color:#fff;font-weight:800;font-size:17px;
+  box-shadow:0 6px 16px rgba(10,43,99,.28);
+}
+.brand-text{font-weight:800;font-size:17px;letter-spacing:.02em;color:var(--navy)}
+.v-a .brand-text{color:#fff}
+.nav{display:flex;gap:4px;margin-left:8px}
+.nav-x{
+  padding:9px 14px;border-radius:var(--r-kichik);color:var(--muted);
+  font-size:14px;font-weight:650;text-decoration:none;transition:all 160ms var(--ease);
+}
+.nav-x:hover{background:var(--navy-soft);color:var(--navy)}
+.nav-x-on{background:var(--navy-soft);color:var(--navy);font-weight:750}
+.v-a .nav-x{color:#aebdd8}
+.v-a .nav-x:hover{background:rgba(255,255,255,.10);color:#fff}
+.v-a .nav-x-on{background:rgba(255,255,255,.14);color:#fff}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+.til{
+  padding:8px 13px;border-radius:var(--r-kichik);color:var(--muted);
+  font-size:13px;font-weight:750;transition:all 160ms var(--ease);
+}
+.til:hover{background:var(--navy-soft);color:var(--navy)}
+.v-a .til{color:#aebdd8}
+.v-a .til:hover{background:rgba(255,255,255,.10);color:#fff}
+.sotish-btn{
+  padding:10px 20px;border-radius:var(--r-pill);text-decoration:none;
+  background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+  color:#fff;font-size:13.5px;font-weight:750;
+  box-shadow:0 8px 22px rgba(10,43,99,.30);
+  transition:box-shadow 200ms var(--ease),transform 150ms var(--ease),filter 200ms var(--ease);
+}
+.sotish-btn:hover{box-shadow:0 12px 30px rgba(10,43,99,.42);filter:brightness(1.08)}
+.sotish-btn:active{transform:scale(.97)}
+
+/* ── UMUMIY HERO ELEMENTLAR ────────────────────────────────── */
+.hero-ich{position:relative;z-index:2;max-width:760px;margin:0 auto;text-align:center}
+.hero-live{
+  display:inline-flex;align-items:center;gap:8px;margin-bottom:20px;
+  padding:7px 15px;border-radius:var(--r-pill);font-size:12px;font-weight:700;
+}
+.live-nuqta{width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block}
+@keyframes nuqta{
+  0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.45)}
+  50%{box-shadow:0 0 0 6px rgba(245,166,35,0)}
+}
+.live-nuqta{animation:nuqta 2.4s var(--ease) infinite}
+.hero-ich h1{
+  font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-.045em;
+  font-weight:800;text-wrap:balance;
+}
+.hero-izoh{
+  max-width:560px;margin:16px auto 30px;font-size:16px;line-height:1.6;text-wrap:balance;
+}
+.chiplar-a,.chiplar-b{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+.chip-a{
+  padding:7px 14px;border-radius:var(--r-pill);font-size:12.5px;font-weight:650;
+  background:rgba(255,255,255,.08);color:#b9c8e2;border:1px solid rgba(255,255,255,.14);
+  transition:all 160ms var(--ease);
+}
+.chip-a:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateY(-1px)}
+.chip-b{
+  padding:7px 14px;border-radius:var(--r-pill);font-size:12.5px;font-weight:650;
+  background:var(--surface);color:var(--navy);border:1px solid var(--line);
+  box-shadow:0 2px 6px rgba(10,43,99,.05);transition:all 160ms var(--ease);
+}
+.chip-b:hover{border-color:var(--amber-line);color:var(--amber-deep);transform:translateY(-1px)}
+.chip-a-mut,.chip-b-mut{opacity:.55}
+
+/* ── VARIANT A: QUYUQ NAVY ─────────────────────────────────── */
+.v-a{background:linear-gradient(180deg,#070e24 0%,#0a1b42 40%,#0a2b63 78%,#081d45 100%)}
+.v-a .hero-a{position:relative;padding:96px 22px 60px;overflow:hidden}
+.v-a .hero-nur{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(58rem 30rem at 50% -12%,rgba(245,166,35,.16),transparent 62%),
+    radial-gradient(40rem 26rem at 12% 40%,rgba(80,120,200,.16),transparent 60%),
+    radial-gradient(46rem 30rem at 88% 55%,rgba(30,60,130,.25),transparent 65%);
+}
+.v-a .hero-nur::after{
+  content:"";position:absolute;inset:0;opacity:.05;pointer-events:none;
+  background-image:radial-gradient(circle,#fff .5px,transparent .6px);background-size:3px 3px;
+}
+.v-a .hero-live{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c9d6ee}
+.v-a .hero-ich h1{color:#fff}
+.v-a .amb{
+  background:linear-gradient(100deg,#ffd98a,#f5a623 55%,#ffc24d);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.v-a .hero-izoh{color:#aebdd8}
+.v-a .qidiruv-a{
+  display:flex;align-items:center;gap:10px;max-width:620px;margin:0 auto;
+  padding:8px 8px 8px 20px;border-radius:var(--r-katta);
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(18px);
+  box-shadow:0 24px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14);
+  transition:border-color 200ms var(--ease),box-shadow 200ms var(--ease),background 200ms var(--ease);
+}
+.v-a .qidiruv-a:focus-within{
+  border-color:rgba(245,166,35,.55);background:rgba(255,255,255,.14);
+  box-shadow:0 24px 60px rgba(0,0,0,.35),0 0 0 4px rgba(245,166,35,.16);
+}
+.v-a .q-ikon{width:18px;height:18px;flex:none;opacity:.7;position:relative}
+.v-a .q-ikon::before{
+  content:"";position:absolute;inset:0;border:2px solid #c9d6ee;border-radius:50%;
+}
+.v-a .q-ikon::after{
+  content:"";position:absolute;right:1px;bottom:1px;width:6px;height:2px;
+  background:#c9d6ee;transform:rotate(45deg);transform-origin:right center;
+}
+.v-a .qidiruv-a input{
+  flex:1;min-width:0;background:none;border:none;outline:none;
+  color:#fff;font-size:16px;font-family:inherit;padding:10px 0;
+}
+.v-a .qidiruv-a input::placeholder{color:#8fa2c4}
+.v-a .topish-a{
+  padding:13px 30px;border-radius:var(--r-orta);flex:none;
+  background:linear-gradient(180deg,#ffc24d,#f59e0b);
+  color:#231400;font-size:15px;font-weight:800;
+  box-shadow:0 10px 26px rgba(245,166,35,.38),inset 0 1px 0 rgba(255,255,255,.5);
+  transition:all 200ms var(--ease);
+}
+.v-a .topish-a:hover{
+  filter:brightness(1.06);transform:translateY(-1px);
+  box-shadow:0 14px 32px rgba(245,166,35,.5),inset 0 1px 0 rgba(255,255,255,.5);
+}
+.v-a .topish-a:active{transform:scale(.97)}
+.v-a .stat-a{
+  display:flex;justify-content:center;gap:38px;margin-top:38px;flex-wrap:wrap;
+}
+.v-a .stat-bir{display:flex;flex-direction:column;align-items:center;gap:3px}
+.v-a .stat-son{
+  font-size:clamp(26px,3.4vw,34px);font-weight:800;color:#ffc24d;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;
+}
+.v-a .stat-bir span{font-size:12.5px;color:#8fa2c4;font-weight:600}
+.v-a .lenta-a{padding:26px 22px 64px}
+.v-a .lenta-bosh{
+  max-width:1180px;margin:0 auto 22px;display:flex;align-items:baseline;gap:14px;
+}
+.v-a .lenta-bosh h2{color:#fff;font-size:22px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.v-a .lenta-izoh{color:#8fa2c4;font-size:13px}
+.v-a .lenta-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.v-a .karta{
+  background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--r-katta);overflow:hidden;
+  transition:transform 220ms var(--ease),box-shadow 220ms var(--ease),background 220ms var(--ease);
+}
+.v-a .karta:hover{
+  transform:translateY(-5px);background:rgba(255,255,255,.10);
+  box-shadow:0 22px 48px rgba(0,0,0,.4);
+}
+.v-a .karta-rasm{position:relative;aspect-ratio:4/3;overflow:hidden;background:#0d1d42}
+.v-a .karta-rasm img{width:100%;height:100%;object-fit:cover;transition:transform 420ms var(--ease)}
+.v-a .karta:hover .karta-rasm img{transform:scale(1.05)}
+.v-a .karta-manba{
+  position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:var(--r-pill);
+  background:rgba(4,9,22,.72);backdrop-filter:blur(6px);color:#fff;
+  font-size:10.5px;font-weight:800;letter-spacing:.08em;
+}
+.v-a .karta-badan{padding:14px 16px 16px}
+.v-a .karta-nom{
+  font-size:14px;font-weight:700;color:#e6edf8;line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  min-height:39px;
+}
+.v-a .karta-narx{margin-top:9px;font-size:16.5px;font-weight:800;color:#ffc24d;letter-spacing:-.02em}
+.v-a .karta-narx span{font-size:12.5px;font-weight:600;color:#8fa2c4}
+.v-a .karta-meta{margin-top:5px;font-size:12px;color:#8fa2c4}
+.v-a .crm-a{padding:0 22px 70px}
+.v-a .crm-ich{
+  max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:26px;
+  padding:34px 40px;border-radius:var(--r-katta);
+  background:linear-gradient(150deg,rgba(245,166,35,.14),rgba(255,255,255,.05) 55%);
+  border:1px solid rgba(245,166,35,.28);
+  box-shadow:0 24px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.v-a .crm-ich h3{color:#fff;font-size:clamp(20px,2.6vw,26px);font-weight:800;letter-spacing:-.02em}
+.v-a .crm-ich p{margin-top:8px;color:#aebdd8;font-size:14px;line-height:1.55;max-width:560px}
+.v-a .crm-btn-a{
+  flex:none;padding:14px 32px;border-radius:var(--r-orta);
+  background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+  font-size:15px;font-weight:800;white-space:nowrap;
+  box-shadow:0 12px 30px rgba(245,166,35,.35),inset 0 1px 0 rgba(255,255,255,.5);
+  transition:all 200ms var(--ease);
+}
+.v-a .crm-btn-a:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 16px 38px rgba(245,166,35,.5)}
+.v-a .crm-btn-a:active{transform:scale(.97)}
+
+/* ── VARIANT B: YORUG' JONLI ───────────────────────────────── */
+.v-b{background:var(--bg)}
+.v-b .hero-b{
+  position:relative;padding:96px 22px 60px;overflow:hidden;
+  background:linear-gradient(180deg,#fdf6ec 0%,#f6f9fd 45%,var(--bg) 100%);
+  border-bottom:1px solid var(--line);
+}
+.v-b .hero-nur-b{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(50rem 28rem at 50% -10%,rgba(245,166,35,.22),transparent 60%),
+    radial-gradient(38rem 24rem at 10% 30%,rgba(160,192,230,.30),transparent 62%),
+    radial-gradient(44rem 26rem at 90% 40%,rgba(205,223,244,.35),transparent 65%);
+}
+.v-b .hero-ich h1{color:var(--navy-dark)}
+.v-b .amb-b{
+  background:linear-gradient(100deg,#b56b00,#e08d00 60%,#f5a623);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.v-b .hero-izoh{color:var(--muted)}
+.v-b .hero-live{background:#fff;border:1px solid var(--amber-line);color:var(--amber-deep);box-shadow:0 4px 14px rgba(224,141,0,.12)}
+.v-b .qidiruv-b{
+  display:flex;align-items:center;gap:10px;max-width:620px;margin:0 auto;
+  padding:8px 8px 8px 20px;border-radius:var(--r-katta);
+  background:#fff;border:1px solid var(--line-strong);
+  box-shadow:0 4px 12px rgba(10,43,99,.05),0 22px 48px rgba(10,43,99,.10);
+  transition:border-color 200ms var(--ease),box-shadow 200ms var(--ease),transform 200ms var(--ease);
+}
+.v-b .qidiruv-b:focus-within{
+  border-color:var(--amber);transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(10,43,99,.06),0 26px 56px rgba(10,43,99,.13),0 0 0 4px rgba(245,166,35,.14);
+}
+.v-b .q-ikon{width:18px;height:18px;flex:none;opacity:.55;position:relative}
+.v-b .q-ikon::before{content:"";position:absolute;inset:0;border:2px solid var(--navy);border-radius:50%}
+.v-b .q-ikon::after{
+  content:"";position:absolute;right:1px;bottom:1px;width:6px;height:2px;
+  background:var(--navy);transform:rotate(45deg);transform-origin:right center;
+}
+.v-b .qidiruv-b input{
+  flex:1;min-width:0;background:none;border:none;outline:none;
+  color:var(--text);font-size:16px;font-family:inherit;padding:10px 0;
+}
+.v-b .qidiruv-b input::placeholder{color:var(--faint)}
+.v-b .topish-b{
+  padding:13px 30px;border-radius:var(--r-orta);flex:none;
+  background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+  color:#fff;font-size:15px;font-weight:800;
+  box-shadow:0 10px 26px rgba(10,43,99,.32),inset 0 1px 0 rgba(255,255,255,.16);
+  transition:all 200ms var(--ease);
+}
+.v-b .topish-b:hover{
+  transform:translateY(-1px);filter:brightness(1.1);
+  box-shadow:0 14px 32px rgba(10,43,99,.42),inset 0 1px 0 rgba(255,255,255,.16);
+}
+.v-b .topish-b:active{transform:scale(.97)}
+.v-b .stat-b{display:flex;justify-content:center;gap:38px;margin-top:38px;flex-wrap:wrap}
+.v-b .stat-son{font-size:clamp(26px,3.4vw,34px);font-weight:800;color:var(--navy);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.v-b .stat-bir span{font-size:12.5px;color:var(--muted);font-weight:600}
+.v-b .lenta-b{padding:34px 22px 64px}
+.v-b .lenta-bosh{max-width:1180px;margin:0 auto 22px;display:flex;align-items:baseline;gap:14px}
+.v-b .lenta-bosh h2{color:var(--navy-dark);font-size:22px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.v-b .lenta-izoh{color:var(--muted);font-size:13px}
+.v-b .lenta-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.v-b .karta{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-katta);overflow:hidden;
+  box-shadow:var(--shadow-card,0 1px 1px rgba(10,43,99,.04),0 10px 28px rgba(10,43,99,.065));
+  transition:transform 220ms var(--ease),box-shadow 220ms var(--ease),border-color 220ms var(--ease);
+}
+.v-b .karta:hover{
+  transform:translateY(-5px);border-color:var(--amber-line);
+  box-shadow:0 3px 6px rgba(10,43,99,.05),0 24px 48px rgba(10,43,99,.13);
+}
+.v-b .karta-rasm{position:relative;aspect-ratio:4/3;overflow:hidden;background:#eef2f8}
+.v-b .karta-rasm img{width:100%;height:100%;object-fit:cover;transition:transform 420ms var(--ease)}
+.v-b .karta:hover .karta-rasm img{transform:scale(1.05)}
+.v-b .karta-manba{
+  position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:var(--r-pill);
+  background:rgba(255,255,255,.92);backdrop-filter:blur(6px);color:var(--navy);
+  font-size:10.5px;font-weight:800;letter-spacing:.08em;box-shadow:0 2px 8px rgba(10,43,99,.15);
+}
+.v-b .karta-badan{padding:14px 16px 16px}
+.v-b .karta-nom{font-size:14px;font-weight:700;color:var(--text);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:39px}
+.v-b .karta-narx{margin-top:9px;font-size:16.5px;font-weight:800;color:var(--amber-deep);letter-spacing:-.02em}
+.v-b .karta-narx span{font-size:12.5px;font-weight:600;color:var(--muted)}
+.v-b .karta-meta{margin-top:5px;font-size:12px;color:var(--muted)}
+.v-b .crm-b{padding:0 22px 70px}
+.v-b .crm-ich{
+  max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:26px;
+  padding:34px 40px;border-radius:var(--r-katta);
+  background:linear-gradient(150deg,#fdf3e3,#fff 55%);
+  border:1px solid var(--amber-line);
+  box-shadow:0 24px 60px rgba(224,141,0,.14),inset 0 1px 0 #fff;
+}
+.v-b .crm-ich h3{color:var(--navy-dark);font-size:clamp(20px,2.6vw,26px);font-weight:800;letter-spacing:-.02em}
+.v-b .crm-ich p{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.55;max-width:560px}
+.v-b .crm-btn-b{
+  flex:none;padding:14px 32px;border-radius:var(--r-orta);
+  background:linear-gradient(180deg,var(--navy),var(--navy-dark));color:#fff;
+  font-size:15px;font-weight:800;white-space:nowrap;
+  box-shadow:0 12px 30px rgba(10,43,99,.30),inset 0 1px 0 rgba(255,255,255,.16);
+  transition:all 200ms var(--ease);
+}
+.v-b .crm-btn-b:hover{transform:translateY(-1px);filter:brightness(1.1);box-shadow:0 16px 38px rgba(10,43,99,.4)}
+.v-b .crm-btn-b:active{transform:scale(.97)}
+
+/* ── KIRISH ANIMATSIYASI ───────────────────────────────────── */
+@keyframes rise{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:none}
+}
+.hero-ich>*{animation:rise 560ms var(--ease) both}
+.hero-ich>*:nth-child(2){animation-delay:70ms}
+.hero-ich>*:nth-child(3){animation-delay:130ms}
+.hero-ich>*:nth-child(4){animation-delay:190ms}
+.hero-ich>*:nth-child(5){animation-delay:250ms}
+.lenta-grid .karta{animation:rise 500ms var(--ease) both}
+.lenta-grid .karta:nth-child(2){animation-delay:60ms}
+.lenta-grid .karta:nth-child(3){animation-delay:120ms}
+.lenta-grid .karta:nth-child(4){animation-delay:180ms}
+.lenta-grid .karta:nth-child(5){animation-delay:240ms}
+.lenta-grid .karta:nth-child(6){animation-delay:300ms}
+
+@media (max-width:900px){
+  .lenta-grid{grid-template-columns:repeat(2,1fr)}
+  .nav{display:none}
+}
+@media (max-width:620px){
+  .topbar-inner{height:58px;padding:0 14px}
+  .hero-ich h1{font-size:30px}
+  .qidiruv-a,.qidiruv-b{padding-left:14px}
+  .topish-a,.topish-b{padding:13px 20px}
+  .lenta-grid{grid-template-columns:1fr}
+  .crm-ich{flex-direction:column;align-items:flex-start;padding:26px 22px}
+  .stat-a,.stat-b{gap:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="tanlov" role="tablist" aria-label="Variant tanlash">
+  <a href="?v=a#v-a" id="t-a">A · Quyuq</a>
+  <a href="?v=b#v-b" id="t-b">B · Yorug'</a>
+</div>
+
+<section class="v v-a" id="v-a">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#">
+        <span class="brand-mark">O</span><span class="brand-text">OBER</span>
+      </a>
+      <nav class="nav">
+        <a href="#" class="nav-x nav-x-on">Qidirish</a>
+        <a href="#" class="nav-x">Kategoriyalar</a>
+        <a href="#" class="nav-x">Chat</a>
+      </nav>
+      <div class="top-actions">
+        <button class="til">РУ</button>
+        <a href="#" class="sotish-btn">Sotish</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero-a">
+    <div class="hero-nur" aria-hidden="true"></div>
+    <div class="hero-ich">
+      <p class="hero-live"><span class="live-nuqta"></span>Bozor jonli · har 45 daqiqada yangilanadi</p>
+      <h1>Siz yozasiz. <span class="amb">Bozor javob beradi.</span></h1>
+      <p class="hero-izoh">OLX, Telegram va OBER e'lonlari — bitta qidiruvda. Kategoriya titkilamaysiz, o'z so'zingiz bilan yozasiz.</p>
+
+      <div class="qidiruv-a">
+        <span class="q-ikon" aria-hidden="true"></span>
+        <input placeholder="Masalan: 25 m² banner">
+        <button class="topish-a">Topish</button>
+      </div>
+
+      <div class="chiplar-a">
+        <span class="chip-a">divan</span>
+        <span class="chip-a">kolodka nexia</span>
+        <span class="chip-a chip-a-mut">Rasm bilan qidirish</span>
+      </div>
+
+      <div class="stat-a">
+        <div class="stat-bir"><b class="stat-son" data-son="126153">0</b><span>faol e'lon</span></div>
+        <div class="stat-bir"><b class="stat-son" data-son="14">0</b><span>viloyat</span></div>
+        <div class="stat-bir"><b class="stat-son" data-son="45">0</b><span>daq. yangilanish</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lenta-a">
+    <div class="lenta-bosh">
+      <h2><span class="live-nuqta"></span>Hozir bozorda</h2>
+      <span class="lenta-izoh">Eng so'nggi qo'shilgan e'lonlar</span>
+    </div>
+    <div class="lenta-grid">
+      <article class="karta karta-0">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/2ixeqn1y0c8z1-UZ/image;s=600x450;1224x1632" alt="Запчасти для ноутбуков.">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Запчасти для ноутбуков.</h3>
+    <p class="karta-narx">1 500 000 <span>so'm</span></p>
+    <p class="karta-meta">Xorazm · Urganch · 15 iyul</p>
+  </div>
+</article>
+<article class="karta karta-1">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/170al80zuuz81-UZ/image;s=600x450;1632x752;r=270" alt="Vektor 410 naklon sep plankasi bilan sotiladi holati pashti yangi">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Vektor 410 naklon sep plankasi bilan sotiladi holati pashti yangi</h3>
+    <p class="karta-narx">8 353 870 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Sardoba · 21 iyul</p>
+  </div>
+</article>
+<article class="karta karta-2">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/prijs44t1e3l1-UZ/image;s=600x450;1500x2000" alt="Узок вакт хизмат клади">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Узок вакт хизмат клади</h3>
+    <p class="karta-narx">250 000 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Гулистан · 3 iyul</p>
+  </div>
+</article>
+<article class="karta karta-3">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/hc6htghbz6hs-UZ/image;s=600x450;1288x966" alt="Uchastka, 7,5 sotix sotiladi, 3-4 xonali domga almashiladi kelishiladi">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Uchastka, 7,5 sotix sotiladi, 3-4 xonali domga almashiladi kelishiladi</h3>
+    <p class="karta-narx">238 682 000 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Guliston · 18 iyul</p>
+  </div>
+</article>
+<article class="karta karta-4">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/9gofmdqkvwmw-UZ/image;s=600x450;750x1000" alt="Lacetti родной задние стоп">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Lacetti родной задние стоп</h3>
+    <p class="karta-narx">500 000 <span>so'm</span></p>
+    <p class="karta-meta">Samarqand · Самарканд · 30 iyul</p>
+  </div>
+</article>
+<article class="karta karta-5">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/8qyuabaomtcy1-UZ/image;s=600x450;1500x2000" alt="Reduktor редуктор c.laiduo gaz reduktor">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Reduktor редуктор c.laiduo gaz reduktor</h3>
+    <p class="karta-narx">230 000 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Янгиер · 3 iyul</p>
+  </div>
+</article>
+    </div>
+  </div>
+
+  <div class="crm-a">
+    <div class="crm-ich">
+      <div>
+        <h3>Topilmadi? <span class="amb">Sotuvchilardan so'rang.</span></h3>
+        <p>Xaridor so'rovi mos sotuvchilarga boradi — narx, muddat va rasm bilan javob OBER chatida qaytadi.</p>
+      </div>
+      <button class="crm-btn-a">So'rov yuborish</button>
+    </div>
+  </div>
+</section>
+<section class="v v-b" id="v-b">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#">
+        <span class="brand-mark">O</span><span class="brand-text">OBER</span>
+      </a>
+      <nav class="nav">
+        <a href="#" class="nav-x nav-x-on">Qidirish</a>
+        <a href="#" class="nav-x">Kategoriyalar</a>
+        <a href="#" class="nav-x">Chat</a>
+      </nav>
+      <div class="top-actions">
+        <button class="til">РУ</button>
+        <a href="#" class="sotish-btn">Sotish</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero-b">
+    <div class="hero-nur-b" aria-hidden="true"></div>
+    <div class="hero-ich">
+      <p class="hero-live"><span class="live-nuqta"></span>Bozor jonli · har 45 daqiqada yangilanadi</p>
+      <h1>Siz yozasiz. <span class="amb-b">Bozor javob beradi.</span></h1>
+      <p class="hero-izoh">OLX, Telegram va OBER e'lonlari — bitta qidiruvda. Kategoriya titkilamaysiz, o'z so'zingiz bilan yozasiz.</p>
+
+      <div class="qidiruv-b">
+        <span class="q-ikon" aria-hidden="true"></span>
+        <input placeholder="Masalan: 25 m² banner">
+        <button class="topish-b">Topish</button>
+      </div>
+
+      <div class="chiplar-b">
+        <span class="chip-b">divan</span>
+        <span class="chip-b">kolodka nexia</span>
+        <span class="chip-b chip-b-mut">Rasm bilan qidirish</span>
+      </div>
+
+      <div class="stat-b">
+        <div class="stat-bir"><b class="stat-son" data-son="126153">0</b><span>faol e'lon</span></div>
+        <div class="stat-bir"><b class="stat-son" data-son="14">0</b><span>viloyat</span></div>
+        <div class="stat-bir"><b class="stat-son" data-son="45">0</b><span>daq. yangilanish</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lenta-b">
+    <div class="lenta-bosh">
+      <h2><span class="live-nuqta"></span>Hozir bozorda</h2>
+      <span class="lenta-izoh">Eng so'nggi qo'shilgan e'lonlar</span>
+    </div>
+    <div class="lenta-grid">
+      <article class="karta karta-0">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/2ixeqn1y0c8z1-UZ/image;s=600x450;1224x1632" alt="Запчасти для ноутбуков.">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Запчасти для ноутбуков.</h3>
+    <p class="karta-narx">1 500 000 <span>so'm</span></p>
+    <p class="karta-meta">Xorazm · Urganch · 15 iyul</p>
+  </div>
+</article>
+<article class="karta karta-1">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/170al80zuuz81-UZ/image;s=600x450;1632x752;r=270" alt="Vektor 410 naklon sep plankasi bilan sotiladi holati pashti yangi">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Vektor 410 naklon sep plankasi bilan sotiladi holati pashti yangi</h3>
+    <p class="karta-narx">8 353 870 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Sardoba · 21 iyul</p>
+  </div>
+</article>
+<article class="karta karta-2">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/prijs44t1e3l1-UZ/image;s=600x450;1500x2000" alt="Узок вакт хизмат клади">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Узок вакт хизмат клади</h3>
+    <p class="karta-narx">250 000 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Гулистан · 3 iyul</p>
+  </div>
+</article>
+<article class="karta karta-3">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/hc6htghbz6hs-UZ/image;s=600x450;1288x966" alt="Uchastka, 7,5 sotix sotiladi, 3-4 xonali domga almashiladi kelishiladi">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Uchastka, 7,5 sotix sotiladi, 3-4 xonali domga almashiladi kelishiladi</h3>
+    <p class="karta-narx">238 682 000 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Guliston · 18 iyul</p>
+  </div>
+</article>
+<article class="karta karta-4">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/9gofmdqkvwmw-UZ/image;s=600x450;750x1000" alt="Lacetti родной задние стоп">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Lacetti родной задние стоп</h3>
+    <p class="karta-narx">500 000 <span>so'm</span></p>
+    <p class="karta-meta">Samarqand · Самарканд · 30 iyul</p>
+  </div>
+</article>
+<article class="karta karta-5">
+  <div class="karta-rasm">
+    <img loading="lazy" src="https://frankfurt.apollo.olxcdn.com:443/v1/files/8qyuabaomtcy1-UZ/image;s=600x450;1500x2000" alt="Reduktor редуктор c.laiduo gaz reduktor">
+    <span class="karta-manba">OLX</span>
+  </div>
+  <div class="karta-badan">
+    <h3 class="karta-nom">Reduktor редуктор c.laiduo gaz reduktor</h3>
+    <p class="karta-narx">230 000 <span>so'm</span></p>
+    <p class="karta-meta">Sirdaryo · Янгиер · 3 iyul</p>
+  </div>
+</article>
+    </div>
+  </div>
+
+  <div class="crm-b">
+    <div class="crm-ich">
+      <div>
+        <h3>Topilmadi? <span class="amb-b">Sotuvchilardan so'rang.</span></h3>
+        <p>Xaridor so'rovi mos sotuvchilarga boradi — narx, muddat va rasm bilan javob OBER chatida qaytadi.</p>
+      </div>
+      <button class="crm-btn-b">So'rov yuborish</button>
+    </div>
+  </div>
+</section>
+
+<script>
+// faqat bitta variantni ko'rsatish (URL parametri orqali)
+const v = new URLSearchParams(location.search).get('v');
+if (v === 'a') document.getElementById('v-b').setAttribute('hidden','');
+if (v === 'b') document.getElementById('v-a').setAttribute('hidden','');
+const ta = document.getElementById('t-a'), tb = document.getElementById('t-b');
+if (v === 'b') tb.classList.add('on'); else ta.classList.add('on');
+
+// sonlarni sanash animatsiyasi
+function sana(el){
+  const n = +el.dataset.son, t0 = performance.now();
+  function qadam(t){
+    const p = Math.min((t - t0) / 900, 1);
+    el.textContent = Math.round(n * (1 - Math.pow(1 - p, 3))).toLocaleString('ru-RU').replace(/\s|,/g,' ');
+    if (p < 1) requestAnimationFrame(qadam);
+  }
+  requestAnimationFrame(qadam);
+}
+document.querySelectorAll('.stat-son').forEach(sana);
+</script>
+</body>
+</html>
