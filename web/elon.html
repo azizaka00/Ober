@@ -30,6 +30,11 @@
     --ease:cubic-bezier(.4,0,.2,1);
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  /* `hidden` ATRIBUTI ISHLASHI UCHUN. Bu qoida yo'q bo'lsa, `display`
+     beruvchi boshqa qoida uni yengadi va yashirin bo'lishi kerak element
+     ekranda qolib ketadi. Xato uch marta takrorlangan (index, takliflar,
+     elon) — endi `web_sinov.py` har sahifada borligini tekshiradi. */
+  [hidden]{display:none!important}
   html{-webkit-text-size-adjust:100%}
   body{
     font-family:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -278,7 +283,9 @@
         (x.indexOf("/chat-uploads/") === 0 || x.indexOf("/elon-rasmlar/") === 0);
     });
 
-    var joy = [e.viloyat, e.shahar, e.tuman].filter(Boolean).join(", ");
+    var joy = Array.from(new Set(
+      [e.viloyat, e.shahar, e.tuman].filter(Boolean)
+    )).join(", ");
     var narx = e.kelishiladi
       ? '<span class="kelishiladi">KELISHILADI</span>'
       : som(e.narx_som);
@@ -287,9 +294,9 @@
         '<h3>SOTUVCHI</h3>' +
         '<div class="sotuvchi-nom">' + esc(e.egasi_nomi || "Sotuvchi") + '</div>' +
         '<div class="tel-yashirilgan">' +
-          '<a class="tel-ochish" href="/?q=' + encodeURIComponent(e.nom || "") + '">OBER ichida so‘rash</a>' +
+          '<a class="tel-ochish" href="/?q=' + encodeURIComponent(e.nom || "") + '">Shu mahsulotni so‘rash</a>' +
         '</div>' +
-        '<div class="sotuvchi-izoh">Telefon raqami ochilmaydi. Taklif va yozishma OBER ichida qoladi.</div>' +
+        '<div class="sotuvchi-izoh">So‘rov mos sotuvchilarga boradi. To‘lov va yetkazish OBER orqali bajarilmaydi.</div>' +
       '</div>'
     ) : '';
 

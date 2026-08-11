@@ -7,6 +7,7 @@ PostgreSQL'ga ko'chiriladi — sxema o'zgarmaydi.
 
 from __future__ import annotations
 
+import math
 import re
 import sqlite3
 import threading
@@ -281,7 +282,20 @@ def _init_ichki() -> None:
                            ("oxirgi_faol", "REAL"),
                            ("vaqt_yashir", "INTEGER NOT NULL DEFAULT 0"),
                            ("ism", "TEXT"),
-                           ("token", "TEXT")):
+                           ("token", "TEXT"),
+                           # XARIDOR KERAKLISINI QAYERDAN TOPDI
+                           # ----------------------------------
+                           # OBER to'lov yoki yetkazib berishni bajarmaydi.
+                           # Bu maydon savdo qayerda bo'lganini emas,
+                           # xaridor kerakli narsani qaysi yo'l bilan
+                           # topganini saqlaydi. Bilmasak:
+                           #   - "OBER ishladimi?" degan savolga javob yo'q;
+                           #   - natijaga to'lov yoki komissiya modelini
+                           #     qurib bo'lmaydi.
+                           #
+                           # Qiymatlari: '' (noma'lum) | 'ober' | 'tashqarida'
+                           #             | 'bolmadi'
+                           ("natija", "TEXT")):
             if ustun not in sorov_ustunlari:
                 c.execute(f"ALTER TABLE sorovlar ADD COLUMN {ustun} {tur}")
         import secrets
@@ -465,8 +479,45 @@ def _init_ichki() -> None:
 
 def sotuvchi_yoz(nom: str, nima: str, qismlar: list, modellar: list,
                  tuman: str, aloqa: str, yonalishlar: list | None = None) -> int:
+    """Sotuvchini yozadi. TELEFON RAQAMI — SHAXS.
+
+    NEGA YANGI QATOR EMAS (2026-08-10, Aziz topdi)
+    ----------------------------------------------
+    Aziz: *"Nega profil, yangi e'lonlarga kirib bo'lmayapdi, bo'sh?"*
+
+    Sabab bu yerda edi. Bu funksiya HAR SAFAR yangi qator qo'shardi va
+    telefon raqami bor-yo'qligini tekshirmasdi. Azizning bitta
+    raqamida beshta hisob paydo bo'lgan:
+
+        #122 Aziz          1 e'lon    0 so'rov
+        #119 Xackintash    0 e'lon    6 so'rov
+        #118 Moshina usta  0 e'lon    4 so'rov
+        #104 Aziz          0 e'lon   12 so'rov
+        #102 Aziz Go       0 e'lon    5 so'rov
+
+    Kirishda esa `SELECT id ... WHERE aloqa=?` eng ESKISINI olardi.
+    Ya'ni u #102 ga tushardi: e'loni #122 da, so'rovlari #104 da.
+    Kabinet buzilgandek emas — BO'SH ko'rinardi, sababi ko'rinmasdi.
+
+    Kirish telefon raqami + Telegram kodi orqali ketadi, ya'ni raqam
+    allaqachon shaxsni bildiradi. Ikkinchi marta "ro'yxatdan o'tish" —
+    aslida ro'yxatdan o'tish emas, ma'lumotni YANGILASH.
+    """
     init()
+    aloqa = (aloqa or "").strip()
     with ulan() as c:
+        bor = None
+        if aloqa:
+            bor = c.execute(
+                "SELECT id FROM sotuvchilar WHERE aloqa=? ORDER BY id DESC"
+                " LIMIT 1", (aloqa,)).fetchone()
+        if bor:
+            c.execute(
+                "UPDATE sotuvchilar SET nom=?, nima_sotadi=?, qismlar=?,"
+                " modellar=?, tuman=?, yonalishlar=? WHERE id=?",
+                (nom, nima, ",".join(qismlar), ",".join(modellar), tuman,
+                 ",".join(yonalishlar or []), bor["id"]))
+            return bor["id"]        # ochiq so'rovlar allaqachon berilgan
         cur = c.execute(
             "INSERT INTO sotuvchilar (nom, nima_sotadi, qismlar, modellar,"
             " tuman, aloqa, yonalishlar, yaratildi) VALUES (?,?,?,?,?,?,?,?)",
@@ -539,8 +590,12 @@ def kirish_kod_tekshir(aloqa: str, kod: str) -> int | None:
             c.execute("DELETE FROM kirish_kodlari WHERE id=?", (r["id"],))
             return None
         c.execute("DELETE FROM kirish_kodlari WHERE id=?", (r["id"],))
-        s = c.execute("SELECT id FROM sotuvchilar WHERE aloqa=?",
-                      (aloqa,)).fetchone()
+        # ENG YANGI HISOB. Bir raqamda bir nechta hisob qolgan bo'lsa
+        # (2026-08-10 gacha yaratilganlari) — eng yangisiga kiramiz,
+        # chunki birlashtirish ham o'shanga qilinadi. Ilgari bu yerda
+        # tartib ko'rsatilmagan edi va SQLite eng eskisini qaytarardi.
+        s = c.execute("SELECT id FROM sotuvchilar WHERE aloqa=?"
+                      " ORDER BY id DESC LIMIT 1", (aloqa,)).fetchone()
         return s["id"] if s else None
 
 
@@ -666,6 +721,504 @@ CHEGARA_ODATIY = 6
 # Kategoriyada shuncha faol sotuvchi bo'lgach, boshlang'ich rejim
 # avtomatik o'chadi va CHEGARA_ODATIY ishlaydi.
 ZICHLIK_CHEGARASI = 20
+
+
+def _kerakli_ulush(jami: int, asos: float) -> float:
+    """Namuna kichik bo'lsa — jamlanish yuqoriroq bo'lishi shart.
+
+    NEGA SON EMAS, JAMLANISH (o'lchov 2026-08-10)
+    ---------------------------------------------
+    Avval "kamida 10 ta natija bo'lsin" degan chegara qo'yilgan edi.
+    U ma'nosiz matnni to'xtatdi, lekin haqiqiy noyob so'rovni ham
+    kesib tashladi. O'lchov ikkalasi BIR XIL SONDA ekanini ko'rsatdi:
+
+        uzuk kerak oltin   1 ta natija · eng katta ulush 100%
+        gilam kerak 3x4    8 ta natija · eng katta ulush 100%
+        abcdefg qwerty     8 ta natija · eng katta ulush  38%
+        asdf jkl           2 ta natija · eng katta ulush  50%
+
+    Son ajratmaydi. JAMLANISH ajratadi: haqiqiy so'rovda hamma
+    natija bitta kategoriyaga tushadi, ma'nosiz matnda esa tarqoq.
+
+    Shuning uchun: namuna qancha kichik bo'lsa, kelishuv shuncha
+    to'liq bo'lishi talab qilinadi.
+    """
+    if jami >= 20:
+        return asos          # dalil ko'p — kichik kategoriya ham qolsin
+    if jami >= 5:
+        return 0.80          # deyarli hammasi rozi bo'lsin
+    # 1-4 TA NATIJA — DALIL EMAS, QANCHA JAMLANGAN BO'LSA HAM.
+    #
+    # Ilgari bu yerda 0.95 turardi: "hammasi rozi bo'lsa ishonamiz".
+    # 2026-08-10 da indeks yangilangach `asdf jkl` degan matn
+    # "Transport" oldi — indeksga tasodifan "asdf" ni eslatgan bitta
+    # e'lon tushgan edi va bitta natija har doim 100% jamlangan
+    # bo'ladi.
+    #
+    # 450 000 e'lon ichida 1-2 ta uchrash tasodif. Haqiqiy mahsulot
+    # so'zi bundan ko'p: kaptar 15, 3x4 28, kolodka 79, darslik 108.
+    # Shuning uchun 5 tadan kam bo'lsa so'z umuman ovoz bermaydi.
+    return 2.0               # hech qachon o'tmaydigan chegara
+
+
+def _yashirin_taxonomiya(matn: str) -> set[str]:
+    """Indeks qamrovi og'ishgan tor holatlar uchun ichki zaxira signal.
+
+    Bu ommaviy kategoriya daraxti emas va foydalanuvchidan tanlov
+    so'ramaydi. Faqat auditda indeks muntazam noto'g'ri tortgan aniq
+    mahsulotlar qamrab olinadi; bozor signali to'g'ri bo'lsa fallback
+    hech narsani almashtirmaydi.
+    """
+    from lugat import modellarni_top, normalla, qismlarni_top
+
+    n = normalla(matn or "")
+    sozlar = set(n.split())
+    if not sozlar:
+        return set()
+
+    def bor(*boshlar: str) -> bool:
+        return any(soz.startswith(bosh)
+                   for soz in sozlar for bosh in boshlar)
+
+    teglar: set[str] = set()
+    if modellarni_top(matn) and qismlarni_top(matn):
+        teglar.add("kat:Transport")
+    if bor("gilam", "divan"):
+        teglar.add("kat:Uy va bog'")
+    if bor("uzuk", "zargar", "sirga", "kurtk"):
+        teglar.add("kat:Moda va stil")
+    if bor("kaptar"):
+        teglar.add("kat:Hayvonlar")
+    if bor("kitob", "darslik", "adabiyot"):
+        teglar.add("kat:Xobbi, dam olish sport")
+    if bor("bolalar") and bor("velosiped"):
+        teglar.add("kat:Bolalar dunyosi")
+    if bor("kran") and bor("oki", "usta", "santex"):
+        teglar.add("qurilish_tamir")
+    return teglar
+
+
+def bozor_izi(matn: str, limit: int = 300, ulush: float = 0.15) -> set[str]:
+    """Matn bozorning qaysi qismiga tegishli — INDEKSDAN so'rab aniqlaydi.
+
+    NEGA BU KERAK (Aziz, 2026-08-10)
+    --------------------------------
+    Aziz: *"o'zi OLX dagi hamma kategoriyalardagi so'zlarni shunchaki
+    olib mukammal qidiruvga solsakchi, nega lug'at yasayapmiz? Juda
+    qiyinlashtirayapsan ishni."*
+
+    U haq edi. Bizda 300 000 dan ortiq haqiqiy e'lon bor va HAR
+    BIRINING KATEGORIYASI ma'lum. Bu tayyor lug'at — uni qo'lda
+    yozish shart emas.
+
+    Ilgari uchta tizim bir-birining ustiga minib turardi:
+      1. `lugat.py`         — avto modellari va qismlari (qo'lda)
+      2. `yonalishlar.py`   — 20 ta yo'nalish (qo'lda)
+      3. `soz_kategoriya`   — HAR SO'Z uchun bitta kategoriya (hisoblangan)
+
+    Uchinchisi eng ko'p zarar keltirdi: u so'zni YOLG'IZ ko'radi.
+    `oyna` so'zi mebel e'lonlarida ko'p uchraydi, shuning uchun u
+    "Uy va bog'" ga bog'langan edi. Natijada "lacettiga labavoy oyna
+    kerak" degan so'rov MEBELCHIGA borardi.
+
+    Bu funksiya so'zni yolg'iz emas, BIRGALIKDA ko'radi: butun matnni
+    o'z qidiruvimizga beradi va chiqqan e'lonlar qaysi kategoriyada
+    ekanini sanaydi. "lacetti + oyna" birga qidirilsa — Transport
+    chiqadi, chunki bozorda shunday.
+
+    Yutug'i: yangi manba qo'shilsa lug'at O'ZI kengayadi. Hech kim
+    hech narsa yozmaydi.
+
+    `ulush` — kategoriya kamida shuncha ulushga ega bo'lsin. Bitta
+    tasodifiy natija butun kategoriyani tortib kelmasin.
+
+    NEGA NAMUNA 300 (o'lchov 2026-08-10)
+    ------------------------------------
+    Avval 60 ta olinardi. Bu bozorni noto'g'ri ko'rsatgan, chunki
+    qidiruv birinchi qatorga eng "kuchli" mos e'lonlarni qo'yadi va
+    ular bir turdan bo'lib chiqadi:
+
+        gilam · 60 ta:   Xizmatlar 95%   Uy va bog'  5%   <- kesildi
+        gilam · 400 ta:  Xizmatlar 70%   Uy va bog' 27%   <- qoldi
+
+    Indeksda "gilam yuvish xizmati" e'lonlari gilamning o'zidan ko'p.
+    60 ta namunada gilam SOTUVCHISI ko'rinmay ketgan — shu sabab
+    "gilam sotaman" degan sotuvchi "gilam kerak" degan xaridorni
+    topa olmagan edi.
+
+    NARXI (o'lchov 2026-08-10)
+    -------------------------
+    Uzun e'lon matni avval 202 ms olardi. Sabab `fts_erkin` ning
+    oxirgi bosqichi edi: so'zlar birga uchramaganda u butun indeks
+    bo'yicha OR qidiruviga tushardi (1 so'z 1 ms, 3 so'z 8 ms,
+    4+ so'z ~200 ms).
+
+    Ikki o'zgarish uni 1.9 ms ga tushirdi:
+      1. Umumiy so'zlar (`yangi`, `sotiladi`, `holati`) so'rovga
+         umuman kirmaydi — `_mazmunli_sozlar` ularni chiqarib
+         tashlaydi.
+      2. `faqat_birga=True` — OR bosqichi so'ralmaydi. U qidiruv
+         uchun kerak (xaridor bo'sh ekran ko'rmasin), bu yerda esa
+         zararli: "so'zlar birga qaerda uchraydi" degan savolga
+         ularni ALOHIDA topib javob berardi.
+
+        sovuq 44 ms (kesh bo'sh) · issiq 1.9 ms
+    """
+    bozor = {"kat:" + k for k, _ in _ballar(_mazmunli_sozlar(matn),
+                                             limit, ulush)}
+    # Fallback faqat indeks kutilgan bo'limni umuman bermaganida qo'shiladi.
+    # Noto'g'ri indeks signali yashirilmaydi: audit va keyingi o'lchov uchun
+    # ko'rinib turadi, lekin tor taxonomy tegini yo'qota olmaydi.
+    yashirin = {x for x in _yashirin_taxonomiya(matn)
+                if x.startswith("kat:") and x not in bozor}
+    return bozor | yashirin
+
+
+# Shuncha natijadan boshlab namuna bozor shaklini ko'rsata oladi.
+_YETARLI = 20
+
+# So'zma-so'z ovozda: yetakchidan shuncha ulushga yetmagan kategoriya
+# tashlanadi. Bu yerda mutlaq ulush emas, NISBAT ishlaydi.
+#
+# NEGA 0.75 (o'lchov 2026-08-10, 48 ta holatda)
+# ---------------------------------------------
+# 0.50 da "divan kerak charm" ikkita yorliq olardi:
+#
+#     divan  -> Uy va bog'   90%   (asosiy so'z)
+#     charm  -> Moda va stil 52%   (material; teri kurtka e'lonlaridan)
+#
+# "Moda va stil" yetakchining yarmidan oshgani uchun qolardi va
+# tikuvchi bilan noto'g'ri mos kelardi.
+#
+# Butun to'plamda o'lchandi:
+#     0.50 -> 47/48      0.75 -> 48/48
+#     0.60 -> 48/48      0.90 -> 48/48
+#     0.70 -> 48/48      1.00 -> 48/48
+#
+# 0.60 dan yuqorisi bir xil natija beradi. 1.00 faqat yetakchini
+# qoldiradi — haqiqiy ikki ma'noli holatni ham kesib tashlaydi.
+# 0.75 o'rtada: ikkinchi kategoriya yetakchiga DEYARLI TENG bo'lsagina
+# qoladi, "charm" kabi ikkinchi darajali so'z esa qolmaydi.
+_NISBAT = 0.75
+
+# E'LON KATEGORIYASI UCHUN IKKI CHEGARA (o'lchov 2026-08-10)
+# ------------------------------------------------------------------
+# 25 ta matn o'lchandi: 21 ta haqiqiy shakldagi e'lon va 4 ta
+# ma'nosiz matn. Manzara juda toza chiqdi:
+#
+#   21 e'londa RAQOBAT YO'Q — ikkinchi kategoriyaning bali 0,
+#      yetakchining bali 0.571 dan 1.000 gacha.
+#   4 ma'nosiz matnda umuman ball yo'q (0.000) — ularni `_ishonchli`
+#      allaqachon to'xtatadi, chegaraga yetib ham kelmaydi.
+#   Faqat 4 tasida haqiqiy ikkilanish bor:
+#
+#      Gilam ... uyda turgan        0.315 / 0.195   nisbat 1.61
+#      Gilam ... ishlatilmagan      0.360 / 0.223   nisbat 1.61
+#      Gilam 3x4 arzon narxda       0.389 / 0.212   nisbat 1.84
+#      Kitob ... adabiyot toplami   0.262 / 0.178   nisbat 1.47
+#
+# Ya'ni to'g'ri javoblarning eng pasti 0.262, eng tor nisbati 1.47.
+# Chegara o'shalardan pastda, lekin ma'nosiz matndan (0.000) uzoqda
+# turishi kerak. Tanlandi: 0.20 (31% zaxira) va 1.25 (18% zaxira).
+# Indeks har 45 daqiqada o'zgaradi — chegara qirrada turmasligi kerak.
+_ANIQ_BALL = 0.20
+_ANIQ_FARQ = 1.25
+
+
+# INDEKSNING SHUNCHA ULUSHIDAN KO'PROQ E'LONDA UCHRAGAN SO'Z —
+# UMUMIY SO'Z. U kategoriya haqida hech narsa aytmaydi.
+#
+# O'lchov 2026-08-10, 453 617 e'lon (ulush — so'z uchragan e'lonlar):
+#
+#   MAHSULOT SO'ZLARI              UMUMIY HOLAT SO'ZLARI
+#   3x4        0.01%               narxda      0.46%
+#   kolodka    0.02%               arzon       0.97%
+#   uzuk       0.06%               original    1.16%
+#   gilam      0.32%               kam         1.48%
+#   divan      0.40%               yaxshi      2.13%
+#   nexia      0.65%               ------------------- 5%
+#   oyna       1.19%               sotiladi   11.94%
+#   noutbuk    1.41%               yangi      31.77%
+#                                  holati     55.99%
+#
+# Ikki guruh orasida katta bo'shliq bor: eng keng mahsulot so'zi
+# 1.41%, eng tor umumiy so'z 11.94%. 5% ikkalasidan ham uzoq.
+_UMUMIY_ULUSH = 0.05
+
+
+def _mazmunli_sozlar(matn: str) -> list[str]:
+    """Kategoriya haqida gapira oladigan so'zlar.
+
+    YALANG'OCH RAQAM KATEGORIYA BERMAYDI (2026-08-10).
+    "123 456" degan matn "Transport" olgan edi: indeksda raqam hamma
+    joyda — telefon, yil, hajm, narx. Raqam nima sotilayotganini
+    aytmaydi. "3x4" yoki "585" kabi o'lchov/proba esa raqam emas —
+    ular boshqa so'zlar yonida keladi va o'sha so'zlar ish qiladi.
+
+    UMUMIY SO'Z HAM OLIB TASHLANADI (2026-08-10, jonli oqim testida).
+    Haqiqiy e'lon quyidagicha kelgan edi:
+
+        nom:    "Gilam sotiladi 3x4 yangi"
+        tavsif: "Hech ishlatilmagan, uyda turgan"
+
+    Natija: **Elektr jihozlari**. Sabab `yangi` va `sotiladi` da —
+    ular indeksning 32% va 12% ida bor va namunani o'zlariga tortib
+    ketgan. `gilam` ning ovozi ko'milib qolgan.
+
+    Bu so'zlar to'xtash so'zlari ro'yxatiga QO'LDA yozilmaydi —
+    ularni indeksning o'zi ko'rsatib beradi. Yangi manba qo'shilsa
+    ro'yxat o'zi yangilanadi.
+    """
+    from lugat import sorovni_tozala
+
+    sozlar, _ = sorovni_tozala(matn or "")
+    sozlar = [w for w in sozlar if len(w) > 2 and not w.isdigit()]
+    tanlangan = [w for w in sozlar if not _umumiy_soz(w)]
+    # Hammasi umumiy bo'lsa — boridan foydalanamiz. Bo'sh qaytarish
+    # "hech narsa bilmayman" degani, u esa yomonroq.
+    return tanlangan or sozlar
+
+
+def _ballar(sozlar, limit: int, ulush: float) -> list[tuple[str, float]]:
+    """Kategoriyalar, ishonch bali bo'yicha kamayish tartibida.
+
+    IKKI XIL DALIL, IKKI XIL O'LCHOV (2026-08-10)
+    ---------------------------------------------
+    1. So'zlar BIRGA yetarli uchrasa — bozorning o'zi ularni bitta
+       e'londa yonma-yon ishlatgan. Bu eng kuchli dalil, ulushni
+       to'g'ridan-to'g'ri olamiz.
+
+    2. Birga kam uchrasa — har so'zni ALOHIDA so'raymiz. Lekin
+       ovozlar teng emas: `uzuk` natijalarining 95% i "Moda va stil"
+       da, `oltin` esa 43/18/14 bo'lib tarqalgan. Birinchisi nima
+       sotilayotganini aytadi, ikkinchisi shunchaki sifat.
+
+       Shuning uchun har so'zning ovozi O'Z ANIQLIGIGA ko'paytiriladi:
+
+           ball[kategoriya] += ulush_shu_kategoriyada * eng_katta_ulush
+
+       Tarqoq so'z ham ovoz beradi, lekin past ovoz bilan. Aniq so'z
+       uni bosib ketadi.
+
+    NEGA KESISHMA EMAS
+    ------------------
+    Avval "hamma so'z rozi bo'lsin" degan qoida bor edi. U ikkita
+    haqiqiy holatni o'ldirdi:
+
+        uzuk kerak oltin   -> `oltin` rozi bo'lmadi, `uzuk` 95% bo'lsa ham
+        Gilam 3x4 yangi    -> `yangi` rozi bo'lmadi
+
+    "oltin" va "yangi" — sifat, mahsulot emas. Ular veto qo'yishga
+    haqli emas. Og'irlik bilan ovoz berish shuni to'g'ri hal qiladi:
+    ular ovoz beradi, lekin yengadigan darajada emas.
+
+    XAVFSIZLIK SAQLANADI: `oyna` sifat emas, u 268 ta natija bilan
+    ANIQ so'z. U "Uy va bog'" ga kuchli ovoz beradi va `lacetti`
+    bilan raqobatlashadi — natijada ikkalasi ham qoladi, keyin
+    `yonalishlar._avto_qoidasi` uy variantini olib tashlaydi.
+    """
+    if not sozlar:
+        return []
+    sanoq, jami = _kategoriya_sanogi(sozlar, limit)
+    if jami >= _YETARLI or len(sozlar) == 1:
+        return _tartib(_ishonchli(sanoq, jami, ulush))
+
+    # SO'ZMA-SO'Z OVOZ. Har so'z avval ISHONCH SINOVIDAN o'tadi
+    # (`_kerakli_ulush`) — o'tmagani umuman ovoz bermaydi. Bu mutlaq
+    # chegara: ma'nosiz matnni faqat shu to'xtatadi. Nisbiy taqqoslash
+    # yolg'iz o'zi yetmaydi, chunki unda har doim "g'olib" chiqadi.
+    noyoblik = _noyoblik(sozlar)
+    ball: dict[str, float] = {}
+    ogirlik_jami = 0.0
+    for soz in sozlar:
+        s, j = _soz_sanogi(soz, limit)
+        ishonchli = _ishonchli(s, j, ulush)
+        if not ishonchli:
+            continue                        # ishonchsiz so'z — jim
+        # Ovoz kuchi ikki narsadan: so'z qanchalik ANIQ (natijalari
+        # bir kategoriyada jamlanganmi) va qanchalik NOYOB (indeksda
+        # kam uchraydimi). Ikkalasi ham kerak — `_noyoblik` izohiga qara.
+        ogirlik = max(ishonchli.values()) * noyoblik.get(soz, 1.0)
+        ogirlik_jami += ogirlik
+        for k, u in ishonchli.items():
+            ball[k] = ball.get(k, 0.0) + u * ogirlik
+    if not ball or not ogirlik_jami:
+        return []
+    # O'RTACHA, YIG'INDI EMAS. Yig'indi so'zlar soniga va og'irlik
+    # kattaligiga bog'liq bo'lardi — u holda mutlaq chegara (`_ANIQ_BALL`)
+    # matndan matnga ma'nosini o'zgartirar edi. O'rtacha esa har doim
+    # 0..1 oralig'ida va "kategoriyaga qanchalik ishonamiz" degani.
+    ball = {k: b / ogirlik_jami for k, b in ball.items()}
+    eng = max(ball.values())
+    return _tartib({k: b for k, b in ball.items() if b >= _NISBAT * eng})
+
+
+def _noyoblik(sozlar) -> dict[str, float]:
+    """Har so'zning nisbiy noyobligi, 0 dan 1 gacha. Eng noyobi — 1.0.
+
+    NEGA ANIQLIK YETMAYDI (o'lchov 2026-08-10)
+    ------------------------------------------
+    Haqiqiy e'lon: "Gilam sotiladi 3x4 yangi / Hech ishlatilmagan,
+    uyda turgan". Umumiy so'zlar olib tashlangach shular qoldi:
+
+        3x4             28 e'lon   Uy va bog' 89%
+        hesh           110 e'lon   Elektr    40%
+        ishlatilmagan  983 e'lon   Elektr    75%
+        gilam         1437 e'lon   Xizmatlar 85%
+
+    Faqat aniqlik bilan hisoblanganda: Uy 0.792, Elektr 0.492,
+    Xizmatlar 0.426 — yetakchi ikkinchisidan atigi 1.10 baravar
+    oldinda, ya'ni ishonch yetmaydi va e'lon kategoriyasiz qoladi.
+
+    Lekin so'zlar teng emas. `3x4` butun indeksda 28 marta uchraydi —
+    u kim gapirayotganini aniq aytadi. `gilam` 1437 marta va uning
+    aksari gilam YUVISH XIZMATI e'lonlari. Noyob so'z ko'proq
+    ma'lumot tashiydi.
+
+    Noyoblik shu matn ichida NISBIY olinadi (eng noyobi 1.0), shuning
+    uchun ballar diapazoni o'zgarmaydi va `_ANIQ_BALL` chegarasi
+    o'z kuchida qoladi.
+    """
+    chastota = {w: max(_soz_chastotasi(w), 1) for w in sozlar}
+    if not chastota:
+        return {}
+    jami = max(_jami_elon(), 2)
+    xom = {w: math.log(jami / n) for w, n in chastota.items()}
+    eng = max(xom.values()) or 1.0
+    return {w: v / eng for w, v in xom.items()}
+
+
+def _ishonchli(sanoq: dict[str, int], jami: int,
+               ulush: float) -> dict[str, float]:
+    """Ishonch sinovidan o'tgan kategoriyalar va ularning ulushi."""
+    if not jami:
+        return {}
+    kerak = _kerakli_ulush(jami, ulush)
+    return {k: n / jami for k, n in sanoq.items() if n / jami >= kerak}
+
+
+def _tartib(ball: dict[str, float]) -> list[tuple[str, float]]:
+    return sorted(ball.items(), key=lambda x: (-x[1], x[0]))
+
+
+# BITTA SO'ZNING KATEGORIYA SANOG'I — KESHLANADI (o'lchov 2026-08-10)
+# ------------------------------------------------------------------
+# So'zma-so'z ovozda har so'z uchun alohida FTS so'rovi ketadi. Uzun
+# e'lon matni (11 ta mazmunli so'z) 202 ms olgan edi.
+#
+# Lekin so'zlar takrorlanadi: "sotiladi", "yangi", "original",
+# "arzon" — deyarli har e'londa bor. Bir marta so'rab, saqlab
+# qo'yish kifoya.
+#
+# Nega TTL bor: indeks har 45 daqiqada yangilanadi. 15 daqiqalik
+# eskilik zararsiz (kategoriya taqsimoti sekin o'zgaradi), lekin
+# cheksiz kesh xotirada eskirib qolardi.
+_SOZ_KESH: dict[tuple[str, int], tuple[float, dict[str, int], int]] = {}
+_SOZ_KESH_QULF = threading.Lock()
+_SOZ_KESH_UMRI = 15 * 60          # soniya
+_SOZ_KESH_HAJMI = 4000
+
+
+_UMUMIY_KESH: dict[str, tuple[float, int]] = {}
+
+
+def _soz_chastotasi(soz: str) -> int:
+    """So'z nechta e'londa uchraydi. Sanoq CHEGARALANGAN.
+
+    Bizga aniq son kerak emas — so'zlarni bir-biri bilan taqqoslash
+    kerak. `LIMIT` 144 000 qatorni ko'rishdan qutqaradi va chegaradan
+    oshgan so'z baribir umumiy deb hisoblanadi.
+    """
+    hozir = time.time()
+    saqlangan = _UMUMIY_KESH.get(soz)
+    if saqlangan and hozir - saqlangan[0] < _SOZ_KESH_UMRI:
+        return saqlangan[1]
+
+    n = 0
+    tok = _fts_token(soz)
+    if tok and FTS_BOR:
+        try:
+            with ulan() as c:
+                n = c.execute(
+                    "SELECT COUNT(*) n FROM (SELECT rowid FROM elonlar_fts"
+                    " WHERE elonlar_fts MATCH ? LIMIT ?)",
+                    (f"norm:({tok}*)", _umumiy_chegara())).fetchone()["n"]
+        except sqlite3.OperationalError:
+            n = 0
+    with _SOZ_KESH_QULF:
+        if len(_UMUMIY_KESH) >= _SOZ_KESH_HAJMI:
+            _UMUMIY_KESH.clear()
+        _UMUMIY_KESH[soz] = (hozir, n)
+    return n
+
+
+def _umumiy_chegara() -> int:
+    return int(_jami_elon() * _UMUMIY_ULUSH) or 10_000
+
+
+def _umumiy_soz(soz: str) -> bool:
+    """Bu so'z indeksda shunchalik keng tarqalganki, ma'no bermaydi."""
+    return _soz_chastotasi(soz) >= _umumiy_chegara()
+
+
+# E'lonlar soni — `_umumiy_soz` chegarasi uchun. Indeks o'sib boradi,
+# shuning uchun son emas, ULUSH ishlatiladi va soni vaqti-vaqti bilan
+# yangilanadi.
+_JAMI_KESH: list = [0.0, 400_000]      # [oxirgi o'lchov vaqti, soni]
+
+
+def _jami_elon() -> int:
+    hozir = time.time()
+    if hozir - _JAMI_KESH[0] > 30 * 60:
+        try:
+            with ulan() as c:
+                _JAMI_KESH[1] = c.execute(
+                    "SELECT COUNT(*) n FROM elonlar").fetchone()["n"] or 400_000
+        except sqlite3.Error:
+            pass
+        _JAMI_KESH[0] = hozir
+    return _JAMI_KESH[1]
+
+
+def _soz_sanogi(soz: str, limit: int) -> tuple[dict[str, int], int]:
+    kalit = (soz, limit)
+    hozir = time.time()
+    saqlangan = _SOZ_KESH.get(kalit)
+    if saqlangan and hozir - saqlangan[0] < _SOZ_KESH_UMRI:
+        return saqlangan[1], saqlangan[2]
+
+    sanoq, jami = _kategoriya_sanogi([soz], limit)
+    with _SOZ_KESH_QULF:
+        if len(_SOZ_KESH) >= _SOZ_KESH_HAJMI:
+            _SOZ_KESH.clear()      # to'ldi — butunlay tozalaymiz, LRU shart emas
+        _SOZ_KESH[kalit] = (hozir, sanoq, jami)
+    return sanoq, jami
+
+
+def _kategoriya_sanogi(sozlar, limit: int) -> tuple[dict[str, int], int]:
+    """Shu so'zlar BIRGA uchragan e'lonlarning kategoriya sanog'i.
+
+    `faqat_birga=True` — "kamida bitta so'z" bosqichi ishlatilmaydi.
+    Aks holda so'zlar birga uchramaganda ham natija qaytardi va u
+    "birgalikda shunday" degan xulosaga asos bo'lolmasdi.
+    """
+    idlar = fts_erkin(sozlar, limit=limit, faqat_birga=True)
+    if not idlar:
+        return {}, 0
+    orin = ",".join("?" * len(idlar))
+    with ulan() as c:
+        qatorlar = c.execute(
+            f"SELECT kategoriya FROM elonlar WHERE id IN ({orin})",
+            idlar).fetchall()
+    sanoq: dict[str, int] = {}
+    jami = 0
+    for r in qatorlar:
+        kat = (r["kategoriya"] or "").split("/")[0].strip()
+        if not kat:
+            continue                    # Telegram e'lonida kategoriya yo'q
+        sanoq[kat] = sanoq.get(kat, 0) + 1
+        jami += 1
+    return sanoq, jami
 
 
 def _mos_sotuvchilar(c, sorov) -> list:
@@ -871,8 +1424,35 @@ def yuborilmagan_xabarlar(limit: int = 30) -> list[dict]:
             " JOIN sotuvchilar t ON t.id = y.sotuvchi_id"
             " WHERE y.xabar = 0 AND t.telegram_id IS NOT NULL"
             "   AND s.yopiladi > ? AND s.holat IN ('yangi','yuborildi','javob_bor')"
-            " ORDER BY y.id LIMIT ?", (now, limit)).fetchall()
+            # Eskirgan bildirishnoma yuborilmaydi — sabab
+            # `BILDIRISH_ESKIRISH` izohida. Bu yerda `yopiladi` ham
+            # himoya qiladi, lekin qo'lda uzaytirilgan so'rov bo'lsa
+            # ikkinchi to'siq kerak.
+            "   AND s.yaratildi > ?"
+            " ORDER BY y.id LIMIT ?",
+            (now, now - BILDIRISH_ESKIRISH, limit)).fetchall()
     return [dict(r) for r in rows]
+
+
+# Bildirishnoma shu muddatdan keyin yuborilmaydi.
+#
+# NEGA CHEGARA BOR (2026-08-11)
+# -----------------------------
+# Savdo bildirishnomalari bir muddat o'chirilgan turgan edi
+# (`tg.SAVDO_XABARLARI = False`). Ular qayta yoqilganda navbatda 9 ta
+# xabar turardi va ularning sakkiztasi 166 SOATLIK (7 kunlik) edi:
+#
+#     "Alyooo"                      166.6 soat
+#     "Oka mashi joyga keb keti"    166.7 soat
+#     "Shu yerga yuboring"          166.8 soat
+#
+# Bularni bir hafta o'tib yuborish sotuvchini chalg'itadi: xaridor
+# allaqachon boshqa joydan olgan, kontekst yo'q. Bildirishnomaning
+# butun ma'nosi TEZLIKDA — kechikkani xabar emas, shovqin.
+#
+# Chegara xabarni o'chirmaydi: u OBER chatida joyida turadi va
+# sotuvchi kabinetga kirsa ko'radi. Faqat Telegramga uzatilmaydi.
+BILDIRISH_ESKIRISH = 24 * 3600
 
 
 def tg_kutayotgan_chat(limit: int = 20) -> list[dict]:
@@ -880,7 +1460,8 @@ def tg_kutayotgan_chat(limit: int = 20) -> list[dict]:
     init()
     with ulan() as c:
         rows = c.execute(
-            "SELECT x.id, x.matn, x.suhbat_id, sh.sotuvchi_id, sh.sorov_id,"
+            "SELECT x.id, x.matn, x.rasm, x.joy, x.suhbat_id,"
+            "       sh.sotuvchi_id, sh.sorov_id,"
             "       t.telegram_id, sr.matn sorov_matni"
             " FROM xabarlar x"
             " JOIN suhbatlar sh ON sh.id = x.suhbat_id"
@@ -888,7 +1469,9 @@ def tg_kutayotgan_chat(limit: int = 20) -> list[dict]:
             " JOIN sorovlar sr ON sr.id = sh.sorov_id"
             " WHERE x.rol='xaridor' AND x.tg_yuborildi=0"
             "   AND t.telegram_id IS NOT NULL"
-            " ORDER BY x.id LIMIT ?", (limit,)).fetchall()
+            "   AND x.vaqt > ?"
+            " ORDER BY x.id LIMIT ?",
+            (time.time() - BILDIRISH_ESKIRISH, limit)).fetchall()
     return [dict(r) for r in rows]
 
 
@@ -911,7 +1494,11 @@ def sotuvchi_oxirgi_suhbati(sotuvchi_id: int) -> dict | None:
 
 
 def tg_holat() -> dict:
-    """Telegram bog'lanishi bo'yicha qisqa hisobot (tashxis uchun)."""
+    """Telegram bog'lanishi bo'yicha faqat umumiy tashxis sonlari.
+
+    Bu endpoint autentifikatsiyasiz ham sog'liq tekshiruvida ishlatiladi,
+    shuning uchun sotuvchi nomi, manzili yoki faoliyatini qaytarmaydi.
+    """
     init()
     now = time.time()
     with ulan() as c:
@@ -926,17 +1513,18 @@ def tg_holat() -> dict:
             "   AND s.yopiladi > ?", (now,)).fetchone()["n"]
         yuborilgan = c.execute("SELECT COUNT(*) n FROM yuborishlar"
                                " WHERE xabar=1").fetchone()["n"]
+        chat_kutayotgan = c.execute(
+            "SELECT COUNT(*) n FROM xabarlar x"
+            " JOIN suhbatlar sh ON sh.id=x.suhbat_id"
+            " JOIN sotuvchilar t ON t.id=sh.sotuvchi_id"
+            " WHERE x.rol='xaridor' AND x.tg_yuborildi=0"
+            "   AND t.telegram_id IS NOT NULL").fetchone()["n"]
         ochiq = c.execute("SELECT COUNT(*) n FROM sorovlar"
                           " WHERE yopiladi > ?", (now,)).fetchone()["n"]
-        # Kim ulangan va U NIMA SOTADI — xabar kelmasligining eng ko'p
-        # uchraydigan sababi shu: sotuvchining yo'nalishi so'rovga mos
-        # kelmaydi. Buni ko'rmasdan sabab topib bo'lmaydi.
-        kimlar = [dict(r) for r in c.execute(
-            "SELECT id, nom, nima_sotadi, qismlar, yonalishlar, tuman"
-            " FROM sotuvchilar WHERE telegram_id IS NOT NULL")]
     return {"sotuvchilar": sotuvchilar, "telegramga_ulangan": ulangan,
             "ochiq_sorov": ochiq, "tg_kutayotgan": kutayotgan,
-            "tg_yuborilgan": yuborilgan, "ulanganlar": kimlar}
+            "tg_yuborilgan": yuborilgan,
+            "tg_chat_kutayotgan": chat_kutayotgan}
 
 
 # ── FTS5 INDEKSI ─────────────────────────────────────────────────────────────
@@ -999,6 +1587,233 @@ ERKIN_CHEGARA = 900          # bir so'rovda ballanadigan eng ko'p e'lon
 
 
 _YANGI_KESH: dict = {"vaqt": 0.0, "n": 0, "royxat": []}
+
+
+_KURS_KESH: dict = {"kurs": None, "vaqt": 0.0, "sana": ""}
+
+
+def dollar_kursi() -> dict | None:
+    """Markaziy bankning rasmiy USD kursi.
+
+    NEGA BOZOR SAYTIGA KURS KERAK (Aziz, 2026-08-11)
+    ------------------------------------------------
+    O'zbekiston bozorida narx ikki xil aytiladi: so'mda va dollarda.
+    Ko'chmas mulk, avtomobil, texnika — ko'pincha dollarda. Xaridor
+    kartadagi so'm narxini o'zi dollarga aylantiradi va buning uchun
+    saytdan chiqib ketadi.
+
+    MANBA RASMIY. `cbu.uz` — Markaziy bank, kuniga bir marta
+    yangilanadi. "Bozor kursi" ko'rsatilmaydi: u manbaga qarab
+    farq qiladi va tekshirib bo'lmaydi. Rasmiy kurs esa bitta va
+    dalili bor — shuning uchun sana ham yoziladi.
+
+    XATO SAYTNI BUZMAYDI. Kurs olinmasa `None` qaytadi va bosh
+    sahifada o'sha satr umuman chiqmaydi. Kurs — qo'shimcha qulaylik,
+    OBERning ishi emas.
+    """
+    import json as _j
+    import time as _t
+    import urllib.request
+
+    # Kuniga bir marta. Markaziy bank ham shuncha yangilaydi.
+    if _KURS_KESH["kurs"] and _t.time() - _KURS_KESH["vaqt"] < 6 * 3600:
+        return {"kurs": _KURS_KESH["kurs"], "sana": _KURS_KESH["sana"]}
+    try:
+        s = urllib.request.urlopen(
+            "https://cbu.uz/uz/arkhiv-kursov-valyut/json/USD/",
+            timeout=8).read().decode("utf-8")
+        d = _j.loads(s)
+        yozuv = d[0] if isinstance(d, list) and d else {}
+        kurs = float(str(yozuv.get("Rate") or "").replace(",", "."))
+        if not (1000 < kurs < 1_000_000):       # aql chegarasi
+            raise ValueError(f"kurs shubhali: {kurs}")
+        _KURS_KESH.update(kurs=round(kurs), vaqt=_t.time(),
+                          sana=str(yozuv.get("Date") or ""))
+    except Exception as e:                      # noqa: BLE001
+        print(f"  [kurs] olinmadi: {type(e).__name__}: {e}", flush=True)
+        # Eski qiymat bo'lsa uni beramiz — kechagi kurs kursning
+        # umuman yo'qligidan yaxshiroq.
+        if _KURS_KESH["kurs"]:
+            return {"kurs": _KURS_KESH["kurs"], "sana": _KURS_KESH["sana"]}
+        return None
+    return {"kurs": _KURS_KESH["kurs"], "sana": _KURS_KESH["sana"]}
+
+
+_SONGGI_KESH: dict = {"royxat": [], "vaqt": 0.0}
+
+
+def songgi_qidiruvlar(n: int = 6) -> dict:
+    """Odamlar hozir nima qidirayotgani — bosh sahifadagi chiplar uchun.
+
+    NEGA QO'LDA YOZILGAN RO'YXAT EMAS (2026-08-11)
+    ----------------------------------------------
+    Bosh sahifadagi namuna chiplar qo'lda yozilgan edi: "divan",
+    "kir yuvish mashinasi", "velosiped". Ular to'g'ri edi, lekin
+    o'lik: har kim bir xil beshta so'zni ko'rardi va ular OBER
+    ishlayotganini ISBOTLAMAS edi.
+
+    Haqiqiy so'rov esa isbot: "Телефон уста", "qizil oq qora
+    mototsikl shlemi", "EX18 turdagi elektron elektr hisoblagich" —
+    bunday qatorni o'ylab topib bo'lmaydi.
+
+    TOZALASH QAT'IY. Filtrsiz bu yerga quyidagilar chiqadi:
+      - kategoriya nomlari ("Transport", "Xizmatlar") — ular
+        qidiruv emas, `/kategoriyalar` dan kelgan bosishlar;
+      - sinov so'rovlari;
+      - natija bermagan so'rovlar — ularni ko'rsatish odamni
+        bo'sh sahifaga olib boradi;
+      - telefon raqamiga o'xshash matnlar.
+    """
+    import time as _t
+    # Kesh 90 soniya: yangi so'rov tez chiqsin, lekin har sahifa
+    # ochilishida baza bezovta qilinmasin.
+    if _SONGGI_KESH["royxat"] and _t.time() - _SONGGI_KESH["vaqt"] < 90:
+        return {"royxat": _SONGGI_KESH["royxat"][:n],
+                "oyna": _SONGGI_KESH.get("oyna", 0)}
+    init()
+    from yonalishlar import YO_NALISHLAR
+
+    # Kategoriya nomlari — ular chipda qidiruvdek ko'rinadi, lekin
+    # aslida bo'lim nomi. Ro'yxat qo'lda yozilmaydi: yo'nalishlar
+    # faylining o'zidan olinadi va indeks kategoriyalari qo'shiladi.
+    taqiq = {d["nom"].strip().lower() for d in YO_NALISHLAR.values()}
+    with ulan() as c:
+        # YUQORI DARAJADAGI KATEGORIYA NOMLARI.
+        # Ilgari `SELECT DISTINCT kategoriya ... LIMIT 200` yozilgandi.
+        # Kategoriya "Bosh/Ichki" ko'rinishida saqlanadi, ya'ni noyob
+        # qiymatlar yuzlab — 200 ta chegara yuqori darajadagilarning
+        # bir qismini qamrab ololmagan va "Ish", "Xobbi va sport"
+        # chipga chiqib ketgan (o'lchov 2026-08-11).
+        taqiq |= {(r[0] or "").strip().lower() for r in c.execute(
+            "SELECT DISTINCT TRIM(SUBSTR(kategoriya, 1,"
+            "   CASE WHEN INSTR(kategoriya,'/')>0"
+            "        THEN INSTR(kategoriya,'/')-1 ELSE LENGTH(kategoriya) END))"
+            " FROM elonlar WHERE kategoriya IS NOT NULL AND kategoriya<>''")}
+        # ENG YANGISI EMAS — SO'NGGI 2 SOAT TASHLANADI.
+        # Sinov va sozlash so'rovlari doim eng yangisi bo'ladi. Ular
+        # chipga chiqsa sahifada "divan / divan kerak / divan kerak
+        # charm" ko'rinadi — bu jonli bozor emas, kimningdir ekrani.
+        # KAMIDA IKKI XIL KUNDA QIDIRILGAN BO'LSIN.
+        #
+        # Bu eng muhim filtr. Yuqoridagilarsiz ham chiplar to'ladi,
+        # lekin nima bilan? Ishlab chiqish paytida biz o'zimiz yozgan
+        # so'rovlar bilan: "divan kerak charm", "nexia 3 uchun fara
+        # kerak", "bamper". Ular eng yangisi, demak eng tepada.
+        #
+        # Haqiqiy talab TAKRORLANADI: "Телефон уста" degan odam
+        # bugun ham, ertaga ham qidiradi. Sinov sessiyasi esa bir
+        # kunda qolib ketadi. Shu farq qo'lda saralashsiz ajratadi
+        # va vaqt o'tgani sari o'zi yaxshilanadi.
+        # OYNA BOSQICHMA-BOSQICH KENGAYADI (Aziz, 2026-08-11).
+        #
+        # Aziz: *"bu so'rovlar eski bo'lishi kerak emas, 1 kunlik
+        # so'rovlar bo'lishi kerak."*
+        #
+        # To'g'ri: "hozir qidirilmoqda" deb yozib, uch kunlik so'rovni
+        # ko'rsatish yolg'on bo'ladi. Lekin bir kunlik oynada
+        # o'lchov 5 ta beradi (kategoriya nomlari olib tashlangach) —
+        # bu chegaraga zo'rg'a yetadi va ertaga bittasi tushsa
+        # chiplar qo'lda yozilgan ro'yxatga qaytadi.
+        #
+        # Shuning uchun oyna kengayadi, LEKIN yorliq ham u bilan
+        # birga o'zgaradi: 1 kun bo'lsa "hozir qidirilmoqda",
+        # kengaysa "so'nggi kunlarda qidirilgan". Ma'lumot ham
+        # yangi, matn ham halol.
+        # YANGI SO'ROV DARHOL QO'SHILADI (Aziz, 2026-08-11).
+        #
+        # Ilgari "kamida ikki xil kunda qidirilgan bo'lsin" degan
+        # shart bor edi. U sinov so'rovlarini filtrlash uchun
+        # qo'yilgandi, lekin yon ta'siri bor: haqiqiy yangi so'rov
+        # ham ertasi kungacha kutib turardi.
+        #
+        # Endi shart olib tashlandi. Nega bu xavfsiz bo'lib qoldi:
+        # lenta endi BOSILMAYDI — u ko'rsatkich, boshqaruv emas.
+        # Ya'ni bir marta qidirilgan so'rov chiqib qolsa ham hech
+        # kim noto'g'ri joyga bormaydi. Qolgan filtrlar (kategoriya
+        # nomlari, variantlar, telefonga o'xshash matn, natija
+        # bermagan so'rov) o'z kuchida.
+        #
+        # 10 daqiqalik kechikish qoladi: shu zahoti yozilgan matn
+        # ekranga chiqmasin — odam o'zi yozganini bir zumda bosh
+        # sahifada ko'rsa, bu bezovta qiladi.
+        qatorlar, oyna = [], 0
+        for soat in (24, 72, 24 * 14):
+            qatorlar = c.execute(
+                "SELECT sorov, MAX(vaqt) oxirgi,"
+                "       MAX(COALESCE(modellar,'') || COALESCE(qismlar,'')) avto"
+                " FROM qidiruvlar"
+                " WHERE natija_soni > 0 AND TRIM(COALESCE(sorov,'')) <> ''"
+                "   AND vaqt < ?"
+                " GROUP BY LOWER(TRIM(sorov))"
+                " HAVING oxirgi > ?"
+                " ORDER BY oxirgi DESC LIMIT 200",
+                (time.time() - 10 * 60,
+                 time.time() - soat * 3600)).fetchall()
+            oyna = soat
+            # Kategoriya nomlari keyin olib tashlanadi, shuning uchun
+            # zaxira bilan sanaymiz.
+            if len(qatorlar) >= n + 4:
+                break
+
+    # Kategoriya nomlaridagi so'zlar. `/kategoriyalar` sahifasidan
+    # kelgan bosish qidiruv sifatida yoziladi, lekin nomi ro'yxatdagi
+    # bilan aynan bir xil bo'lmaydi: "Xobbi va sport" yozilgan,
+    # kategoriya esa "Xobbi, dam olish sport". Shuning uchun to'liq
+    # moslik emas, SO'ZLAR bo'yicha tekshiramiz.
+    kat_sozlar: set[str] = {"va"}
+    for k in taqiq:
+        kat_sozlar |= {w for w in re.split(r"[^\w'‘’]+", k) if len(w) > 2}
+
+    avto: list[str] = []
+    boshqa: list[str] = []
+    korilgan: set[str] = set()
+    for r in qatorlar:
+        s = " ".join((r["sorov"] or "").split())
+        past = s.lower()
+        if past in korilgan or past in taqiq:
+            continue
+        # Hamma so'zi kategoriya nomlaridan bo'lsa — bu bo'lim nomi,
+        # qidiruv emas.
+        sozlari = [w for w in re.split(r"[^\w'‘’]+", past) if w]
+        if sozlari and all(w in kat_sozlar for w in sozlari):
+            continue
+        if not (3 <= len(s) <= 34):
+            continue
+        # Raqamdan iborat yoki telefonga o'xshash matn chiqmasin.
+        raqam = sum(ch.isdigit() for ch in s)
+        if raqam >= 7 or raqam == len(s.replace(" ", "")):
+            continue
+        # BIR NARSANING VARIANTLARI TAKRORLANMASIN.
+        # "divan", "divan kerak", "divan kerak charm" — uchtasi ham
+        # bitta narsa. Chipda ular uchta joy egallaydi va bozor
+        # xilma-xil emasdek ko'rinadi.
+        if any(past.startswith(k + " ") or k.startswith(past + " ")
+               for k in korilgan):
+            continue
+        korilgan.add(past)
+        (avto if (r["avto"] or "").strip() else boshqa).append(s)
+        if len(avto) + len(boshqa) >= 30:
+            break
+
+    # SOHALAR ARALASHTIRILADI.
+    #
+    # 2026-08-06 auditi: namunalarning hammasi avtoehtiyot qism edi va
+    # sayt o'zini universal bozor deb e'lon qilganiga qaramay
+    # "OBER = avtoqism" degan taassurot berardi. Qo'lda yozilgan
+    # ro'yxat o'shanda xilma-xil qilingan.
+    #
+    # Jonli ro'yxat o'sha muammoni QAYTARIB OLIB KELADI: indeksda
+    # avtoqism zich, shuning uchun eng ko'p takrorlanadigan so'rovlar
+    # ham avtodan bo'ladi (o'lchov: oltitadan uchtasi). Shuning uchun
+    # navbat bilan olamiz — bittasi avtodan, bittasi boshqa sohadan.
+    natija: list[str] = []
+    for i in range(max(len(avto), len(boshqa))):
+        if i < len(boshqa):
+            natija.append(boshqa[i])
+        if i < len(avto):
+            natija.append(avto[i])
+    _SONGGI_KESH.update(royxat=natija, vaqt=_t.time(), oyna=oyna)
+    return {"royxat": natija[:n], "oyna": oyna}
 
 
 def yangi_elonlar(n: int = 12) -> list[dict]:
@@ -1074,7 +1889,6 @@ def yangi_elonlar(n: int = 12) -> list[dict]:
         kalit = nom.casefold()[:60]
         if kalit in korilgan:
             continue
-        korilgan.add(kalit)
 
         # 3. AQLDAN TASHQARI NARX. Yuqori chegara — telefon raqami yoki
         #    ID narx bo'lib olinganini tutadi ("Logistika Dispatcher
@@ -1092,6 +1906,10 @@ def yangi_elonlar(n: int = 12) -> list[dict]:
         if kat_soni.get(kat, 0) >= 2:
             continue
         kat_soni[kat] = kat_soni.get(kat, 0) + 1
+        # Faqat ro'yxatga haqiqatan olingan kartani ko'rilgan deymiz.
+        # Xilma-xillik sabab vaqtincha o'tkazilgan karta pastdagi zaxira
+        # to'ldirishda yana ko'rilishi kerak.
+        korilgan.add(kalit)
 
         royxat.append(e)
         if len(royxat) >= n:
@@ -1118,7 +1936,8 @@ def yangi_elonlar(n: int = 12) -> list[dict]:
     return royxat[:n]
 
 
-def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA) -> list[int]:
+def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA,
+              faqat_birga: bool = False) -> list[int]:
     """LUG'ATSIZ matn qidiruvi — indeksning o'zidan.
 
     2026-08-02 o'lchov: bazada 101 381 e'lon bor edi, lekin qidiruv
@@ -1151,7 +1970,13 @@ def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA) -> list[int]:
     else:
         urinishlar.append(toklar[0])
         urinishlar.append(prefiks[0])
-    urinishlar.append(" OR ".join(prefiks))
+    # OXIRGI BOSQICH: kamida bitta so'z. Qidiruv uchun kerak — xaridor
+    # bo'sh ekran ko'rmasin. Lekin `bozor_izi` uni SO'RAMAYDI: u
+    # "so'zlar birga qanday kategoriyada uchraydi" degan savolga javob
+    # izlaydi, bu bosqich esa so'zlarni ALOHIDA topadi va namunani
+    # eng keng tarqalgan so'z egallab oladi (2026-08-10).
+    if not faqat_birga:
+        urinishlar.append(" OR ".join(prefiks))
     for ifoda in urinishlar:
         try:
             with ulan() as c:
@@ -1419,9 +2244,32 @@ def sotuvchi_talabi(sotuvchi_id: int, kun: int = 7) -> dict:
 
 def javob_yoz(sorov_id: int, sotuvchi_id: int, holat: str,
               narx: int | None, izoh: str = "", rasm: str = "") -> int | None:
+    """Faqat sotuvchiga tayinlangan, ochiq so'rovga bitta javob yozadi.
+
+    Ijobiy javob suhbat ID sini, haqiqiy ``yoq`` javobi ``0`` ni,
+    ruxsatsiz/yopilgan/takroriy urinish esa ``None`` ni qaytaradi. Shu
+    farq HTTP qatlamiga invalid javobni 200/null deb yubormaslik imkonini
+    beradi.
+    """
+    if holat not in {"bor", "yoq", "oxshash"} or not sorov_id or not sotuvchi_id:
+        return None
     init()
     now = time.time()
     with ulan() as c:
+        # Bitta yozuvchi tranzaksiyasi: parallel ikki POST ham bir vaqtda
+        # "hali javob yo'q" deb o'tib ketmasin.
+        c.execute("BEGIN IMMEDIATE")
+        ruxsat = c.execute(
+            "SELECT 1 FROM sorovlar sr"
+            " JOIN yuborishlar y ON y.sorov_id=sr.id AND y.sotuvchi_id=?"
+            " JOIN sotuvchilar s ON s.id=y.sotuvchi_id AND s.faol=1"
+            " WHERE sr.id=? AND sr.yopiladi>?"
+            " AND sr.holat IN ('yangi','yuborildi','javob_bor')"
+            " AND NOT EXISTS (SELECT 1 FROM javoblar j"
+            "                 WHERE j.sorov_id=sr.id AND j.sotuvchi=?)",
+            (sotuvchi_id, sorov_id, now, str(sotuvchi_id))).fetchone()
+        if not ruxsat:
+            return None
         cur = c.execute(
             "INSERT INTO javoblar (sorov_id, sotuvchi, holat, narx, izoh, vaqt)"
             " VALUES (?,?,?,?,?,?)",
@@ -1437,13 +2285,52 @@ def javob_yoz(sorov_id: int, sotuvchi_id: int, holat: str,
                 " VALUES (?,?,?,?,?)",
                 (sorov_id, javob_id, sotuvchi_id, now, now))
             suhbat_id = suhbat.lastrowid
-            if izoh or rasm:
-                c.execute(
-                    "INSERT INTO xabarlar (suhbat_id, rol, matn, rasm, vaqt,"
-                    " xaridor_oqidi, sotuvchi_oqidi) VALUES (?,?,?,?,?,?,?)",
-                    (suhbat_id, "sotuvchi", izoh, rasm, now, 0, 1))
+
+            # JAVOB HAR DOIM CHATGA XABAR BO'LIB TUSHADI.
+            #
+            # 2026-08-10 da topildi. Ilgari shu yerda `if izoh or rasm:`
+            # sharti turardi — ya'ni xabar FAQAT sotuvchi izoh yozgan
+            # yoki rasm biriktirgan bo'lsa yaratilardi.
+            #
+            # Sotuvchi eng ko'p qiladigan ish esa boshqacha: "BOR" bosib
+            # faqat NARX yuboradi. Bunda `javoblar` ga yozilardi, suhbat
+            # ochilardi, lekin `xabarlar` bo'sh qolardi. Oqibati:
+            #
+            #   1. `bildirishnomalar_ol` faqat `xabarlar` ga qaraydi —
+            #      demak XARIDOR JAVOB KELGANINI BILMASDI. Uni tasodifan
+            #      Takliflar sahifasini ochsagina ko'rardi.
+            #   2. Chatni ochsa ham bo'sh chat ko'rardi: narx — eng
+            #      muhim ma'lumot — u yerda umuman yo'q edi.
+            #
+            # Ya'ni OBERning butun halqasi (so'rov -> javob -> kelishuv)
+            # o'rtasidan uzilgan edi. `suhbat_sinov.py` shuni tutgan.
+            #
+            # Endi javobning o'zi birinchi xabar bo'ladi. Sotuvchi hech
+            # nima yozmasa ham xaridor "Bor. Narxi 150 000 so'm" degan
+            # aniq xabar oladi.
+            c.execute(
+                "INSERT INTO xabarlar (suhbat_id, rol, matn, rasm, vaqt,"
+                " xaridor_oqidi, sotuvchi_oqidi) VALUES (?,?,?,?,?,?,?)",
+                (suhbat_id, "sotuvchi", _javob_matni(holat, narx, izoh),
+                 rasm, now, 0, 1))
             return suhbat_id
-        return None
+        return 0
+
+
+def _javob_matni(holat: str, narx: int | None, izoh: str) -> str:
+    """Sotuvchi javobidan o'qiladigan birinchi chat xabari.
+
+    Sotuvchi o'z so'zini yozgan bo'lsa — u asosiy, holat va narx
+    oldiga qo'shiladi. Yozmagan bo'lsa ham xabar bo'sh qolmaydi.
+    """
+    boshi = "O‘xshashi bor." if holat == "oxshash" else "Bor."
+    if narx:
+        # Raqam bo'shliq bilan: `150 000 so'm`. `f"{n:,}"` vergul
+        # qo'yadi va inglizcha ko'rinadi — loyiha qoidasi buni taqiqlaydi.
+        son = f"{int(narx):,}".replace(",", " ")
+        boshi += f" Narxi {son} so‘m."
+    izoh = (izoh or "").strip()
+    return f"{boshi} {izoh}" if izoh else boshi
 
 
 def sorov_javoblari(sorov_id: int) -> list[dict]:
@@ -1630,7 +2517,7 @@ def suhbat_ol(suhbat_id: int, rol: str, actor_id: int) -> dict | None:
         info = c.execute(
             "SELECT sh.id, sh.sorov_id, sh.sotuvchi_id, sh.javob_id,"
             " sr.matn sorov_matni, sr.tuman, sr.ism xaridor_ism, j.narx, j.tanlandi,"
-            " s.nom sotuvchi_nomi, s.aloqa sotuvchi_aloqa,"
+            " s.nom sotuvchi_nomi,"
             " s.oxirgi_faol s_faol, s.vaqt_yashir s_yashir,"
             " sr.oxirgi_faol x_faol, sr.vaqt_yashir x_yashir"
             " FROM suhbatlar sh JOIN sorovlar sr ON sr.id=sh.sorov_id"
@@ -1676,7 +2563,7 @@ def suhbat_ol(suhbat_id: int, rol: str, actor_id: int) -> dict | None:
                                              s.pop("x_yashir", 0))
         s.pop("s_faol", None); s.pop("s_yashir", None)
         s["men_yashirdim"] = bool(info["s_yashir"])
-        s.pop("sotuvchi_aloqa", None)      # o'z raqamini qaytarish shart emas
+        # Sotuvchi telefoni SELECTga ham kiritilmaydi.
     return {"suhbat": s, "xabarlar": xabarlar}
 
 
@@ -1760,6 +2647,44 @@ def taklif_tanla(sorov_id: int, javob_id: int) -> int | None:
         c.execute("UPDATE javoblar SET tanlandi=1 WHERE id=?", (javob_id,))
         c.execute("UPDATE sorovlar SET holat='tanlandi' WHERE id=?", (sorov_id,))
         return row["id"]
+
+
+NATIJALAR = ("ober", "tashqarida", "bolmadi")
+
+
+def natija_yoz(sorov_id: int, natija: str) -> bool:
+    """Xaridor aytadi: kerakli narsani topdimi va qaysi yo'l bilan.
+
+    NEGA SO'RAYMIZ (2026-08-10)
+    ---------------------------
+    OBER to'lov yoki yetkazishni ko'rmaydi. Xaridor indeksdagi OLX
+    e'lonini topib asl havolani ochsa — biz uchun u "javobsiz so'rov"
+    bo'lib qoladi, aslida esa OBER o'z ishini qilgan.
+
+    Bu ustunsiz har qanday to'lov modeli taxminga quriladi. Bittagina
+    savol butun farqni beradi: *kerakli narsani topdingizmi?*
+
+    Javob MAJBURIY EMAS. Bermasa `natija` bo'sh qoladi va hech narsa
+    buzilmaydi — sanoqda "noma'lum" bo'lib turadi. Majburlash yolg'on
+    javob keltiradi, yolg'on javob esa yo'q javobdan yomonroq.
+    """
+    if natija not in NATIJALAR:
+        return False
+    init()
+    with ulan() as c:
+        cur = c.execute("UPDATE sorovlar SET natija=? WHERE id=?",
+                        (natija, sorov_id))
+        return cur.rowcount > 0
+
+
+def natija_sanogi() -> dict:
+    """Natijalar taqsimoti — hisobot va to'lov modeli uchun."""
+    init()
+    with ulan() as c:
+        qatorlar = c.execute(
+            "SELECT COALESCE(NULLIF(TRIM(natija),''),'nomalum') n,"
+            " COUNT(*) soni FROM sorovlar GROUP BY n").fetchall()
+    return {r["n"]: r["soni"] for r in qatorlar}
 
 
 def suhbat_demo_holat() -> dict:
@@ -1973,6 +2898,51 @@ def _toshkent_bugun() -> str:
     return now.strftime("%Y-%m-%d")
 
 
+def taxminiy_kategoriya(matn: str) -> str:
+    """Matn uchun eng mos KATEGORIYA nomi — indeksdan.
+
+    2026-08-10: OBERning o'z e'lonlari `kategoriya` ustuni BO'SH holda
+    saqlanardi. Sotuvchidan kategoriya so'ralmaydi (bu bizning va'damiz:
+    "kategoriya daraxti yo'q"), lekin bo'sh ustun ikki zarar keltiradi:
+
+      1. E'lon `/kategoriyalar` bo'limida umuman ko'rinmaydi.
+      2. `tahlil.py` uni "kategoriyasi noma'lum" deb hisoblaydi va
+         avto yorlig'ini qo'yishi mumkin.
+
+    Sotuvchidan so'ramaymiz — INDEKSDAN aniqlaymiz. "3 kishilik burchak
+    divan" deb yozsa, bozorda shunga o'xshash e'lonlar qaysi kategoriyada
+    ekanini ko'ramiz va o'shani qo'yamiz. Odam uchun hech narsa
+    o'zgarmaydi, ma'lumot esa to'liq bo'ladi.
+
+    Ishonch yetmasa bo'sh qaytaradi — noto'g'ri kategoriyadan ko'ra
+    bo'sh yaxshiroq.
+    """
+    # BU YERDA TALAB QATTIQROQ.
+    #
+    # Moslikda xato arzon: sotuvchi keraksiz so'rov ko'radi va o'tkazib
+    # yuboradi. Kategoriyada esa qimmat — e'lon noto'g'ri bo'limda
+    # umrbod qolib ketadi va uni hech kim topmaydi.
+    #
+    # Shuning uchun g'olib ikki sinovdan o'tadi: bali yetarli baland
+    # (`_ANIQ_BALL`) va ikkinchisidan sezilarli oldinda (`_ANIQ_FARQ`).
+    ballar = _ballar(_mazmunli_sozlar(matn), limit=200, ulush=0.30)
+    taxmin = ""
+    if ballar and ballar[0][1] >= _ANIQ_BALL:
+        if len(ballar) == 1 or ballar[0][1] >= _ANIQ_FARQ * ballar[1][1]:
+            taxmin = ballar[0][0]
+
+    yashirin = _yashirin_taxonomiya(matn)
+    for kategoriya in ("Transport", "Bolalar dunyosi", "Uy va bog'",
+                       "Moda va stil", "Hayvonlar",
+                       "Xobbi, dam olish sport"):
+        # Coverage-aware: indeks shu aniq kategoriya bilan rozi bo'lsa
+        # odatdagi natija qoladi; bo'sh yoki boshqa bo'lim bo'lsa tor
+        # fallback qamrov xatosini tuzatadi.
+        if f"kat:{kategoriya}" in yashirin and taxmin != kategoriya:
+            return kategoriya
+    return taxmin
+
+
 def ober_elon_yoz(egasi: int, e: dict) -> int:
     """Sotuvchi o'z e'loni. `egasi` — sotuvchilar.id.
 
@@ -1980,6 +2950,11 @@ def ober_elon_yoz(egasi: int, e: dict) -> int:
     """
     init()
     now = time.time()
+    # Kategoriya berilmagan bo'lsa — indeksdan taxmin qilamiz.
+    if not (e.get("kategoriya") or "").strip():
+        e = dict(e)
+        e["kategoriya"] = taxminiy_kategoriya(
+            f"{e.get('nom') or ''} {e.get('tavsif') or ''}")
     with ulan() as c:
         # Tashqi_id UNIQUE(manba, tashqi_id) bo'lishi shart — vaqt asosida
         # yozib, keyin `ober-{id}` ga o'zgartiramiz (ikkalasi ham unikal).

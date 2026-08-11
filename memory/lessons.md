@@ -1,5 +1,246 @@
 # Saboqlar
 
+## 2026-08-10: Bitta belgi butun sahifani o'ldirdi
+
+Aziz: *"yangi e'longa kirsam ham profilga kirsam ham hech narsa
+chiqmayapdi"*
+
+Sotuvchi kabineti butunlay bo'sh ochilardi. Sabab men yozgan izohda
+edi — shablon satri (template literal) ichiga HTML izohi qo'yganman va
+izohda teskari apostrof bor edi:
+
+    $("#asosiy").innerHTML = `...
+      <!-- bu yerda `<input placeholder="...">` turardi -->
+      ...`;
+
+Birinchi teskari apostrof shablonni YOPADI. Keyingi matn JS deb
+o'qiladi: `Uncaught SyntaxError: Unexpected identifier 'placeholder'`.
+SyntaxError butun `<script>` blokini ishga tushirmaydi.
+
+Topish qiyin bo'ldi, chunki hamma narsa sog'lom ko'rinardi: server 200
+qaytaradi, fayllar joyida, API ishlaydi, sessiya tirik. Men uch marta
+noto'g'ri joyni qazdim (kesilgan fayl, service worker kesh, `i18n.js`
+yuklanmagan) — hammasi asossiz taxmin edi.
+
+Javobni Caddy jurnali berdi: brauzer `/sotuvchi` ni yuklab, keyin
+BIRORTA `/api/sotuvchi/*` so'rovi qilmagan. Demak skript boshlanish
+kodiga yetib bormay o'lgan. Aniq xatoni esa sahifaga vaqtinchalik
+`window.onerror` qo'yib, xatoni jurnalga yozdirib oldim.
+
+- SABOQ: "sahifa bo'sh" da birinchi savol — **skript umuman ishga
+  tushdimi?** Buni tarmoq jurnali ayta oladi: sahifa yuklanib, undan
+  keyin hech qanday API so'rovi bo'lmasa, javob shu.
+- SABOQ: brauzerni ko'ra olmasam — **brauzerni gapirishga majburlayman.**
+  Uch marta taxmin qilgandan ko'ra bir marta `window.onerror` qo'yish
+  arzonroq edi.
+- SABOQ: JS ichida HTML izohining o'rni yo'q. `web_sinov.py` endi
+  buni tekshiradi.
+
+## 2026-08-10: O'z tekshirgichimga ishondim, u esa xatoni ko'rmagan edi
+
+Yuqoridagi xatoni ushlash uchun sinov yozdim: "shablon satri ichida
+HTML izohi bo'lmasin". Buning uchun kichik JS yuruvchi yozdim.
+
+Sinovni ataylab buzib tekshirdim — **u xatoni KO'RMADI.** Yuruvchim
+ichma-ich shablonlarni noto'g'ri hisoblardi.
+
+Yuruvchini butunlay tashladim va qoidani soddalashtirdim: *JS ichida
+`<!--` umuman bo'lmasin.* Parser kerak emas, yolg'on o'tkazmaydi.
+
+- SABOQ: himoyani yozgach **uni buzib ko'r.** Ishlamaydigan sinov
+  sinovsizlikdan yomonroq — u xotirjamlik beradi.
+- SABOQ: qoidani kengaytirib soddalashtirsa bo'lsa — soddalashtir.
+  "Shablon ichida bo'lmasin" uchun parser kerak, "umuman bo'lmasin"
+  uchun `in` kifoya.
+
+## 2026-08-10: `kiyim` so'zi `kim` ga aylanib, savol so'zini yutib yubordi
+
+Jonli so'rovlarni ko'rib chiqqanda:
+
+    "Nexia 2 fara 300000 so'mga kimda bor"  -> kiyim
+    "Samsung s24 ultralar kimda nech pul?"  -> kiyim
+
+`normalla("kiyim")` -> `"kim"`. Qolip so'z BOSHI bo'yicha qidiradi
+(`\bkim\w*`), ya'ni "kimda", "kimga", "kimdir" — hammasi tegadi.
+"Kimda bor?" esa o'zbekchada eng tabiiy so'rash usuli: fara so'ragan
+odam tikuvchiga borardi.
+
+Tuzatish qo'lda emas: **normallashgach to'xtash so'ziga aylanadigan
+ibora — ibora emas.** To'xtash ro'yxati savol so'zlarini allaqachon
+biladi, shuning uchun qoida o'zi ishlaydi va kelajakdagi to'qnashuvni
+ham o'zi tashlaydi.
+
+- SABOQ: normalizatsiya qidiruvni yaxshilaydi, lekin **so'zlarni
+  bir-biriga yaqinlashtiradi.** Qisqa iborani prefiks bo'yicha
+  qidirish shu yaqinlikni xatoga aylantiradi.
+- SABOQ: jonli ma'lumotni o'qish sinovdan ko'ra ko'proq xato topadi.
+  Bu xato oylab turgan, birorta test uni ko'rmagan — chunki testlarni
+  men yozganman va men "kimda bor" deb yozmaganman.
+
+## 2026-08-10: "Bo'sh ko'rinish" — ma'lumot yo'qligi emas, notog'ri joyda turgani
+
+Aziz: *"Nega profil, yangi e'lonlarga kirib bo'lmayapdi, bo'sh?"*
+
+Men avval frontendga qaradim — 401 ni to'g'ri ushlaydimi, `MEN`
+o'rnatiladimi. Hammasi joyida edi. Xato bazada edi:
+
+`sotuvchi_yoz()` har safar YANGI qator qo'shardi, telefon raqami bor-
+yo'qligini tekshirmasdi. Azizning bitta raqamida 8 ta hisob to'plangan.
+Kirish esa `WHERE aloqa=?` bilan tartibsiz — SQLite eng eskisini
+qaytarardi. E'loni bir hisobda, so'rovlari boshqasida edi.
+
+Kirish telefon + Telegram kodi orqali ketadi, ya'ni **raqam allaqachon
+shaxsni bildiradi**. Ikkinchi marta "ro'yxatdan o'tish" — aslida
+ma'lumotni yangilash.
+
+- SABOQ: "bo'sh ekran" shikoyatida avval ma'lumot BORMI deb so'ra,
+  keyin ko'rsatilyaptimi deb. Men teskari tartibda qidirdim va
+  frontendda vaqt yo'qotdim.
+- SABOQ: kirish kaliti (bu yerda telefon) bazada UNIQUE bo'lishi
+  kerak. Bo'lmasa tizim jimgina ikkiga bo'linadi va buni hech kim
+  sezmaydi — xato faqat oylar keyin "bo'sh" bo'lib chiqadi.
+
+## 2026-08-10: Ma'lumotga tegishdan oldin uchta narsa meni saqladi
+
+Azizning 8 ta hisobini birlashtirishda ketma-ket uch marta yiqildim:
+
+1. **Zaxira olinmadi** — `mkdir` root nomidan, `sqlite3` esa `ober`
+   nomidan ishladi. Yozolmadi. Agar tekshirmasdan davom etganimda
+   nusxasiz ishlagan bo'lardim.
+2. **UNIQUE cheklovni topolmadim** — `sqlite_master` dan INDEX larni
+   so'radim, cheklov esa CREATE TABLE ichida edi. Tranzaksiya
+   qaytdi, ma'lumot buzilmadi.
+3. **To'qnashuvni noto'g'ri joyda qidirdim** — #104 bilan emas, eski
+   hisoblarning O'ZARO orasida edi.
+
+Bundan tashqari `suhbatlar` va `javoblar` dan "takror"ni o'chirmoqchi
+bo'lgandim — u yerda UNIQUE umuman yo'q ekan, ya'ni haqiqiy
+yozishmani o'chirardim. 0 ta topilgani tasodif edi.
+
+- SABOQ: ma'lumotga yozishdan oldin — ishlaydigan zaxira, tranzaksiya
+  va **jadval ta'rifini o'qish** (indekslar ro'yxatini emas).
+- SABOQ: "takrorni tozalash" deb yozishdan oldin so'ra: bu ustunda
+  haqiqatan cheklov bormi? Bo'lmasa men o'chirayotganim takror emas,
+  ma'lumot.
+
+## 2026-08-10: "Kam natija" bilan "ma'nosiz" bir narsa emas
+
+`bozor_izi` ma'nosiz matnga ham kategoriya berardi. Men "kamida 10 ta
+natija bo'lsin" degan chegara qo'ydim. Ma'nosiz matn to'xtadi — lekin
+haqiqiy noyob so'rov ham to'xtadi. O'lchov ikkalasi BIR XIL SONDA
+ekanini ko'rsatdi:
+
+    uzuk kerak oltin   1 ta natija · eng katta ulush 100%   <- haqiqiy
+    gilam kerak 3x4    8 ta natija · eng katta ulush 100%   <- haqiqiy
+    abcdefg qwerty     8 ta natija · eng katta ulush  38%   <- ma'nosiz
+    asdf jkl           2 ta natija · eng katta ulush  50%   <- ma'nosiz
+
+Son ajratmaydi, **jamlanish** ajratadi. Haqiqiy so'rovda hamma natija
+bitta kategoriyada, ma'nosiz matnda tarqoq. Chegara son emas, ulush
+bo'lishi kerak edi — va namuna kichraygan sari talab oshishi kerak.
+
+- SABOQ: chegara qo'yishdan oldin **ikkala tomonni ham o'lcha.**
+  Men faqat to'xtatmoqchi bo'lgan narsani o'lchadim, o'tkazmoqchi
+  bo'lganini emas. Shuning uchun chegara noto'g'ri o'qda edi.
+
+## 2026-08-10: Tuzatishni `|` dan oldin qo'ydim, keyin esa unutdim
+
+2026-08-09 da mebelchiga avto oynasi so'rovi borishini tuzatgandim —
+`tozalangan()` funksiyasi model va qism birga tanilganda begona
+kategoriyalarni olib tashlaydi. Ertasiga xato QAYTDI.
+
+Sabab: server shunday yozgan edi —
+
+    tozalangan(matn, modellar, qismlar) | baza.bozor_izi(matn)
+
+Tozalash `|` dan OLDIN. Ya'ni `bozor_izi` natijasi tozalanmay o'tib
+ketardi. Ikkita chaqiruv joyi bor edi va ikkalasida ham shunday.
+
+Yechim: `yonalishlar.belgilar()` — bitta funksiya, ichida ham
+qo'shadi, ham tozalaydi. Chaqiruvchi tartibni buza olmaydi.
+
+- SABOQ: qoidani funksiyaga emas, **natijaga** qo'llash kerak. Agar
+  chaqiruvchi qoidadan keyin yana narsa qo'sha olsa — qo'shadi.
+  To'g'ri tuzatish tartibni chaqiruvchi qo'lidan oladi.
+
+## 2026-08-10: Uchta lug'at qurdim, kerakligi bittasi edi
+
+Aziz: *"o'zi OLX dagi hamma kategoriyalardagi so'zlarni shunchaki olib
+mukammal qidiruvga solsakchi, nega lug'at yasayapmiz? Juda
+qiyinlashtirayapsan ishni."*
+
+U haq edi va men buni o'zim ko'rmadim.
+
+Uchta tizim bir-birining ustiga mingan edi: avto lug'ati (qo'lda),
+20 ta yo'nalish (qo'lda), so'z→kategoriya jadvali (hisoblangan, MEN
+qo'shganman). O'sha kuni topilgan xatolarning aksari shu
+chalkashlikdan chiqdi.
+
+Eng yomoni uchinchisi: u so'zni YOLG'IZ ko'rardi. `oyna` mebel
+e'lonlarida ko'p uchraydi → "Uy va bog'". Natijada *"lacettiga labavoy
+oyna kerak"* so'rovi MEBELCHIGA borardi. Jonli testda ko'rdim:
+mebelchi bo'lib ro'yxatdan o'tdim, birinchi ko'rgan so'rovim avto
+oynasi bo'ldi.
+
+Yechim lug'at yozish emas edi. **Bizda 300 000 e'lon bor va har
+birining kategoriyasi ma'lum — bu tayyor lug'at.** `baza.bozor_izi()`
+matnni o'z qidiruvimizdan o'tkazadi va natijalar qaysi kategoriyada
+ekanini sanaydi. So'zlarni BIRGALIKDA ko'radi: "lacetti + oyna" →
+Transport, chunki bozorda shunday. Moslik sinovi 8/8.
+
+- SABOQ: yangi lug'at yozishdan oldin so'ra — **bu ma'lumot menda
+  allaqachon bormi?** Odatda bor. Qo'lda yozilgani eskiradi,
+  ma'lumotdan hisoblangani o'zi o'sadi.
+- SABOQ 2: foydalanuvchi "juda chalkash" desa, odatda haq. Kodni
+  yozgan odam murakkablikka ko'nikib qoladi.
+
+## 2026-08-10: Yorliq qo'yishda kategoriyani ishlatmaganmiz
+
+`bamper` qidiruvida oshxona bufeti, kolonka va router chiqardi.
+O'lchov: qism yorlig'i bor 30 826 e'lon avto kategoriyasida EMAS edi
+(avtoda 15 283) — har uchtadan ikkitasi noto'g'ri.
+
+`eshik`, `sidenie`, `deska`, `kondensioner` — bu so'zlar ikkala
+sohada ham bor. Lug'at avto uchun yozilgan va indeks 100% avtoqism
+bo'lganda to'g'ri ishlardi. Indeks 11 kategoriyaga kengaygach,
+o'sha so'zlar mebel va elektronikaga yopishib qoldi.
+
+Kategoriya bazada ALLAQACHON bor edi — ishlatmaganmiz.
+69 527 yorliq tozalandi, relevans testi 8/13 dan 13/13 ga chiqdi.
+
+- SABOQ: bir vertikal uchun yozilgan mantiqni kengaytirganda uni
+  CHEGARALASH kerak. "Hamma joyda ishlaydi" deb o'ylash xato.
+
+## 2026-08-10: Bitta `if` butun halqani uzgan
+
+Sotuvchi javob berganda chat xabari FAQAT u izoh yozgan bo'lsa
+yaratilardi (`if izoh or rasm:`). Sotuvchi eng ko'p qiladigan ish esa
+"BOR" bosib faqat narx yuborish. Bunda `xabarlar` bo'sh qolardi,
+bildirishnoma esa faqat shu jadvalga qaraydi — **xaridor javob
+kelganini bilmasdi**. Chatni ochsa ham bo'sh chat: narx u yerda yo'q.
+
+Ya'ni so'rov → javob → kelishuv halqasi o'rtasidan uzilgan edi.
+`suhbat_sinov.py` buni ko'rsatib turardi, lekin test qizil holda
+qolib ketgan.
+
+- SABOQ: qizil test — ishlamayotgan mahsulot. "Keyin tuzatamiz" deb
+  qoldirilsa, xato ko'rinmas bo'lib qoladi.
+- SABOQ 2: "ixtiyoriy" maydonga bog'langan shart xavfli — eng ko'p
+  uchraydigan yo'l hech narsa yozmaslik.
+
+## 2026-08-10: Manbalarni tekshirdik — hammasi yopiq
+
+uzum, birbir, olcha, mediapark, asaxiy, texnomart, zoodmall —
+yettalasi ham avtomatik kirishni to'sadi (Cloudflare 403 yoki
+CAPTCHA). Uzum `robots.txt` da ruxsat beradi, lekin amalda CAPTCHA
+sahifasiga yo'naltiradi — yozilgan qoida bilan amaldagi to'siq zid,
+amaldagisi hal qiladi.
+
+- SABOQ: yangi manba qo'shish kod ishi emas, **hamkorlik ishi**.
+  Do'kon tarmoqlariga xaridor oqimi kerak — taklif ularga foydali.
+- CAPTCHA yechilmaydi, Cloudflare aylanilmaydi. Bu texnik masala
+  emas: sayt egasi "bot kirmasin" deb aytgan.
+
 - 2026-08-08: Tanlov arizasida mahsulotning mavjud ishlaydigan qismi bilan
   kelajak AI-rejasini aralashtirmaslik kerak. OBERning kuchli dalili — real
   prototip, qidiruv, routing, ichki chat va bozor indeksi; AI-router rivoji esa
@@ -174,3 +415,27 @@ ikkala ➕ aynan 3-ustunga tushib, ustma-ust turardi.
   generic UI kitni import/detach qilish tezroq ko‘rinsa ham dizayn manbasini
   ikkiga bo‘ladi. OBER uchun production CSS’dan minimal local foundations
   yaratish va faqat kerakli P0 komponentlarni componentize qilish to‘g‘riroq.
+
+## 2026-08-11: Chat halqasi — tokenning o‘zi ruxsat emas
+
+- Sotuvchi sessiyasi haqiqiy bo‘lsa ham javob faqat unga `yuborishlar` orqali tayinlangan, muddati tugamagan va hali javobsiz so‘rovga yoziladi; valid “yo‘q” javobi invalid urinishdan alohida natija bo‘lishi kerak.
+- API uchun telefonni keyin `pop` qilishdan ko‘ra uni `SELECT`ga umuman kiritmaslik xavfsizroq: yangi rol yoki branch maxfiy maydonni tasodifan qaytara olmaydi.
+- Bitta qurilmada buyer va seller sessiyasi birga yashaydi; rol query orqali aniq tanlanadi, query bo‘lmasa faol buyer so‘rovi seller tokeni sabab yo‘qolmasligi kerak.
+- Suhbat kartasini ochish — read/view amali, taklifni tanlash esa alohida mutatsiya. Ikkalasini bitta clickka bog‘lash foydalanuvchi qarorini soxtalashtiradi.
+- Lokal indeks qamrovi og‘ishgan tor mahsulotlarda yashirin taxonomy fallback kerak, lekin u faqat aniq audit holatlariga ishlaydi va ma’nosiz matn/spam himoyasini chetlab o‘tmaydi.
+
+## 2026-08-11: Agregator, Telegram va savdo chegarasi
+
+- OBERning mahsulot modeli uchta: tashqi e’lon havolalari agregatori, teskari bozor va OBERga e’lon joylash. Chat aloqa va aniqlashtirish uchun; to‘lov, yetkazib berish va oldi-sotdi OBER orqali bajarilmaydi. Interfeysdagi “bitim shu yerda” kabi bitta jumla butun modelni noto‘g‘ri ko‘rsatadi.
+- Telegram xabarini faqat yuborish emas, natijasini tekshirish kerak. `sendMessage` xato qaytarsa navbat belgilanmaydi va keyingi aylanish qayta urinadi; aks holda bildirishnoma yo‘qoladi, baza esa yolg‘on “yuborildi” deydi.
+- Sotuvchiga Telegram orqali ikki signal kerak: yangi mos so‘rov va xaridorning yangi chat xabari. Erkin yozishmani botga ko‘chirish shart emas; xabardagi “OBER chatini ochish” tugmasi rolni va vazifani aniq saqlaydi.
+- Vitrina xilma-xillik filtri vaqtincha o‘tkazib yuborgan kartani “ko‘rildi” deb belgilamasligi kerak. Aks holda zaxira to‘ldirish ishlamaydi va bazada yetarli e’lon bo‘lsa ham bosh sahifa skeletda qoladi.
+- OBER e’lonida viloyat, shahar va tuman bir xil qiymat bo‘lishi mumkin; ko‘rsatishda takrorlarni olib tashlash kerak. CTA esa qiladigan ishini aniq aytsin: mos sotuvchilarga so‘rov yuborsa, “bitta sotuvchidan so‘rash” deb va’da bermasin.
+
+## 2026-08-11: Bitta odam — ikki rol emas, to‘rtta tushunarli vazifa
+
+- Yangi sotuvchi ro‘yxatdan o‘tgach Telegramni ulash ekrani `#asosiy`ni to‘liq almashtirsa, foydalanuvchi niyat qilgan ishidan uziladi va “boshqa joyga o‘tib ketdim” deb o‘ylaydi. Telegram majburiy sahifa emas: Sotish kabinetidagi ixtiyoriy xabarnoma kartasi bo‘lib, “Hozir emas” bilan yopilishi kerak.
+- Bir odam bir paytda qidirishi ham, e’lon joylashi ham mumkin. Global navigatsiya rol nomlari bilan emas, vazifalar bilan bir xil tartibda yoziladi: `Qidirish → Kategoriyalar → Chat → Sotish`. Desktop va mobil tartibi farq qilsa, aynan bir mahsulot ikki xil mantiqdek ko‘rinadi.
+- `Sotish` ichidagi ikki ichki vazifa aniq ajraladi: `Xaridor so‘rovlari` — teskari bozor; `E’lonlarim` — OBERning o‘z e’lonlari. E’lon formasi ochilganda ham shu tablar va aktiv `E’lonlarim` holati yo‘qolmasligi kerak.
+- 390 px da ikki ustunli forma matematik jihatdan sig‘ishi mumkin, lekin narx inputi va “Kelishiladi” tugmasi birga kelganda input amalda o‘qilmay qoladi. Responsive tekshiruv faqat horizontal overflow emas; har maydonning foydalaniladigan kengligi ham o‘lchanadi. Bu holatda narx va joy telefon uchun bir ustunga o‘tkazildi.
+- Brauzer yuzasi viewportni bevosita almashtira olmasa, bir xil originli 390×844 iframe ichida haqiqiy sahifani yuklash media-query, fixed tabbar, scroll va computed widthlarni ishonchli tekshiradi. Sinovdan keyin qobiq, vaqtinchalik route, server va baza to‘liq tozalanadi.

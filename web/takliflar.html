@@ -92,6 +92,12 @@
   .context{padding:24px clamp(18px,4vw,38px) 18px}
   .context h1{margin:0;color:var(--navy);font-size:clamp(24px,5vw,34px);line-height:1.08;letter-spacing:-.035em}
   .context p{margin:8px 0 0;color:var(--muted);font-size:14px}
+  .role-switch{display:flex;width:fit-content;margin:-7px clamp(18px,4vw,38px) 18px;padding:4px;
+    border:1px solid var(--line);border-radius:var(--r-pill);background:#fff;box-shadow:var(--shadow-card)}
+  .role-switch a{min-height:36px;padding:0 14px;border-radius:var(--r-pill);display:flex;align-items:center;
+    color:var(--muted);text-decoration:none;font-size:12px;font-weight:800}
+  .role-switch a[aria-current="page"]{background:var(--navy);color:#fff}
+  .role-switch a.unavailable:not([aria-current="page"]){opacity:.62}
   .workspace{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:22px;padding:0 clamp(18px,4vw,38px) 34px}
   .inbox,.chat{background:rgba(255,255,255,.78);border:1px solid rgba(8,40,95,.10);border-radius:var(--r-katta);box-shadow:var(--shadow);overflow:hidden}
   .inbox-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 13px}
@@ -100,13 +106,13 @@
   .offer-list{display:grid}
   .offer{position:relative;width:100%;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;padding:16px 16px 16px 20px;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;color:var(--ink);transition:background 180ms var(--ease),transform 180ms var(--ease)}
   .offer:hover{background:rgba(238,246,255,.55)}
-  .offer.selected{background:var(--blue)}
-  .offer.selected::before{content:"";position:absolute;inset:8px auto 8px 0;width:4px;border-radius:0 var(--r-pill) var(--r-pill) 0;background:var(--navy)}
+  .offer.active{background:var(--blue)}
+  .offer.chosen::before{content:"";position:absolute;inset:8px auto 8px 0;width:4px;border-radius:0 var(--r-pill) var(--r-pill) 0;background:var(--green)}
   .avatar{width:48px;height:48px;border-radius:var(--r-orta);object-fit:cover;background:var(--navy)}
   .offer-copy{min-width:0}
   .offer-line{display:flex;align-items:baseline;gap:7px;min-width:0}
   .offer-name{font-weight:800;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .verified{font-size:10px;color:var(--navy-2);font-weight:900}
+  .chosen-label{font-size:10px;color:var(--green);font-weight:900}
   .offer-meta{margin-top:3px;font-size:13px;color:var(--ink);font-weight:750}
   .ready{color:var(--green)}
   .preview{margin-top:5px;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -144,17 +150,24 @@
   .chat-placeholder p{margin:9px auto 0;color:var(--muted);font-size:14px;line-height:1.55;max-width:34ch}
   .chat{display:grid;grid-template-rows:auto minmax(330px,1fr) auto;min-height:620px;position:relative}
   .chat[hidden]{display:none}
-  .chat-head{padding:14px 17px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 44px minmax(0,1fr) auto auto;gap:11px;align-items:center;background:rgba(255,255,255,.92);position:sticky;top:0;z-index:4}
+  .chat-head{padding:14px 17px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 44px minmax(0,1fr) auto;gap:11px;align-items:center;background:rgba(255,255,255,.92);position:sticky;top:0;z-index:4}
+  .chat-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px}
   /* Onlayn vaqtni yashirish — Telegramdagi kabi tanlov */
   .quiet-toggle{min-height:32px;padding:0 11px;border:1px solid var(--line);
     border-radius:var(--r-pill);background:#fff;color:var(--muted);
     font:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
   .quiet-toggle.off{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .choose-active{min-height:34px;padding:0 12px;border:0;border-radius:var(--r-pill);
+    background:var(--navy);color:#fff;font:inherit;font-size:11px;font-weight:850;white-space:nowrap}
+  .choose-active:disabled{background:#e4f5ec;color:var(--green);cursor:default}
   /* Joylashuv xabari */
   .geo-msg{display:inline-flex;align-items:center;gap:7px;
     padding:9px 13px;border-radius:var(--r-kichik);border:1px solid var(--line);
     background:#fff;color:var(--navy);text-decoration:none;font-weight:700;font-size:13px}
-  @media (max-width:520px){.quiet-toggle{display:none}}
+  @media (max-width:520px){
+    .quiet-toggle{display:none}.chat-head>.avatar{display:none}
+    .chat-head{grid-template-columns:auto minmax(0,1fr) auto}
+  }
   .back{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:var(--r-kichik);padding:9px 11px;font-size:12px;font-weight:800}
   .chat-person strong{display:block;color:var(--navy);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .online{font-size:12px;color:var(--green);font-weight:700}
@@ -168,6 +181,28 @@
   .message-meta{color:var(--muted);font-size:10px;padding:0 5px}
   .xaridor .message-meta{text-align:right}
   .privacy{text-align:center;color:var(--muted);font-size:11px;margin:auto;padding:3px 12px;border-radius:var(--r-pill);background:rgba(255,255,255,.78)}
+
+  /* BITIM QAYERDA TUGADI — xaridordan so'raymiz (2026-08-10).
+     Kelishuv har doim OBER ichida bo'lmaydi: indeksdagi e'londa raqam
+     ochiq va odam to'g'ridan-to'g'ri qo'ng'iroq qiladi. Bilmasak,
+     OBER ishlaganini ham, ishlamaganini ham o'lchay olmaymiz. */
+  .natija-savol{
+    margin:14px auto 4px;padding:12px 14px;max-width:340px;
+    border:1px solid var(--line);border-radius:var(--r-orta);
+    background:#fff;text-align:center;
+  }
+  .natija-savol p{margin:0 0 10px;font-size:12.5px;color:var(--text)}
+  .natija-tugmalar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+  .natija-tugmalar button{
+    flex:1 1 auto;min-height:38px;padding:0 12px;
+    border:1px solid var(--line);border-radius:var(--r-pill);
+    background:#fff;color:var(--text);font:inherit;font-size:12px;cursor:pointer;
+  }
+  .natija-tugmalar button:hover{background:var(--navy-soft)}
+  .natija-rahmat{margin:14px auto 4px;text-align:center;color:var(--muted);font-size:12px}
+  .natija-error{margin:9px 0 0;color:var(--red);font-size:11px}
+  .natija-tugmalar button:disabled{opacity:.55;cursor:wait}
+  .messages>.empty{margin:auto}
   .composer{padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
   .attachment-preview{display:flex;align-items:center;gap:10px;padding:0 2px 10px;color:var(--muted);font-size:12px}
   .attachment-preview[hidden]{display:none}
@@ -198,6 +233,15 @@
   .toast.show{opacity:1;transform:translate(-50%,0)}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(13,63,143,.28)}70%{box-shadow:0 0 0 13px transparent}100%{box-shadow:none}}
   @keyframes message-in{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+  @media(max-width:620px){
+    /* TELEFONDA YOPISHQOQ ELEMENT BITTA (dizayn qoidasi).
+       O'lchov 2026-08-11, 390x640: `topbar` va `ober-tabbar` ikkalasi
+       ham yopishqoq edi. Chat OCHILGANDA baribir butun ekranni
+       egallaydi (`.chat` fixed), demak tepa panelning yopishib
+       turishidan foyda yo'q — u faqat suhbatlar ro'yxatidan joy
+       yeydi. */
+    .topbar{position:static}
+  }
   @media(max-width:760px){
     .shell{padding-bottom:18px}.topbar{height:66px;padding:14px 18px}.logo{width:82px}.page-title{font-size:18px}
     .context{padding:20px 18px 16px}.context h1{font-size:25px}.workspace{display:block;padding:0 0 18px}
@@ -255,8 +299,9 @@
     <div class="top-tools"><div class="lang-slot"></div><button class="notice" id="notice" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="notice-label">Bildirishnomalar</span><img class="notice-icon" src="/brend/icon.png" alt=""><span class="notice-count" id="notice-count"></span></button></div>
   </header>
   <section class="context" id="context">
-    <h1>Chat</h1><p>Sotuvchi bilan yozishmalar shu yerda.</p>
+    <h1>Chat</h1><p>Sotuvchi bilan aniqlashtiring. To‘lov va yetkazish OBERda bajarilmaydi.</p>
   </section>
+  <nav class="role-switch" id="role-switch" aria-label="Chat roli"></nav>
   <main class="workspace">
     <section class="inbox" aria-labelledby="inbox-title">
       <div class="inbox-head"><h2 id="inbox-title">Suhbatlar</h2><span id="count"></span></div>
@@ -273,10 +318,13 @@
       <header class="chat-head">
         <button class="back" id="chat-close" type="button">Orqaga</button>
         <img class="avatar" src="/brend/icon.png" alt="">
-        <div class="chat-person"><strong id="chat-name">Sotuvchi</strong><span class="online" id="chat-online">OBER ichida</span></div>
-        <button class="quiet-toggle" id="vaqt-yashir" type="button"
-                title="O‘z onlayn vaqtimni yashirish">Vaqtim ko‘rinsin</button>
-        <span class="price-pill" id="chat-price">Taklif</span>
+        <div class="chat-person"><strong id="chat-name">Sotuvchi</strong><span class="online" id="chat-online">Onlayn holati noma’lum</span></div>
+        <div class="chat-actions">
+          <button class="quiet-toggle" id="vaqt-yashir" type="button"
+                  title="O‘z onlayn vaqtimni yashirish">Vaqtim ko‘rinsin</button>
+          <button class="choose-active" id="choose-active" type="button" hidden>Taklifni tanlash</button>
+          <span class="price-pill" id="chat-price">Taklif</span>
+        </div>
       </header>
       <div class="messages" id="messages" aria-live="polite"></div>
       <form class="composer" id="composer">
@@ -330,24 +378,36 @@ if(/^\d+$/.test(storedSeller)){
   localStorage.removeItem("ober_sotuvchi");
   storedSeller = "";
 }
-const role = params.get("rol") === "sotuvchi" || storedSeller ? "sotuvchi" : "xaridor";
 let requestId = demoMode ? "" : (localStorage.getItem("ober_sorov") || "");
 if(/^\d+$/.test(requestId)){
   localStorage.removeItem("ober_sorov");
   localStorage.removeItem("ober_sorov_id");
   requestId = "";
 }
-// 2026-08-08: boshlang'ich matn rolga qarab — sotuvchi ochsa "Xaridorlar
-// bilan", xaridor ochsa "Sotuvchi bilan". Avval HTML'da faqat xaridor
-// varianti turardi va sotuvchi yuklanish paytida noto'g'ri matn ko'rdi.
+// Ikkala sessiya bitta qurilmada bo'lsa buyer chatini seller tokeni bosmaydi.
+// Aniq URL roli ustun; aks holda faol buyer so'rovi birinchi tanlanadi.
+const requestedRole = params.get("rol");
+const role = requestedRole === "sotuvchi" ? "sotuvchi"
+  : requestedRole === "xaridor" ? "xaridor"
+  : requestId ? "xaridor" : storedSeller ? "sotuvchi" : "xaridor";
+const actorId = role === "sotuvchi" ? storedSeller : requestId;
+
+function roleHref(yangiRole){
+  const q=new URLSearchParams(location.search);
+  q.set("rol",yangiRole);q.delete("chat");q.delete("demo");
+  return "/takliflar?"+q.toString();
+}
+function renderRoleSwitch(){
+  const el=$("#role-switch");
+  el.innerHTML=`<a href="${roleHref("xaridor")}" ${role==="xaridor"?'aria-current="page"':''} class="${requestId?'':'unavailable'}">Xaridor</a>
+    <a href="${roleHref("sotuvchi")}" ${role==="sotuvchi"?'aria-current="page"':''} class="${storedSeller?'':'unavailable'}">Sotuvchi</a>`;
+}
+// 2026-08-08: boshlang'ich matn rolga qarab.
 if (role === "sotuvchi") {
   const c = $("#context");
   if (c) c.innerHTML = '<h1>Xaridorlar bilan suhbatlar</h1><p>Taklif va yangi xabarlar bir joyda.</p>';
 }
-// 2026-08-06: sotuvchi identifikatori endi sessiya TOKENI bo'lishi mumkin
-// (raqam emas). Server token orqali kabinetni ochadi.
-const actorId = role === "sotuvchi" ? (storedSeller || "") : requestId;
-let activeChat = 0, photoData = "", lastMessageCount = -1, refreshTimer = 0;
+let activeChat = 0, activeOfferInfo = null, photoData = "", lastMessageCount = -1, refreshTimer = 0;
 let notificationItems = [], notificationsPrimed = false;
 const notificationKey = `ober_notification_${role}_${actorId}`;
 let lastNotificationId = Number(localStorage.getItem(notificationKey) || 0);
@@ -444,6 +504,28 @@ async function markAllNotifications(){
 $("#mark-all").addEventListener("click",markAllNotifications);
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#notification-panel").classList.contains("open"))closeNotifications()});
 
+function renderNoActor(){
+  let title="Chatni boshlang";
+  let copy="Xaridor sifatida so‘rov yuboring yoki sotuvchi sifatida kiring.";
+  const actions=[];
+  if(role==="sotuvchi" && !storedSeller){
+    title="Sotuvchi sessiyasi topilmadi";
+    copy="Kabinetga qayta kiring yoki xaridor chatiga o‘ting.";
+    actions.push('<a href="/sotuvchi">Sotuvchi sifatida kirish</a>');
+    if(requestId)actions.push(`<a class="empty-secondary" href="${roleHref("xaridor")}">Xaridor chatiga o‘tish</a>`);
+  }else if(role==="xaridor" && !requestId){
+    title="Faol xaridor so‘rovi yo‘q";
+    copy="Bosh sahifadan so‘rov yuboring yoki sotuvchi chatiga o‘ting.";
+    actions.push('<a href="/">So‘rov yuborish</a>');
+    if(storedSeller)actions.push(`<a class="empty-secondary" href="${roleHref("sotuvchi")}">Sotuvchi chatiga o‘tish</a>`);
+  }
+  if(!actions.length){
+    actions.push('<a href="/">So‘rov yuborish</a>');
+    actions.push('<a class="empty-secondary" href="/sotuvchi">Sotuvchi sifatida kirish</a>');
+  }
+  $("#offer-list").innerHTML=`<div class="empty"><strong>${title}</strong><span>${copy}</span><div class="empty-actions">${actions.join("")}</div></div>`;
+}
+
 function renderInboxError(){
   $("#offer-list").innerHTML=`<div class="empty empty-error" role="alert">
     <strong>Chatga ulanib bo‘lmadi</strong>
@@ -464,10 +546,10 @@ async function loadInbox(){
     if(params.get("demo")==="1"){
       try{
         const demo=await fetch("/api/demo/chat").then(r=>r.json());
-        if(demo.sorov_token){localStorage.setItem("ober_sorov",demo.sorov_token);location.replace("/takliflar");return}
-      }catch(_){}
+        if(demo.sorov_token){localStorage.setItem("ober_sorov",demo.sorov_token);location.replace("/takliflar?rol=xaridor");return}
+      }catch(error){console.error("[ober-chat] demo:",error)}
     }
-    $("#offer-list").innerHTML='<div class="empty"><strong>Hali faol so‘rov yo‘q</strong>Bosh sahifadan jonli so‘rov yuboring.<br><a href="/">Bosh sahifaga qaytish</a></div>';
+    renderNoActor();
     return;
   }
   try{
@@ -483,6 +565,17 @@ async function loadInbox(){
       // 2026-08-08: xaridor ismi yozilgan bo'lsa — "Xaridor · Ism" ko'rinadi.
       renderOffers((d||[]).map(x=>({...x,nom:x.xaridor_ism?"Xaridor · "+x.xaridor_ism:"Xaridor",suhbat_id:x.suhbat_id,javob_id:x.javob_id,oxirgi_vaqt:x.oxirgi_vaqt,izoh:"",tuman:x.tuman})));
     }
+    // NISHONNI DARHOL YANGILAYMIZ (2026-08-11, Chrome sinovida topildi).
+    //
+    // Suhbat ochilganda o'qilmagan belgisi bazada DARHOL tozalanadi,
+    // lekin tepadagi "Chat · 1" nishoni `tabbar.js` dagi 30 soniyalik
+    // taymerni kutardi. Odam suhbatni o'qib bo'lgan, nishon esa hali
+    // turibdi — "o'qilmadimi?" degan ikkilanish paydo bo'ladi.
+    //
+    // Nega aynan shu yerda: o'qilmagan holatini o'zgartiradigan uchala
+    // yo'l ham (suhbatni ochish, yopish, "barchasini o'qish") oxirida
+    // `loadInbox()` ga keladi. Bitta joy — uchalasi ham qamraladi.
+    if(window.OBER_BILDIRISH_YANGILA) window.OBER_BILDIRISH_YANGILA();
   }catch(error){
     console.error("[ober-chat] suhbatlar:",error);
     renderInboxError();
@@ -494,55 +587,93 @@ function renderOffers(items){
   $("#count").textContent=`${items.length} ta suhbat`;
   setNotice(unread);
   if(!items.length){$("#offer-list").innerHTML='<div class="empty"><strong>Hali suhbat yo‘q</strong>Mos sotuvchilar javob berishi bilan shu yerda ko‘rinadi.</div>';return}
-  $("#offer-list").innerHTML=items.map((x,i)=>{
+  $("#offer-list").innerHTML=items.map(x=>{
     const img=safeImage(x.oxirgi_rasm);
-    const selected=Number(x.suhbat_id)===activeChat || Number(x.tanlandi)===1;
-    return `<button class="offer${selected?' selected':''}" data-chat="${Number(x.suhbat_id||0)}" data-answer="${Number(x.javob_id||0)}" type="button">
+    const active=Number(x.suhbat_id)===activeChat;
+    const chosen=Number(x.tanlandi)===1;
+    return `<button class="offer${active?' active':''}${chosen?' chosen':''}" data-chat="${Number(x.suhbat_id||0)}" type="button">
       <img class="avatar" src="/brend/icon.png" alt=""><span class="offer-copy">
-        <span class="offer-line"><span class="offer-name">${esc(x.nom||x.sorov_matni||"Sotuvchi")}</span><span class="verified">TASDIQLANGAN</span></span>
+        <span class="offer-line"><span class="offer-name">${esc(x.nom||x.sorov_matni||"Sotuvchi")}</span>${chosen?'<span class="chosen-label">Tanlangan</span>':''}</span>
         <span class="offer-meta">${som(x.narx)} · <span class="ready">${esc(role==='sotuvchi'?(x.sorov_matni||'Taklif'):readiness(x))}</span></span>
         <span class="preview">${esc(x.oxirgi_xabar||"Taklif yuborildi")}</span></span>
       <span class="offer-side${img?' with-photo':''}"><span class="time">${esc(x.oxirgi_vaqt||"")}</span>${img?`<img class="thumb" src="${esc(img)}" alt="Xabardagi rasm">`:''}${x.oqilmagan?`<span class="unread${x.oqilmagan>1?'':' dot'}">${x.oqilmagan>1?Number(x.oqilmagan):''}</span>`:''}</span>
     </button>`
   }).join("");
-  document.querySelectorAll(".offer").forEach(btn=>btn.onclick=()=>chooseOffer(Number(btn.dataset.chat),Number(btn.dataset.answer)));
+  document.querySelectorAll(".offer").forEach(btn=>btn.onclick=()=>openChat(Number(btn.dataset.chat)));
 }
 
-async function chooseOffer(chatId,answerId){
-  if(role==="xaridor" && answerId){
-    const r=await fetch("/api/taklif/tanlash",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({actor_id:actorId,javob_id:answerId})});
-    const d=await r.json(); if(!r.ok){toast(d.xato||"Taklif tanlanmadi");return} chatId=Number(d.suhbat_id);
+function updateChooseButton(info){
+  const button=$("#choose-active");
+  if(role!=="xaridor"||!info){button.hidden=true;return}
+  button.hidden=false;
+  button.disabled=Number(info.tanlandi)===1;
+  button.textContent=button.disabled?"Tanlangan":"Taklifni tanlash";
+}
+async function chooseActiveOffer(){
+  if(role!=="xaridor"||!activeOfferInfo||!activeOfferInfo.javob_id)return;
+  const button=$("#choose-active");button.disabled=true;
+  try{
+    const r=await fetch("/api/taklif/tanlash",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({actor_id:actorId,javob_id:activeOfferInfo.javob_id})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.ok)throw new Error(d.xato||"Taklif tanlanmadi");
+    activeOfferInfo.tanlandi=1;updateChooseButton(activeOfferInfo);
+    await loadInbox();toast("Taklif tanlandi");
+  }catch(error){
+    console.error("[ober-chat] taklif tanlash:",error);
+    button.disabled=false;toast(error.message||"Taklif tanlanmadi");
   }
-  if(chatId) openChat(chatId);
 }
+$("#choose-active").onclick=chooseActiveOffer;
 
+function renderChatError(error){
+  console.error("[ober-chat] suhbat:",error);
+  $("#messages").innerHTML=`<div class="empty" role="alert"><strong>Suhbat yuklanmadi</strong><span>${esc(error.message||"Internetni tekshirib qayta urining.")}</span><div class="empty-actions"><button class="empty-retry" id="chat-retry" type="button">Qayta urinish</button></div></div>`;
+  $("#chat-retry").onclick=loadChat;
+}
 async function openChat(id){
-  activeChat=id; lastMessageCount=-1; $("#chat").hidden=false;
+  activeChat=id;activeOfferInfo=null;lastMessageCount=-1;updateChooseButton(null);$("#chat").hidden=false;
   const placeholder=$("#chat-placeholder");if(placeholder)placeholder.hidden=true;
   document.body.style.overflow=innerWidth<=760?"hidden":"";
-  await loadChat(); await loadInbox(); clearInterval(refreshTimer); refreshTimer=setInterval(()=>{if(!yashiringan())loadChat()},3500);
+  const ok=await loadChat();if(ok)await loadInbox();
+  clearInterval(refreshTimer);
+  if(ok)refreshTimer=setInterval(()=>{if(!yashiringan())loadChat()},3500);
 }
 async function loadChat(){
-  if(!activeChat)return;
-  const r=await fetch(`/api/suhbat?id=${activeChat}&rol=${role}&actor=${actorId}`); if(!r.ok)return;
-  const d=await r.json(), info=d.suhbat, messages=d.xabarlar||[];
-  // 2026-08-08: sotuvchi ko'rsa — xaridor ismi bo'lsa "Xaridor · Ism",
-  // bo'lmasa so'rov matni (avvalgi holat). Xaridor ko'rsa — sotuvchi nomi.
-  $("#chat-name").textContent=role==="xaridor"?(info.sotuvchi_nomi||"Sotuvchi")
-    :(info.xaridor_ism?"Xaridor · "+info.xaridor_ism:(info.sorov_matni||"Xaridor"));
-  $("#chat-price").textContent=som(info.narx);
-  // SUHBATDOSH TIRIKMI — "hozir onlayn" yoki "5 daqiqa oldin".
-  // Yashirgan bo'lsa "yaqinda" deb ko'rsatiladi, aniq vaqt emas.
-  $("#chat-online").textContent=info.suhbatdosh_holati||"OBER ichida";
-  const y=$("#vaqt-yashir");
-  y.classList.toggle("off",!!info.men_yashirdim);
-  y.textContent=info.men_yashirdim?"Vaqtim yashirin":"Vaqtim ko‘rinsin";
-  y.dataset.yashir=info.men_yashirdim?"1":"0";
-  if(messages.length!==lastMessageCount){
-    const was=lastMessageCount; lastMessageCount=messages.length; renderMessages(messages);
-    if(was>=0&&messages.length>was&&navigator.vibrate)navigator.vibrate(28);
-  }
-  await loadNotifications(false);
+  if(!activeChat)return false;
+  try{
+    const r=await fetch(`/api/suhbat?id=${activeChat}&rol=${role}&actor=${actorId}`);
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.xato||`HTTP ${r.status}`);
+    const info=d.suhbat, messages=d.xabarlar||[];
+    activeOfferInfo=info;updateChooseButton(info);
+    $("#chat-name").textContent=role==="xaridor"?(info.sotuvchi_nomi||"Sotuvchi")
+      :(info.xaridor_ism?"Xaridor · "+info.xaridor_ism:(info.sorov_matni||"Xaridor"));
+    $("#chat-price").textContent=som(info.narx);
+    $("#chat-online").textContent=info.suhbatdosh_holati||"Onlayn holati noma’lum";
+    const y=$("#vaqt-yashir");
+    y.classList.toggle("off",!!info.men_yashirdim);
+    y.textContent=info.men_yashirdim?"Vaqtim yashirin":"Vaqtim ko‘rinsin";
+    y.dataset.yashir=info.men_yashirdim?"1":"0";
+    if(messages.length!==lastMessageCount){
+      const was=lastMessageCount;lastMessageCount=messages.length;renderMessages(messages);
+      if(was>=0&&messages.length>was&&navigator.vibrate)navigator.vibrate(28);
+      // NISHONNI SHU YERDA YANGILAYMIZ, HAR SAFAR EMAS.
+      //
+      // Suhbatni ochish DB'dagi o'qilmagan holatini darhol tozalaydi,
+      // tepadagi "Chat · 1" esa `tabbar.js` dagi 30 soniyalik taymerni
+      // kutardi — odam o'qib bo'lgan, nishon esa turibdi.
+      //
+      // Nega `if` ichida: bu funksiya chat ochiq turganda har 3.5
+      // soniyada ishlaydi. Tashqarida qo'yilsa nishon uchun ham har
+      // 3.5 soniyada so'rov ketardi — 30 soniyalik taymerdan 8 barobar
+      // ko'p. O'qilmagan holat esa faqat xabar soni o'zgarganda
+      // o'zgaradi: suhbat ochilganda (`lastMessageCount` -1 dan
+      // boshlanadi) va yangi xabar kelganda.
+      if(window.OBER_BILDIRISH_YANGILA) window.OBER_BILDIRISH_YANGILA();
+    }
+    await loadNotifications(false);
+    return true;
+  }catch(error){renderChatError(error);return false}
 }
 function renderMessages(items){
   const box=$("#messages");
@@ -560,10 +691,53 @@ function renderMessages(items){
     // esa o'z roli bilan.
     const rolNom = x.rol === role ? "Siz" : (x.rol === "sotuvchi" ? "Sotuvchi" : "Xaridor");
     return `<div class="message ${x.rol}">${x.matn?`<div class="bubble">${esc(x.matn)}</div>`:''}${img?`<img class="message-photo" src="${esc(img)}" alt="Suhbatda yuborilgan rasm">`:''}${geo}<div class="message-meta">${rolNom} · ${esc(x.vaqt_matni||"")}</div></div>`
-  }).join("")+`<div class="privacy">Aloqa va rasmlar OBER ichida qoladi</div>`;
+  }).join("")
+    + `<div class="privacy">Bu chat aloqa uchun. To‘lov va yetkazish OBER orqali bajarilmaydi.</div>`
+    + natijaBloki();
   box.scrollTop=box.scrollHeight;
 }
-function closeChat(){activeChat=0;clearInterval(refreshTimer);$("#chat").hidden=true;const placeholder=$("#chat-placeholder");if(placeholder)placeholder.hidden=false;document.body.style.overflow="";loadInbox()}
+
+// KERAKLISI TOPILDIMI — FAQAT XARIDORDAN VA FAQAT BIR MARTA.
+// Javob majburiy emas: bermasa hech narsa buzilmaydi. Majburlash
+// yolg'on javob keltiradi, yolg'on javob esa yo'q javobdan yomonroq.
+let natijaBerildi = false, natijaSaqlanmoqda = false;
+function natijaBloki(){
+  if(role !== "xaridor" || natijaBerildi) return "";
+  return `<div class="natija-savol" id="natija-savol">
+    <p>Kerakli narsani topdingizmi? Javob OBERni yaxshilashga yordam beradi.</p>
+    <div class="natija-tugmalar">
+      <button type="button" onclick="natijaYubor('ober')">Ha, OBER orqali</button>
+      <button type="button" onclick="natijaYubor('tashqarida')">Ha, boshqa joydan</button>
+      <button type="button" onclick="natijaYubor('bolmadi')">Hali topmadim</button>
+    </div>
+  </div>`;
+}
+async function natijaYubor(natija){
+  if(natijaSaqlanmoqda||natijaBerildi)return;
+  natijaSaqlanmoqda=true;
+  const quti=document.getElementById("natija-savol");
+  const buttons=quti?[...quti.querySelectorAll("button")]:[];
+  buttons.forEach(button=>button.disabled=true);
+  try{
+    const r=await fetch("/api/sorov/natija",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({actor_id:actorId,natija})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.ok)throw new Error(d.xato||"Natija saqlanmadi");
+    natijaBerildi=true;
+    if(quti)quti.outerHTML='<div class="natija-rahmat">Rahmat — belgilab qo‘ydik.</div>';
+  }catch(error){
+    console.error("[ober-chat] natija:",error);
+    buttons.forEach(button=>button.disabled=false);
+    if(quti){
+      let xato=quti.querySelector(".natija-error");
+      if(!xato){xato=document.createElement("p");xato.className="natija-error";quti.appendChild(xato)}
+      xato.textContent=(error.message||"Natija saqlanmadi")+" · qayta urining.";
+    }
+    toast(error.message||"Natija saqlanmadi");
+  }finally{natijaSaqlanmoqda=false}
+}
+function closeChat(){activeChat=0;activeOfferInfo=null;updateChooseButton(null);clearInterval(refreshTimer);$("#chat").hidden=true;const placeholder=$("#chat-placeholder");if(placeholder)placeholder.hidden=false;document.body.style.overflow="";loadInbox()}
 $("#chat-close").onclick=closeChat;
 
 // Onlayn vaqtni yashirish/ko'rsatish
@@ -625,6 +799,7 @@ $("#composer").onsubmit=async e=>{
 const yashiringan = () => document.visibilityState === "hidden";
 
 async function boot(){
+  renderRoleSwitch();
   await registerServiceWorker();updatePushUI();await loadInbox();await loadNotifications(false);
   const requestedChat=Number(params.get("chat")||0);if(requestedChat)await openChat(requestedChat);
   setInterval(()=>{if(yashiringan())return;loadNotifications();if(!activeChat)loadInbox()},5000);

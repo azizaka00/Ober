@@ -259,13 +259,36 @@ YO_NALISHLAR: dict[str, dict] = {
 # sotuvchi "mebellar", "mebelchi", "tortlar" deb yozishi mumkin.
 # Ko'p so'zli iboralar to'liq ketma-ketlik sifatida qidiriladi.
 def _tayyorla() -> list[tuple[str, re.Pattern]]:
+    from lugat import TOXTA
+
     natija = []
+    tashlangan = []
     for kalit, d in YO_NALISHLAR.items():
         boshlar, aniqlar, iboralar = [], [], []
         for xom in d["iboralar"]:
             aniq = xom.startswith("=")
             n = normalla(xom[1:] if aniq else xom)
             if not n:
+                continue
+            # NORMALLASHGACH TO'XTASH SO'ZIGA AYLANGAN IBORA — IBORA EMAS.
+            #
+            # 2026-08-10, jonli so'rovlarda topildi:
+            #
+            #     "Nexia 2 fara 300000 so'mga kimda bor"  -> kiyim
+            #     "Samsung s24 ultralar kimda nech pul?"  -> kiyim
+            #
+            # Sabab: `normalla("kiyim")` -> "kim" (y->i va takror
+            # unlilar qisqaradi). Qolip esa so'z BOSHI bo'yicha
+            # qidiradi — `\bkim\w*` "kimda", "kimga", "kimdir" ni ham
+            # tutadi. "Kimda bor?" esa o'zbekchada eng tabiiy so'rash
+            # usuli, ya'ni bunday so'rovlarning HAMMASI tikuvchiga
+            # ketardi.
+            #
+            # Qoida qo'lda yozilmaydi: to'xtash so'zlari ro'yxati
+            # allaqachon bor va u savol so'zlarini biladi. Kelajakda
+            # boshqa ibora shunday to'qnashsa — o'zi tashlanadi.
+            if " " not in n and n in TOXTA:
+                tashlangan.append((kalit, xom, n))
                 continue
             if " " in n:
                 iboralar.append(re.escape(n))
@@ -282,8 +305,16 @@ def _tayyorla() -> list[tuple[str, re.Pattern]]:
             qismlar.append(r"\b(?:" + "|".join(aniqlar) + r")\b")
         if iboralar:
             qismlar.append(r"(?:" + "|".join(iboralar) + r")")
-        natija.append((kalit, re.compile("|".join(qismlar))))
+        if qismlar:
+            natija.append((kalit, re.compile("|".join(qismlar))))
+    if tashlangan:
+        _TASHLANGAN.extend(tashlangan)
     return natija
+
+
+# Qaysi iboralar to'xtash so'ziga to'qnashgani uchun tashlandi.
+# Sinov shu ro'yxatni tekshiradi — jimgina yo'qolib qolmasin.
+_TASHLANGAN: list[tuple[str, str, str]] = []
 
 
 _QOLIP = _tayyorla()
@@ -304,15 +335,92 @@ def yonalishlarni_top(matn: str) -> set[str]:
     n = normalla(matn or "")
     if not n:
         return set()
-    topildi = {kalit for kalit, qolip in _QOLIP if qolip.search(n)}
-    try:
-        from soz_kategoriya import kategoriyalarni_top
-        topildi |= kategoriyalarni_top(matn)
-    except Exception:                                   # noqa: BLE001
-        # Hisoblangan lug'at hali qurilmagan bo'lishi mumkin. Bu
-        # to'xtatuvchi sabab emas — qo'lda yozilgani ishlayveradi.
-        pass
-    return topildi
+    # 2026-08-10: bu yerda `soz_kategoriya.kategoriyalarni_top` ham
+    # chaqirilardi — HAR SO'Z uchun bitta kategoriya beradigan
+    # hisoblangan lug'at. U olib tashlandi.
+    #
+    # Sabab: u so'zni YOLG'IZ ko'radi. `oyna` mebel e'lonlarida ko'p
+    # uchraydi -> "Uy va bog'". Natijada "lacettiga labavoy oyna kerak"
+    # mebelchiga borardi (jonli testda ko'rildi).
+    #
+    # O'rniga `baza.bozor_izi` ishlatiladi: u butun matnni indeksdan
+    # o'tkazadi, ya'ni so'zlarni BIRGALIKDA ko'radi. Qo'shilishi va
+    # tozalanishi quyidagi `belgilar()` da — chaqiruvchida emas.
+    return {kalit for kalit, qolip in _QOLIP if qolip.search(n)}
+
+
+def tozalangan(matn: str, modellar, qismlar) -> set[str]:
+    """Yo'nalishlar, ANIQ signal bilan tozalangan.
+
+    MUAMMO (2026-08-09, jonli testda topildi)
+    -----------------------------------------
+    Mebelchi bo'lib ro'yxatdan o'tdim ("mebel yasayman divan shkaf
+    karavot"). Kabinetda birinchi ko'rgan xaridor so'rovim:
+
+        "lacettiga labavoy oyna kerak"
+
+    Lacetti mashinasining old oynasi. Mebelga aloqasi yo'q.
+
+    Sabab: `soz_kategoriya` — 258 000 e'londan HISOBLANGAN lug'at.
+    Unda `oina` so'zi "Uy va bog'" ga bog'langan, chunki mebel
+    e'lonlarida oyna (ko'zgu, shisha) juda ko'p uchraydi. Statistika
+    to'g'ri — lekin bu so'rovda yonida `lacetti` (mashina modeli) va
+    `oyna` (avto qismi) turibdi.
+
+    QOIDA: aniq signal statistik taxmindan ustun.
+    Lug'at model VA qismni birga tanigan bo'lsa — bu avto so'rovi.
+    Hisoblangan lug'at qo'shgan boshqa kategoriyalar shovqin, ular
+    olib tashlanadi. Avto yo'nalishlari va qo'lda yozilgan yorliqlar
+    qoladi.
+
+    Nega ikkalasi birga shart: `modellarni_top` yolg'iz o'zi
+    ishonchsiz — "Divan Ugalok TESLA" ni ham tesla deb tanigan edi.
+    Model + qism birgalikda esa kuchli dalil.
+    """
+    return _avto_qoidasi(yonalishlarni_top(matn), modellar, qismlar)
+
+
+AVTO_KAT = ("kat:Transport", "kat:Avto ehtiyot qism")
+
+
+def _avto_qoidasi(teglar: set[str], modellar, qismlar) -> set[str]:
+    """Model VA qism birga tanilgan bo'lsa — avto bo'lmagan kat: ni olib tashla."""
+    if not (modellar and qismlar):
+        return teglar
+    return {k for k in teglar
+            if not k.startswith("kat:") or k in AVTO_KAT}
+
+
+def belgilar(matn: str) -> list[str]:
+    """Matnning YAKUNIY yorliqlari. Xaridor ham, sotuvchi ham shu yerdan.
+
+    NEGA BITTA JOYDA (2026-08-10)
+    -----------------------------
+    Ilgari server ikki joyda shunday yozardi:
+
+        tozalangan(matn, modellar, qismlar) | baza.bozor_izi(matn)
+
+    Ko'rinishi to'g'ri, lekin tozalash `|` dan OLDIN bo'lgani uchun
+    `bozor_izi` natijasi tozalanmay o'tib ketardi. Ya'ni 2026-08-09 da
+    tuzatilgan xato boshqa eshikdan qaytib kelgan edi:
+
+        "lacettiga labavoy oyna kerak" -> kat:Uy va bog'  (mebelchiga!)
+
+    Sabab: indeksda `oyna` so'zi uy oynasi bilan to'lgan. Statistika
+    to'g'ri, lekin yonida `lacetti` (model) va `oyna` (avto qismi)
+    turibdi — aniq signal statistik taxmindan ustun.
+
+    Endi tozalash BUTUN to'plamga qo'llanadi va u faqat shu funksiyada
+    bajariladi. Chaqiruvchi tartibni buza olmaydi.
+    """
+    import baza
+    from lugat import modellarni_top, qismlarni_top
+
+    modellar = modellarni_top(matn)
+    qismlar = qismlarni_top(matn)
+    hammasi = (yonalishlarni_top(matn) | baza.bozor_izi(matn)
+               | baza._yashirin_taxonomiya(matn))
+    return sorted(_avto_qoidasi(hammasi, modellar, qismlar))
 
 
 def yonalish_nomlari(kalitlar) -> list[str]:

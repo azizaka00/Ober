@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#eff2f7">
-<meta name="description" content="OBER profili — mos xaridor so‘rovlariga bir tegishda javob bering.">
-<title>OBER — profil</title>
+<meta name="description" content="OBERda soting — xaridor so‘rovlariga javob bering yoki o‘z e’loningizni joylashtiring.">
+<title>OBER — sotish</title>
 <link rel="icon" href="/brend/icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OBER">
-<meta property="og:title" content="OBER profili">
+<meta property="og:title" content="OBERda sotish">
 <meta property="og:description" content="Mos xaridor so'rovlariga bir tegishda javob bering. Kategoriya daraxti yo'q.">
 <meta property="og:image" content="/brend/seller-navy-panel.webp">
 <!-- Shrift o'z serverimizda (2026-08-04). Sabab `web/shrift/onest.css`
@@ -84,6 +84,15 @@
     white-space:nowrap!important;border:0!important
   }
 
+  /* TELEFONDA YOPISHQOQ ELEMENT BITTA (dizayn qoidasi).
+     O'lchov 2026-08-11, 390x640 stendida: bu sahifada `topbar` ham,
+     `ober-tabbar` ham yopishqoq edi — 65 + 56 = 121 px, ya'ni
+     ekranning 19% i doim band. Bosh sahifada bu qoida allaqachon
+     bajarilgan (`body.is-results .topbar{position:absolute}`), bu
+     sahifada esa e'tibordan chetda qolgan.
+
+     Pastdagi tab bar yopishqoq qoladi — u navigatsiya. Tepa panel
+     (logo va til) skroll bilan ketaveradi, u har doim kerak emas. */
   .topbar{
     position:sticky;
     top:0;
@@ -199,6 +208,21 @@
     font-weight:750;
   }
   .intro-foot{margin-top:38px!important;font-size:11.5px!important}
+
+  /* XARIDOR BU YERGA TUSHIB QOLSA — CHIQISH YO'LI (2026-08-10).
+     Aziz: "sotuvchi sahifa va xaridor sahifa degan tushunchalar
+     chalkashib ketmasligi kerak". Hech narsa sotmaydigan odam bu
+     sahifaga tushsa, ro'yxatdan o'tish shaklidan boshqa hech narsa
+     ko'rmasdi va tupikka kirardi. */
+  .intro-yonalish{
+    margin-top:20px;
+    padding:12px 14px;
+    border-radius:var(--r-orta);
+    background:rgba(255,255,255,.14);
+    font-size:12.5px;
+    line-height:1.55;
+  }
+  .intro-yonalish a{color:#fff;font-weight:700}
 
   .register-card{
     padding:38px;
@@ -386,6 +410,11 @@
     white-space:nowrap;
   }
   .yangi-elon-btn:hover{background:var(--navy-dark)}
+  @media (max-width:620px){
+    /* Sabab yuqorida, `.topbar` izohida. */
+    .topbar{position:static}
+  }
+
   @media (max-width:560px){
     .elon-karta{grid-template-columns:84px 1fr}
     .elon-tugmalar{grid-column:1/-1;flex-direction:row;justify-content:flex-end}
@@ -453,6 +482,10 @@
     border:0;background:none;color:var(--navy);
     font:inherit;font-size:13px;font-weight:700;cursor:pointer;
   }
+  @media (max-width:560px){
+    .forma-qator{grid-template-columns:1fr}
+    .forma-narx-qator{display:grid;grid-template-columns:minmax(0,1fr) auto}
+  }
 
   /* PROFIL KARTASI — sahifa boshida avatar + ism (2026-08-08).
      Ism bosh harfi avatarda — rasm yuklash shart emas, OBER
@@ -515,6 +548,12 @@
   }
   .tg-card h2{margin:2px 0 6px;font-size:17px;letter-spacing:-.02em}
   .tg-card p{margin:0;color:var(--muted);font-size:12.5px;max-width:52ch}
+  .tg-card.ulangan{padding:13px 16px;border-color:#b8dac8;background:var(--green-soft)}
+  .tg-card.ulangan h2{margin:0 0 2px;font-size:14px;color:var(--green)}
+  .tg-holat-xato{margin:0 0 18px;padding:12px 14px;border:1px solid #efc6c1;
+    border-radius:var(--r-orta);background:var(--red-soft);color:#842b21;font-size:12.5px}
+  .tg-holat-xato button{margin-left:8px;border:0;background:transparent;color:var(--navy);
+    font:inherit;font-weight:750;cursor:pointer;text-decoration:underline}
   .tg-btn{
     display:inline-flex;align-items:center;justify-content:center;
     min-height:48px;padding:0 22px;
@@ -526,7 +565,16 @@
   @media (max-width:520px){
     .tg-card{flex-direction:column;align-items:stretch}
     .tg-btn{width:100%}
+    .tg-card.ulangan{gap:10px}
   }
+
+  .tg-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tg-keyin{
+    min-height:44px;padding:0 12px;border:0;border-radius:var(--r-kichik);
+    background:transparent;color:var(--muted);font:inherit;font-size:12.5px;
+    font-weight:700;cursor:pointer;
+  }
+  .tg-keyin:hover{background:var(--navy-soft);color:var(--navy)}
   .count-box span{color:var(--muted);font-size:10.5px}
 
   /* TALAB BLOKI — kabinetdagi eng qimmatli jumla.
@@ -690,6 +738,49 @@
     text-align:center;
   }
   .empty-inner{max-width:440px}
+
+  /* BIRINCHI KUN EKRANI (2026-08-11, jonli vizual testda topildi).
+     Ro'yxatdan o'tgan sotuvchi 520 piksellik bo'sh quti va "hozircha
+     so'rov yo'q" degan jumlani ko'rardi. Qiladigan ishi yo'q edi —
+     eng yomon birinchi taassurot.
+
+     Endi ikkita yo'l ochiq aytiladi va BIRINCHISI sotuvchining o'z
+     qo'lida: e'lon qo'ysa, bugundan qidiruvda ko'rinadi. Raqam
+     va'da qilinmaydi — sotuvchining yo'nalishida talab hali
+     o'lchanmagan bo'lishi mumkin, yolg'on raqam esa ishonchni
+     buzadi. */
+  .bosh-holat{
+    padding:30px 24px 34px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#fff;
+  }
+  .bosh-holat h1{margin:0 0 6px;font-size:22px;letter-spacing:-.03em}
+  .bosh-lead{margin:0 0 22px;color:var(--muted);font-size:13.5px;max-width:52ch}
+  .bosh-yollar{display:grid;gap:14px}
+  .bosh-yol{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:18px;border:1px solid var(--line);
+    border-radius:var(--r-orta);background:var(--navy-soft);
+  }
+  .bosh-raqam{
+    flex:0 0 auto;width:26px;height:26px;border-radius:50%;
+    display:grid;place-items:center;
+    background:var(--navy);color:#fff;font-size:12.5px;font-weight:800;
+  }
+  .bosh-yol strong{display:block;margin-bottom:4px;font-size:14.5px}
+  .bosh-yol p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.55;max-width:56ch}
+  .bosh-tugma{
+    margin-top:12px;min-height:44px;padding:0 18px;
+    border:0;border-radius:var(--r-kichik);
+    background:var(--navy);color:#fff;
+    font:inherit;font-weight:750;cursor:pointer;
+  }
+  .bosh-tugma:hover{background:var(--navy-dark)}
+  @media (max-width:520px){
+    .bosh-holat{padding:22px 16px 26px}
+    .bosh-tugma{width:100%}
+  }
   .empty-mark{
     width:94px;
     height:94px;
@@ -712,6 +803,11 @@
     border-radius:var(--radius);
     background:var(--red-soft);
     color:#842b21;
+  }
+  .error-box button{
+    min-height:40px;margin-top:12px;padding:0 14px;border-radius:var(--r-kichik);
+    background:var(--navy);color:#fff;font:inherit;font-size:12.5px;
+    font-weight:750;cursor:pointer;
   }
   .loading{display:grid;gap:12px}
   .loading-card{
@@ -772,10 +868,10 @@
     <a class="brand" href="/" aria-label="OBER bosh sahifa">
       <img src="/brend/logo.png" alt="ober" width="94" height="29">
     </a>
-    <span class="cabinet-label">Profil</span>
+    <span class="cabinet-label">Sotish</span>
     <div class="header-actions">
       <div class="lang-slot"></div>
-      <a class="buyer-link" href="/">Xaridor sahifasi</a>
+      <a class="buyer-link" href="/">Qidirish</a>
       <a class="buyer-link" id="xabarlar-link" href="/takliflar?rol=sotuvchi" hidden>Chat</a>
       <button class="logout" id="chiq" type="button" hidden>Chiqish</button>
     </div>
@@ -862,7 +958,7 @@ function kirishEkrani(){
         <div class="intro-mark" aria-hidden="true"></div>
         <h1>Kabinetingiz bitta raqamga bog‘langan.</h1>
         <p>Telefon raqamingiz va Telegram orqali kelgan kod bilan istalgan
-           qurilmadan kirasiz. Savdo xabarlari OBER ichida qoladi.</p>
+           qurilmadan kirasiz. Yangi so‘rov va xaridor xabari Telegram’ga ham keladi.</p>
         <ol class="intro-steps">
           <li>Telefon raqamingizni kiriting.</li>
           <li>Kod Telegram’ga keladi.</li>
@@ -966,12 +1062,8 @@ async function kirishTasdiq(){
     }
     MEN = String(d.token || "");
     localStorage.setItem("ober_sotuvchi", MEN);
-    xabar.innerHTML = '<div class="understood">Kirdingiz. Kabinet ochilmoqda…</div>';
-    setTimeout(() => {
-      if(new URLSearchParams(location.search).get("yangi") === "1"){
-        elonlarim().then(() => elonForma());
-      } else sorovlar();
-    }, 400);
+    xabar.innerHTML = '<div class="understood">Kirdingiz. Sotish bo‘limi ochilmoqda…</div>';
+    setTimeout(sotishIshiniOch, 300);
   }catch(e){
     xabar.innerHTML = `<div class="understood error">${esc(e.message || "Aloqa xatosi. Qayta urinib ko‘ring.")}</div>`;
   }finally{
@@ -979,6 +1071,19 @@ async function kirishTasdiq(){
   }
 }
 
+// RO'YXATDAN O'TISH EKRANI
+// ------------------------------------------------------------------
+// Sarlavha ustidagi yorliq yo'q (dizayn qoidalari 4.2). Undagi ma'lumot
+// ("30 soniya, kategoriya tanlash yo'q") matnning o'ziga ko'chdi —
+// bu haqiqiy farq, bezak emas.
+//
+// "Nima sotasiz" namunasi uchta HAR XIL sohadan: mebel (savdo), maishiy
+// texnika (ta'mir), kandolat (uy biznesi). Ilgari "Banner chop etish,
+// fara yoki stop" turardi — ikkalasi ham tor soha edi va sotuvchiga
+// "bu sayt faqat avtoqism uchun ekan" degan taassurot berardi.
+//
+// IZOHLAR SHU YERDA — SHABLON SATRI ICHIDA EMAS. 2026-08-10 da shablon
+// ichidagi HTML izohi butun kabinetni o'chirib qo'ygan edi.
 function royxatEkrani(){
   $("#chiq").hidden = true;
   $("#xabarlar-link").hidden = true;
@@ -995,14 +1100,14 @@ function royxatEkrani(){
           <li>Faqat sizga mos xaridor so‘rovlarini ko‘ring.</li>
           <li>Chatda narx va xabarni 10 soniyada yuboring.</li>
         </ol>
+        <p class="intro-yonalish">Sotib olmoqchimisiz? Bu bo‘lim sotuvchilar
+          uchun. <a href="/">Qidirish bo‘limiga o‘ting</a> — nima kerakligini
+          yozsangiz, sotuvchilar o‘zi javob beradi.</p>
       </div>
       <p class="intro-foot">Kategoriya daraxti va uzoq anketa yo‘q.</p>
     </section>
 
     <section class="register-card">
-      <!-- Sarlavha ustidagi yorliq olib tashlandi (dizayn qoidalari 4.2).
-           Undagi ma'lumot ("30 soniya, kategoriya tanlash yo'q") yo'qolmadi:
-           u izohga ko'chdi, chunki bu haqiqiy farq, bezak emas. -->
       <h2>Sotuvchi sifatida boshlang</h2>
       <p class="lead">30 soniyada tayyor. Kategoriya daraxti va uzun anketa yo‘q.
         Odamlar qanday so‘rasa, shunday yozing.</p>
@@ -1014,11 +1119,6 @@ function royxatEkrani(){
 
       <div class="field-group">
         <label for="nima">Nima sotasiz yoki qanday xizmat ko‘rsatasiz? <span>o‘z so‘zingiz bilan</span></label>
-        <!-- Namuna uchta HAR XIL sohadan tanlandi: mebel (savdo),
-             maishiy texnika (ta'mir), kandolat (uy biznesi). Ilgari
-             bu yerda "Banner chop etish, fara yoki stop" turardi —
-             ikkalasi ham tor soha edi va sotuvchiga "bu sayt faqat
-             avtoqism uchun ekan" degan taassurot berardi. -->
         <input id="nima" placeholder="Masalan: mebel yasayman yoki texnika tuzataman" autocomplete="off">
       </div>
 
@@ -1105,13 +1205,11 @@ async function royxat(){
     // Eski qurilmada ID raqami saqlangan bo'lsa ham qabul qilinadi.
     MEN = String(d.token || "");
     localStorage.setItem("ober_sotuvchi", MEN);
-    // ?yangi=1 dan kelgan bo'lsa ro'yxatdan o'tgach e'lon formasiga
-    // boramiz — odam ikkita qadam bilan e'lon qo'yadi.
-    setTimeout(() => {
-      if(new URLSearchParams(location.search).get("yangi") === "1"){
-        elonlarim().then(() => elonForma());
-      } else sorovlar();
-    }, 700);
+    xabar.innerHTML = '<div class="understood">Profil saqlandi. Sotish bo‘limi ochilmoqda…</div>';
+    // Telegram butun sahifani almashtirmaydi. Sotuvchi avval niyat qilgan
+    // ishiga — so‘rovlar yoki e’lon formasiga — kiradi; xabarnoma tavsiyasi
+    // esa kabinet ichida, kontekstni buzmaydigan karta bo‘lib ko‘rinadi.
+    setTimeout(sotishIshiniOch, 300);
   }catch(e){
     xabar.innerHTML = `<div class="understood error">${esc(e.message || "Aloqa xatosi. Qayta urinib ko‘ring.")}</div>`;
     button.disabled = false;
@@ -1143,34 +1241,99 @@ function loading(){
   </div>`;
 }
 
-// Telegram savdo kanali emas: faqat boshqa qurilmadan xavfsiz kirish
-// kodini olish uchun akkauntga bir marta bog'lanadi.
+// Telegram savdo kanali emas: yangi so‘rov/xabar bildirishnomasi va boshqa
+// qurilmadan xavfsiz kirish kodini olish uchun akkauntga bir marta bog‘lanadi.
 let tgHolat = null;
-async function telegramTaklif(){
+let tgYashirildi = false;
+
+function sotishIshiniOch(){
+  $("#chiq").hidden = false;
+  $("#xabarlar-link").hidden = false;
+  $("#xabarlar-link").href = "/takliflar?rol=sotuvchi";
+  const p = new URLSearchParams(location.search);
+  const tahrir = Number(p.get("tahrir") || 0);
+  if(tahrir > 0) elonForma(tahrir);
+  else if(p.get("yangi") === "1") elonForma();
+  else sorovlar();
+}
+
+function sotishManziliniBelgila(holat, id){
+  const u = new URL(location.href);
+  u.searchParams.delete("yangi");
+  u.searchParams.delete("tahrir");
+  u.searchParams.delete("kirish");
+  if(holat === "elon"){
+    if(id) u.searchParams.set("tahrir", String(id));
+    else u.searchParams.set("yangi", "1");
+  }
+  history.replaceState({}, "", u.pathname + u.search);
+  // 2026-08-11: sotuvchi tomonida endi bitta tab bor — "+ E'lon".
+  // Kabinetning qaysi bo'limida turganidan qat'i nazar o'sha faol
+  // qoladi, chunki ikkalasi ham shu sahifada.
+  window.OBER_TAB_FAOL?.("elon");
+}
+
+function tgYop(){
+  tgYashirildi = true;
+  const karta = $("#tg-quti .tg-card");
+  if(karta) karta.remove();
+}
+
+async function telegramTaklif(yangila=false){
   if(!MEN) return;
+  if(yangila) tgHolat = null;
   // Natija keshlanadi, lekin blok HAR chizilishda qayta qo'yiladi —
   // ro'yxat yangilanganda tugma yo'qolib qolmasligi uchun.
   if(tgHolat){ tgChiz(tgHolat); return; }
   try{
     const r = await fetch("/api/sotuvchi/telegram?id=" + encodeURIComponent(MEN));
+    if(!r.ok) throw new Error("Telegram holati olinmadi");
     tgHolat = await r.json();
     tgChiz(tgHolat);
-  }catch(e){}
+  }catch(e){
+    console.error("[ober] Telegram holati:", e);
+    const q = $("#tg-quti");
+    if(q) q.innerHTML = `<div class="tg-holat-xato" role="alert">
+      Telegram holatini tekshira olmadik.
+      <button type="button" onclick="telegramTaklif(true)">Qayta urinish</button>
+    </div>`;
+  }
 }
 
 function tgChiz(d){
   const q = $("#tg-quti");
-  if(!q || !d || !d.yoqilgan || d.ulangan || !d.havola) return;
+  if(!q || !d || !d.yoqilgan || !d.havola) return;
+  if(d.ulangan){
+    tgYashirildi = false;
+    q.innerHTML = `<section class="tg-card ulangan">
+      <div><h2>Telegram ulangan</h2>
+        <p>Yangi xaridor so‘rovi va chat xabari Telegram orqali keladi.</p></div>
+      <a class="tg-keyin" href="${d.havola}" target="_blank" rel="noopener">Botni ochish</a>
+    </section>`;
+    return;
+  }
+  if(tgYashirildi) return;
+  // NOMI O'ZGARDI (2026-08-10). Ilgari "Akkaunt xavfsizligi · Kirishni
+  // tiklashni yoqing" deb turardi. Bu asosiy foydani yashirardi:
+  // Telegram — birinchi navbatda XABAR kanali. Ulanmagan sotuvchi
+  // so'rov kelganini bilmaydi.
   q.innerHTML = `<section class="tg-card">
     <div>
-      <p class="section-kicker">Akkaunt xavfsizligi</p>
-      <h2>Kirishni tiklashni yoqing</h2>
-      <p>Telegram faqat bir martalik kirish kodlari uchun. So‘rov, taklif
-         va yozishmalar OBER ichida qoladi.</p>
+      <h2>Yangi so‘rovni darhol biling</h2>
+      <p>Sizga mos so‘rov kelganda Telegram’ga xabar boradi — saytni ochib
+         o‘tirish shart emas. Kirish kodlari ham shu yerga keladi.
+         Raqamingiz xaridorga ko‘rsatilmaydi.</p>
     </div>
-    <a class="tg-btn" href="${d.havola}" target="_blank" rel="noopener">Kirishga bog‘lash</a>
+    <div class="tg-actions">
+      <a class="tg-btn" href="${d.havola}" target="_blank" rel="noopener">Telegram’ga ulash</a>
+      <button class="tg-keyin" type="button" onclick="tgYop()">Hozir emas</button>
+    </div>
   </section>`;
 }
+
+window.addEventListener("focus", () => {
+  if(MEN) setTimeout(() => telegramTaklif(true), 350);
+});
 
 // ── KABINET YORLIQLARI (2026-08-06) ────────────────────────────────────
 // Ikkita bo'lim: So'rovlar (eski kabinet) va E'lonlarim (marketplace).
@@ -1226,17 +1389,19 @@ async function profilniChiz(){
 }
 
 function tabPaneli(faol){
-  return `<div class="kabinet-tabs" role="tablist" aria-label="Profil bo‘limlari">
+  return `<div class="kabinet-tabs" role="tablist" aria-label="Sotish bo‘limlari">
     <button class="kabinet-tab${faol === "sorovlar" ? " faol" : ""}" type="button"
-      role="tab" aria-selected="${faol === "sorovlar"}" onclick="sorovlar()">So‘rovlar</button>
+      role="tab" aria-selected="${faol === "sorovlar"}" onclick="sorovlar()">Xaridor so‘rovlari</button>
     <button class="kabinet-tab${faol === "elonlar" ? " faol" : ""}" type="button"
-      role="tab" aria-selected="${faol === "elonlar"}" onclick="elonlarim()">E‘lonlarim</button>
+      role="tab" aria-selected="${faol === "elonlar"}" onclick="elonlarim()">E’lonlarim</button>
   </div>
-  <div id="profil-quti"></div>`;
+  <div id="profil-quti"></div>
+  <div id="tg-quti"></div>`;
 }
 
 async function sorovlar(){
   if(!MEN || yuklanmoqda || document.querySelector(".chat-composer input:focus")) return;
+  sotishManziliniBelgila("sotish");
   yuklanmoqda = true;
   if(!$("#asosiy").children.length) loading();
   $("#chiq").hidden = false;
@@ -1249,14 +1414,34 @@ async function sorovlar(){
     if(!d.length){
       $("#asosiy").innerHTML = `${tabPaneli("sorovlar")}
         <div id="talab-quti"></div>
-        <div id="tg-quti"></div>
-        <section class="empty">
-        <div class="empty-inner">
+        <section class="bosh-holat">
           <h1>Hozircha yangi so‘rov yo‘q</h1>
-          <p>Sizning yo‘nalishingizda xaridor so‘rov qoldirsa, shu yerda paydo bo‘ladi.</p>
-          <p class="empty-note">Yangi javob Chat nishonida ko‘rinadi. Savdo OBER ichida qoladi.</p>
-        </div>
-      </section>`;
+          <p class="bosh-lead">OBERda xaridor sizni ikki yo‘l bilan topadi.
+             Ikkalasi ham ishlab turibdi.</p>
+          <div class="bosh-yollar">
+            <div class="bosh-yol">
+              <span class="bosh-raqam">1</span>
+              <div>
+                <strong>Xaridor qidiradi — e’loningizni ko‘radi</strong>
+                <p>E’loningiz 460 000 dan ortiq e’lon bilan bitta qidiruvda
+                   chiqadi. Bu sizga bog‘liq: e’lon qo‘ysangiz, bugundan
+                   ko‘rina boshlaysiz.</p>
+                <button class="bosh-tugma" type="button"
+                        onclick="elonlarim().then(() => elonForma())">
+                  + Birinchi e’lonni qo‘yish</button>
+              </div>
+            </div>
+            <div class="bosh-yol">
+              <span class="bosh-raqam">2</span>
+              <div>
+                <strong>Xaridor topa olmaydi — biz sizdan so‘raymiz</strong>
+                <p>Indeksdan topilmasa, so‘rov shu yerga tushadi va siz
+                   chatda narx aytasiz. Buni kutish kerak — birinchi
+                   so‘rovingiz shu sahifada paydo bo‘ladi.</p>
+              </div>
+            </div>
+          </div>
+        </section>`;
       telegramTaklif();
       talabniChiz();
       profilniChiz();
@@ -1265,20 +1450,24 @@ async function sorovlar(){
     $("#asosiy").innerHTML = `${tabPaneli("sorovlar")}
       <div class="dashboard-head">
       <div><h1>Xaridorlar kutyapti</h1>
-        <p>Chatda yozing — javob xaridorga OBER ichida boradi.</p></div>
+        <p>Taklifni yuboring, keyin chatda aniqlashtiring. Savdo OBERdan tashqarida yakunlanadi.</p></div>
       <div class="count-box"><strong>${d.length}</strong><span>ochiq so‘rov</span></div>
     </div>
     <div id="talab-quti"></div>
-    <div id="tg-quti"></div>
     <div class="requests">${d.map(sorovKarta).join("")}</div>`;
     bindPriceEnter();
     telegramTaklif();
     talabniChiz();
     profilniChiz();
   }catch(e){
-    $("#asosiy").innerHTML = `<div class="error-box" role="alert">
-      So‘rovlarni hozir yuklay olmadik. Internetni tekshirib, sahifani yangilang.
-    </div>`;
+    console.error("[ober] sotuvchi so‘rovlari:", e);
+    $("#asosiy").innerHTML = `${tabPaneli("sorovlar")}
+      <div class="error-box" role="alert">
+        So‘rovlarni hozir yuklay olmadik. Internetni tekshirib, qayta urinib ko‘ring.
+        <br><button type="button" onclick="sorovlar()">Qayta urinish</button>
+      </div>`;
+    profilniChiz();
+    telegramTaklif();
   }finally{
     yuklanmoqda = false;
   }
@@ -1287,6 +1476,7 @@ async function sorovlar(){
 // ── E'LONLARIM — o'z marketplace'i (2026-08-06) ─────────────────────────
 async function elonlarim(){
   if(!MEN || yuklanmoqda) return;
+  sotishManziliniBelgila("sotish");
   yuklanmoqda = true;
   $("#chiq").hidden = false;
   $("#xabarlar-link").hidden = false;
@@ -1304,15 +1494,21 @@ async function elonlarim(){
     </section>`;
     $("#asosiy").innerHTML = `${tabPaneli("elonlar")}
       <div class="elon-bosh">
-        <div><h1>E‘lonlarim</h1><p>O‘z e’lonlaringiz qidiruvda boshqa manbalar bilan birga chiqadi.</p></div>
-        <button class="yangi-elon-btn" type="button" onclick="elonForma()">+ Yangi e‘lon</button>
+        <div><h1>E’lonlarim</h1><p>O‘z e’lonlaringiz qidiruvda boshqa manbalar bilan birga chiqadi.</p></div>
+        <button class="yangi-elon-btn" type="button" onclick="elonForma()">+ Yangi e’lon</button>
       </div>
       <div id="elon-ro" class="elonlar">${kartalar}</div>`;
     profilniChiz();
+    telegramTaklif();
   }catch(e){
-    $("#asosiy").innerHTML = `<div class="error-box" role="alert">
-      E’lonlarni hozir yuklay olmadik. Internetni tekshirib, sahifani yangilang.
-    </div>`;
+    console.error("[ober] sotuvchi e‘lonlari:", e);
+    $("#asosiy").innerHTML = `${tabPaneli("elonlar")}
+      <div class="error-box" role="alert">
+        E’lonlarni hozir yuklay olmadik. Internetni tekshirib, qayta urinib ko‘ring.
+        <br><button type="button" onclick="elonlarim()">Qayta urinish</button>
+      </div>`;
+    profilniChiz();
+    telegramTaklif();
   }finally{
     yuklanmoqda = false;
   }
@@ -1359,7 +1555,33 @@ async function elonOchir(id){
 let elonFormaRasmlar = [];
 let elonTahrirId = null;
 
+// JOY — ERKIN MATN EMAS, RO'YXAT (2026-08-10)
+// ------------------------------------------------------------------
+// Ilgari bu yerda oddiy matn maydoni turardi. Natijada e'lon bazaga
+// "viloyat" va "shahar" ustunlari BO'SH holda tushardi, yozilgan matn
+// esa "tuman" ga tiqilardi:
+//
+//     Sinov burchak divan   viloyat: BO'SH            shahar: BO'SH
+//     Halqa test stul       viloyat: Toshkent shahri  shahar: Chilonzor
+//
+// Ikkinchisi boshqa yo'ldan yaratilgan — ya'ni ikkita har xil yo'l bor
+// edi va faqat bittasi to'g'ri to'ldirardi. Oqibati: xaridor "Toshkent
+// shahri" deb filtrlasa, OBERning O'Z e'lonlarini ko'rmasdi.
+//
+// Endi ro'yxatdan o'tishdagi bilan bir xil ikkita ro'yxat, bir xil
+// manba ("/api/holat" daraxti), bir xil nom.
+//
+// DIQQAT — IZOH SHU YERDA TURADI, SHABLON SATRI ICHIDA EMAS.
+// Bu izoh avval quyidagi template literal ichida HTML izohi sifatida
+// yozilgan edi va ichida teskari apostrof bor edi. Birinchi teskari
+// apostrof shablonni YOPIB QO'YGAN, keyingi matn esa JS deb o'qilgan:
+//
+//     Uncaught SyntaxError: Unexpected identifier 'placeholder'
+//
+// Butun skript ishga tushmagan va sotuvchi kabineti BO'SH ochilgan.
+// Shablon satri ichiga hech qachon teskari apostrof yozilmaydi.
 function elonForma(id){
+  sotishManziliniBelgila("elon", id);
   elonTahrirId = id || null;
   elonFormaRasmlar = [];
   $("#asosiy").innerHTML = `${tabPaneli("elonlar")}
@@ -1381,8 +1603,11 @@ function elonForma(id){
           </div>
         </div>
         <div class="forma-maydon">
-          <label for="f-tuman">Qayerdasiz?</label>
-          <input id="f-tuman" placeholder="Masalan: Toshkent, Chilonzor" maxlength="80">
+          <label for="f-viloyat">Qayerdasiz?</label>
+          <div class="location-fields">
+            <select id="f-viloyat"><option value="">Viloyatni tanlang</option></select>
+            <select id="f-joy" hidden><option value="">Shahar / tuman</option></select>
+          </div>
         </div>
       </div>
       <div class="forma-maydon">
@@ -1398,13 +1623,15 @@ function elonForma(id){
         ${id ? "Saqlash" : "Joylashtirish"}</button>
     </div>`;
   profilniChiz();
+  telegramTaklif();
+  elonJoylariniOl();
   if(id){
     fetch("/api/elon/" + id).then(r => r.ok ? r.json() : null).then(e => {
       if(!e || e.ochirilgan) return;
       $("#f-nom").value = e.nom || "";
       if(e.narx_som){ $("#f-narx").value = formatInt(e.narx_som); }
       else { document.getElementById("f-kelish").classList.add("faol"); $("#f-narx").disabled = true; }
-      $("#f-tuman").value = e.tuman || e.viloyat || "";
+      elonJoyniQoy(e.viloyat, e.shahar || e.tuman);
       $("#f-tavsif").value = e.tavsif || "";
       try{ elonFormaRasmlar = JSON.parse(e.rasmlar_ober || "[]"); }catch(_){ elonFormaRasmlar = []; }
       elonRasmlarniChiz();
@@ -1412,6 +1639,43 @@ function elonForma(id){
   } else {
     elonRasmlarniChiz();
   }
+}
+
+// E'lon formasidagi joy ro'yxatlari. Ro'yxatdan o'tishdagi
+// `joylarniOl()` bilan bir xil manba va bir xil mantiq — faqat
+// maydon nomlari boshqa (`f-` prefiksi bilan).
+async function elonJoylariniOl(){
+  const vil = $("#f-viloyat");
+  if(!vil) return;
+  try{
+    if(!DARAXT.length){
+      const r = await fetch("/api/holat");
+      if(!r.ok) return;
+      DARAXT = (await r.json()).daraxt || [];
+    }
+    // Qayta chizilganda ikki marta to'ldirmaslik uchun tozalaymiz.
+    vil.innerHTML = '<option value="">Viloyatni tanlang</option>';
+    DARAXT.forEach(v => vil.add(new Option(v.viloyat, v.viloyat)));
+    vil.onchange = () => {
+      const joy = $("#f-joy");
+      const topildi = DARAXT.find(x => x.viloyat === vil.value);
+      joy.innerHTML = '<option value="">Shahar / tuman</option>';
+      if(!topildi){ joy.hidden = true; return; }
+      topildi.joylar.forEach(j => joy.add(new Option(j, j)));
+      joy.hidden = false;
+    };
+  }catch(_){}
+}
+
+// Tahrirlashda saqlangan joyni ro'yxatlarga qaytarib qo'yamiz.
+// Ro'yxat hali yuklanmagan bo'lishi mumkin — shuning uchun kutamiz.
+async function elonJoyniQoy(viloyat, joy){
+  await elonJoylariniOl();
+  const v = $("#f-viloyat");
+  if(!v || !viloyat) return;
+  v.value = viloyat;
+  v.onchange();
+  if(joy){ const j = $("#f-joy"); if(j) j.value = joy; }
 }
 
 function elonRasmlarniChiz(){
@@ -1447,7 +1711,11 @@ async function elonSaqlash(){
     sotuvchi_id: MEN,
     nom,
     narx,
-    tuman: $("#f-tuman").value.trim(),
+    // Viloyat va tuman ALOHIDA yuboriladi — server ularni o'z
+    // ustunlariga yozadi va e'lon hududiy filtrga tushadi.
+    viloyat: ($("#f-viloyat") || {}).value || "",
+    shahar: ($("#f-joy") || {}).value || "",
+    tuman: ($("#f-joy") || {}).value || ($("#f-viloyat") || {}).value || "",
     tavsif: $("#f-tavsif").value.trim(),
     // Hammasi yuboriladi: eski `/chat-uploads/` yo'llari va yangi
     // data-URL lar. Server eskilarni qayta saqlamaydi, yangilarini
@@ -1591,14 +1859,68 @@ $("#chiq").addEventListener("click", chiqish);
 // DARHOL ochadi. Kirgan bo'lsa e'lonlarim bo'limiga boramiz va forma
 // ochiladi; kirmagan bo'lsa kirish ekrani (keyin ro'yxatdan o'tib
 // e'lon qo'yadi).
-const yangiRejim = new URLSearchParams(location.search).get("yangi") === "1";
 if(MEN){
-  if(yangiRejim){ elonlarim().then(() => elonForma()); }
-  else sorovlar();
+  sotishIshiniOch();
 } else {
-  kirishEkrani();
+  // BIRINCHI MARTA KELGAN ODAM RO'YXATDAN O'TISHNI KO'RSIN.
+  //
+  // 2026-08-09: bu yerda har doim `kirishEkrani()` chaqirilardi.
+  // Ya'ni "Sotuvchilar uchun" havolasini bosgan YANGI odam birinchi
+  // bo'lib "Kabinetga kirish" degan telefon raqami formasini ko'rardi.
+  // Ro'yxatdan o'tish esa pastdagi kichkina havolada edi.
+  //
+  // Bu teskari: sahifaning vazifasi yangi sotuvchi jalb qilish.
+  // Ustiga kirish Telegram kodini talab qiladi — hali ro'yxatdan
+  // o'tmagan odamda u umuman yo'q, ya'ni u tupikka kirib qoladi.
+  //
+  // Endi: ilgari kirgan bo'lsa (raqami eslab qolingan) — kirish
+  // ekrani. Butunlay yangi bo'lsa — ro'yxatdan o'tish. Ikkalasida
+  // ham ikkinchisiga o'tuvchi havola bor, ya'ni hech kim qamalib
+  // qolmaydi.
+  const ilgariKirgan = !!localStorage.getItem("ober_kirish_aloqa");
+  const kirishSoralgan = new URLSearchParams(location.search).get("kirish") === "1";
+  if(ilgariKirgan || kirishSoralgan) kirishEkrani();
+  else royxatEkrani();
 }
-setInterval(() => { if(MEN) sorovlar(); }, 20000);
+// ── AVTOMATIK YANGILANISH — LEKIN ODAMNING ISHINI BUZMASIN ──────────
+//
+// 2026-08-09, vizual testda topildi. Bu yerda shunday turardi:
+//
+//     setInterval(() => { if(MEN) sorovlar(); }, 20000);
+//
+// Ya'ni har 20 soniyada `sorovlar()` `#asosiy` ni BUTUNLAY qayta
+// yozardi — sotuvchi nima qilayotganidan qat'i nazar. Uchta oqibati
+// bor edi:
+//
+//   1. "E'lonlarim" bosiladi -> ochiladi -> 20 soniyada o'zi
+//      "So'rovlar" ga qaytib ketadi. Tashqaridan qaraganda tab
+//      "ishlamayotgandek" ko'rinadi (testda aynan shunday tuyuldi).
+//   2. "+ Yangi e'lon" formasi to'ldirilayotganda o'chib ketadi.
+//      Sotuvchi nomni, narxni, rasmni kiritib ulguradi va hammasi
+//      yo'qoladi. E'lon joylash amalda imkonsiz edi.
+//   3. Chatda narx yoki xabar yozilayotganda matn yo'qolardi.
+//
+// Yangilanishning o'zi kerak — yangi xaridor so'rovi kelganini
+// ko'rsatish uchun. Shuning uchun uni o'chirmaymiz, ODOBLI qilamiz:
+// faqat so'rovlar ro'yxati ochiq bo'lsa va odam hech nima
+// yozmayotgan bo'lsa yangilaymiz.
+setInterval(() => {
+  if (!MEN) return;
+
+  // Boshqa bo'lim ochiqmi (E'lonlarim yoki e'lon formasi)?
+  // Ikkalasi ham `tabPaneli("elonlar")` bilan chiziladi.
+  const faolTab = document.querySelector(".kabinet-tab.faol");
+  if (faolTab && !/so‘rovlar|so'rovlar/i.test(faolTab.textContent || "")) return;
+
+  // Odam ayni paytda biror maydonga yozayaptimi?
+  const fokus = document.activeElement;
+  if (fokus && /^(INPUT|TEXTAREA|SELECT)$/.test(fokus.tagName)) return;
+
+  // Javob formasi ochilgan bo'lsa ham tegmaymiz.
+  if (document.querySelector(".price-row.open")) return;
+
+  sorovlar();
+}, 20000);
 </script>
 </body>
 </html>

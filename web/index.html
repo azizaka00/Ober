@@ -167,6 +167,23 @@
     background:transparent;
     transition:background 180ms var(--ease),border-color 180ms var(--ease);
   }
+  /* BOSH SAHIFADA TEPA PANEL CHIZIQ QOLDIRMAYDI (2026-08-11).
+     Aziz telefon skrinshotida ko'rsatdi: sarlavha ustida ingichka
+     chiziq o'tib turibdi.
+
+     Sabab: bu yerda chegara ataylab `transparent` qilingan, lekin
+     `ober-ui.css` (inline stildan KEYIN yuklanadi) barcha sahifalar
+     uchun `.topbar{border-color:...; box-shadow:0 1px 0 ...}` beradi.
+     Boshqa sahifalarda tepa panel to'q fonli — u yerda chegara
+     o'rinli. Bosh sahifada esa panel SHAFFOF va hero surati ustida
+     suzadi, ya'ni chegara hech narsani ajratmaydi: u shunchaki
+     rasm bo'ylab osilgan ikkita hairline (chegara + oq soya).
+
+     `!important` kerak emas — bu tanlagich aniqroq (0,2,1). */
+  body:not(.is-results) .topbar{
+    border-bottom-color:transparent;
+    box-shadow:none;
+  }
   body.is-results .topbar{
     position:sticky;
     border-color:var(--line);
@@ -370,6 +387,56 @@
     font-weight:550;
   }
   .search-panel input::placeholder{color:#989ea8;font-weight:450}
+
+  /* TELEFONDA QIDIRUV MAYDONI IKKINCHI QATORGA CHIQADI (2026-08-11).
+     O'lchov, 390 px ekranda: matn maydoni atigi 183 px edi — ekranning
+     47% i. Qolganini kamera tugmasi (56) va "Topish" (82) egallagan.
+     Ya'ni mahsulotning ASOSIY amali uchun yarim ekrandan kam joy
+     qolgan: "nexia 3 uchun fara kerak" deb yozilsa bir necha so'zgina
+     ko'rinadi va odam nima yozganini tekshira olmaydi.
+
+     Endi 480 px dan pastda maydon butun qatorni oladi, kamera va
+     "Topish" esa ostiga tushadi. Tugmalar kichrayamaydi — barmoq
+     uchun 52 px balandlik saqlanadi. */
+  /* CHEGARA 480 EMAS, 560 (o'lchov 2026-08-11).
+     480 da ekran KENGAYGANDA maydon TORAYARDI — chunki 481 px dan
+     desktop joylashuvi qaytadi va uch element bitta qatorga tiqiladi:
+
+         480 px (ikki qator):  maydon 375 px
+         520 px (bir qator):   maydon 259 px   <- kengroq ekran, tor maydon
+
+     Bir qatorli joylashuv ~600 px dan pastda hech qachon qulay
+     bo'lmaydi. Shuning uchun ikki qator 560 px gacha cho'ziladi. */
+  @media (max-width:560px){
+    .search-panel{flex-wrap:wrap;row-gap:8px}
+    /* QATOR UZILISHI PIKSEL HISOBIGA TAYANMAYDI.
+       Birinchi urinishda maydonga `calc(100% - 46px)` berilgandi:
+       belgi 48 + oraliq 8 + maydon 287 = 343 px, joy esa 333 px.
+       Maydon pastga tushib ketdi, belgi esa bo'sh qatorda qoldi —
+       uning pseudo-elementlari (position:absolute) tagidagi matn
+       USTIGA chizildi. Azizning telefon skrinshotida aynan shu
+       ko'rindi: kattalashtirgich "Masalan: 25 m² banner" ustida.
+
+       Endi uzilish `order` bilan aniq belgilanadi: belgi va maydon
+       birinchi qatorda, kamera va "Topish" ikkinchisida. Panel
+       kengligi qanday bo'lishidan qat'i nazar ishlaydi. */
+    .search-icon{order:0}
+    .search-panel input{
+      order:1;
+      flex:1 1 auto;
+      min-width:0;
+      height:52px;
+      font-size:16px;   /* iOS 16px dan kichik bo'lsa sahifani kattalashtiradi */
+    }
+    .search-panel::after{
+      content:"";
+      order:2;
+      flex-basis:100%;
+      height:0;
+    }
+    .image-search-btn{order:3;width:52px;min-width:52px;min-height:52px}
+    .primary-btn{order:4;flex:1 1 auto;min-width:0;min-height:52px;padding:0 18px}
+  }
   .primary-btn{
     min-width:134px;
     min-height:56px;
@@ -390,14 +457,22 @@
     width:56px;
     min-width:56px;
     height:56px;
-    border:1px solid transparent;
+    /* TUGMA TUGMAGA O'XSHASIN.
+       2026-08-09: fon ham, ramka ham shaffof edi — kamera faqat
+       ingichka chiziqlardan chizilgan. Aziz uni sahifada topa
+       olmadi, holbuki u qidiruv qutisining ichida turardi.
+       Yonida katta to'q ko'k "Topish" tugmasi bor; uning yonida
+       ramkasiz shaffof shakl tugma emas, bezak bo'lib ko'rinadi.
+       Rasm bilan qidirish — OBERning eng kuchli imkoniyati,
+       uni izlab topish kerak bo'lmasin. */
+    border:1px solid var(--line-strong);
     border-radius:var(--r-orta);
-    background:transparent;
+    background:var(--navy-soft);
     color:var(--navy);
     cursor:pointer;
     transition:background 120ms var(--ease),border-color 120ms var(--ease),transform 120ms var(--ease);
   }
-  .image-search-btn:hover{border-color:var(--line-strong);background:var(--navy-soft)}
+  .image-search-btn:hover{border-color:var(--navy);background:var(--blue)}
   .image-search-btn:active{transform:scale(.96)}
   .image-search-btn:disabled{opacity:.45;cursor:wait}
   .image-search-btn::before{
@@ -515,8 +590,66 @@
     margin-top:16px;
     display:flex;
     justify-content:center;
+    align-items:center;
     gap:7px;
     flex-wrap:wrap;
+  }
+  /* "hozir qidirilmoqda" — chiplar QO'LDA YOZILGAN namuna emas,
+     haqiqiy so'rov ekanini aytadi. Busiz farq ko'rinmaydi va
+     jonli ma'lumot bekorga isrof bo'ladi.
+     Nuqta "Hozir bozorda" bo'limidagi bilan bir xil — ikkalasi ham
+     "shu daqiqada" degan ma'noni bildiradi. */
+  .tez-yorliq{
+    display:inline-flex;align-items:center;gap:6px;
+    flex:0 0 auto;
+    color:var(--muted);font-size:11.5px;white-space:nowrap;
+  }
+
+  /* UZLUKSIZ LENTA (Aziz, 2026-08-11).
+     ---------------------------------------------------------------
+     Dizayn qoidasida animatsiya darajasi 2 va "skroll animatsiyasi
+     yo'q" deb yozilgan. Bu — ataylab qilingan istisno, egasining
+     qarori. Shuning uchun zarari kamaytirilgan:
+
+     - faqat `transform` (layout xossasi emas, 3.3-qoida);
+     - sichqoncha tekkanda va barmoq tekkanda TO'XTAYDI — aks holda
+       harakatlanayotgan chipni bosib bo'lmaydi;
+     - `prefers-reduced-motion` da umuman yurmaydi, oddiy ro'yxat
+       bo'lib qoladi;
+     - lenta ikki nusxada: birinchisi chapga chiqib ketganda
+       ikkinchisi o'rnini egallaydi, uzilish ko'rinmaydi.
+       Shuning uchun siljish aynan -50% — bir nusxa kengligi. */
+  .tez-oyna{
+    flex:1 1 auto;min-width:0;
+    overflow:hidden;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 24px,#000 calc(100% - 24px),transparent);
+    mask-image:linear-gradient(to right,transparent,#000 24px,#000 calc(100% - 24px),transparent);
+  }
+  .tez-yol{
+    display:flex;width:max-content;gap:7px;
+    animation:tezYur var(--tez-davr,34s) linear infinite;
+    /* TO'XTAMAYDI VA BOSILMAYDI (Aziz, 2026-08-11).
+       Avval sichqoncha yoki barmoq tekkanda to'xtardi va chiplar
+       bosiladigan tugma edi. Aziz: qo'l tegishi bilan to'xtashi
+       kerak emas, bosilishi ham kerak emas.
+
+       To'g'ri qaror: bu lenta BOSHQARUV emas, ko'rsatkich. U
+       "bozorda hozir nima qidirilyapti" degan savolga javob
+       beradi, undan biror joyga o'tilmaydi. Bosiladigan qilib
+       qo'yish esa harakatlanayotgan nishonni bosishga majbur
+       qiladi — bu har doim yomon.
+
+       `pointer-events:none` ikkala muammoni birdan yechadi:
+       hover ham yo'q, bosish ham yo'q. */
+    pointer-events:none;
+  }
+  @keyframes tezYur{
+    from{transform:translate3d(0,0,0)}
+    to{transform:translate3d(-50%,0,0)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .tez-yol{animation:none;flex-wrap:wrap;width:auto}
+    .tez-oyna{-webkit-mask-image:none;mask-image:none}
   }
   .sample{
     min-height:36px;
@@ -531,20 +664,75 @@
     transition:color 120ms var(--ease),border-color 120ms var(--ease),background 120ms var(--ease),box-shadow 120ms var(--ease);
   }
   .sample:hover{border-color:var(--navy);background:var(--navy-soft);color:var(--navy);box-shadow:0 3px 8px rgba(11,37,89,.08)}
+  /* DALIL BLOKI (2026-08-11).
+     Bir xil ma'lumot, boshqa og'irlik. Sabab `holatniOl` izohida.
+     Raqam chapda va katta, izoh o'ngda va ikki qatorda — ko'z avval
+     songa tushadi, keyin uning nima ekanini o'qiydi. */
   .database-trust{
     display:inline-flex;
     align-items:center;
-    gap:6px;
-    min-height:32px;
-    margin:20px 0 0;
-    padding:0 16px;
+    gap:14px;
+    margin:22px 0 0;
+    padding:12px 20px 12px 18px;
     border:1px solid rgba(11,37,89,.10);
-    border-radius:var(--r-pill);
-    background:rgba(255,255,255,.65);
+    border-radius:var(--r-orta);
+    background:rgba(255,255,255,.72);
+    box-shadow:0 1px 3px rgba(11,37,89,.05),0 10px 26px rgba(11,37,89,.06);
     color:var(--muted);
     font-size:12px;
+    text-align:left;
   }
-  .database-trust strong{color:var(--navy)}
+  .dalil-son{
+    font-size:29px;
+    font-weight:800;
+    line-height:1;
+    letter-spacing:-.035em;
+    color:var(--navy);
+    font-variant-numeric:tabular-nums;
+    font-feature-settings:"tnum" 1;
+  }
+  .dalil-izoh{display:grid;gap:2px}
+  .dalil-bosh{
+    color:var(--navy);
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .dalil-past{color:var(--muted);font-size:11.5px;line-height:1.4}
+
+  /* DOLLAR KURSI — dalil blokining o'ng qanoti (2026-08-11).
+     O'zbekiston bozorida narx ikki xil aytiladi: so'mda va dollarda.
+     Xaridor kartadagi so'm narxini dollarga aylantirish uchun
+     saytdan chiqib ketardi.
+     Joyi shu yerda, chunki ikkala raqam ham bitta gapni aytadi:
+     "bozor hozir shunday". */
+  .kurs-bolim{
+    display:flex;align-items:center;gap:10px;
+    margin-left:2px;padding-left:16px;
+    border-left:1px solid rgba(11,37,89,.12);
+  }
+  .kurs-son{
+    font-size:15px;font-weight:800;color:var(--navy);
+    letter-spacing:-.02em;white-space:nowrap;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  }
+  .kurs-izoh{color:var(--muted);font-size:11px;line-height:1.35}
+  @media (max-width:560px){
+    .kurs-bolim{margin-left:0;padding-left:12px;gap:8px}
+    .kurs-son{font-size:14px}
+  }
+  /* Juda tor ekranda kurs pastga tushadi — dalil raqami siqilmasin. */
+  @media (max-width:400px){
+    .database-trust{flex-wrap:wrap;row-gap:10px}
+    .kurs-bolim{flex:1 0 100%;margin-left:0;padding-left:0;border-left:0;
+      padding-top:9px;border-top:1px solid rgba(11,37,89,.10)}
+  }
+  @media (max-width:560px){
+    .database-trust{gap:12px;padding:11px 15px}
+    .dalil-son{font-size:25px}
+    .dalil-bosh{font-size:12.5px}
+    .dalil-past{font-size:11px}
+  }
   /* Namuna so'rovlar va e'lon soni FAQAT bosh sahifada ko'rinadi.
      Ilgari ikkala qoida ham `display:none` edi — ya'ni kontent yozilgan,
      lekin hech qachon chiqmagan. Bosh sahifaning bo'shligi qisman
@@ -606,9 +794,20 @@
     text-decoration:none;
   }
   .footer-sahifalar a:hover{background:var(--navy-soft)}
+  /* Kompaniya qatori — butun kenglikni oladi va havolalardan
+     pastda turadi. Jim, lekin bor. */
+  .footer-kompaniya{
+    width:100%;
+    margin:0;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:12px;
+  }
   @media (max-width:620px){
     .footer-sahifalar{margin-left:0;width:100%}
     .footer-tavsif{order:2;width:100%}
+    .footer-kompaniya{order:3}
   }
 
   /* ── OBER QANDAY ISHLAYDI ─────────────────────────────────────
@@ -883,7 +1082,30 @@
     box-shadow:0 12px 32px rgba(8,27,66,.30);
   }
   .tez-sora.korin{opacity:1;visibility:visible;pointer-events:auto;transform:none}
-  @media (min-width:621px){.tez-sora{display:none!important}}
+
+  /* DESKTOPDA HAM KERAK (2026-08-11, jonli vizual testda topildi).
+     Bu yerda `display:none!important` turardi: telefonda pastda
+     suzuvchi tugma, desktopda esa tepadagi qator yetarli deb
+     hisoblangan edi.
+
+     Lekin qator faqat natijalar TEPASIDA turadi. Foydalanuvchi
+     ro'yxatni aylantira boshlagach u ekrandan chiqib ketadi va
+     OBERning butun farqi — "topilmasa, sotuvchidan so'raymiz" —
+     erishib bo'lmaydigan bo'lib qoladi. O'lchandi: 1214px kenglikda
+     natijalarga tushgach sahifada birorta so'rash tugmasi qolmaydi.
+
+     Endi desktopda ham chiqadi, lekin telefondagidek butun kenglikda
+     emas — o'ng pastda ixcham tugma. Ko'rsatish mantig'i o'zgarmadi:
+     ekranda haqiqiy tugma turgan bo'lsa suzuvchisi yashirinadi. */
+  @media (min-width:621px){
+    /* `!important` — `tabbar.js` telefondagi tab bar uchun
+       `bottom:calc(72px + ...)` beradi. Desktopda tab bar yashirin,
+       shuning uchun o'sha bo'shliq keraksiz. */
+    .tez-sora{left:auto;right:24px;bottom:24px!important}
+    .tez-sora .sora-btn{
+      width:auto;min-height:48px;padding:0 24px;font-size:14px;
+    }
+  }
   @media (max-width:620px){
     .sora-chiziq{display:none}
     .sora-orta{flex-direction:column;align-items:stretch;gap:10px;padding:14px}
@@ -1232,6 +1454,28 @@
   .card:hover{transform:translateY(-2px);border-color:var(--line-strong);
     box-shadow:var(--shadow-hover)}
   .card:active{transform:scale(.98)}
+
+  /* KARTALAR KETMA-KET CHIQADI (2026-08-11).
+     Ilgari 60 ta karta bir zumda paydo bo'lardi — natija "yuklandi"
+     emas, "chaqnadi" degan taassurot berardi va ko'z qayerdan
+     boshlashni bilmasdi.
+
+     Faqat `opacity` va `transform` (dizayn qoidasi 3.3), 180 ms,
+     har kartaga 40 ms kechikish. Kechikish 8-kartada to'xtaydi:
+     `--k` o'zgaruvchisi JS'da 8 gacha sanaladi, aks holda 60-karta
+     2.4 soniya kutardi.
+
+     `both` shart: animatsiyadan OLDIN ham karta ko'rinmasin, aks
+     holda avval paydo bo'lib keyin qaytadan chiqadi. */
+  .card{animation:kartaChiq 180ms var(--ease) both;
+    animation-delay:calc(var(--k,0) * 40ms)}
+  @keyframes kartaChiq{
+    from{opacity:0;transform:translateY(6px)}
+    to{opacity:1;transform:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .card{animation:none}
+  }
   .card.near{border-color:#acd4bd}
   .card-link{display:block;color:inherit;text-decoration:none}
   .media{
@@ -1425,11 +1669,25 @@
     .location-label,.location-note{width:100%;text-align:center}
     .select-wrap{flex:1;min-width:0}
     .location-row select{width:100%;max-width:none}
-    .samples{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:-14px;padding:0 14px 5px;scrollbar-width:none}
-    .samples::-webkit-scrollbar{display:none}
+    /* 2026-08-11: chiplar endi o'zi yuradigan lenta. Ilgari bu yerda
+       `overflow-x:auto` turardi — qo'lda suriladigan qator. Ikkalasi
+       birga ishlamaydi: tashqi idish ham surilsa, ichkaridagi
+       animatsiya bilan urishadi. Surish `.tez-oyna` ichida qoladi. */
+    /* TELEFONDA YORLIQ ALOHIDA QATORDA.
+       O'lchov 430 px: yorliq bilan lenta bitta qatorda turganda
+       lentaga atigi 218 px qolardi — bitta chip ham to'liq
+       sig'masdi. Endi yorliq tepada, lenta butun kenglikda. */
+    .samples{flex-wrap:wrap;justify-content:center;
+      margin-inline:-14px;padding:0 14px 5px;gap:6px}
     .sample{flex:0 0 auto}
-    .database-trust{max-width:100%;padding:6px 12px;min-height:34px;line-height:1.35}
-    .database-trust strong{white-space:nowrap}
+    .tez-yorliq{flex:1 0 100%;justify-content:center}
+    .tez-oyna{flex:1 0 100%}
+    /* 2026-08-11: dalil bloki yangilandi. Bu yerdagi eski qoida
+       (`padding:6px 12px; min-height:34px`) undan KEYIN turgani uchun
+       yangi o'lchamlarni bosib o'tardi — `@media` avtomatik g'olib
+       emas, faylda keyingisi yutadi (dizayn qoidalari 3.2.1). */
+    .database-trust{max-width:100%;line-height:1.35}
+    .dalil-son{white-space:nowrap}
     .responses-wrap,.results{width:min(100% - 28px,var(--content))}
     .results{padding-top:20px}
     .price-card{padding:18px}
@@ -1494,7 +1752,16 @@
     </a>
     <div class="top-actions">
       <div class="lang-slot"></div>
-      <a class="messages-link" id="takliflar-link" href="/takliflar?demo=1"><span class="desktop-label">Chat</span><span class="mobile-label">Chat</span></a>
+      <!-- `?demo=1` OLIB TASHLANDI (2026-08-09).
+           Tepadagi asosiy havola demo rejimni ochardi. `takliflar.html`
+           da esa demo rejim foydalanuvchining HAQIQIY holatini e'tiborsiz
+           qoldiradi:
+               storedSeller = demoMode ? "" : localStorage(...)
+               requestId    = demoMode ? "" : localStorage(...)
+           Ya'ni so'rov yuborgan xaridor "Chat" ni bossa, o'z suhbatini
+           emas, soxta demo suhbatni ko'rardi. Demo havolasi kerak bo'lsa
+           u alohida beriladi, asosiy navigatsiyada emas. -->
+      <a class="messages-link" id="takliflar-link" href="/takliflar"><span class="desktop-label">Chat</span><span class="mobile-label">Chat</span></a>
       <a class="seller-link" href="/sotuvchi"><span class="desktop-label">Profil</span><span class="mobile-label">Profil</span></a>
     </div>
   </div>
@@ -1506,7 +1773,7 @@
          kichkina katta harfli yozuv — AI qurgan saytning eng ko'p
          uchraydigan belgisi. Sarlavhaning o'zi yetarli. -->
     <h1 id="hero-title">Siz yozasiz. Bozor javob beradi.</h1>
-    <p class="hero-copy">Divanmi, mashinami, usta kerakmi — bitta qidiruvda.</p>
+    <p class="hero-copy">OLX, Telegram va OBER e’lonlari — bitta qidiruvda.</p>
 
     <div class="search-panel" role="search">
       <span class="search-icon" aria-hidden="true"></span>
@@ -1579,12 +1846,12 @@
       <li>
         <span class="qadam-raqam">2</span>
         <h3>Butun bozorni bir joyda ko‘ring</h3>
-        <p>Arzonidan, yangisidan yoki yaqinidan saralab ko‘ring. Ochiq e’lonlarning hammasi ko‘rinadi.</p>
+        <p>Har kartada manba ko‘rinadi. Tashqi e’lonni bossangiz, asl havolasi ochiladi.</p>
       </li>
       <li>
         <span class="qadam-raqam">3</span>
         <h3>Sotuvchilardan javob oling</h3>
-        <p>Bir tegish — so‘rov mos sotuvchilarga boradi. Telefon raqami so‘ralmaydi.</p>
+        <p>Topilmasa, mos sotuvchilardan so‘rang. Chat aloqa uchun; to‘lov va yetkazish OBERda emas.</p>
       </li>
     </ol>
 
@@ -1595,7 +1862,7 @@
       <h3>Nega OBER?</h3>
       <table class="farq-jadval">
         <tr><th></th><th class="biz">OBER</th><th>OLX</th><th>Telegram</th></tr>
-        <tr><td>Barcha manba bitta joyda</td><td class="biz">✓</td><td></td><td></td></tr>
+        <tr><td>Barcha manbalar bitta joyda</td><td class="biz">✓</td><td></td><td></td></tr>
         <tr><td>Bir so‘rovda butun bozor</td><td class="biz">✓</td><td></td><td></td></tr>
         <tr><td>Bugun bor-yo‘qligini so‘raydi</td><td class="biz">✓</td><td></td><td></td></tr>
         <tr><td>Noto‘g‘ri modelni kesadi</td><td class="biz">✓</td><td></td><td></td></tr>
@@ -1614,12 +1881,18 @@
       <img src="/brend/logo.png" alt="ober" width="104" height="32">
     </a>
     <p class="footer-tavsif">Ochiq bozor — OLX, Telegram va boshqa manbalar bitta qidiruvda.</p>
+    <!-- "Chat demo" havolasi olib tashlandi (2026-08-09).
+         Ishlab chiqarish saytida "demo" so'zi mahsulot haqiqiy emasdek
+         taassurot qoldiradi. U ishlab chiqish paytida kerak edi; chat
+         endi jonli va pastki tab orqali ochiladi. -->
     <nav class="footer-sahifalar" aria-label="Sayt sahifalari">
       <a href="/sotuvchi">Sotuvchilar uchun</a>
-      <a href="/takliflar?demo=1">Chat demo</a>
+      <a href="/aloqa">Aloqa</a>
       <a href="/maxfiylik">Maxfiylik</a>
       <a href="/qoidalar">Qoidalar</a>
     </nav>
+    <!-- Kim turgani ko'rinsin. Nomsiz sayt — ishonchsiz sayt. -->
+    <p class="footer-kompaniya">&copy; 2026 &laquo;NAIZA&raquo; MChJ &middot; STIR 313204884</p>
   </div>
 </footer>
 
@@ -1705,9 +1978,99 @@ function sanaMatn(s){
   return s;
 }
 
-$("#tez").innerHTML = NAMUNA.map(s =>
-  `<button class="sample" type="button" data-query="${esc(s)}">${esc(s)}</button>`
-).join("");
+function chiplarniChiz(royxat, oyna){
+  const jonli = oyna > 0;
+  // YORLIQ MA'LUMOTGA MOS BO'LSIN. Bir kunlik so'rov bo'lsa "hozir",
+  // oyna kengaygan bo'lsa "so'nggi kunlarda". Uch kunlik so'rovni
+  // "hozir qidirilmoqda" deb ko'rsatish yolg'on bo'lardi.
+  const yorliqMatn = oyna <= 24 ? "hozir qidirilmoqda"
+                                : "so‘nggi kunlarda qidirilgan";
+  // JONLI LENTADAGI CHIP — TUGMA EMAS.
+  // Zaxira ro'yxat (qo'lda yozilgani) tugma bo'lib qoladi: u namuna
+  // va bosilishi kerak. Jonli lenta esa ko'rsatkich — undan hech
+  // qayerga o'tilmaydi, shuning uchun oddiy matn.
+  const chip = s =>
+    `<button class="sample" type="button" data-query="${esc(s)}">${esc(s)}</button>`;
+  const belgi = s => `<span class="sample">${esc(s)}</span>`;
+  if(!jonli){
+    $("#tez").innerHTML = royxat.map(chip).join("");
+    $("#tez").setAttribute("aria-label", "Namuna so‘rovlar");
+    return;
+  }
+  // Lenta uzilmasligi uchun ro'yxat IKKI MARTA yoziladi. Ikkinchi
+  // nusxa ekran o'quvchisiga takror o'qilmasin.
+  const bir = royxat.map(belgi).join("");
+  $("#tez").innerHTML =
+    `<span class="tez-yorliq"><span class="jonli-nuqta" aria-hidden="true"></span>${yorliqMatn}</span>
+     <span class="tez-oyna" id="tez-oyna">
+       <span class="tez-yol">${bir}<span aria-hidden="true">${bir}</span></span>
+     </span>`;
+  $("#tez").setAttribute("aria-label",
+    oyna <= 24 ? "Hozir qidirilayotgan so‘rovlar"
+               : "So‘nggi kunlarda qidirilgan so‘rovlar");
+  // Tezlik uzunlikka bog'liq — chiplar ko'p bo'lsa lenta uzunroq,
+  // demak bir aylanish ham uzunroq. Aks holda uzun ro'yxat tez
+  // uchib ketadi va o'qib bo'lmaydi. ~55 px sekundiga.
+  // Bitta `requestAnimationFrame` yetarli emas edi: shrift hali
+  // yuklanmagan bo'lsa chiplar kengligi keyin o'zgaradi va
+  // `scrollWidth` noto'g'ri chiqadi (telefonda `--tez-davr` umuman
+  // o'rnatilmay qolgan edi). Shrift tayyor bo'lgach qayta o'lchaymiz.
+  const yol = $(".tez-yol");
+  const davrniQoy = () => {
+    const en = yol.scrollWidth / 2;
+    if(en > 40) yol.style.setProperty("--tez-davr", Math.max(12, Math.round(en / 55)) + "s");
+  };
+  requestAnimationFrame(davrniQoy);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(davrniQoy);
+  setTimeout(davrniQoy, 1200);
+}
+
+// CHIPLAR — QO'LDA YOZILGAN RO'YXAT EMAS, HAQIQIY SO'ROVLAR (2026-08-11).
+//
+// Ilgari bu yerda beshta o'zgarmas so'z turardi. Ular to'g'ri edi,
+// lekin hech narsani isbotlamasdi — har kim bir xil ro'yxatni ko'rardi.
+// Endi odamlar hozir nima qidirayotgani chiqadi. Bunday qatorni
+// ("Телефон уста", "mototsikl shlemi") o'ylab topib bo'lmaydi, ya'ni
+// u OBER tirikligining eng arzon isboti.
+//
+// QO'LDA YOZILGAN RO'YXAT YO'QOLMADI — u zaxira bo'lib qoladi.
+// Sabab: yangi kunda yoki baza bo'sh bo'lganda chiplar umuman
+// yo'qolib qolmasin. To'rttadan kam bo'lsa zaxiraga qaytamiz —
+// ikkita chip "jonli" degan taassurot bermaydi, kambag'al ko'rinadi.
+// DOLLAR KURSI — bo'lsa qo'shiladi, bo'lmasa satr umuman chiqmaydi.
+// Kurs OBERning ishi emas, qo'shimcha qulaylik: u yo'q deb sahifa
+// buzilmasin.
+// POYGA BOR EDI: kurs so'rovi dalil blokidan OLDIN qaytardi va kod
+// "hali chizilmagan" deb jimgina chiqib ketardi — kurs hech qachon
+// ko'rinmasdi. Endi natija saqlanadi va ikkala tomondan chaqiriladi:
+// so'rov qaytganda ham, dalil bloki chizilganda ham. Qaysi biri
+// oxirgi bo'lsa, o'sha qo'yadi.
+let KURS = null;
+function kursniQoy(){
+  if(!KURS || !KURS.kurs) return;
+  const quti = $("#holat");
+  if(!quti || !quti.querySelector(".dalil-son")) return;
+  if(quti.querySelector(".kurs-bolim")) return;      // ikki marta emas
+  const sana = String(KURS.sana || "").slice(0, 10);
+  quti.insertAdjacentHTML("beforeend",
+    `<span class="kurs-bolim">
+       <span class="kurs-son">1 $ = ${formatInt(KURS.kurs)} so‘m</span>
+       <span class="kurs-izoh">Markaziy bank${sana ? " · " + esc(sana) : ""}</span>
+     </span>`);
+}
+fetch("/api/kurs")
+  .then(r => r.ok && r.status !== 204 ? r.json() : null)
+  .then(d => { KURS = d; kursniQoy(); })
+  .catch(() => {});
+
+chiplarniChiz(NAMUNA, 0);
+fetch("/api/qidiruvlar")
+  .then(r => r.ok ? r.json() : null)
+  .then(d => {
+    const royxat = d && Array.isArray(d.royxat) ? d.royxat : [];
+    if(royxat.length >= 4) chiplarniChiz(royxat, Number(d.oyna) || 24);
+  })
+  .catch(() => {});
 $("#tez").addEventListener("click", e => {
   const b = e.target.closest("[data-query]");
   if(b) qidir(b.dataset.query);
@@ -1734,11 +2097,33 @@ async function holatniOl(){
     const elonSoni = Number(d.elonlar || d.jami || d.soni || 0);
     // ANIQ RAQAM — ishonchning eng arzon shakli. "Butun bozor" degan
     // va'dani hamma yozadi; 126 834 degan sonni yozib bo'lmaydi.
+    // DALIL BLOKI — sahifadagi ikkinchi kuchli element (2026-08-11).
+    //
+    // Ilgari bu ma'lumot kichkina kulrang tabletkada 12 px matn edi.
+    // Ichida esa OBERning eng kuchli dalili turibdi: "butun bozor"
+    // degan va'dani hamma yozadi, 346 132 degan sonni yozib bo'lmaydi.
+    // Og'irligi ahamiyatiga mos kelmasdi.
+    //
+    // Yangi raqam qo'shilmadi va HECH NARSA o'ylab topilmadi — ayni
+    // o'sha ma'lumot, faqat ko'rinishi boshqacha. "45 daqiqada +N"
+    // kabi jonli o'sish ataylab YOZILMADI: `olindi` ustuni e'lon
+    // qo'shilgan vaqtni emas, qayta yig'ilgan vaqtni saqlaydi
+    // (o'lchov: 45 daqiqada 16 642 ta — bu yangi e'lon emas, qayta
+    // ko'rilgani). Soxta o'sish ko'rsatgandan ko'ra ko'rsatmagan
+    // yaxshi.
     $("#holat").innerHTML = elonSoni
       // formatInt — bo'shliq bilan ajratadi. `toLocaleString("uz-UZ")`
       // vergul qo'yardi ("127,360") va bu inglizcha ko'rinardi.
-      ? `<strong>${formatInt(elonSoni)} ta</strong> ochiq e’lon · OLX va Telegram · har 45 daqiqada yangilanadi`
-      : "Ochiq e’lon narxlari va jonli sotuvchi javoblari";
+      ? `<span class="dalil-son">${formatInt(elonSoni)}</span>
+         <span class="dalil-izoh">
+           <span class="dalil-bosh">ochiq e’lon</span>
+           <span class="dalil-past">OLX va Telegram · har 45 daqiqada yangilanadi</span>
+         </span>`
+      : `<span class="dalil-izoh"><span class="dalil-bosh">Ochiq e’lon narxlari
+         va jonli sotuvchi javoblari</span></span>`;
+    // Kurs allaqachon kelgan bo'lsa shu yerda qo'yiladi — sabab
+    // `kursniQoy` izohida.
+    kursniQoy();
 
     const eV = localStorage.getItem("ober_viloyat") || "";
     const eJ = localStorage.getItem("ober_joy") || "";
@@ -2074,13 +2459,32 @@ function soraniUla(){
     const farq = y - oxirgiY;
     if(Math.abs(farq) > 6) pastgaKetmoqda = farq > 0;
     oxirgiY = y;
-    const bor = [...document.querySelectorAll(".sora-orta")].some(n => {
-      const r = n.getBoundingClientRect();
-      return r.top < innerHeight - 60 && r.bottom > 0;
-    });
+    // EKRANDA HAQIQIY TUGMA BORMI — IKKALA SHAKLI HAM.
+    //
+    // 2026-08-11: bu yerda faqat `.sora-orta` tekshirilardi. Telefonda
+    // shu yetardi, chunki `.sora-chiziq` u yerda `display:none`.
+    // Suzuvchi tugma desktopda ham yoqilgach kamchilik ochildi:
+    // desktopda ko'rinadigan qator aynan `.sora-chiziq` va u
+    // hisobga olinmasdi — natijada bitta ekranda IKKITA bir xil
+    // "Sotuvchilardan so'rash" tugmasi turardi (o'lchov: qator
+    // 545 px da, suzuvchisi 637 px da).
+    const bor = [...document.querySelectorAll(".sora-orta,.sora-chiziq")]
+      .some(n => {
+        if(getComputedStyle(n).display === "none") return false;
+        const r = n.getBoundingClientRect();
+        return r.top < innerHeight - 60 && r.bottom > 0;
+      });
     // Kartalarni pastga qarab ko‘rayotganda CTA surat va narxni yopmasin.
     // Yuqoriga qaytilsa yoki natijaning boshida bo‘lsa yana ko‘rinadi.
-    suzuvchi.classList.toggle("korin", !bor && (!pastgaKetmoqda || y < 220));
+    //
+    // BU QOIDA FAQAT TELEFONDA (2026-08-11). Telefonda tugma butun
+    // kenglikni egallaydi va haqiqatan kartani yopadi. Desktopda esa u
+    // o‘ng pastdagi kichik tugma — hech narsani yopmaydi, lekin shu
+    // qoida tufayli pastga skroll qilgan zahoti g‘oyib bo‘lardi va
+    // OBERning asosiy imkoniyati yana erishib bo‘lmas bo‘lib qolardi.
+    const telefon = innerWidth <= 620;
+    suzuvchi.classList.toggle(
+      "korin", !bor && (!telefon || !pastgaKetmoqda || y < 220));
   };
   window._soraSkroll = tekshir;
   addEventListener("scroll", tekshir, {passive:true});
@@ -2434,14 +2838,17 @@ function tushunBloki(d){
   </section>`;
 }
 
-function karta(e, tuman){
+function karta(e, tuman, orin){
   const joy = e.joy_nom || "";
   const yaqin = Boolean(tuman && joy && joy.split(", ").includes(tuman));
   const rasm = safeUrl(e.rasm);
   // OBER'ning o'z e'loni — ichki sahifa /elon/{id}, tashqariga chiqmaydi.
   const ichki = e.manba === "ober";
   const havola = ichki ? `/elon/${Number(e.id)}` : safeUrl(e.havola);
-  return `<article class="card${yaqin ? " near" : ""}">
+  // Ketma-ket chiqish uchun tartib raqami. Sakkiztadan keyin
+  // kechikish o'smaydi — sabab `.card` animatsiyasi izohida.
+  const k = Math.min(Number(orin) || 0, 8);
+  return `<article class="card${yaqin ? " near" : ""}" style="--k:${k}">
     <a class="card-link" href="${esc(havola || "#")}" ${!ichki && havola ? 'target="_blank" rel="noopener noreferrer"' : ichki ? '' : 'aria-disabled="true"'}>
       <div class="media">
         ${rasm ? `<img src="${esc(rasm)}" loading="lazy" alt="${esc(e.nom || "Ehtiyot qism")}" onerror="this.parentElement.innerHTML='<div class=&quot;no-photo&quot;></div>'">`
@@ -2487,7 +2894,7 @@ function chiz(d, tuman){
   // Ro'yxat oxirida turgani ishlamasdi (10 072 px). 12-kartadan keyin —
   // odam bir ekran ko'rib chiqib "shu emas" degan payt.
   const ORALIQ = 12;
-  const kartalar = natijalar.map(e => karta(e, tuman));
+  const kartalar = natijalar.map((e, i) => karta(e, tuman, i));
   if(kartalar.length > ORALIQ + 3) kartalar.splice(ORALIQ, 0, soraOrta(false));
   else kartalar.push(soraOrta(false));
 

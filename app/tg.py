@@ -1,8 +1,10 @@
 """
-OBER — Telegram orqali kirishni tasdiqlash
+OBER — Telegram orqali kirish va sotuvchi bildirishnomalari
 
-Telegram faqat akkauntni bog'lash va bir martalik kirish kodini yuborish
-uchun ishlatiladi. So'rov, taklif va savdo yozishmalari OBER ichida qoladi.
+Telegram akkauntni bog'laydi, bir martalik kirish kodini yuboradi va
+sotuvchiga yangi so'rov hamda xaridor xabari kelganini bildiradi. Erkin
+yozishma OBER chatida davom etadi; to'lov va yetkazib berish OBER orqali
+bajarilmaydi.
 
 QOIDA: token faqat `data/bot-token.txt` faylida turadi. Kodda yozilmaydi,
 jurnalga chiqarilmaydi.
@@ -11,6 +13,7 @@ jurnalga chiqarilmaydi.
 from __future__ import annotations
 
 import json
+import html
 import threading
 import time
 import urllib.error
@@ -24,7 +27,11 @@ TOKEN_FAYL = "bot-token.txt"
 
 _KUTILAYOTGAN_NARX: dict[str, tuple[int, int, str]] = {}   # chat -> (sorov, sotuvchi, holat)
 _OGOHLANTIRILDI: dict[str, bool] = {}
-SAVDO_XABARLARI = False
+SAVDO_XABARLARI = True
+OBER_CHAT = "https://ober.uz/takliflar?rol=sotuvchi"
+BILDIRISH_ORALIGI = 2.0
+_FONDA_QULF = threading.Lock()
+_FONDA_BOSHLANDI = False
 
 
 def token() -> str:
@@ -61,9 +68,26 @@ def _sorov(usul: str, _timeout: int = 35, **maydonlar):
             time.sleep(15)
         else:
             print(f"  [tg] HTTP {e.code} ({usul})")
+        _OXIRGI_KOD["kod"] = e.code
+        return None
     except Exception as e:                        # noqa: BLE001
         print(f"  [tg] {type(e).__name__} ({usul})")
+    _OXIRGI_KOD["kod"] = 0
     return None
+
+
+# Oxirgi HTTP xato kodi. `yubor` uni o'qib, xato QAYTARIB BO'LMAYDIGANmi
+# yoki vaqtinchalikmi ekanini ajratadi.
+_OXIRGI_KOD: dict[str, int] = {"kod": 0}
+
+# QAYTA URINISH FOYDASIZ BO'LGAN KODLAR.
+#
+# 403 — foydalanuvchi botni bloklagan yoki hech qachon ochmagan.
+# 400 — chat topilmadi / noto'g'ri chat_id.
+#
+# Bularda qayta urinish HECH QACHON yordam bermaydi: chat_id o'zgarmasa
+# javob ham o'zgarmaydi.
+QAYTARIB_BOLMAYDI = (400, 403)
 
 
 def yubor(chat_id, matn: str, tugmalar=None) -> bool:
@@ -76,8 +100,37 @@ def yubor(chat_id, matn: str, tugmalar=None) -> bool:
     d = {"chat_id": chat_id, "text": matn, "parse_mode": "HTML"}
     if tugmalar:
         d["reply_markup"] = {"inline_keyboard": tugmalar}
+    _OXIRGI_KOD["kod"] = 0
     natija = _sorov("sendMessage", **d)
     return bool(natija and natija.get("ok"))
+
+
+def qaytarib_bolmaydi() -> bool:
+    """Oxirgi yuborish QAYTARIB BO'LMAYDIGAN xato bilan tugadimi.
+
+    NEGA KERAK (2026-08-11, jonli serverda topildi)
+    -----------------------------------------------
+    Savdo bildirishnomalari birinchi marta yoqilganda jurnal shu bilan
+    to'ldi — har 2 soniyada, to'xtovsiz:
+
+        [tg] HTTP 403 (sendMessage)
+        [tg] HTTP 403 (sendMessage)
+
+    Qoida shunday edi: xabar yuborilmasa yozuv "yuborildi" deb
+    belgilanmaydi va keyingi aylanishda qayta uriniladi. Vaqtinchalik
+    xato (timeout, 5xx) uchun bu to'g'ri.
+
+    Lekin 403 vaqtinchalik EMAS — sotuvchi botni bloklagan yoki
+    umuman ochmagan. `chat_id` o'zgarmaguncha javob ham o'zgarmaydi.
+    Qayta urinish hech qachon yordam bermaydi va Telegram API'da
+    bizni cheklab qo'yishi mumkin.
+
+    Bunday holatda xabar "urinib ko'rildi" deb belgilanadi va navbatdan
+    chiqadi. Sotuvchining `telegram_id` siga TEGILMAYDI: u OBER
+    kabinetida xabarni baribir ko'radi, ulanishni o'zi tiklashi ham
+    mumkin. Biz faqat foydasiz urinishni to'xtatamiz.
+    """
+    return _OXIRGI_KOD["kod"] in QAYTARIB_BOLMAYDI
 
 
 _NOM_KESH = {"nom": None, "vaqt": 0.0}
@@ -110,15 +163,21 @@ def _start(chat_id, kod: str) -> None:
     if not s:
         yubor(chat_id, "Kod eskirgan. OBER’da qaytadan “Telegramga ulash”ni bosing.")
         return
+    nom = html.escape(str(s.get("nom") or "Sotuvchi"))
     yubor(chat_id,
-          f"✅ Ulandi: <b>{s.get('nom') or 'Sotuvchi'}</b>\n\n"
-          "Telegram faqat OBER kirish kodlari uchun ishlatiladi. "
-          "So‘rov va savdo yozishmalari OBER ichida qoladi.")
+          f"✅ Ulandi: <b>{nom}</b>\n\n"
+          "Yangi mos so‘rov va xaridor xabari shu yerga keladi. "
+          "Batafsil yozishma OBER chatida davom etadi.")
 
 
 def _javob_yoz(chat_id, sorov_id: int, sotuvchi_id: int,
                holat: str, narx: int | None) -> None:
-    baza.javob_yoz(sorov_id, sotuvchi_id, holat, narx, "")
+    natija = baza.javob_yoz(sorov_id, sotuvchi_id, holat, narx, "")
+    if natija is None:
+        yubor(chat_id,
+              "Javob yuborilmadi. So‘rov yopilgan, avval javob berilgan "
+              "yoki sizga biriktirilmagan bo‘lishi mumkin.")
+        return
     if holat == "yoq":
         yubor(chat_id, "Rahmat, belgilandi.")
     else:
@@ -189,10 +248,10 @@ def _matn(chat_id, matn: str) -> None:
 # ── Chiquvchi xabarlar ───────────────────────────────────────────────────────
 
 def _sorov_matni(x: dict) -> str:
-    qatorlar = [f"🔔 <b>{x['matn']}</b>"]
+    qatorlar = [f"🔔 <b>{html.escape(str(x['matn']))}</b>"]
     ikkinchi = []
     if x.get("tuman"):
-        ikkinchi.append(x["tuman"])
+        ikkinchi.append(html.escape(str(x["tuman"])))
     if x.get("byudjet"):
         ikkinchi.append(f"byudjet {int(x['byudjet']):,}".replace(",", " ") + " so‘m")
     if ikkinchi:
@@ -213,13 +272,81 @@ def kutayotganlarni_yubor() -> int:
             {"text": "O‘XSHASHI BOR",
              "callback_data": f"j|{x['sorov_id']}|oxshash"},
         ]]
-        yubor(x["telegram_id"], _sorov_matni(x), tugmalar)
-        baza.xabar_belgila(x["yid"])
-        n += 1
+        if yubor(x["telegram_id"], _sorov_matni(x), tugmalar):
+            baza.xabar_belgila(x["yid"])
+            n += 1
+        elif qaytarib_bolmaydi():
+            # Manzil o'lik — qayta urinish foydasiz. Navbatdan
+            # chiqaramiz, sabab `qaytarib_bolmaydi` izohida.
+            baza.xabar_belgila(x["yid"])
+            print(f"  [tg] {x['telegram_id']} javob bermadi — "
+                  f"navbatdan chiqarildi (so'rov {x['sorov_id']})")
     return n
 
 
-# ── Asosiy halqa ─────────────────────────────────────────────────────────────
+def _chat_matni(x: dict) -> str:
+    """Xaridor xabarini HTML xavfsiz, qisqa bildirishnomaga aylantiradi."""
+    qatorlar = ["💬 <b>Xaridordan yangi xabar</b>",
+                f"So‘rov: {html.escape(str(x.get('sorov_matni') or ''))}"]
+    matn = (x.get("matn") or "").strip()
+    if matn:
+        qatorlar.append(html.escape(matn))
+    ilovalar = []
+    if x.get("rasm"):
+        ilovalar.append("rasm")
+    if x.get("joy"):
+        ilovalar.append("joylashuv")
+    if ilovalar:
+        qatorlar.append("Ilova: " + ", ".join(ilovalar))
+    return "\n".join(qatorlar)
+
+
+def kutayotgan_chatlarni_yubor() -> int:
+    """Xaridorning yangi chat xabarini sotuvchiga bir marta bildiradi.
+
+    VAQTINCHALIK xato qaytsa yozuv belgilanmaydi: keyingi aylanishda
+    qayta uriniladi (tarmoq uzildi, Telegram band). QAYTARIB
+    BO'LMAYDIGAN xatoda esa belgilanadi — sabab `qaytarib_bolmaydi`
+    izohida. Shu qoida yangi so'rov bildirishnomasiga ham tegishli.
+    """
+    if not SAVDO_XABARLARI:
+        return 0
+    n = 0
+    tugmalar = [[{"text": "OBER chatini ochish", "url": OBER_CHAT}]]
+    for x in baza.tg_kutayotgan_chat():
+        if yubor(x["telegram_id"], _chat_matni(x), tugmalar):
+            baza.tg_chat_belgila(x["id"])
+            n += 1
+        elif qaytarib_bolmaydi():
+            baza.tg_chat_belgila(x["id"])
+            print(f"  [tg] {x['telegram_id']} javob bermadi — "
+                  f"chat xabari navbatdan chiqarildi ({x['id']})")
+    return n
+
+
+# ── Asosiy halqalar ──────────────────────────────────────────────────────────
+
+def bildirish_sikli() -> int:
+    """Navbatdagi barcha chiquvchi xabarlarni bir marta yuborishga urinadi."""
+    return kutayotganlarni_yubor() + kutayotgan_chatlarni_yubor()
+
+
+def bildirish_halqa() -> None:
+    """Chiquvchi xabarlarni kiruvchi Telegram long-pollidan mustaqil yuboradi.
+
+    `getUpdates` odatda 25 soniyagacha kutadi yoki tarmoq xatosida undan ham
+    kech qaytadi. Bildirishnomani o‘sha so‘rov ortida qoldirish sotuvchiga
+    xabar kelishini tasodifiy sekinlashtirardi. Alohida halqa navbatni har ikki
+    soniyada tekshiradi; yuborish muvaffaqiyatsiz bo‘lsa DB belgilanmaydi va
+    keyingi aylanishda xavfsiz qayta uriniladi.
+    """
+    while True:
+        try:
+            bildirish_sikli()
+        except Exception as e:                    # noqa: BLE001
+            print(f"  [tg] bildirish xatosi: {type(e).__name__}: {e}",
+                  flush=True)
+        time.sleep(BILDIRISH_ORALIGI)
 
 def halqa() -> None:
     if not token():
@@ -241,7 +368,6 @@ def halqa() -> None:
                     q = u["callback_query"]
                     _sorov("answerCallbackQuery", callback_query_id=q["id"])
                     _tugma(q["message"]["chat"]["id"], q)
-            kutayotganlarni_yubor()
         except Exception as e:                    # noqa: BLE001
             # 2026-08-04: bu yerda faqat `type(e).__name__` yozilardi.
             # Jurnal 14 soat davomida "OperationalError" deb takrorladi va
@@ -253,11 +379,21 @@ def halqa() -> None:
 
 
 def fonda_boshla() -> None:
-    """Serverga ulanib fonda ishlaydi. Token yo'q bo'lsa jim turadi."""
+    """Serverda kiruvchi bot va chiquvchi bildirish halqalarini bir marta yoqadi."""
+    global _FONDA_BOSHLANDI
     if not token():
         return
-    threading.Thread(target=halqa, daemon=True).start()
+    with _FONDA_QULF:
+        if _FONDA_BOSHLANDI:
+            return
+        _FONDA_BOSHLANDI = True
+        threading.Thread(target=halqa, daemon=True,
+                         name="ober-telegram-kiruvchi").start()
+        threading.Thread(target=bildirish_halqa, daemon=True,
+                         name="ober-telegram-bildirish").start()
 
 
 if __name__ == "__main__":
+    threading.Thread(target=bildirish_halqa, daemon=True,
+                     name="ober-telegram-bildirish").start()
     halqa()

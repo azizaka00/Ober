@@ -35,6 +35,7 @@ import joylar
 from lugat import byudjet_top, modellarni_top, qismlarni_top
 from qidiruv import keshni_tayyorla, qidir
 import tahlil
+from yonalishlar import belgilar as yonalishlar_belgilar
 from yonalishlar import yonalish_nomlari, yonalishlarni_top
 
 # Serverda muhit o'zgaruvchisi bilan boshqariladi, kodni tahrirlash shart
@@ -251,6 +252,43 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                             "kichraytiradi va EXIF/geolokatsiya metama’lumotini olib tashlaydi.</li></ul>"
                             "<h2>Nima qilinmaydi?</h2>"
                             "<p>Ma’lumotlar uchinchi shaxsga sotilmaydi va reklama uchun ishlatilmaydi.</p>"))
+            return
+
+        # ALOQA — 2026-08-09 da qo'shildi.
+        #
+        # 6-avgust auditida "aloqa va kompaniya ma'lumoti yo'q" deb
+        # yozilgan edi, lekin o'shanda faqat maxfiylik/qoidalar sahifalari
+        # qo'shilgan — aloqaning o'zi yo'q qolgan.
+        #
+        # Nega kerak:
+        #   1. Kim turganini ko'rsatmaydigan bozor saytiga ishonilmaydi.
+        #   2. Sotuvchi muammo bo'lsa kimga yozishini bilishi kerak.
+        #   3. Payme/Click merchant ko'rigida rekvizit va aloqa tekshiriladi.
+        #
+        # Shaxsiy telefon raqami ATAYLAB yozilmagan: ochiq saytdagi raqam
+        # bir necha kunda spam ro'yxatlariga tushadi. Email va bot yetarli;
+        # kerak bo'lsa Aziz rasmiy raqam qo'shadi.
+        if u.path in ("/aloqa", "/aloqa/"):
+            self._yubor(200, "text/html; charset=utf-8",
+                        self._oddiy_sahifa(
+                            "Aloqa",
+                            "<h1>Aloqa</h1>"
+                            "<p>Savol, taklif yoki muammo bo‘lsa — yozing. "
+                            "Sotuvchilarning xabariga birinchi navbatda javob beramiz.</p>"
+                            "<h2>Bog‘lanish</h2>"
+                            "<ul>"
+                            "<li>Telegram: <a href=\"https://t.me/ober_uz_bot\">@ober_uz_bot</a></li>"
+                            "<li>Email: <a href=\"mailto:uznaiza@gmail.com\">uznaiza@gmail.com</a></li>"
+                            "</ul>"
+                            "<h2>Kompaniya</h2>"
+                            "<p>&laquo;NAIZA&raquo; mas’uliyati cheklangan jamiyati<br>"
+                            "STIR: 313204884<br>"
+                            "O‘zbekiston, Toshkent</p>"
+                            "<h2>Sotuvchilar uchun</h2>"
+                            "<p>Ro‘yxatdan o‘tish bepul va 30 soniya oladi: "
+                            "<a href=\"/sotuvchi\">sotuvchi kabineti</a>. "
+                            "Kategoriya tanlash shart emas — nima sotishingizni "
+                            "o‘z so‘zingiz bilan yozasiz.</p>"))
             return
 
         if u.path in ("/qoidalar", "/qoidalar/"):
@@ -584,6 +622,28 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         # real e'lon bor edi va bosh sahifada BITTASI HAM ko'rinmasdi —
         # faqat va'da. Shablonni takrorlash oson, 126 ming o'zbek e'lonini
         # takrorlab bo'lmaydi. Kuchimizni yashirib qo'ygan ekanmiz.
+        # Odamlar hozir nima qidirayotgani — bosh sahifadagi chiplar.
+        # Sabab `baza.songgi_qidiruvlar` izohida.
+        # Markaziy bankning rasmiy dollar kursi. Sabab
+        # `baza.dollar_kursi` izohida. Olinmasa 204 — sahifa o'sha
+        # satrni umuman chizmaydi.
+        if u.path == "/api/kurs":
+            k = baza.dollar_kursi()
+            if not k:
+                self._yubor(204, "application/json; charset=utf-8", b"")
+                return
+            self._yubor(200, "application/json; charset=utf-8",
+                        json.dumps(k, ensure_ascii=False).encode(),
+                        {"Cache-Control": "public, max-age=3600"})
+            return
+
+        if u.path == "/api/qidiruvlar":
+            self._yubor(200, "application/json; charset=utf-8",
+                        json.dumps(baza.songgi_qidiruvlar(10),
+                                   ensure_ascii=False).encode(),
+                        {"Cache-Control": "public, max-age=300"})
+            return
+
         if u.path == "/api/yangi":
             p = parse_qs(u.query)
             try:
@@ -779,7 +839,13 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
 
             modellar = sorted(modellarni_top(matn))
             qismlar = sorted(qismlarni_top(matn))
-            yonalishlar = sorted(yonalishlarni_top(matn))
+            # YO'NALISH INDEKSDAN ANIQLANADI, lug'atdan emas.
+            # `bozor_izi` matnni o'z qidiruvimizga beradi va natijalar
+            # qaysi kategoriyada ekanini sanaydi. Sabab `baza.bozor_izi`
+            # izohida. Qo'lda yozilgan yo'nalishlar ustiga qo'shiladi —
+            # ular banner, xizmat kabi indeksda kam bo'lgan sohalarni
+            # qoplaydi.
+            yonalishlar = yonalishlar_belgilar(matn)
             sid = baza.sorov_yoz(
                 matn, (d.get("tuman") or "").strip(), aloqa, byudjet,
                 modellar, qismlar, yonalishlar,
@@ -816,7 +882,9 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                 return
             qismlar = sorted(qismlarni_top(nima))
             modellar = sorted(modellarni_top(nima))
-            yonalishlar = sorted(yonalishlarni_top(nima))
+            # Sotuvchi tomonida ham xuddi shu mexanizm — ikkalasi bir
+            # xil usulda belgilansagina ular bir-birini topa oladi.
+            yonalishlar = yonalishlar_belgilar(nima)
 
             # SOTUVCHI HECH QACHON RAD ETILMAYDI.
             #
@@ -1117,8 +1185,14 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                 int(d.get("sorov_id") or 0),
                 sid, holat, narx,
                 (d.get("izoh") or "").strip()[:1000], rasm)
+            if suhbat_id is None:
+                self._yubor(409, "application/json; charset=utf-8",
+                            json.dumps({"xato": "So'rov sizga yuborilmagan, yopilgan yoki unga javob berilgan."},
+                                       ensure_ascii=False).encode())
+                return
             self._yubor(200, "application/json; charset=utf-8",
-                        json.dumps({"ok": True, "suhbat_id": suhbat_id},
+                        json.dumps({"ok": True,
+                                    "suhbat_id": suhbat_id or None},
                                    ensure_ascii=False).encode())
             return
 
@@ -1141,6 +1215,27 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
             self._yubor(200, "application/json; charset=utf-8",
                         json.dumps({"ok": True, "suhbat_id": suhbat_id},
                                    ensure_ascii=False).encode())
+            return
+
+        # KERAKLISI QAYERDAN TOPILDI — xaridor aytadi (2026-08-10).
+        # Javob ixtiyoriy. Sabab `baza.natija_yoz` izohida.
+        if u.path == "/api/sorov/natija":
+            d = self._tana()
+            sorov_id = _actor_ident(
+                {"actor": [str(d.get("actor_id") or "")]}, "xaridor")
+            if not sorov_id:
+                self._yubor(401, "application/json; charset=utf-8",
+                            json.dumps({"xato": "So'rov sessiyasi topilmadi"},
+                                       ensure_ascii=False).encode())
+                return
+            natija = (d.get("natija") or "").strip()
+            if not baza.natija_yoz(sorov_id, natija):
+                self._yubor(400, "application/json; charset=utf-8",
+                            json.dumps({"xato": "Natija noto'g'ri"},
+                                       ensure_ascii=False).encode())
+                return
+            self._yubor(200, "application/json; charset=utf-8",
+                        json.dumps({"ok": True}, ensure_ascii=False).encode())
             return
 
         # Onlayn vaqtni yashirish/ko'rsatish (Telegramdagi kabi tanlov)
@@ -1323,25 +1418,20 @@ class Server(ThreadingHTTPServer):
     daemon_threads = True
 
 
-def _lugat_qorovuli(oraliq: int = 6 * 3600) -> None:
-    """So'z -> kategoriya lug'atini vaqti-vaqti bilan qayta quradi.
-
-    Bu lug'at qo'lda yozilmaydi — indeksdagi 258 000 e'londan
-    HISOBLANADI (`soz_kategoriya.py`). Yig'uvchi yangi kategoriyaga
-    o'tgan sari yangi so'zlar qo'shiladi, ya'ni OBER yangi mahsulot
-    turlarini o'zi o'rganib boradi. Kod o'zgarmaydi.
-
-    Olti soatda bir marta yetarli: qurish 3.7 soniya, e'lonlar esa
-    undan tez o'zgarmaydi.
-    """
-    import soz_kategoriya
-    while True:
-        try:
-            soz_kategoriya.qur()
-        except Exception as e:                        # noqa: BLE001
-            print(f"  [soz-kat] xato: {type(e).__name__}: {e}", flush=True)
-        time.sleep(oraliq)
-
+# ── _lugat_qorovuli OLIB TASHLANDI (2026-08-10) ──────────────────────
+#
+# Bu oqim har 6 soatda `soz_kategoriya.qur()` ni chaqirib, HAR SO'Z
+# uchun bitta kategoriya beradigan jadval quriardi. Endi uni hech kim
+# ishlatmaydi — o'rniga `baza.bozor_izi` keldi.
+#
+# Farqi: eski jadval so'zni YOLG'IZ ko'rardi ("oyna" -> "Uy va bog'"),
+# yangisi butun matnni indeksdan o'tkazadi va so'zlarni BIRGALIKDA
+# ko'radi ("lacetti + oyna" -> Transport).
+#
+# `soz_kategoriya.py` fayli qoldirildi: u boshqa maqsadda (bozor
+# tahlili) foydali bo'lishi mumkin va hech narsani buzmaydi. Faqat
+# avtomatik qayta qurish to'xtatildi — bu har 6 soatda 300 000
+# e'lonni bekorga o'qish edi.
 
 def _wal_qorovuli(oraliq: int = 600) -> None:
     """WAL faylni vaqti-vaqti bilan qisqartiradi.
@@ -1479,20 +1569,20 @@ def main() -> None:
         except Exception:                      # noqa: BLE001
             pass
 
-    # Telegram faqat akkauntni bog'lash va bir martalik kirish kodlari
-    # uchun. So'rov, taklif va savdo yozishmalari OBER ichida qoladi.
+    # Telegram akkauntni bog'laydi, kirish kodini yuboradi va sotuvchiga
+    # yangi mos so'rov hamda xaridor chat xabarini bildiradi.
     try:
         import tg
         if tg.token():
             tg.fonda_boshla()
-            print("  Telegram kirish yordamchisi: yoqilgan")
+            print("  Telegram kirish va bildirishnomalar: yoqilgan")
         else:
-            print("  Telegram kirish yordamchisi: o'chiq (data/bot-token.txt yo'q)")
+            print("  Telegram kirish va bildirishnomalar: o'chiq "
+                  "(data/bot-token.txt yo'q)")
     except Exception as e:                        # noqa: BLE001
         print(f"  Telegram boti ishga tushmadi: {type(e).__name__}")
 
     threading.Thread(target=_wal_qorovuli, daemon=True).start()
-    threading.Thread(target=_lugat_qorovuli, daemon=True).start()
 
     # ThreadingHTTPServer: bitta sekin so'rov butun saytni to'xtatib
     # qo'ymasligi uchun. Oddiy HTTPServer navbat bilan ishlaydi va

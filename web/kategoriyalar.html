@@ -234,6 +234,13 @@
   @media (max-width:900px){
     .kat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   }
+  @media (max-width:620px){
+    /* TELEFONDA YOPISHQOQ ELEMENT BITTA (dizayn qoidasi).
+       O'lchov 2026-08-11, 390x640: bu sahifada `topbar` ham,
+       `ober-tabbar` ham yopishqoq edi — 121 px, ekranning 19% i
+       doim band. Navigatsiya pastda qoladi, tepa panel ketaveradi. */
+    .topbar{position:static}
+  }
   @media (max-width:600px){
     .topbar-inner{width:min(100% - 28px,980px);min-height:64px}
     .brand,.brand img{width:86px}

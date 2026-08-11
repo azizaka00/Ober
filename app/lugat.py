@@ -71,6 +71,18 @@ _TOXTA_XOM = (
     "olmoqchiman", "olmoqchi", "olaman", "izlayapman", "qidiryapman",
     "kim", "kimda", "kimdir", "qayerda", "qayerdan", "iltimos", "salom",
     "assalomu", "alaykum", "aka", "opa", "birodar",
+    # SOTUVCHI FE'LLARI — 2026-08-10 da qo'shildi.
+    # Sotuvchi o'zini "gilam sotaman", "mebel yasayman", "kir yuvish
+    # mashinasi tuzataman" deb tanishtiradi. Bu fe'llar mahsulotni
+    # bildirmaydi, lekin qidiruvni TORAYTIRADI: indeksda "gilam VA
+    # sotaman" birga uchraydigan e'lon kam, "gilam" esa minglab.
+    # Natijada "gilam sotaman" degan sotuvchi "gilam kerak" degan
+    # xaridorni topa olmay qolgan edi.
+    "sotaman", "sotamiz", "sotyapman", "sotuvda", "sotiladi",
+    "yasayman", "yasaymiz", "qilaman", "qilamiz", "tuzataman",
+    "tuzatamiz", "tamirlayman", "ishlayman", "ko'rsataman",
+    "beraman", "beramiz", "chiqaraman", "tikaman", "pishiraman",
+    "продаю", "продам", "делаю", "ремонтирую", "оказываю",
     # narx
     "narx", "narxi", "narxini", "qancha", "qanchaga", "pul", "puli",
     "so'm", "som", "sum", "dollar", "arzon", "arzonroq", "qimmat",
@@ -384,14 +396,45 @@ def _masofa(a: str, b: str, chek: int) -> int:
 
 _MIN_UZUNLIK = 4           # qisqa so'zlarda taqqoslash yolg'on natija beradi
 
+# ── FAQAT ANIQ YOZILGANDA TANILADIGAN VARIANTLAR ─────────────────────
+#
+# 2026-08-10 o'lchov. `bamper` qidiruvida motor moyi va shlagbaum
+# chiqardi. Sabab noaniq moslikda emas — chegaramiz allaqachon qattiq
+# (8 harfgacha atigi 1 farq). Sabab AYNAN IKKI VARIANTDA:
+#
+#     super  ->  buper    1 harf farq
+#     bufet  ->  bufer    1 harf farq
+#
+# `bufer` va `buper` — haqiqiy imlolar (буфер). Lekin ikkalasi ham
+# o'zbek e'lonlarida eng ko'p uchraydigan ikki so'zga bir harf qolgan:
+# "super" (SUPER NARX, супер цена — har qadamda) va "bufet" (oshxona
+# bufeti — mebelda).
+#
+# Bunday variantni noaniq moslikdan chiqaramiz. Aniq yozilsa —
+# topiladi; taxmin qilinmaydi. Yo'qotish kichik: bu imlolar kam
+# uchraydi. Yutuq katta: minglab yolg'on moslik yo'qoladi.
+#
+# Yangi variant qo'shayotganda o'ylang: u keng tarqalgan boshqa so'zga
+# bir harf qolganmi? Qolgan bo'lsa shu ro'yxatga qo'shing.
+FUZZYSIZ = frozenset({
+    "bufer",   # ~ bufet (oshxona bufeti)
+    "buper",   # ~ super (SUPER NARX)
+})
+
+
 # XATO EDI: birinchi harf bo'yicha guruhlagandim — lekin xato ko'pincha
 # AYNAN birinchi harfda bo'ladi ("Qoblt" / "kobalt"). Endi uzunlik bo'yicha
 # filtrlaymiz va keshlaymiz — bu tezlik uchun yetarli.
 def _royxat(indeks: dict[str, str]) -> dict[int, list[tuple[str, str]]]:
-    """Fuzzy variantlarni uzunligi bo‘yicha kichik savatlarga ajratadi."""
+    """Fuzzy variantlarni uzunligi bo‘yicha kichik savatlarga ajratadi.
+
+    `FUZZYSIZ` dagilar bu yerga TUSHMAYDI — ular faqat aniq moslikda
+    ishlaydi. Aniq moslik alohida yo'l bilan, indeksdan to'g'ridan-to'g'ri
+    tekshiriladi, shuning uchun ular yo'qolib qolmaydi.
+    """
     natija: dict[int, list[tuple[str, str]]] = {}
     for variant, kalit in indeks.items():
-        if len(variant) >= _MIN_UZUNLIK:
+        if len(variant) >= _MIN_UZUNLIK and variant not in FUZZYSIZ:
             natija.setdefault(len(variant), []).append((variant, kalit))
     return natija
 
