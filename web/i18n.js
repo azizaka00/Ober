@@ -22,6 +22,7 @@
     "Telegram holatini tekshira olmadik.":"Не удалось проверить подключение Telegram.",
     "Kategoriyalar":"Категории",
     "kategoriyalar":"категории",
+    "Barchasi":"Все",
     "Transport":"Транспорт",
     "Ko'chmas mulk":"Недвижимость",
     "Elektr jihozlari":"Электроника",

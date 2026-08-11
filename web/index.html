@@ -157,6 +157,11 @@
     white-space:nowrap!important;border:0!important
   }
 
+  /* ── TEPA PANEL (dsrupt minimal header, 2026-08-11) ────────────────
+     Ikkita holat: bosh sahifada shaffof suzadi (hero foniga qo'shilib
+     ketadi), natija sahifasida sticky bo'lib oq paneldan iborat.
+     Yagona o'zgarish: panel balandligi 72->64 px, tugmalar
+     ixchamroq — "ma'lumot birinchi" tamoyili (dizayn qoidasi 3.1). */
   .topbar{
     position:absolute;
     left:0;
@@ -192,7 +197,7 @@
   }
   .topbar-inner{
     width:min(100% - 36px,var(--content));
-    min-height:72px;
+    min-height:64px;
     margin:auto;
     display:flex;
     align-items:center;
@@ -207,28 +212,36 @@
     flex:0 0 auto;
   }
   .brand img{display:block;width:94px;height:auto}
-  .top-actions{display:flex;align-items:center;gap:18px}
+  .top-actions{display:flex;align-items:center;gap:10px}
   .mobile-label{display:none}
+  /* IKKALA TUGMA — bitta pill oilasi: Chat outlined, Sotish primary. */
   .messages-link{
-    min-height:38px;padding:0 12px;border:1px solid rgba(8,40,95,.14);
-    border-radius:var(--r-pill);background:rgba(255,255,255,.58);color:var(--navy);
-    text-decoration:none;display:inline-flex;align-items:center;font-size:12px;font-weight:760
+    min-height:36px;padding:0 14px;border:1px solid rgba(8,40,95,.16);
+    border-radius:var(--r-pill);background:rgba(255,255,255,.72);color:var(--navy);
+    text-decoration:none;display:inline-flex;align-items:center;font-size:12px;font-weight:740;
+    transition:background 120ms var(--ease),border-color 120ms var(--ease),box-shadow 120ms var(--ease);
   }
+  .messages-link:hover{background:#fff;border-color:rgba(11,37,89,.32);box-shadow:0 4px 12px rgba(11,37,89,.08)}
   .seller-link{
-    min-height:44px;
+    min-height:36px;
     display:inline-flex;
     align-items:center;
-    gap:9px;
-    padding:0 2px;
-    color:var(--navy);
-    font-size:13.5px;
-    font-weight:700;
+    gap:8px;
+    padding:0 16px 0 18px;
+    border-radius:var(--r-pill);
+    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+    color:#fff;
+    font-size:12.5px;
+    font-weight:740;
     text-decoration:none;
+    box-shadow:0 6px 14px rgba(8,27,66,.22);
+    transition:box-shadow 120ms var(--ease),transform 120ms var(--ease);
   }
+  .seller-link:hover{box-shadow:var(--cta-glow)}
   .seller-link::after{
     content:"";
-    width:8px;
-    height:8px;
+    width:7px;
+    height:7px;
     border-top:1.8px solid currentColor;
     border-right:1.8px solid currentColor;
     transform:rotate(45deg);
@@ -245,7 +258,7 @@
     position:relative;
     min-height:0;
     overflow:hidden;
-    padding:96px 18px 40px;
+    padding:88px 18px 44px;
     border-bottom:1px solid transparent;
     display:flex;
     justify-content:center;
@@ -258,23 +271,23 @@
        bo'ladi; yumshoqlik faqat rang va soyada qoladi. */
     transition:border-color 220ms var(--ease),background-color 220ms var(--ease);
   }
-  /* FON RASMI OLIB TASHLANDI.
-     U AI generatsiya qilgan "ideal ko'cha" edi: yuvilgan rang, detalsiz,
-     har AI saytida uchraydigan estetika. Sahifadagi eng katta "bu AI
-     qilgan" belgisi aynan o'sha edi. O'rniga jimgina gradient — u
-     kontentga xalaqit bermaydi va o'zini ko'rsatmaydi. */
-  /* Hero foni - yumshoq ko'k nur. Rasm emas, shovqin emas: qidiruv
-     qutisi turgan joyni ajratib turadi va sahifaga chuqurlik beradi. */
+  /* HERO FONI — RASM YO'Q (dsrupt oq tuval uslubi, 2026-08-11).
+     Ilgari bu yerda `ober-market-street-desktop.webp` CSS'da turardi:
+     ustida .84–.94 shaffoflikdagi gradient + saturate(.72) — rasm
+     deyarli ko'rinmasdi, lekin har ochilishda bir necha yuz KB
+     yuklanardi. Bu "design debt" edi (audit P0-4).
+
+     Endi faqat jimgina radial nur: qidiruv qutisi turgan joyni
+     ajratib turadi, sahifaga chuqurlik beradi va rasm hisobiga
+     yuklashni tezlashtiradi. */
   .hero::before{
     content:"";
     position:absolute;
     inset:0;
     z-index:0;
     background:
-      linear-gradient(180deg,rgba(244,248,253,.84),rgba(241,245,250,.94)),
-      url("/brend/ober-market-street-desktop.webp") center 54%/cover no-repeat,
-      linear-gradient(#f4f7fc,var(--bg));
-    filter:saturate(.72) contrast(.94);
+      radial-gradient(56rem 26rem at 50% -2%,rgba(255,255,255,.55),transparent 70%),
+      linear-gradient(180deg,#e2edf9,var(--bg));
     transition:opacity 180ms var(--ease);
   }
   /* Qidiruv qutisi - sahifadagi asosiy element. Unga eng katta
@@ -282,8 +295,8 @@
   .search-panel{box-shadow:0 2px 6px rgba(11,37,89,.06),0 18px 40px rgba(11,37,89,.10)}
   body.is-results .hero{
     min-height:0;
-    padding-top:34px;
-    padding-bottom:34px;
+    padding-top:30px;
+    padding-bottom:30px;
     border-color:var(--line);
     background:var(--bg);
   }
@@ -307,7 +320,7 @@
   }
   .hero h1{
     max-width:780px;
-    margin:0 auto 16px;
+    margin:0 auto 14px;
     font-size:clamp(30px,5.2vw,50px);
     line-height:1.05;
     letter-spacing:-.04em;
@@ -317,10 +330,101 @@
   }
   .hero-copy{
     max-width:600px;
-    margin:0 auto 26px;
+    margin:0 auto 24px;
     color:var(--muted);
     font-size:16px;
     text-wrap:balance;
+  }
+  /* HERO STATS QATORI (dsrupt "raqamlar birinchi" prinsipi, 2026-08-11).
+     Dalil bloki alohida kichkina karta emas — hero'ning o'zi raqam
+     bilan ishlaydi. Raqamlar haqiqiy: /api/holat dan keladi. */
+  .hero-stats{
+    display:flex;
+    justify-content:center;
+    margin-top:20px;
+  }
+  .hero-stats .database-trust{margin:0}
+  .hero-stats .dalil-son{font-size:24px}
+  .hero-stats .dalil-bosh{font-size:12px}
+  .hero-stats .dalil-past{font-size:11px}
+
+  /* ── KATEGORIYA NAVIGATSIYASI (dsrupt katalog chizig'i, 2026-08-11) ──
+     Bosh sahifada to'rtta tab bor, lekin odam toifani AYTIB bermaydi —
+     ko'rsatib beradi. Hero'ning ostiga 12 ta ixcham karta: ikonka +
+     nom + real e'lon soni. Barchasi /api/kategoriyalar dan keladi,
+     ikonkalar kategoriyalar.html dagi bir oiladan. */
+  .kat-nav{
+    width:min(100% - 36px,var(--content));
+    margin:0 auto;
+    padding:30px 0 8px;
+  }
+  .kat-nav-bosh{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .kat-nav-bosh h2{margin:0;font-size:19px;letter-spacing:-.02em;color:var(--navy);font-weight:750}
+  .kat-nav-bosh a{
+    color:var(--muted);font-size:12.5px;font-weight:700;text-decoration:none;
+    display:inline-flex;align-items:center;gap:5px;
+    transition:color 120ms var(--ease);
+  }
+  .kat-nav-bosh a:hover{color:var(--navy)}
+  .kat-nav-bosh a::after{
+    content:"";width:7px;height:7px;
+    border-top:1.6px solid currentColor;border-right:1.6px solid currentColor;
+    transform:rotate(45deg);
+  }
+  .kat-nav-yol{
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:10px;
+  }
+  .kat-nav-karta{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--r-orta);
+    background:var(--surface);
+    box-shadow:var(--shadow-card);
+    color:var(--navy);
+    text-decoration:none;
+    transition:transform 120ms var(--ease),box-shadow 120ms var(--ease),border-color 120ms var(--ease);
+  }
+  .kat-nav-karta:hover{
+    transform:translateY(-2px);
+    border-color:var(--line-strong);
+    box-shadow:var(--shadow-hover);
+  }
+  .kat-nav-karta:active{transform:scale(.98)}
+  .kat-nav-karta svg{flex:none;width:22px;height:22px}
+  .kat-nav-nom{
+    min-width:0;
+    display:grid;
+    gap:1px;
+  }
+  .kat-nav-nom b{
+    font-size:13px;font-weight:720;letter-spacing:-.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .kat-nav-nom span{
+    font-size:10.5px;color:var(--muted);font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+  @media (max-width:900px){
+    .kat-nav-yol{grid-template-columns:repeat(3,minmax(0,1fr))}
+  }
+  @media (max-width:560px){
+    .kat-nav{padding:24px 0 4px}
+    .kat-nav-yol{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+    }
+    .kat-nav-karta{padding:10px 11px}
   }
   body.is-results .eyebrow,
   body.is-results .hero-copy{display:none}
@@ -345,7 +449,7 @@
   }
   .search-panel:focus-within{
     border-color:var(--navy);
-    box-shadow:0 0 0 4px rgba(11,37,89,.09),0 2px 8px rgba(11,37,89,.07),0 26px 60px rgba(11,37,89,.16);
+    box-shadow:0 0 0 4px rgba(11,37,89,.10),0 2px 8px rgba(11,37,89,.07),0 26px 60px rgba(11,37,89,.18);
   }
   .search-icon{
     position:relative;
@@ -738,7 +842,8 @@
      lekin hech qachon chiqmagan. Bosh sahifaning bo'shligi qisman
      shundan edi. */
   body.is-results .samples,
-  body.is-results .database-trust{display:none}
+  body.is-results .database-trust,
+  body.is-results .kat-nav{display:none}
 
   /* NATIJA CHIQQANDA REKLAMA YO'QOLADI.
      2026-08-02 o'lchov: qidiruvdan keyin birinchi karta 1076 px da edi,
@@ -1026,13 +1131,16 @@
   .sora-chiziq p,.sora-orta p{
     margin:0;font-size:13.5px;font-weight:640;color:var(--navy)}
   .sora-btn{
-    min-height:42px;padding:0 20px;
-    border:0;border-radius:var(--r-kichik);background:var(--navy);
-    color:#fff;font:inherit;font-size:13px;font-weight:730;
-    cursor:pointer;white-space:nowrap;transition:background .12s;
+    min-height:42px;padding:0 22px;
+    border:0;border-radius:var(--r-pill);
+    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+    color:#fff;font:inherit;font-size:13px;font-weight:740;
+    cursor:pointer;white-space:nowrap;
+    box-shadow:0 6px 14px rgba(8,27,66,.20);
+    transition:box-shadow 120ms var(--ease),transform 120ms var(--ease);
   }
-  .sora-btn:hover{background:#0a1f47}
-  .sora-btn[disabled]{opacity:.6;cursor:default}
+  .sora-btn:hover{box-shadow:var(--cta-glow)}
+  .sora-btn[disabled]{opacity:.6;cursor:default;box-shadow:none}
   /* IXTIYORIY ISM (2026-08-08) — xaridor yozsa, sotuvchi chatda
      'Xaridor · Ism' deb ko'radi. Bir tegishlik jarayon buzilmaydi:
      maydon bo'sh qolsa ham so'rov yuboriladi. */
@@ -1792,7 +1900,7 @@
            emas, soxta demo suhbatni ko'rardi. Demo havolasi kerak bo'lsa
            u alohida beriladi, asosiy navigatsiyada emas. -->
       <a class="messages-link" id="takliflar-link" href="/takliflar"><span class="desktop-label">Chat</span><span class="mobile-label">Chat</span></a>
-      <a class="seller-link" href="/sotuvchi"><span class="desktop-label">Profil</span><span class="mobile-label">Profil</span></a>
+      <a class="seller-link" href="/sotuvchi"><span class="desktop-label">Sotish</span><span class="mobile-label">Sotish</span></a>
     </div>
   </div>
 </header>
@@ -1839,7 +1947,24 @@
     </div>
 
     <div class="samples" id="tez" aria-label="Namuna so‘rovlar"></div>
-    <p class="database-trust" id="holat" aria-live="polite">Bozor ma’lumoti yuklanmoqda…</p>
+    <div class="hero-stats">
+      <p class="database-trust" id="holat" aria-live="polite">Bozor ma’lumoti yuklanmoqda…</p>
+    </div>
+  </div>
+</section>
+
+<!-- KATEGORIYA NAVIGATSIYASI — odam toifani aytmaydi, ko'rsatadi.
+     API'dan 12 ta kategoriya, ikonka + nom + real son. Ikki darajali
+     sahifa /kategoriyalar da. -->
+<section class="kat-nav" id="kat-nav" aria-label="Kategoriyalar">
+  <div class="kat-nav-bosh">
+    <h2>Kategoriyalar</h2>
+    <a href="/kategoriyalar">Barchasi</a>
+  </div>
+  <div class="kat-nav-yol" id="kat-nav-yol">
+    <span class="jonli-skeleton"></span><span class="jonli-skeleton"></span>
+    <span class="jonli-skeleton"></span><span class="jonli-skeleton"></span>
+    <span class="jonli-skeleton"></span><span class="jonli-skeleton"></span>
   </div>
 </section>
 
@@ -1934,6 +2059,50 @@ const $ = s => document.querySelector(s);
 const tr = text => window.OBER_I18N.t(text);
 const LOCALE = window.OBER_I18N.locale;
 const formatInt = n => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
+// 12 ta SVG ikon — kategoriyalar.html dagi BIR OILA (24x24, 1.8px).
+// Emoji ishlatilmaydi (2026-08-11 audit): emoji vizual tilni pasaytiradi.
+const IKONLAR = {
+  transport: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11 7.6 6.4A2 2 0 0 1 9.4 5.4h5.2a2 2 0 0 1 1.8 1L19 11"/><rect x="3" y="11" width="18" height="6.5" rx="2"/><circle cx="7.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/></svg>',
+  nedvizhimost: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9.5"/><path d="M10 21v-6h4v6"/></svg>',
+  elektronika: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 16.5V21"/></svg>',
+  "dom-i-sad": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11V8.5A2.5 2.5 0 0 1 6.5 6h11A2.5 2.5 0 0 1 20 8.5V11"/><rect x="2.5" y="11" width="19" height="5.5" rx="2"/><path d="M6 16.5V20M18 16.5V20"/></svg>',
+  "detskiy-mir": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 21 7.5v9l-9 5-9-5v-9Z"/><path d="M12 11.5 21 7.5M12 11.5 3 7.5M12 11.5v10"/></svg>',
+  "moda-i-stil": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5 8.5 3H4.5v3L8 8.5V20.5h8V8.5L19.5 6V3h-4Z"/><path d="M8.5 3a3.5 3.5 0 0 0 7 0"/></svg>',
+  uslugi: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M20 4 8.5 15.5M14.5 14.5 20 20M8.5 8.5 12 12"/></svg>',
+  rabota: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="13.5" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2.5 13h19"/></svg>',
+  zhivotnye: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="9.5" r="2.4"/><circle cx="9" cy="4.8" r="2.4"/><circle cx="15" cy="4.8" r="2.4"/><circle cx="19" cy="9.5" r="2.4"/><path d="M12 10.5c2.4 0 4.9 2.1 4.9 5.1 0 1.6-1.3 2.9-2.9 2.9-1 0-1.8-.5-2-1.3-.2.8-1 1.3-2 1.3-1.6 0-2.9-1.3-2.9-2.9 0-3 2.5-5.1 4.9-5.1Z"/></svg>',
+  "hobbi-otdyh-i-sport": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5v19M2.5 12h19M5 5.5c2.3 2.3 3.9 5.2 3.9 6.5s-1.6 4.2-3.9 6.5M19 5.5c-2.3 2.3-3.9 5.2-3.9 6.5s1.6 4.2 3.9 6.5"/></svg>',
+  "otdam-darom": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13"/><path d="M12 8s-4.5 0-4.5-2.5A2.5 2.5 0 0 1 12 8Zm0 0s4.5 0 4.5-2.5A2.5 2.5 0 0 0 12 8Z"/></svg>',
+  "obmen-barter": '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 3.5 3.5 3.5-3.5 3.5"/><path d="M20.5 7H8a4.5 4.5 0 0 0-4.5 4.5M7 20.5 3.5 17l3.5-3.5"/><path d="M3.5 17H16a4.5 4.5 0 0 0 4.5-4.5"/></svg>',
+  boshqa: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>'
+};
+// KATEGORIYA NAVIGATSIYASI (2026-08-11). Bosh sahifada odam toifani
+// aytib berishni kutmaydi — ko'rsatadi. 12 ta karta, ikonka + nom +
+// real son. /api/kategoriyalar dan keladi, muvaffaqiyatsiz bo'lsa
+// bo'lim jimgina yashirinadi (to'rt holat: yuklanmoqda->bor->yo'q).
+async function kategoriyalarniChiz(){
+  const quti = $("#kat-nav-yol");
+  const bolim = $("#kat-nav");
+  try{
+    const r = await fetch("/api/kategoriyalar");
+    if(!r.ok) return;                        // xato — bo'lim jimgina yashirinadi
+    const D = await r.json();
+    if(!D.length) return;                    // bo'sh javob — yashirinadi
+    quti.innerHTML = D.map(g => `
+      <a class="kat-nav-karta" href="/kategoriyalar?kat=${encodeURIComponent(g.slug)}">
+        ${IKONLAR[g.slug] || IKONLAR.boshqa}
+        <span class="kat-nav-nom">
+          <b>${esc(tr(g.nom))}</b>
+          <span>${formatInt(g.elonlar || 0)} ta e’lon</span>
+        </span>
+      </a>`).join("");
+  }catch(err){
+    // Xato yoki bo'sh javob — kategoriya bo'limi ko'rsatilmaydi.
+    // Bu ixtiyoriy blok: API ishlamasa ham qidiruv o'z ishini qiladi.
+    console.error("kategoriyalarni chizishda xato:", err);
+    bolim.hidden = true;
+  }
+}
 const TITLE = tr("OBER — siz yozasiz, bozor javob beradi");
 const som = n => Number(n) ? formatInt(n) + tr(" so‘m") : tr("narx ko‘rsatilmagan");
 // 2026-08-04: bu yerda uch marta `toLocaleString` ishlatilgan edi —
@@ -3091,6 +3260,10 @@ searchPanel.addEventListener("drop", e => {
   rasmTanla(e.dataTransfer?.files?.[0]);
 });
 holatniOl();
+// Kategoriya navigatsiyasi FAQAT bosh sahifada — natija sahifasida
+// bu blok quyida yashirin (body.is-results .kat-nav), API so'rovi ham
+// keraksiz. `?q=` bor paytda ishga tushmaydi (kod review, 2026-08-11).
+if(!new URLSearchParams(location.search).has("q")) kategoriyalarniChiz();
 jonliLenta();
 oldingiJavoblar();
 let saqlanganSorov = localStorage.getItem("ober_sorov") || "";

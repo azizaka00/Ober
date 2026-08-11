@@ -158,17 +158,26 @@ qidiradi — natijada "kimda bor" degan har bir so'rov tikuvchiga
 borardi (2026-08-10). `yonalishlar._TASHLANGAN` nimalar tashlanganini
 ko'rsatadi.
 
-## Manbalar — 2026-08-10 da tekshirilgan
+## Manbalar — 2026-08-11 da qayta audit qilingan
 
 | Sayt | Holat |
 |---|---|
-| OLX | ochiq, ishlaydi |
-| Telegram (ochiq kanal) | ishlaydi |
-| uzum.uz | robots ruxsat beradi, lekin CAPTCHA'ga yo'naltiradi |
-| birbir.uz, olcha.uz, mediapark.uz, asaxiy.uz, texnomart.uz | Cloudflare 403 |
+| OLX | ✅ ochiq, ishlaydi |
+| Telegram (ochiq kanal) | ✅ ishlaydi |
+| **avtoelon.uz** | ✅ **ochiq SSR — yangi A tur manbai (adapter yozish kerak)** |
+| **asaxiy.uz** | ✅ **ochiq SSR — B tur tayanch narx uchun eng oson** |
+| uzum.uz | robots **rasman** product/category ni ochgan, lekin CAPTCHA — hamkorlik suhbatiga asos |
+| olcha.uz · texnomart.uz | SSR bor, lekin tovarlari JS-render (brauzersiz olinmaydi) |
+| mediapark.uz | SSR bor, lekin robots `/ru/` ni taqiqlaydi — hurmat qilinadi |
+| birbir.uz | 403 (30.07 da ochiq edi — himoya qo'shilgan) |
+| prom.uz | 403 |
 
-CAPTCHA yechilmaydi, Cloudflare aylanilmaydi. Yangi manba qo'shish —
-kod ishi emas, **hamkorlik ishi**: rasmiy API yoki kelishuv.
+To'liq ro'yxat: `docs/01-manbalar.md` (2026-08-11 audit bo'limi).
+
+CAPTCHA yechilmaydi, Cloudflare aylanilmaydi, robots taqiqini buzilmaydi.
+Yangi manba qo'shish — kod ishi emas, **hamkorlik ishi**: rasmiy API yoki
+kelishuv. Lekin ochiq SSR manbalar (avtoelon, asaxiy) oddiy HTTP adapter
+talab qiladi.
 
 ## Ochiq muammolar (2026-08-10)
 
