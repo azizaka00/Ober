@@ -34,6 +34,7 @@ from __future__ import annotations
 import json
 import sqlite3
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -68,8 +69,18 @@ def post(yol: str, d: dict) -> dict:
     req = urllib.request.Request(
         API + yol, data=json.dumps(d).encode(),
         headers={"Content-Type": "application/json"}, method="POST")
-    with urllib.request.urlopen(req, timeout=15) as r:
-        return json.loads(r.read().decode())
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.loads(r.read().decode())
+    except urllib.error.HTTPError as e:
+        # 429 — tezlik chegarasi. Sinov o'zi bir necha marta ishga
+        # tushirilsa, `/api/sotuvchi/royxat` soatiga 10 ta bilan
+        # cheklanadi va qolgan oqim ham buziladi. Tashxis aniq bo'lsin.
+        if e.code == 429:
+            print("  DIQQAT: tezlik chegarasi (429).")   # noqa: T201
+            print("  Sinov 1 soat ichida bir necha marta ishga tushirilgan.")   # noqa: T201
+            print("  `python server.py` ni qayta ishga tushirib urining.")   # noqa: T201
+        raise
 
 
 def tozala_test_yozuvlari(sorov_ids: list[int], sotuvchi_ids: list[int]) -> None:
@@ -231,16 +242,21 @@ def main() -> None:
     print("[8] Test ma'lumotlarini tozalash")
     try:
         tozala_test_yozuvlari([sorov_id], [sotuvchi_id])
-        qolgan = 0
+        qolgan_sorov = qolgan_sotuvchi = 0
         if BAZA.exists():
             c = sqlite3.connect(BAZA)
             try:
-                qolgan = c.execute(
+                qolgan_sorov = c.execute(
                     "SELECT COUNT(*) FROM sorovlar WHERE ism=? AND matn=?",
                     (TEST_ISM, TEST_MATN)).fetchone()[0]
+                qolgan_sotuvchi = c.execute(
+                    "SELECT COUNT(*) FROM sotuvchilar WHERE (aloqa=? OR aloqa=?)"
+                    " AND nom=?",
+                    ("+" + TEST_ALOQA, TEST_ALOQA, TEST_NOM)).fetchone()[0]
             finally:
                 c.close()
-        ok(qolgan == 0, "test so'rovlar bazadan o'chirildi")
+        ok(qolgan_sorov == 0 and qolgan_sotuvchi == 0,
+           "test so'rov va sotuvchi bazadan o'chirildi")
     except Exception as e:
         ok(False, "tozalash", f"{e}")
 
