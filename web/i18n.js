@@ -6,6 +6,7 @@
 
   const RU = {
     "OBER bosh sahifa":"Главная OBER",
+    "Asosiy kontentga o‘tish":"Перейти к содержимому",
     "Bosh sahifa":"Главная",
     // Tab bar 2026-08-10 da ISH bo'yicha nomlandi: sahifa nomi emas,
     // odam nima qilayotgani. "Qidirish" — xaridor tomoni.

@@ -473,3 +473,17 @@ Skillni ishda sinadik: `linear-gradient(180deg,#ffc24d,#f59e0b)` va `color:#2314
 - Barcha haqiqiy emojilar SVG ga almashtirildi: telefon (call-btn), x (yopish), check (farq jadvali 5 joy). U+2190 (`←`) o'qlari EMOJI EMAS — matn belgisi, qoldirildi.
 - SABOQ: `🕐|📍|🏷` tarjima regex'i elon.html SVG ga o'tgach hech qachon ishlamaydigan qoldiq bo'lib qolgan — ishlatilmaydigan regex'lar kod auditi paytida o'chirilishi kerak.
 - SABOQ: inline-flex ichida SVG+matn orasini bo'shliq bilan emas, `gap` bilan ajratish kerak (flexbox bo'shliqni yutadi).
+
+## 2026-08-12: window.alert -> inline xabar (sotuvchi kabineti)
+
+- Ikkala alert inline'ga o'tkazildi: e'lon o'chirilmaganda #elon-ro boshiga `understood error` bloki, rasm kattaligida esa mavjud #f-izoh forma izohi.
+- SABOQ: review topdi — xato xabari to'g'ri harakatdan keyin ham qolib ketadi. `#f-izoh` muvaffaqiyatli fayl tanlanganda tozalanadi. Forma xatolari ko'rsatilgach, keyingi muvaffaqiyatli harakatda tozalanishi shart.
+- `confirm()` tasdiqlash dialogi qoldirildi: skill faqat `window.alert` ni taqiqlaydi, tasdiqlash xato xabari emas.
+
+## 2026-08-12: Skip-link barcha sahifalarga qo'shildi
+
+- `.skip-link` CSS ober-ui.css ga (barcha sahifada yuklanadi): fixed, translateY(-160%) yashirin, focus'da amber outline bilan chiqadi.
+- 5 sahifa: index->#natija, kategoriyalar/sotuvchi/takliflar->#asosiy, elon->#sahifa. takliflar main'ga id="asosiy" qo'shildi (yo'q edi).
+- SABOQ (review): skip-link manzili `tabindex="-1"` bo'lishi shart — aks holda fokus main'ga o'tmaydi, keyingi Tab header'dan davom etadi. WCAG standart naqshi.
+- SABOQ: i18n kaliti va HTML matni apostrofda BIR XIL kod nuqtasida bo'lishi kerak (U+2018) — translate() normalizatsiyasi faqat ASCII ga o'giradi, mos kelmasa tarjima ishlamaydi.
+- `:focus-visible` bilan birga `:focus` fallback qo'shildi (eski brauzerlar).

@@ -147,6 +147,32 @@ input::placeholder,textarea::placeholder{color:#8894a7;opacity:1}
   body::after{opacity:.016;background-size:4px 4px}
 }
 
+/* SKIP-LINK (2026-08-12) — klaviatura foydalanuvchisi Tab bosganda
+   birinchi element bo'lib ko'rinadi, boshqa payt yashirin.
+   Har sahifada `<body>` boshida `<a class="skip-link" href="#...">`. */
+.skip-link{
+  position:fixed;
+  top:12px;
+  left:12px;
+  z-index:1000;
+  padding:10px 18px;
+  border-radius:var(--r-kichik);
+  background:var(--navy);
+  color:#fff;
+  font:inherit;
+  font-size:13px;
+  font-weight:780;
+  text-decoration:none;
+  box-shadow:0 10px 26px rgba(8,27,66,.28);
+  transform:translateY(-160%);
+  transition:transform 180ms var(--ease);
+}
+.skip-link:focus,.skip-link:focus-visible{
+  transform:none;
+  outline:3px solid var(--amber-yorqin);
+  outline-offset:2px;
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   button:active,a:active{transform:none!important}

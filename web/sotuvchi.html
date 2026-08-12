@@ -875,6 +875,7 @@
 <link rel="stylesheet" href="/ober-ui.css">
 </head>
 <body>
+<a class="skip-link" href="#asosiy">Asosiy kontentga o‘tish</a>
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="/" aria-label="OBER bosh sahifa">
@@ -890,7 +891,7 @@
   </div>
 </header>
 
-<main id="asosiy" aria-live="polite"></main>
+<main id="asosiy" tabindex="-1" aria-live="polite"></main>
 
 <script src="/i18n.js"></script>
 <script src="/tabbar.js"></script>
@@ -1560,7 +1561,11 @@ async function elonOchir(id){
     if(!r.ok) throw new Error("O‘chirilmadi");
     elonlarim();
   }catch(e){
-    alert("E’lon o‘chirilmadi. Qayta urinib ko‘ring.");
+    // 2026-08-12: window.alert o'rniga inline xabar — brauzer popup'ini
+    // bloklamaydi, kabinetdan chiqib ketmaydi.
+    const ro = document.getElementById("elon-ro");
+    if(ro) ro.insertAdjacentHTML("afterbegin",
+      '<div class="understood error" role="alert">E’lon o‘chirilmadi. Qayta urinib ko‘ring.</div>');
   }
 }
 
@@ -1705,9 +1710,19 @@ function elonRasmlarniChiz(){
 function elonRasmTanlandi(input){
   const fayl = input.files && input.files[0];
   if(!fayl) return;
-  if(fayl.size > 5 * 1024 * 1024){ alert("Rasm 5 MB dan kichik bo‘lishi kerak"); input.value = ""; return; }
+  if(fayl.size > 5 * 1024 * 1024){
+    // 2026-08-12: window.alert o'rniga forma izohi (mavjud tizim).
+    const izoh = document.getElementById("f-izoh");
+    if(izoh){ izoh.textContent = "Rasm 5 MB dan kichik bo‘lishi kerak"; izoh.className = "forma-izoh xato"; }
+    input.value = ""; return;
+  }
   const oqir = new FileReader();
-  oqir.onload = () => { elonFormaRasmlar.push(oqir.result); elonRasmlarniChiz(); };
+  oqir.onload = () => {
+    // Oldingi 5 MB xabari o'chsin — to'g'ri fayl tanlandi (2026-08-12).
+    const izoh = document.getElementById("f-izoh");
+    if(izoh){ izoh.textContent = ""; izoh.className = "forma-izoh"; }
+    elonFormaRasmlar.push(oqir.result); elonRasmlarniChiz();
+  };
   oqir.readAsDataURL(fayl);
   input.value = "";
 }
