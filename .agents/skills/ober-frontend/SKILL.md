@@ -31,6 +31,13 @@ Asosiy tokenlar `web/ober-ui.css` `:root`'ida (barcha sahifaga keladi). Har sahi
 - **Amber = asosiy CTA tili.** Gradient `linear-gradient(180deg,#ffc24d,#f59e0b)`, matn `#231400`. Hover soyasi `--cta-glow` (ober-ui.css da bir joyda, amber).
 - **Yashil faqat ma'no tashiganda** — allaqachon tanlangan, yoqilgan. Qizil faqat xato/kesilgan.
 
+**Logotip va ikonka (2026-08-12, SVG qayta chizilgan):**
+- `web/brend/logo.svg` — yorug' rejim (navy monogram + amber nuqta + "ober" + tagline).
+- `web/brend/logo-oy.svg` — quyuq rejim (oq matn + amber nuqta). Quyuq fonda **oq variant ishlatiladi** — navy logotip ko'k fonda ko'rinmaydi.
+- `web/brend/icon.svg` / `icon.png` — favicon: navy yumaloq, oq O halqa, ichida amber nuqta (talab-taklif kesishmasi), pastda amber chiziq.
+- Brend juftligi: **navy `#0a2b63` + amber `#f5a623`**. Boshqa ko'k (masalan eski `#002050`) ishlatilmaydi — logotip va sayt tokenlari bir oilada bo'lishi shart (2026-08-12: eski logo saytdan farqli ko'kda edi — nomuvofiqlik).
+- PNG generatsiyasi: Pillow (lokal ishlab chiqishda). SVG asl manba, PNG — render natijasi.
+
 **Burchak — to'rtta qiymat, boshqasi yo'q:** `--r-kichik:10px` (input/tugma) · `--r-orta:14px` (karta) · `--r-katta:20px` (panel/qidiruv) · `--r-pill:999px` (chip). Xom `16px`, `12px` yozish taqiqlanadi. Kichik dekorativ belgilar uchun `--r-belgi:5px` (nomlangan, `--r-quyruq` sabog'i bilan bir xil).
 
 ## 3. Quyuq rejim — UCH QAVAT (2026-08-11, eng muhim)

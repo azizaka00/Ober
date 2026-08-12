@@ -502,3 +502,12 @@ OBER" chiqadi. Yechim: `/elon/{id}` route'ida server elon.html ni o'qib,
 baza.ober_elon_ol orqali e'lon nomini olib og:title/description/url va
 <title> ni almashtiradi. Sotuvchi kiritgan matnni html.escape qilish shart
 (XSS). Replace jimgina ishlamay qolmasin — mos kelmasa jurnalga yoziladi.
+
+## 2026-08-12 — Logotip: eski PNG 56KB, yangi SVG oilasi ~1KB
+Eski logo.png (384x130, #002050) sayt tokeni #0a2b63 bilan mos emas edi —
+"ideal emas" hissi aynan shu nomuvofiqlikdan. Yangi: logo.svg / logo-oy.svg
+(quyuq uchun) / icon.svg + Pillow bilan render qilingan PNG'lar.
+Muhim: header'da 94x29 o'lchamda to'liq kompozitsiya (monogram+so'z+tagline)
+o'qilmaydi — ALohida KOMPAKT variant kerak (monogram+so'z, taglinesiz).
+Review topdi: logotip kompozitsiyasi ishlatiladigan o'lchamga mos bo'lishi
+shart, aks holda kichik o'lchamda shovqinga aylanadi.
