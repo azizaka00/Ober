@@ -52,7 +52,15 @@
     margin:0;
     min-width:320px;
     overflow-x:hidden;
-    background:var(--bg);
+    /* SHISHA FONI (2026-08-12). Yagona kulrang `--bg` ustida yarim
+       shaffof oq karta hech narsani ko'rsatmaydi — shisha faqat
+       orqasida NARSA bo'lsa ko'rinadi. Yengil radial nurlar shisha
+       kartalar orqasida chuqurlik beradi. Harakat qilmaydi, rasm
+       yuklamaydi — faqat gradient. */
+    background:
+      radial-gradient(42rem 26rem at 88% -6%,rgba(245,166,35,.10),transparent 70%),
+      radial-gradient(50rem 30rem at -8% 12%,rgba(11,37,89,.06),transparent 70%),
+      var(--bg);
     color:var(--text);
     font-family:Onest,"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
     font-size:15px;
@@ -123,7 +131,9 @@
     height:52px;
     border:1px solid var(--line);
     border-radius:var(--r-katta);
-    background:var(--surface);
+    background:rgba(255,255,255,.72);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
     box-shadow:var(--shadow-card);
     transition:border-color 120ms var(--ease),box-shadow 120ms var(--ease);
   }
@@ -159,7 +169,7 @@
     padding:7px 14px 7px 10px;
     border:1px solid var(--line-strong);
     border-radius:var(--r-pill);
-    background:var(--surface);
+    background:rgba(255,255,255,.72);
     color:var(--navy);
     font-size:12.5px;
     font-weight:750;
@@ -175,7 +185,7 @@
     margin-left:auto;
     padding:4px 11px;
     border-radius:var(--r-pill);
-    background:var(--surface);
+    background:rgba(255,255,255,.72);
     border:1px solid var(--line);
     color:var(--muted);
     font-size:11.5px;
@@ -196,14 +206,17 @@
     padding:20px;
     border:1px solid var(--line);
     border-radius:var(--radius);
-    background:var(--surface);
+    /* SHISHA KARTA — fon gradienti orqasidan ko'rinadi.
+       Backdrop-blur qo'yilmaydi: kartalar ko'p (12+), har birida
+       blur mobil'da GPU yuklaydi. Shaffof fonning o'zi yetarli. */
+    background:rgba(255,255,255,.72);
     box-shadow:var(--shadow-card);
     text-decoration:none;
     transition:transform 120ms var(--ease),box-shadow 120ms var(--ease),border-color 120ms var(--ease);
   }
   .kat-karta::before{
     content:"";position:absolute;left:20px;top:0;width:52px;height:3px;
-    border-radius:0 0 999px 999px;
+    border-radius:0 0 var(--r-pill) var(--r-pill);
     background:linear-gradient(90deg,#f59e0b,#ffd98a)
   }
   .kat-karta:hover{transform:translateY(-2px);border-color:var(--amber-line);box-shadow:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(245,166,35,.14)}
@@ -252,7 +265,9 @@
     overflow:hidden;
     border:1px solid var(--line);
     border-radius:var(--r-katta);
-    background:var(--surface);
+    background:rgba(255,255,255,.72);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
     box-shadow:var(--shadow-card);
   }
   .kat-qator{

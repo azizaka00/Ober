@@ -61,7 +61,12 @@
     margin:0;
     min-width:320px;
     overflow-x:hidden;
-    background:var(--bg);
+    /* SHISHA FONI (2026-08-12) — boshqa sahifalar bilan bir xil.
+       Yarim shaffof oq panellar orqasida ko'rinadigan yengil nurlar. */
+    background:
+      radial-gradient(42rem 26rem at 88% -6%,rgba(245,166,35,.10),transparent 70%),
+      radial-gradient(50rem 30rem at -8% 12%,rgba(11,37,89,.06),transparent 70%),
+      var(--bg);
     color:var(--text);
     font-family:Onest,"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
     font-size:15px;

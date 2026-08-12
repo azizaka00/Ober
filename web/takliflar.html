@@ -66,7 +66,16 @@
     font-family:Onest,"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif}
   /* Ikkita issiq radial gradient olib tashlandi: sovuq palitra bilan
      to'qnashardi va "AI gradienti" taassurotini berardi. */
-  body{margin:0;min-height:100dvh;background:var(--ivory)}
+  body{
+    margin:0;
+    min-height:100dvh;
+    /* SHISHA FONI (2026-08-12) — boshqa sahifalar bilan bir xil.
+       Yarim shaffof oq panellar orqasida ko'rinadigan yengil nurlar. */
+    background:
+      radial-gradient(42rem 26rem at 88% -6%,rgba(245,166,35,.10),transparent 70%),
+      radial-gradient(50rem 30rem at -8% 12%,rgba(11,37,89,.06),transparent 70%),
+      var(--ivory);
+  }
   .narx,.taklif-narx,.answer-price{font-variant-numeric:tabular-nums;
     font-feature-settings:"tnum" 1}
   button:not([disabled]):active{transform:translateY(1px)}
@@ -114,7 +123,10 @@
   .context h1{margin:0;color:var(--navy);font-size:clamp(24px,5vw,34px);line-height:1.08;letter-spacing:-.035em}
   .context p{margin:8px 0 0;color:var(--muted);font-size:14px}
   .role-switch{display:flex;width:fit-content;margin:-7px clamp(18px,4vw,38px) 18px;padding:4px;
-    border:1px solid var(--line);border-radius:var(--r-pill);background:#fff;box-shadow:var(--shadow-card)}
+    border:1px solid var(--line);border-radius:var(--r-pill);
+    background:rgba(255,255,255,.72);
+    -webkit-backdrop-filter:saturate(140%) blur(12px);backdrop-filter:saturate(140%) blur(12px);
+    box-shadow:var(--shadow-card)}
   .role-switch a{min-height:36px;padding:0 14px;border-radius:var(--r-pill);display:flex;align-items:center;
     color:var(--muted);text-decoration:none;font-size:12px;font-weight:800}
   .role-switch a[aria-current="page"]{background:var(--navy);color:#fff}
@@ -179,7 +191,8 @@
   }
   .empty-retry:hover{box-shadow:var(--cta-glow),inset 0 1px 0 rgba(255,255,255,.12);transform:translateY(-1px)}
   .empty-actions .empty-secondary{
-    margin-top:0;border:1px solid var(--line);background:#fff;color:var(--navy);
+    margin-top:0;border:1px solid var(--line);
+    background:rgba(255,255,255,.72);color:var(--navy);
     font-size:13px;font-weight:750
   }
   .chat-placeholder{min-height:620px;border:1px solid rgba(8,40,95,.10);
@@ -198,7 +211,7 @@
   .chat-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px}
   /* Onlayn vaqtni yashirish — Telegramdagi kabi tanlov */
   .quiet-toggle{min-height:32px;padding:0 11px;border:1px solid var(--line);
-    border-radius:var(--r-pill);background:#fff;color:var(--muted);
+    border-radius:var(--r-pill);background:rgba(255,255,255,.72);color:var(--muted);
     font:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
   .quiet-toggle.off{background:var(--navy);color:#fff;border-color:var(--navy)}
   .choose-active{min-height:34px;padding:0 12px;border:0;border-radius:var(--r-pill);
@@ -210,12 +223,12 @@
   /* Joylashuv xabari */
   .geo-msg{display:inline-flex;align-items:center;gap:7px;
     padding:9px 13px;border-radius:var(--r-kichik);border:1px solid var(--line);
-    background:#fff;color:var(--navy);text-decoration:none;font-weight:700;font-size:13px}
+    background:rgba(255,255,255,.72);color:var(--navy);text-decoration:none;font-weight:700;font-size:13px}
   @media (max-width:520px){
     .quiet-toggle{display:none}.chat-head>.avatar{display:none}
     .chat-head{grid-template-columns:auto minmax(0,1fr) auto}
   }
-  .back{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:var(--r-kichik);padding:9px 11px;font-size:12px;font-weight:800}
+  .back{border:1px solid var(--line);background:rgba(255,255,255,.72);color:var(--navy);border-radius:var(--r-kichik);padding:9px 11px;font-size:12px;font-weight:800}
   .chat-person strong{display:block;color:var(--navy);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .online{font-size:12px;color:var(--green);font-weight:700}
   .price-pill{border:1px solid var(--line);border-radius:var(--r-pill);padding:8px 10px;font-size:12px;color:var(--navy);font-weight:850;white-space:nowrap}
@@ -236,14 +249,16 @@
   .natija-savol{
     margin:14px auto 4px;padding:12px 14px;max-width:340px;
     border:1px solid var(--line);border-radius:var(--r-orta);
-    background:#fff;text-align:center;
+    background:rgba(255,255,255,.72);
+    -webkit-backdrop-filter:saturate(140%) blur(12px);backdrop-filter:saturate(140%) blur(12px);
+    text-align:center;
   }
   .natija-savol p{margin:0 0 10px;font-size:12.5px;color:var(--text)}
   .natija-tugmalar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
   .natija-tugmalar button{
     flex:1 1 auto;min-height:38px;padding:0 12px;
     border:1px solid var(--line);border-radius:var(--r-pill);
-    background:#fff;color:var(--text);font:inherit;font-size:12px;cursor:pointer;
+    background:rgba(255,255,255,.72);color:var(--text);font:inherit;font-size:12px;cursor:pointer;
   }
   .natija-tugmalar button:hover{background:var(--navy-soft)}
   .natija-rahmat{margin:14px auto 4px;text-align:center;color:var(--muted);font-size:12px}

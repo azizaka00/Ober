@@ -57,7 +57,12 @@
   html{-webkit-text-size-adjust:100%}
   body{
     font-family:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    background:var(--bg);
+    /* SHISHA FONI (2026-08-12) — kategoriyalar sahifasi bilan bir xil.
+       Yarim shaffof oq karta orqasida ko'rinadigan yengil nurlar. */
+    background:
+      radial-gradient(42rem 26rem at 88% -6%,rgba(245,166,35,.10),transparent 70%),
+      radial-gradient(50rem 30rem at -8% 12%,rgba(11,37,89,.06),transparent 70%),
+      var(--bg);
     color:var(--text);
     line-height:1.5;
     font-size:15px;
@@ -103,7 +108,7 @@
   }
 
   /* ── RASMLAR ───────────────────────────────────────────────── */
-  .rasm-quti{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .rasm-quti{background:rgba(255,255,255,.72);backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
   .rasm-katta{
     aspect-ratio:4/3;background:var(--surface-2);
     display:flex;align-items:center;justify-content:center;
@@ -127,7 +132,10 @@
 
   /* ── MA'LUMOT ──────────────────────────────────────────────── */
   .elon-karta{
-    background:var(--surface);border:1px solid var(--line);
+    background:rgba(255,255,255,.72);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    border:1px solid var(--line);
     border-radius:var(--radius);padding:28px;
     box-shadow:var(--shadow-card);
   }
@@ -180,7 +188,10 @@
   .tel-raqam svg{flex:none}
 
   .xabar-yopilgan{
-    background:var(--surface);border:1px solid var(--line);
+    background:rgba(255,255,255,.72);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    border:1px solid var(--line);
     border-radius:var(--radius);padding:40px 28px;text-align:center;
   }
   .xabar-yopilgan h1{font-size:20px;font-weight:800}
