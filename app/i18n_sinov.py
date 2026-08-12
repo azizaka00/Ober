@@ -8,7 +8,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 
+SON = 0
+
+
 def tekshir(shart: bool, nom: str) -> None:
+    global SON
+    SON += 1
     if not shart:
         raise AssertionError(nom)
     print(f"  OK  {nom}")
@@ -37,6 +42,16 @@ def main() -> None:
             "chat va notification ruscha lug‘atda bor")
     tekshir('MutationObserver' in i18n,
             "API dan keyin chizilgan dinamik matn ham tarjima qilinadi")
+    # 2026-08-12: kabinet ichidagi 'Yangi e'lon' formasi matnlari
+    # ruscha lug'atda bo'lmasa, rus interfeysda o'zbekcha qolib ketadi.
+    for soz in ('"Nima sotyapsiz?":"Что продаёте?"',
+                '"Narx (so‘m)":"Цена (сум)"',
+                '"Tavsif (ixtiyoriy)":"Описание (необязательно)"',
+                '"Rasmlar (ixtiyoriy, 5 tagacha)":"Фото (необязательно, до 5)"',
+                '"Joylashtirish":"Опубликовать"',
+                '"E’lonni tahrirlash":"Редактирование объявления"',
+                '"qo‘shish":"добавить"'):
+        tekshir(soz in i18n, f"e'lon formasi ruscha lug‘atda bor: {soz.split(':')[0]}")
     tekshir('u.path == "/i18n.js"' in server,
             "server markaziy til faylini uzatadi")
     for name, html in pages.items():
@@ -45,7 +60,7 @@ def main() -> None:
         tekshir('class="lang-slot"' in html,
                 f"{name} til almashtirgich joyiga ega")
 
-    print("\nI18N SINOVI: 13/13")
+    print(f"\nI18N SINOVI: {SON}/{SON}")
 
 
 if __name__ == "__main__":

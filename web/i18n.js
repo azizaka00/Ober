@@ -226,6 +226,24 @@
     "akkaunt va OBER bildirishnomalari uchun":"для аккаунта и уведомлений OBER",
     "So‘rovlarni ko‘rish":"Смотреть запросы",
     "Mos so‘rovlarni ko‘rish":"Смотреть подходящие запросы",
+    // Kabinet ichidagi 'Yangi e'lon' formasi (2026-08-12). JS orqali
+    // render qilinadi — MutationObserver tarjima qiladi, lekin lug'atda
+    // yo'q edi va rus tilida o'zbekcha qolib ketardi.
+    "Yangi so‘rovni darhol biling":"Узнавайте о новом запросе сразу",
+    "Nom va narx yetarli. Rasm va tavsif ixtiyoriy.":"Имени и цены достаточно. Фото и описание — по желанию.",
+    "Nima sotyapsiz?":"Что продаёте?",
+    // "Narx (so‘m)" — e'lon FORMASI labeli; "Narxi (so‘m)" (yuqorida)
+    // — qidiruv FILTRI labeli. Ikkalasi ham kerak, birlashtirilmaydi.
+    "Narx (so‘m)":"Цена (сум)",
+    "Kelishiladi":"Договорная",
+    "Tavsif (ixtiyoriy)":"Описание (необязательно)",
+    "Holati, yetkazish, qo‘shimcha ma’lumot...":"Состояние, доставка, дополнительная информация...",
+    "Rasmlar (ixtiyoriy, 5 tagacha)":"Фото (необязательно, до 5)",
+    "Saqlash":"Сохранить",
+    "Joylashtirish":"Опубликовать",
+    "E’lonni tahrirlash":"Редактирование объявления",
+    "qo‘shish":"добавить",
+    "← E’lonlarim":"← Мои объявления",
     "Shu mahsulotni so‘rash":"Спросить об этом товаре",
     "So‘rov mos sotuvchilarga boradi. To‘lov va yetkazish OBER orqali bajarilmaydi.":"Запрос уйдёт подходящим продавцам. Оплата и доставка не проводятся через OBER.",
     "Nom, yo‘nalish, joy va telefon raqamini to‘ldiring.":"Укажите имя, направление, местоположение и номер телефона.",
@@ -556,6 +574,10 @@
     if ((match = text.match(/^Qisqaroq yozing: «(.+)» o'rniga «(.+)»$/))) {
       return `Пишите короче: «${match[1]}» — просто «${match[2]}»`;
     }
+    // Forma misollari (2026-08-12): "Masalan: 3 kishilik burchak divan" —
+    // misol mahsulot nomi tarjima qilib bo'lmaydi, lekin "Masalan:"
+    // prefixi ruscha bo'lishi kerak. Ichi o'z holida qoladi.
+    if ((match = text.match(/^Masalan: (.+)$/))) return `Например: ${match[1]}`;
     // Topildi qatorida raqam strong ichida, "· N so'm dan" esa alohida
     // text-node — uni alohida qoida bilan tarjima qilamiz.
     if ((match = text.match(/^· (.+) dan$/))) return `· от ${match[1].replace(/ so[‘’']m$/, " сум")}`;
