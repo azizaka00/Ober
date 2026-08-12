@@ -394,6 +394,13 @@
     "Telefon raqamini ko‘rsatish":"Показать номер телефона",
     "E‘lon topilmadi":"Объявление не найдено",
     "Bu e‘lon mavjud emas yoki o‘chirilgan bo‘lishi mumkin.":"Этого объявления нет или оно было удалено.",
+    // elon.html yopilgan-xabar holatlari (2026-08-12): JS orqali
+    // innerHTML bilan yoziladi — MutationObserver tarjima qiladi,
+    // lekin lug'atda yo'q edi va rus tilida o'zbekcha qolib ketardi.
+    "Bu e‘lon yopilgan":"Это объявление закрыто",
+    "E‘lon olib tashlangan yoki sotilgan bo‘lishi mumkin.":"Объявление могло быть удалено или продано.",
+    "← Bosh sahifaga":"← На главную",
+    "Havola noto‘g‘ri bo‘lishi mumkin. Bosh sahifadan qidirib ko‘ring.":"Возможно, ссылка неверна. Попробуйте поискать с главной.",
     "Bugun":"Сегодня",
     "Kecha":"Вчера",
     "So‘rovlar":"Запросы",
@@ -578,6 +585,8 @@
     // misol mahsulot nomi tarjima qilib bo'lmaydi, lekin "Masalan:"
     // prefixi ruscha bo'lishi kerak. Ichi o'z holida qoladi.
     if ((match = text.match(/^Masalan: (.+)$/))) return `Например: ${match[1]}`;
+    // Galereya rasmi aria-labeli (elon.html): "Rasm 1".."Rasm 5" (2026-08-12).
+    if ((match = text.match(/^Rasm (\d+)$/))) return `Фото ${match[1]}`;
     // Topildi qatorida raqam strong ichida, "· N so'm dan" esa alohida
     // text-node — uni alohida qoida bilan tarjima qilamiz.
     if ((match = text.match(/^· (.+) dan$/))) return `· от ${match[1].replace(/ so[‘’']m$/, " сум")}`;

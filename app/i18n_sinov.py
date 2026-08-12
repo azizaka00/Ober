@@ -42,6 +42,11 @@ def main() -> None:
             "chat va notification ruscha lug‘atda bor")
     tekshir('MutationObserver' in i18n,
             "API dan keyin chizilgan dinamik matn ham tarjima qilinadi")
+    # 2026-08-12: elon.html yopilgan-xabar holatlari — JS orqali
+    # yoziladi, rus interfeysda o'zbekcha qolib ketmasligi uchun.
+    for soz in ('"Bu e‘lon yopilgan":"Это объявление закрыто"',
+                '"← Bosh sahifaga":"← На главную"'):
+        tekshir(soz in i18n, f"elon xabar holatlari ruscha lug‘atda bor: {soz.split(':')[0]}")
     # 2026-08-12: kabinet ichidagi 'Yangi e'lon' formasi matnlari
     # ruscha lug'atda bo'lmasa, rus interfeysda o'zbekcha qolib ketadi.
     for soz in ('"Nima sotyapsiz?":"Что продаёте?"',
