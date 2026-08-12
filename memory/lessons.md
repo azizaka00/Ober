@@ -467,3 +467,9 @@ Skillni ishda sinadik: `linear-gradient(180deg,#ffc24d,#f59e0b)` va `color:#2314
 - `npx skills add` bilan ikkita skill o'rnatildi: `design-taste-frontend-v1` (barqaror v1) va `redesign-existing-projects`. `.agents/skills/` da saqlanadi — kelajak seanslarda ham bor.
 - Ular `ober-frontend` skillini ALMASHTIRMAYDI — faqat to'ldiradi. OBER o'z o'lchangan qoidalariga ega (web_sinov 39 tekshiruv), taste-skill umumiy dizayn intizomi beradi.
 - SABOQ: taste-skill React/Next/Framer'ga yo'naltirilgan, OBER esa vanilla HTML+CSS. Uni ishlatganda faqat dizayn QOIDALARI olinadi (rang birligi, typography, interaction states), texnologiya qismi (Tailwind/Framer/GSAP) tashlanadi.
+
+## 2026-08-12: Emoji -> SVG (taste-skill anti-emoji qoidasi)
+
+- Barcha haqiqiy emojilar SVG ga almashtirildi: telefon (call-btn), x (yopish), check (farq jadvali 5 joy). U+2190 (`←`) o'qlari EMOJI EMAS — matn belgisi, qoldirildi.
+- SABOQ: `🕐|📍|🏷` tarjima regex'i elon.html SVG ga o'tgach hech qachon ishlamaydigan qoldiq bo'lib qolgan — ishlatilmaydigan regex'lar kod auditi paytida o'chirilishi kerak.
+- SABOQ: inline-flex ichida SVG+matn orasini bo'shliq bilan emas, `gap` bilan ajratish kerak (flexbox bo'shliqni yutadi).

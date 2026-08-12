@@ -261,9 +261,7 @@
       var oldin = joy.querySelector(".lang-slot");
       if (oldin) joy.insertBefore(a, oldin); else joy.appendChild(a);
     });
-  }
-
-  // REGRESSION HIMOYASI (2026-08-07): ➕ tugma bir marta yozilib, ikki
+  }    // REGRESSION HIMOYASI (2026-08-07): plus tugma bir marta yozilib, ikki
   // marta tushib qolgan edi — element ustma-ust chiqqan. Piksel
   // tekshiruvi buni ko'rmaydi, element SONI esa ko'radi.
   // Markazdagi + E'lon faqat bir marta bo'lishi va jami 4 tab qolishi shart.

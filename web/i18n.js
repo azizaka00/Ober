@@ -563,11 +563,9 @@
     }
     if ((match = text.match(/^(.+) · (\d+) kun oldin$/))) return `${match[1]} · ${match[2]} ${rusPlural(+match[2], ["день", "дня", "дней"])} назад`;
     if ((match = text.match(/^(.+) · (Bugun|Kecha)$/))) return `${match[1]} · ${match[2] === "Bugun" ? "Сегодня" : "Вчера"}`;
-    // Emoji + matn (elon sahifasidagi meta: "🕐 Bugun", "📍 Chilonzor")
-    if ((match = text.match(/^(🕐|📍|🏷) (.+)$/))) {
-      const orta = translate(match[2]);
-      return orta !== match[2] ? `${match[1]} ${orta}` : text;
-    }
+    // Elon meta endi SVG ikonka + matn (2026-08-12): emoji format
+    // tarjimasi o'chirildi — elon.html SVG ga o'tdi, bu qolip endi
+    // hech qachon mos kelmaydi.
     if ((match = text.match(/^([\d\s]+) ta$/))) return match[1];
     if ((match = text.match(/^BYUDJET (.+)$/))) return `БЮДЖЕТ ${match[1].replace(/ so[‘’']m$/, " сум")}`;
     if ((match = text.match(/^Mashina: (.+)$/))) return `Автомобиль: ${match[1]}`;

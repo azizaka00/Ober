@@ -1674,7 +1674,7 @@
     background:var(--navy);color:#fff;
     font:inherit;font-size:12.5px;font-weight:780;
     cursor:pointer;white-space:nowrap;
-    display:inline-flex;align-items:center;text-decoration:none;
+    display:inline-flex;align-items:center;text-decoration:none;gap:7px;
   }
   .call-btn:hover{background:var(--navy-dark)}
   .call-ready{letter-spacing:.01em}
@@ -2353,11 +2353,11 @@
       <h3>Nega OBER?</h3>
       <table class="farq-jadval">
         <tr><th></th><th class="biz">OBER</th><th>OLX</th><th>Telegram</th></tr>
-        <tr><td>Barcha manbalar bitta joyda</td><td class="biz">✓</td><td></td><td></td></tr>
-        <tr><td>Bir so‘rovda butun bozor</td><td class="biz">✓</td><td></td><td></td></tr>
-        <tr><td>Bugun bor-yo‘qligini so‘raydi</td><td class="biz">✓</td><td></td><td></td></tr>
-        <tr><td>Noto‘g‘ri modelni kesadi</td><td class="biz">✓</td><td></td><td></td></tr>
-        <tr><td>Qidirmaysiz — so‘raysiz</td><td class="biz">✓</td><td></td><td></td></tr>
+        <tr><td>Barcha manbalar bitta joyda</td><td class="biz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></td><td></td><td></td></tr>
+        <tr><td>Bir so‘rovda butun bozor</td><td class="biz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></td><td></td><td></td></tr>
+        <tr><td>Bugun bor-yo‘qligini so‘raydi</td><td class="biz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></td><td></td><td></td></tr>
+        <tr><td>Noto‘g‘ri modelni kesadi</td><td class="biz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></td><td></td><td></td></tr>
+        <tr><td>Qidirmaysiz — so‘raysiz</td><td class="biz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></td><td></td><td></td></tr>
       </table>
     </div>
   </div>
@@ -3149,7 +3149,7 @@ function javobHtml(x, yangi, sorovId){
 function raqamniOch(tugma, javobId, tel){
   const oralik = tugma.parentElement;
   oralik.insertAdjacentHTML("afterbegin",
-    `<a class="call-btn call-ready" href="tel:${esc(tel)}">📞 ${esc(tel)}</a>`);
+    `<a class="call-btn call-ready" href="tel:${esc(tel)}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${esc(tel)}</a>`);
   tugma.remove();
   fetch("/api/javob/raqam", {
     method:"POST", headers:{"Content-Type":"application/json"},
@@ -3600,7 +3600,7 @@ if(urlSorov && urlSorov.trim()){
     <input id="ism-kirit" type="text" maxlength="40"
       placeholder="Masalan: Aziz" autocomplete="given-name">
     <button class="sora-btn" id="ism-tasdiq" type="button">Sotuvchilardan so‘rash</button>
-    <button class="ism-oyna-yopish" type="button" aria-label="Yopish">✕</button>
+    <button class="ism-oyna-yopish" type="button" aria-label="Yopish"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   </div>
 </div>
 </body>
