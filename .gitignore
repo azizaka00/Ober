@@ -113,10 +113,10 @@ reports/president-tech-award-2026/
 # chiqarib tashlamaymiz — o'sha ikki qatorni tozalab, keyin qo'shamiz.
 memory/state.md
 
-# ── BEGONA MUALLIFLARNING SKILL FAYLLARI ─────────────────────────────
-# `design-taste-frontend` va boshqalar — boshqa mualliflarniki,
-# ikki nusxada yotibdi. O'z kodimiz emas.
-.agents/skills/
+# ── SKILL FAYLLARI ──────────────────────────────────────────────────
+# `.agents/skills/` 2026-08-12 dan git'ga kiradi: `ober-frontend`
+# (o'zimizniki) + taste-skill/redesign-skill (MIT, Leonxlnx) —
+# kelajakda boshqa kompyuterda ham bo'lsin.
 .claude/skills/
 skills-lock.json
 reports/**/*.png

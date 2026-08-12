@@ -105,6 +105,29 @@ def main() -> int:
                 print("  XATO %-16s skript ichida `</script` matni"
                       % fayl.name)
 
+    # 4d. XOM AMBER CTA RANGI QAYTIB KELMASIN.
+    #
+    # 2026-08-12 texnik qarz: `linear-gradient(180deg,#ffc24d,#f59e0b)`
+    # va `color:#231400` 14+ joyda qo'lda takrorlanardi — bitta tokenga
+    # yig'ildi (`--cta-gradient`, `--on-cta`). Qoida: xom qiymat faqat
+    # ober-ui.css dagi TOKEN TA'RIFIDA bo'lishi mumkin, sahifalarda —
+    # yo'q. Aks holda "rangni o'zgartir" yana bir necha joyda qayta
+    # yozishga aylanadi.
+    #
+    # 90deg/100deg variantlar (tanlangan chip, hero amb, karta chizig'i)
+    # ataylab qoldirilgan — bitta joyda, takrorlanmaydi.
+    for nom in ("index.html", "takliflar.html", "sotuvchi.html",
+                "kategoriyalar.html", "elon.html", "tabbar.js"):
+        jami += 1
+        matn = (WEB / nom).read_text(encoding="utf-8")
+        if ("linear-gradient(180deg,#ffc24d,#f59e0b)" in matn or
+                "color:#231400" in matn or
+                "color:#ffc24d" in matn or
+                "background:#ffc24d" in matn):
+            xato += 1
+            print("  XATO %-16s xom amber CTA rangi — `var(--cta-gradient)` "
+                  "va `var(--on-cta)` ishlating (ober-ui.css da bitta joy)" % nom)
+
     # 4b. TELEFONDA YOPISHQOQ ELEMENT BITTA.
     #
     # Dizayn qoidasi, `CLAUDE.md` da eng ko'p takrorlangan xatolar

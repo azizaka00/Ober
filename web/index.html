@@ -400,7 +400,7 @@
     top:33px;
     width:8px;
     height:2px;
-    border-radius:2px;
+    border-radius:var(--r-belgi);
     background:currentColor;
     transform:rotate(45deg);
   }
@@ -513,7 +513,7 @@
     width:22px;
     height:17px;
     border:2px solid currentColor;
-    border-radius:5px;
+    border-radius:var(--r-belgi);
   }
   .image-search-btn::after{
     content:"";
@@ -1058,8 +1058,8 @@
   .sora-btn{
     min-height:42px;padding:0 22px;
     border:0;border-radius:var(--r-pill);
-    background:linear-gradient(180deg,#ffc24d,#f59e0b);
-    color:#231400;font:inherit;font-size:13px;font-weight:800;
+    background:var(--cta-gradient);
+    color:var(--on-cta);font:inherit;font-size:13px;font-weight:800;
     cursor:pointer;white-space:nowrap;
     box-shadow:0 8px 20px rgba(245,166,35,.32),inset 0 1px 0 rgba(255,255,255,.5);
     transition:box-shadow 120ms var(--ease),transform 120ms var(--ease);
@@ -1831,7 +1831,7 @@
     background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.34);color:#fff;
   }
   body:not(.is-results) .seller-link{
-    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    background:var(--cta-gradient);color:var(--on-cta);
     box-shadow:0 8px 22px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);
   }
   body:not(.is-results) .seller-link:hover{
@@ -1871,7 +1871,7 @@
   body:not(.is-results) .search-panel input{color:#fff}
   body:not(.is-results) .search-panel input::placeholder{color:#8fa2c4}
   body:not(.is-results) .primary-btn{
-    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    background:var(--cta-gradient);color:var(--on-cta);
     box-shadow:0 10px 26px rgba(245,166,35,.38),inset 0 1px 0 rgba(255,255,255,.5);
   }
   body:not(.is-results) .primary-btn:hover{
@@ -1881,7 +1881,7 @@
   body:not(.is-results) .image-search-btn{
     border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.10);color:#e8eef8;
   }
-  body:not(.is-results) .image-search-btn:hover{border-color:rgba(245,166,35,.6);background:rgba(255,255,255,.18);color:#ffc24d}
+  body:not(.is-results) .image-search-btn:hover{border-color:rgba(245,166,35,.6);background:rgba(255,255,255,.18);color:var(--amber-yorqin)}
 
   /* Joy va namunalar — quyuqda ochiq. */
   body:not(.is-results) .location-label,
@@ -1906,7 +1906,7 @@
     border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#aebdd8;
     box-shadow:0 18px 44px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08);
   }
-  body:not(.is-results) .dalil-son{color:#ffc24d}
+  body:not(.is-results) .dalil-son{color:var(--amber-yorqin)}
   body:not(.is-results) .dalil-bosh,body:not(.is-results) .dalil-past{color:#8fa2c4}
 
   /* Hozir bozorda — quyuq shisha kartalar. */
@@ -1935,7 +1935,7 @@
     box-shadow:0 22px 48px rgba(0,0,0,.4);
   }
   body:not(.is-results) .jonli-nom{color:#e6edf8}
-  body:not(.is-results) .jonli-narx{color:#ffc24d}
+  body:not(.is-results) .jonli-narx{color:var(--amber-yorqin)}
   body:not(.is-results) .jonli-joy{color:#8fa2c4}
   body:not(.is-results) .jonli-karta img{background:#0d1d42}
 
@@ -1949,7 +1949,7 @@
   body:not(.is-results) .qadam-royxat p{color:#aebdd8}
   body:not(.is-results) .qadam-royxat li+li{border-top-color:rgba(255,255,255,.10)}
   body:not(.is-results) .qadam-raqam{
-    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    background:var(--cta-gradient);color:var(--on-cta);
     box-shadow:0 6px 14px rgba(245,166,35,.30);
   }
   /* FARQ JADVALI VA FOOTER — ikkala quyuq holat uchun BIR MANBADA
@@ -1969,7 +1969,7 @@
   body:not(.is-results) .farq-jadval th,body:not(.is-results) .farq-jadval td,
   body.is-results .farq-jadval th,body.is-results .farq-jadval td{border-bottom-color:rgba(255,255,255,.10)}
   body:not(.is-results) .farq-jadval th.biz,
-  body.is-results .farq-jadval th.biz{color:#ffc24d}
+  body.is-results .farq-jadval th.biz{color:var(--amber-yorqin)}
   body:not(.is-results) .farq-jadval td.biz,
   body.is-results .farq-jadval td.biz{color:var(--amber)}
 
@@ -1992,7 +1992,7 @@
   }
 
   /* Jonli narx — amber-deep bilan to'yingan (faqat quyuq rejimda). */
-  body:not(.is-results) .jonli-narx{color:#ffc24d;text-shadow:0 1px 14px rgba(245,166,35,.22)}
+  body:not(.is-results) .jonli-narx{color:var(--amber-yorqin);text-shadow:0 1px 14px rgba(245,166,35,.22)}
 
   /* Footer — quyuq. */
   body:not(.is-results) .footer,
@@ -2063,7 +2063,7 @@
     border-top-color:rgba(255,255,255,.08);
   }
   body:not(.is-results) .ober-tab.faol,
-  body.is-results .ober-tab.faol{color:#ffc24d}
+  body.is-results .ober-tab.faol{color:var(--amber-yorqin)}
   body:not(.is-results) .ober-tab.faol .ober-tab-ikon,
   body.is-results .ober-tab.faol .ober-tab-ikon{
     background:rgba(245,166,35,.18);
@@ -2071,7 +2071,7 @@
   /* "+ E'lon" yorlig'i — amber-deep quyuq fonda ko'rinmaydi,
      faol halqa ham yorug' amber-soft emas, shaffof amber. */
   body:not(.is-results) .ober-tab-asosiy,
-  body.is-results .ober-tab-asosiy{color:#ffc24d}
+  body.is-results .ober-tab-asosiy{color:var(--amber-yorqin)}
   body:not(.is-results) .ober-tab-asosiy.faol .ober-tab-ikon,
   body.is-results .ober-tab-asosiy.faol .ober-tab-ikon{
     box-shadow:0 0 0 4px rgba(245,166,35,.20),0 8px 20px rgba(245,166,35,.34);
@@ -2092,7 +2092,7 @@
     background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.34);color:#fff;
   }
   body.is-results .seller-link{
-    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    background:var(--cta-gradient);color:var(--on-cta);
     box-shadow:0 8px 22px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);
   }
   body.is-results .seller-link:hover{
@@ -2117,7 +2117,7 @@
   body.is-results .search-icon{color:#c9d6ee}
   body.is-results .search-panel input{color:#fff}
   body.is-results .primary-btn{
-    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    background:var(--cta-gradient);color:var(--on-cta);
     box-shadow:0 8px 20px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);
   }
   body.is-results .primary-btn:hover{
@@ -2128,11 +2128,11 @@
   body.is-results .tartib-btn:hover{border-color:rgba(255,255,255,.42);color:#fff}
   body.is-results .tartib-btn.tanlangan{
     background:linear-gradient(90deg,#ffc24d,#f59e0b);
-    border-color:transparent;color:#231400;
+    border-color:transparent;color:var(--on-cta);
     box-shadow:0 4px 16px rgba(245,166,35,.35);
   }
   body.is-results .tartib-son{color:#dbe6f7;opacity:.85}
-  body.is-results .tartib-btn.tanlangan .tartib-son{color:#231400;opacity:.72}
+  body.is-results .tartib-btn.tanlangan .tartib-son{color:var(--on-cta);opacity:.72}
 
   /* NARX FILTRI */
   body.is-results .filtr-narx{box-shadow:none}
@@ -2153,7 +2153,7 @@
     filter:brightness(0) invert(1);opacity:.7;
   }
   body.is-results .card-price{color:#fff}
-  body.is-results .negotiable{color:#ffc24d}
+  body.is-results .negotiable{color:var(--amber-yorqin)}
 
   /* BELGILAR VA CHIPLAR */
   body.is-results .badge{background:rgba(255,255,255,.10);color:#c9d6ee}
@@ -2200,7 +2200,7 @@
   }
   body.is-results .empty-tozalash{
     border-color:transparent;
-    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    background:var(--cta-gradient);color:var(--on-cta);
     box-shadow:0 8px 20px rgba(245,166,35,.28),inset 0 1px 0 rgba(255,255,255,.5);
   }
   body.is-results .empty-tozalash:hover{filter:brightness(1.06)}
@@ -2217,7 +2217,7 @@
   body.is-results .live-wait{
     background:rgba(255,255,255,.07);color:#dbe6f7;
   }
-  body.is-results .live-dot{background:#ffc24d}
+  body.is-results .live-dot{background:var(--amber-yorqin)}
 
   /* Rasm bilan qidirish paneli — bosh sahifadagi kabi quyuq shisha */
   body.is-results .visual-search{

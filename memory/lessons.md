@@ -444,3 +444,26 @@ ikkala ➕ aynan 3-ustunga tushib, ustma-ust turardi.
 
 - CLAUDE.md + OBER-DIZAYN-QOIDALARI.md har seansda qayta o'qiladi, lekin 2026-08-11 redesign'da o'lchangan YANGI qarorlar (uch qavatli quyuq rejim, amber CTA tili, tabbar amber tokenlari har sahifada bo'lishi shart) hali qo'llanmada yo'q edi. `.agents/skills/ober-frontend/SKILL.md` ga ko'chirildi — endi web/ ishini boshlagan agent ularni avtomatik o'qiydi.
 - SABOQ: loyiha qoidalari bir joyda to'plansa, yangi agent (yoki yangi seans) xuddi shu qoidalarga bo'ysunadi. Community skill yuklash shart emas — eng katta qiymat loyihaning O'Z o'lchangan qoidalarini kodlashda.
+
+## 2026-08-12: User-flow sinovi — API zanjir ishlaydi, agent cheklovi bor
+
+Xaridor va sotuvchi bo'lib to'liq oqim sinandi (lokal 8800): qidiruv -> so'rov -> tarqatish -> javob -> chat -> bildirishnoma. Hammasi ishladi.
+
+- SABOQ: browser_use agenti oddiy tekshiruvda ishlaydi, lekin murakkab interaktiv vazifada (karta bosish, forma to'ldirish) natija qaytarmay qoladi. Ishonchli yo'l: API zanjir (urllib) + DOM tekshiruvi. Brauzer agenti faqat qo'shimcha dalil.
+- SABOQ: `/api/sotuvchi/javob` va `/api/suhbat/xabar` da ID emas TOKEN ishlatiladi (`_sotuvchi_ident` isdigit ni rad qiladi) — xavfsizlik to'g'ri, lekin test skripti buni bilmasa 401 oladi. Frontend to'g'ri ishlatadi.
+- SABOQ: sinov yozuvlari (sorov, sotuvchi, suhbat, xabarlar) bazani iflos qiladi — testdan keyin tartib bilan tozalash kerak (xabarlar -> suhbatlar -> javoblar -> yuborishlar -> sorovlar -> sotuvchilar).
+
+## 2026-08-12: Qattiq ranglar tokenlarga yig'ildi — ober-frontend skilli ishladi
+
+Skillni ishda sinadik: `linear-gradient(180deg,#ffc24d,#f59e0b)` va `color:#231400` 14+ joyda qo'lda takrorlanardi (index 7, takliflar 5, sotuvchi 4, kategoriyalar 1, tabbar 1). Bitta token — `--cta-gradient`, `--on-cta`, `--amber-yorqin` — butun saytga. "Rangni o'zgartir" endi 1 satr.
+
+- SABOQ: 47 ta aniq-matn almashtirish skript bilan bajarildi, ober-ui.css dagi token ta'riflari himoyalandi. Qoldiq tekshiruv — token ishlatilmagan joyni topdi (0 qoldi).
+- SABOQ: kod review topdi: ober-ui.css da `--r-orta:15px/--r-katta:22px`, sahifalarda 14px/20px — ober-ui keyin yuklangani uchun 15/22 yutardi. Hujjatdagi shkala 14/20. Endi hamma joyda 14/20.
+- SABOQ: web_sinov.py ga 7-qoida qo'shildi — xom amber CTA rangi sahifalarda qaytib kelmasin (faqat ober-ui.css token ta'rifida). 33→39 tekshiruv.
+- SABOQ: 90deg/100deg maxsus gradientlar (tanlangan chip, hero amb, karta chizig'i) ataylab qoldirildi — bitta joyda, takrorlanmaydi.
+
+## 2026-08-12: taste-skill (Leonxlnx) o'rnatildi
+
+- `npx skills add` bilan ikkita skill o'rnatildi: `design-taste-frontend-v1` (barqaror v1) va `redesign-existing-projects`. `.agents/skills/` da saqlanadi — kelajak seanslarda ham bor.
+- Ular `ober-frontend` skillini ALMASHTIRMAYDI — faqat to'ldiradi. OBER o'z o'lchangan qoidalariga ega (web_sinov 39 tekshiruv), taste-skill umumiy dizayn intizomi beradi.
+- SABOQ: taste-skill React/Next/Framer'ga yo'naltirilgan, OBER esa vanilla HTML+CSS. Uni ishlatganda faqat dizayn QOIDALARI olinadi (rang birligi, typography, interaction states), texnologiya qismi (Tailwind/Framer/GSAP) tashlanadi.

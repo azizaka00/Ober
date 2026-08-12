@@ -98,7 +98,7 @@
     ".ober-tab-asosiy:active{transform:translateY(-7px)}",
     ".ober-tab-asosiy .ober-tab-ikon{",
     "  width:44px;height:44px;border:3px solid var(--surface,#fff);",
-    "  background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;",
+    "  background:var(--cta-gradient);color:var(--on-cta);",
     "  box-shadow:0 8px 20px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);",
     "}",
     ".ober-tab-asosiy.faol .ober-tab-ikon{background:linear-gradient(180deg,#ffcf6b,#f5a623);",

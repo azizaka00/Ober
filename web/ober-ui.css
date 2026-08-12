@@ -19,11 +19,28 @@
      uchun. Qiymat index.html dagi eski `.primary-btn:hover` soyasi —
      vizual o'zgarish yo'q, faqat tokenlashtirildi. */
   --cta-glow:0 12px 28px rgba(245,166,35,.38);
+  /* ASOSIY CTA GRADIENTI — amber urg'u tili (2026-08-12).
+     Ilgari `linear-gradient(180deg,#ffc24d,#f59e0b)` 14+ joyda qo'lda
+     takrorlanardi (index 7, takliflar 5, sotuvchi 4, kategoriyalar 1,
+     tabbar 1). "Rangni o'zgartir" degan so'rov 14 joyda qayta yozish
+     demak edi. Endi bitta joy — butun sayt. */
+  --cta-gradient:linear-gradient(180deg,#ffc24d,#f59e0b);
+  --on-cta:#231400;   /* amber CTA ustidagi matn rangi */
+  --amber-yorqin:#ffc24d;  /* yorqin amber: matn, jonli narx, live-dot */
   --ease:cubic-bezier(.16,1,.3,1);
+  /* BURCHAK SHKALASI — hujjatdagi qiymatlar (OBER-DIZAYN-QOIDALARI.md).
+     Ilgari bu yerda --r-orta:15px / --r-katta:22px turardi, sahifalarda
+     esa 14px / 20px. ober-ui.css keyin yuklangani uchun 15/22 yutardi —
+     tizim ichida zid edi (2026-08-12 audit). Endi hamma joyda 14/20. */
   --r-kichik:10px;
-  --r-orta:15px;
-  --r-katta:22px;
+  --r-orta:14px;
+  --r-katta:20px;
   --r-pill:999px;
+  /* KICHIK DEKORATIV BELGILAR radiusi (x belgisi 2px, kamera 5px).
+     To'rtta katta token ularga mos emas: 22x17px belgida 10px radius
+     butun belgini yeydi. Nomlangan — demak tasodifiy emas
+     (OBER-DIZAYN-QOIDALARI.md dagi `--r-quyruq` sabog'i bilan bir xil). */
+  --r-belgi:5px;
 }
 
 /* ── BO'SH HOLAT — UMUMIY KOMPONENTLAR (2026-08-11) ──────────────
