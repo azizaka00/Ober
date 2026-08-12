@@ -439,3 +439,8 @@ ikkala ➕ aynan 3-ustunga tushib, ustma-ust turardi.
 - `Sotish` ichidagi ikki ichki vazifa aniq ajraladi: `Xaridor so‘rovlari` — teskari bozor; `E’lonlarim` — OBERning o‘z e’lonlari. E’lon formasi ochilganda ham shu tablar va aktiv `E’lonlarim` holati yo‘qolmasligi kerak.
 - 390 px da ikki ustunli forma matematik jihatdan sig‘ishi mumkin, lekin narx inputi va “Kelishiladi” tugmasi birga kelganda input amalda o‘qilmay qoladi. Responsive tekshiruv faqat horizontal overflow emas; har maydonning foydalaniladigan kengligi ham o‘lchanadi. Bu holatda narx va joy telefon uchun bir ustunga o‘tkazildi.
 - Brauzer yuzasi viewportni bevosita almashtira olmasa, bir xil originli 390×844 iframe ichida haqiqiy sahifani yuklash media-query, fixed tabbar, scroll va computed widthlarni ishonchli tekshiradi. Sinovdan keyin qobiq, vaqtinchalik route, server va baza to‘liq tozalanadi.
+
+## 2026-08-12: Frontend qoidalari skillga ko'chirildi
+
+- CLAUDE.md + OBER-DIZAYN-QOIDALARI.md har seansda qayta o'qiladi, lekin 2026-08-11 redesign'da o'lchangan YANGI qarorlar (uch qavatli quyuq rejim, amber CTA tili, tabbar amber tokenlari har sahifada bo'lishi shart) hali qo'llanmada yo'q edi. `.agents/skills/ober-frontend/SKILL.md` ga ko'chirildi — endi web/ ishini boshlagan agent ularni avtomatik o'qiydi.
+- SABOQ: loyiha qoidalari bir joyda to'plansa, yangi agent (yoki yangi seans) xuddi shu qoidalarga bo'ysunadi. Community skill yuklash shart emas — eng katta qiymat loyihaning O'Z o'lchangan qoidalarini kodlashda.

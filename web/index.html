@@ -1058,10 +1058,10 @@
   .sora-btn{
     min-height:42px;padding:0 22px;
     border:0;border-radius:var(--r-pill);
-    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
-    color:#fff;font:inherit;font-size:13px;font-weight:740;
+    background:linear-gradient(180deg,#ffc24d,#f59e0b);
+    color:#231400;font:inherit;font-size:13px;font-weight:800;
     cursor:pointer;white-space:nowrap;
-    box-shadow:0 6px 14px rgba(8,27,66,.20);
+    box-shadow:0 8px 20px rgba(245,166,35,.32),inset 0 1px 0 rgba(255,255,255,.5);
     transition:box-shadow 120ms var(--ease),transform 120ms var(--ease);
   }
   .sora-btn:hover{box-shadow:var(--cta-glow)}
@@ -1805,16 +1805,17 @@
     *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   }
 
-  /* ══ QUYUQ REJIM — BOSH SAHIFA (A varianti, 2026-08-11) ══════════
+  /* ══ QUYUQ REJIM — TO'LIQ SAYT (A varianti, 2026-08-11) ══════════
      Aziz: "dsrupt'dan kuchli va professional bo'lishi kerak". Bosh
-     sahifa "kechki bozor" uslubida: quyuq navy + amber urg'u. NATIJA
-     SAHIFASI YORUG' QOLADI (`body.is-results` ga tegmaymiz) — u yerda
-     ma'lumot zichligi birinchi. Ikkala holat bitta CSS faylda,
-     tanlagich ajratadi. */
+     sahifa "kechki bozor" uslubida: quyuq navy + amber urg'u. 2026-08-11
+     qaror: NATIJA SAHIFASI HAM QUYUQ — sayt bitta tilda gapiradi.
+     Bosh sahifa `body:not(.is-results)`, natija `body.is-results`
+     ostida; ikkalasi bitta CSS faylda, tanlagich ajratadi. */
   /* ober-ui.css `html{background:var(--bg)}` beradi — sahifa qisqa bo'lsa
      footer ostidan och ko'k ko'rinardi. Quyuq rejimda html foni ham
      quyuq bo'ladi. Specificity: html(0,0,1) < html:not(.is-results)(0,1,1). */
-  html:not(.is-results){background:#070e24;scrollbar-color:#3a4a6b transparent}
+  html:not(.is-results),
+  html.is-results{background:#070e24;scrollbar-color:#3a4a6b transparent}
   body:not(.is-results){
     background:
       radial-gradient(60rem 32rem at 82% -6%,rgba(245,166,35,.10),transparent 60%),
@@ -1951,16 +1952,26 @@
     background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
     box-shadow:0 6px 14px rgba(245,166,35,.30);
   }
-  body:not(.is-results) .farq{
+  /* FARQ JADVALI VA FOOTER — ikkala quyuq holat uchun BIR MANBADA
+     (bosh sahifa `body:not(.is-results)` + natija `body.is-results`).
+     Keyin takrorlanmaydi — rang o'zgarsa shu yerda tuzatiladi. */
+  body:not(.is-results) .farq,
+  body.is-results .farq{
     border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.06);
     box-shadow:none;
   }
-  body:not(.is-results) .farq h3{color:#fff}
-  body:not(.is-results) .farq-jadval th{color:#8fa2c4}
-  body:not(.is-results) .farq-jadval td:first-child{color:#e6edf8}
-  body:not(.is-results) .farq-jadval th,body:not(.is-results) .farq-jadval td{border-bottom-color:rgba(255,255,255,.10)}
-  body:not(.is-results) .farq-jadval th.biz{color:#ffc24d}
-  body:not(.is-results) .farq-jadval td.biz{color:var(--amber)}
+  body:not(.is-results) .farq h3,
+  body.is-results .farq h3{color:#fff}
+  body:not(.is-results) .farq-jadval th,
+  body.is-results .farq-jadval th{color:#8fa2c4}
+  body:not(.is-results) .farq-jadval td:first-child,
+  body.is-results .farq-jadval td:first-child{color:#e6edf8}
+  body:not(.is-results) .farq-jadval th,body:not(.is-results) .farq-jadval td,
+  body.is-results .farq-jadval th,body.is-results .farq-jadval td{border-bottom-color:rgba(255,255,255,.10)}
+  body:not(.is-results) .farq-jadval th.biz,
+  body.is-results .farq-jadval th.biz{color:#ffc24d}
+  body:not(.is-results) .farq-jadval td.biz,
+  body.is-results .farq-jadval td.biz{color:var(--amber)}
 
   /* Rasm bilan qidirish paneli — quyuq shisha (avval oq edi). */
   body:not(.is-results) .visual-search{
@@ -1984,22 +1995,241 @@
   body:not(.is-results) .jonli-narx{color:#ffc24d;text-shadow:0 1px 14px rgba(245,166,35,.22)}
 
   /* Footer — quyuq. */
-  body:not(.is-results) .footer{
+  body:not(.is-results) .footer,
+  body.is-results .footer{
     background:linear-gradient(180deg,#0a1b42,#070e24);
     border-top:1px solid rgba(255,255,255,.08);
   }
-  body:not(.is-results) .footer-brand{color:#fff}
-  body:not(.is-results) .footer-brand img{filter:brightness(0) invert(1);opacity:.96}
-  body:not(.is-results) .footer-tavsif{color:#8fa2c4}
-  body:not(.is-results) .footer-sahifalar a{color:#c9d6ee}
-  body:not(.is-results) .footer-sahifalar a:hover{background:rgba(255,255,255,.10)}
-  body:not(.is-results) .footer-kompaniya{color:#8fa2c4}
+  body:not(.is-results) .footer-brand,
+  body.is-results .footer-brand{color:#fff}
+  body:not(.is-results) .footer-brand img,
+  body.is-results .footer-brand img{filter:brightness(0) invert(1);opacity:.96}
+  body:not(.is-results) .footer-tavsif,
+  body.is-results .footer-tavsif{color:#8fa2c4}
+  body:not(.is-results) .footer-sahifalar a,
+  body.is-results .footer-sahifalar a{color:#c9d6ee}
+  body:not(.is-results) .footer-sahifalar a:hover,
+  body.is-results .footer-sahifalar a:hover{background:rgba(255,255,255,.10)}
+  body:not(.is-results) .footer-kompaniya,
+  body.is-results .footer-kompaniya{color:#8fa2c4}
 
   /* Mikro-harakat — karta hover, tugma glow, fokus halqa.
      Hammasi 200ms dan kam, faqat transform/opacity/soya. */
   @media (hover:hover){
     body:not(.is-results) .jonli-karta{transition:transform 200ms var(--ease),box-shadow 200ms var(--ease),border-color 200ms var(--ease),background 200ms var(--ease)}
   }
+
+  /* ══ NATIJA SAHIFASI QUYUQ — `body.is-results` (2026-08-11) ════════
+     Aziz: "natija sahifasi ham quyuq bo'lsin". Bosh sahifa qorong'i,
+     natija yorug' — sayt ikki tilda gapirardi. Endi natija ham kechki
+     bozor: quyuq navy fon, amber urg'u (tanlangan chip, Topish, Sotish,
+     Filtrlarni tozalash), yashil ma'no ranglari saqlanadi.
+
+     USUL: avval tokenlar qayta belgilanadi — token ishlatgan har bir
+     komponent avtomatik quyuqlashadi. Qattiq ranglar (rasm foni, badge,
+     answer) alohida tuzatiladi. `--navy` o'zgarmaydi: u brend rang
+     (tugma gradienti); matn uchun `--text` yorug' bo'ladi. */
+  body.is-results{
+    --bg:#0a1736;
+    --surface:#121f47;
+    --surface-2:#0d1a3a;
+    --text:#e8eef8;
+    --muted:#a6b3cd;
+    --faint:#7d8aa8;
+    --line:rgba(255,255,255,.10);
+    --line-strong:rgba(255,255,255,.18);
+    --navy-soft:rgba(255,255,255,.08);
+    --green-soft:rgba(14,59,44,.5);
+    --amber-soft:rgba(245,166,35,.15);
+    --shadow:0 20px 56px rgba(0,0,0,.45);
+    --shadow-card:0 1px 1px rgba(0,0,0,.35),0 10px 28px rgba(0,0,0,.40);
+    --shadow-hover:0 2px 3px rgba(0,0,0,.40),0 20px 44px rgba(0,0,0,.50);
+  }
+  body.is-results{
+    background:
+      radial-gradient(60rem 30rem at 82% -4%,rgba(245,166,35,.07),transparent 60%),
+      radial-gradient(40rem 26rem at 6% 10%,rgba(70,110,190,.14),transparent 62%),
+      linear-gradient(180deg,#070e24 0%,#0a1b42 45%,#0a2b63 88%,#081d45 100%);
+  }
+
+  /* TABBAR — quyuq (bosh sahifada ham shu qoida: ikkala holat uchun).
+     Specificity `body.… .ober-tabbar` tabbar.js dagi `.ober-tabbar` dan
+     yuqori, shuning uchun fayl tartibidan qat'i nazar yutadi. */
+  body:not(.is-results) .ober-tabbar,
+  body.is-results .ober-tabbar{
+    background:rgba(9,15,32,.90);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    backdrop-filter:saturate(140%) blur(14px);
+    border-top-color:rgba(255,255,255,.08);
+  }
+  body:not(.is-results) .ober-tab.faol,
+  body.is-results .ober-tab.faol{color:#ffc24d}
+  body:not(.is-results) .ober-tab.faol .ober-tab-ikon,
+  body.is-results .ober-tab.faol .ober-tab-ikon{
+    background:rgba(245,166,35,.18);
+  }
+  /* "+ E'lon" yorlig'i — amber-deep quyuq fonda ko'rinmaydi,
+     faol halqa ham yorug' amber-soft emas, shaffof amber. */
+  body:not(.is-results) .ober-tab-asosiy,
+  body.is-results .ober-tab-asosiy{color:#ffc24d}
+  body:not(.is-results) .ober-tab-asosiy.faol .ober-tab-ikon,
+  body.is-results .ober-tab-asosiy.faol .ober-tab-ikon{
+    box-shadow:0 0 0 4px rgba(245,166,35,.20),0 8px 20px rgba(245,166,35,.34);
+  }
+
+  /* TOPBAR — quyuq shisha */
+  body.is-results .topbar{
+    border-color:rgba(255,255,255,.08);
+    background:rgba(9,15,32,.82);
+    -webkit-backdrop-filter:saturate(130%) blur(14px);
+    backdrop-filter:saturate(130%) blur(14px);
+  }
+  body.is-results .brand img{filter:brightness(0) invert(1);opacity:.96}
+  body.is-results .messages-link{
+    border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#e8eef8;
+  }
+  body.is-results .messages-link:hover{
+    background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.34);color:#fff;
+  }
+  body.is-results .seller-link{
+    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    box-shadow:0 8px 22px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  body.is-results .seller-link:hover{
+    filter:brightness(1.06);box-shadow:0 12px 30px rgba(245,166,35,.5),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+
+  /* HERO (kompakt) — quyuq; qidiruv qutisi shisha */
+  body.is-results .hero{border-color:rgba(255,255,255,.08)}
+  body.is-results .hero h1{color:#fff}
+  body.is-results .eyebrow{color:#c9d6ee}
+  body.is-results .search-panel{
+    border-color:rgba(255,255,255,.18);
+    background:rgba(255,255,255,.10);
+    backdrop-filter:blur(18px);
+    box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14);
+  }
+  body.is-results .search-panel:focus-within{
+    border-color:rgba(245,166,35,.55);
+    background:rgba(255,255,255,.14);
+    box-shadow:0 20px 50px rgba(0,0,0,.35),0 0 0 4px rgba(245,166,35,.16);
+  }
+  body.is-results .search-icon{color:#c9d6ee}
+  body.is-results .search-panel input{color:#fff}
+  body.is-results .primary-btn{
+    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    box-shadow:0 8px 20px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  body.is-results .primary-btn:hover{
+    filter:brightness(1.06);box-shadow:0 12px 30px rgba(245,166,35,.5),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+
+  /* SARALASH CHIPLARI — tanlangan chip amber (CTA bilan bitta til) */
+  body.is-results .tartib-btn:hover{border-color:rgba(255,255,255,.42);color:#fff}
+  body.is-results .tartib-btn.tanlangan{
+    background:linear-gradient(90deg,#ffc24d,#f59e0b);
+    border-color:transparent;color:#231400;
+    box-shadow:0 4px 16px rgba(245,166,35,.35);
+  }
+  body.is-results .tartib-son{color:#dbe6f7;opacity:.85}
+  body.is-results .tartib-btn.tanlangan .tartib-son{color:#231400;opacity:.72}
+
+  /* NARX FILTRI */
+  body.is-results .filtr-narx{box-shadow:none}
+  body.is-results .filtr-narx:focus-within{
+    border-color:rgba(245,166,35,.55);
+    box-shadow:0 0 0 4px rgba(245,166,35,.16);
+  }
+  body.is-results .filtr-narx-bosh{color:#c9d6ee}
+  body.is-results .filtr-narx input{color:#fff}
+  body.is-results .filtr-narx-tire{background:rgba(255,255,255,.22)}
+
+  /* KARTALAR — rasm foni quyuq; logotip oq */
+  body.is-results .media{background:#14204a}
+  body.is-results .no-photo{background-color:#14204a;background-image:none}
+  body.is-results .no-photo::after{
+    content:"";position:absolute;inset:0;
+    background:url("/brend/icon.png") center/78px no-repeat;
+    filter:brightness(0) invert(1);opacity:.7;
+  }
+  body.is-results .card-price{color:#fff}
+  body.is-results .negotiable{color:#ffc24d}
+
+  /* BELGILAR VA CHIPLAR */
+  body.is-results .badge{background:rgba(255,255,255,.10);color:#c9d6ee}
+  body.is-results .badge.tg{background:rgba(255,255,255,.12);color:#dbe6f7}
+  body.is-results .badge.shop{background:var(--green-soft);color:#5fd3a3}
+  body.is-results .badge.new{background:rgba(245,166,35,.16);color:#ffd98a}
+  body.is-results .chip{background:rgba(255,255,255,.10);color:#dbe6f7}
+  body.is-results .chip.cut{background:rgba(192,57,43,.16);color:#ffb3a7}
+
+  /* "YANA KO'RSATISH" */
+  body.is-results .yana-btn{
+    border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#e8eef8;
+  }
+  body.is-results .yana-btn:hover{
+    background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.38);
+  }
+
+  /* SO'RASH qatori */
+  body.is-results .sora-chiziq p,
+  body.is-results .sora-orta p{color:#dbe6f7}
+  body.is-results .sora-ism-input{
+    border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;
+  }
+
+  /* ESKI SO'ROV KARTASI — yashil ma'no saqlanadi, quyuq sirtda */
+  body.is-results .return-card{
+    border-color:rgba(95,211,163,.30);
+    background:rgba(14,59,44,.45);
+  }
+  body.is-results .return-koc{color:#5fd3a3}
+  body.is-results .answer{
+    border-color:rgba(95,211,163,.26);
+    background:rgba(255,255,255,.05);
+  }
+  body.is-results .answer-price{color:#5fd3a3}
+  body.is-results .count-box strong,
+  body.is-results .talab-son strong{color:#e8eef8}
+  body.is-results .request-card{border-color:rgba(255,255,255,.14)}
+
+  /* BO'SH HOLAT */
+  body.is-results .empty-mark{
+    filter:brightness(0) invert(1);opacity:.92;
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+  }
+  body.is-results .empty-tozalash{
+    border-color:transparent;
+    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    box-shadow:0 8px 20px rgba(245,166,35,.28),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  body.is-results .empty-tozalash:hover{filter:brightness(1.06)}
+
+  /* FOKUS — amber halqa (quyuq fonda to'q halqa ko'rinmaydi) */
+  body.is-results :focus-visible{outline-color:rgba(245,166,35,.65)}
+
+  /* QOLDIQ — yashil ma'no ranglari quyuq sirtda yorug'lashadi
+     (var(--green) #0f7a4a quyuq fonda ko'rinmaydi). */
+  body.is-results .answer-heading strong{color:#5fd3a3}
+  body.is-results .meta-location.near{color:#5fd3a3}
+  body.is-results .request-card.done h2{color:#5fd3a3}
+  body.is-results .byudjet-eslatma strong{color:#dbe6f7}
+  body.is-results .live-wait{
+    background:rgba(255,255,255,.07);color:#dbe6f7;
+  }
+  body.is-results .live-dot{background:#ffc24d}
+
+  /* Rasm bilan qidirish paneli — bosh sahifadagi kabi quyuq shisha */
+  body.is-results .visual-search{
+    border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.10);
+    backdrop-filter:blur(14px);box-shadow:0 18px 44px rgba(0,0,0,.3);
+  }
+  body.is-results .visual-search-copy strong{color:#fff}
+  body.is-results .visual-search-copy span{color:#8fa2c4}
+  body.is-results .visual-remove{
+    border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#e8eef8;
+  }
+  body.is-results .visual-remove:hover{background:rgba(255,255,255,.16);color:#fff}
 </style>
 <link rel="stylesheet" href="/ober-ui.css">
 </head>

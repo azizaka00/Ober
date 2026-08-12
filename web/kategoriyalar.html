@@ -27,6 +27,8 @@
     --green-soft:#e6f4ec;
     --red:#c0392b;
     --amber:#f5a623;
+    --amber-deep:#e08d00;
+    --amber-line:#f3d9a8;
     --amber-soft:#fdf3de;
     --shadow:0 16px 48px rgba(11,37,89,.08);
     --shadow-card:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
@@ -118,7 +120,7 @@
     box-shadow:var(--shadow-card);
     transition:border-color 120ms var(--ease),box-shadow 120ms var(--ease);
   }
-  .kat-qidiruv:focus-within{border-color:var(--navy);box-shadow:0 0 0 4px rgba(11,37,89,.07),var(--shadow-card)}
+  .kat-qidiruv:focus-within{border-color:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.14),var(--shadow-card)}
   .kat-qidiruv svg{flex:none;color:var(--muted)}
   .kat-qidiruv input{
     flex:1;
@@ -160,7 +162,7 @@
   .kat-non-orqaga:hover{background:var(--navy-soft);border-color:rgba(11,37,89,.25)}
   .kat-non-orqaga:active{transform:scale(.97)}
   .kat-non-yol{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .kat-non-yol strong{color:var(--navy);font-weight:760}
+  .kat-non-yol strong{color:var(--amber-deep);font-weight:800}
   .kat-non-son{
     flex:none;
     margin-left:auto;
@@ -194,9 +196,10 @@
   }
   .kat-karta::before{
     content:"";position:absolute;left:20px;top:0;width:52px;height:3px;
-    border-radius:0 0 999px 999px;background:linear-gradient(90deg,var(--navy),#6f91c1)
+    border-radius:0 0 999px 999px;
+    background:linear-gradient(90deg,#f59e0b,#ffd98a)
   }
-  .kat-karta:hover{transform:translateY(-2px);border-color:rgba(11,37,89,.25);box-shadow:var(--shadow-hover)}
+  .kat-karta:hover{transform:translateY(-2px);border-color:var(--amber-line);box-shadow:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(245,166,35,.14)}
   .kat-karta:active{transform:scale(.98)}
   .kat-ikon{
     display:grid;
@@ -207,7 +210,7 @@
     color:var(--navy);
     transition:background 120ms var(--ease),color 120ms var(--ease);
   }
-  .kat-karta:hover .kat-ikon{background:var(--navy);color:#fff}
+  .kat-karta:hover .kat-ikon{background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;box-shadow:0 8px 18px rgba(245,166,35,.30),inset 0 1px 0 rgba(255,255,255,.5)}
   .kat-karta:hover .kat-ikon svg{transform:translateY(-1px)}
   .kat-ikon svg{transition:transform 120ms var(--ease)}
   .kat-nom{margin:0;font-size:16.5px;font-weight:740;letter-spacing:-.015em;color:var(--navy)}
@@ -255,7 +258,7 @@
     transition:background 120ms var(--ease);
   }
   .kat-qator + .kat-qator{border-top:1px solid var(--line)}
-  .kat-qator:hover{background:var(--navy-soft)}
+  .kat-qator:hover{background:var(--amber-soft)}
   .kat-qator:active{background:rgba(11,37,89,.10)}
   .kat-qator-n{
     flex:none;

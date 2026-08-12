@@ -24,7 +24,11 @@
     --ivory:#eff2f7;--paper:#fff;--surface:#fff;--surface-2:#f7f9fc;
     --blue:#eaeff8;--blue-2:#dbe4f3;
     --line:#e3e8f0;--line-strong:#cdd6e4;--green:#0f7a4a;--green-soft:#e6f4ec;
-    --red:#c0392b;--red-soft:#fdf0ef;--amber-soft:#fdf3de;
+    --red:#c0392b;--red-soft:#fdf0ef;
+    /* Amber urg'u (2026-08-11, Aziz qarori): sayt "navy + amber"
+       tizimida — bosh sahifa bilan bir xil til. Yashil/qizil faqat
+       ma'no tashiganda qoladi (tanlangan, xato). */
+    --amber:#f5a623;--amber-deep:#e08d00;--amber-line:#f3d9a8;--amber-soft:#fdf3de;
     --shadow:0 16px 48px rgba(11,37,89,.08);
     --shadow-card:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
     --shadow-hover:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(11,37,89,.10);
@@ -83,7 +87,7 @@
   .text-action:hover{background:var(--blue)}
   .push-card{margin:13px 14px 8px;padding:12px;border:1px solid #cfe0f3;border-radius:var(--r-orta);background:var(--blue);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
   .push-card strong{display:block;color:var(--navy);font-size:13px}.push-card p{margin:3px 0 0;color:var(--muted);font-size:11px;line-height:1.35}
-  .push-toggle{border:0;border-radius:var(--r-kichik);background:linear-gradient(180deg,var(--navy),var(--navy-dark));color:#fff;padding:9px 11px;font-size:11px;font-weight:850;white-space:nowrap;
+  .push-toggle{border:0;border-radius:var(--r-kichik);background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;padding:9px 11px;font-size:11px;font-weight:850;white-space:nowrap;
     transition:box-shadow 120ms var(--ease)}
   .push-toggle:hover:not(:disabled){box-shadow:var(--cta-glow)}
   .push-toggle.enabled{background:#e4f5ec;color:#087444}
@@ -137,7 +141,8 @@
   .empty-actions a{margin-top:0}
   .empty-retry{
     min-height:43px;padding:0 17px;border:0;border-radius:var(--r-orta);
-    background:linear-gradient(180deg,var(--navy),var(--navy-dark));color:#fff;font:inherit;font-size:13px;font-weight:800;
+    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;font:inherit;font-size:13px;font-weight:800;
+    box-shadow:0 10px 24px rgba(245,166,35,.30),inset 0 1px 0 rgba(255,255,255,.5);
     cursor:pointer;transition:box-shadow 160ms var(--ease),transform 160ms var(--ease)
   }
   .empty-retry:hover{box-shadow:var(--cta-glow),inset 0 1px 0 rgba(255,255,255,.12);transform:translateY(-1px)}
@@ -150,8 +155,8 @@
     box-shadow:var(--shadow);display:grid;place-items:center;padding:42px;text-align:center}
   .chat-placeholder-inner{max-width:360px}
   .chat-placeholder-mark{width:72px;height:72px;margin:0 auto 20px;border-radius:24px;
-    display:grid;place-items:center;background:linear-gradient(180deg,var(--navy),var(--navy-dark));color:#fff;
-    box-shadow:0 18px 34px rgba(11,37,89,.20)}
+    display:grid;place-items:center;background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;
+    box-shadow:0 18px 34px rgba(245,166,35,.30),inset 0 1px 0 rgba(255,255,255,.5)}
   .chat-placeholder-mark svg{width:30px;height:30px;display:block}
   .chat-placeholder h2{margin:0;color:var(--navy);font-size:24px;letter-spacing:-.03em}
   .chat-placeholder p{margin:9px auto 0;color:var(--muted);font-size:14px;line-height:1.55;max-width:34ch}
@@ -165,7 +170,8 @@
     font:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
   .quiet-toggle.off{background:var(--navy);color:#fff;border-color:var(--navy)}
   .choose-active{min-height:34px;padding:0 12px;border:0;border-radius:var(--r-pill);
-    background:linear-gradient(180deg,var(--navy),var(--navy-dark));color:#fff;font:inherit;font-size:11px;font-weight:850;white-space:nowrap;
+    background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;font:inherit;font-size:11px;font-weight:850;white-space:nowrap;
+    box-shadow:0 8px 18px rgba(245,166,35,.28),inset 0 1px 0 rgba(255,255,255,.5);
     transition:background 120ms var(--ease),box-shadow 120ms var(--ease),transform 120ms var(--ease)}
   .choose-active:hover:not(:disabled){box-shadow:var(--cta-glow)}
   .choose-active:disabled{background:#e4f5ec;color:var(--green);cursor:default}
@@ -234,7 +240,7 @@
   .attach{position:relative;display:grid;place-items:center;border:1px solid #cbd7e6;background:var(--blue);color:var(--navy);border-radius:var(--r-orta);padding:10px 12px;font-size:12px;font-weight:850;min-height:46px}
   .attach input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
   .compose-row input[type=text]{width:100%;height:46px;border:1px solid #cad3df;border-radius:var(--r-orta);padding:0 14px;color:var(--ink);background:#fff}
-  .send{height:46px;border:0;border-radius:var(--r-orta);background:linear-gradient(180deg,var(--navy),var(--navy-dark));color:#fff;padding:0 15px;font-size:12px;font-weight:850;box-shadow:0 10px 22px rgba(8,40,95,.17);transition:box-shadow 160ms var(--ease),transform 160ms var(--ease)}
+  .send{height:46px;border:0;border-radius:var(--r-orta);background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#231400;padding:0 15px;font-size:12px;font-weight:850;box-shadow:0 10px 22px rgba(245,166,35,.32),inset 0 1px 0 rgba(255,255,255,.5);transition:box-shadow 160ms var(--ease),transform 160ms var(--ease)}
   .send:hover:not(:disabled){box-shadow:var(--cta-glow)}
   .send:active{transform:scale(.96)}
   .send:disabled{opacity:.48;cursor:wait}
