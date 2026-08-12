@@ -54,11 +54,24 @@
     "body.ober-tabbar-joy .results{padding-bottom:calc(142px + env(safe-area-inset-bottom));}",
     ".ober-tabbar{",
     "  position:fixed;left:0;right:0;bottom:0;z-index:25;",
-    "  background:rgba(255,255,255,.96);",
-    "  -webkit-backdrop-filter:saturate(140%) blur(14px);",
-    "  backdrop-filter:saturate(140%) blur(14px);",
-    "  border-top:1px solid var(--line,#e3e8f0);",
+    /* JONLI BOZOR TABBARI (2026-08-12, Aziz): "yangicha ko'rinish".
+       Shisha oyna — yarim shaffof + blur, yuqorida nozik amber nur.
+       Eski `rgba(255,255,255,.96)` deyarli oq edi va tab bar saytdan
+       ajralib turardi. Endi u sahifa bilan birlashadi, faqat urg'u
+       (amber gradient pill) ko'zga tashlanadi. */
+    "  background:rgba(255,255,255,.78);",
+    "  -webkit-backdrop-filter:saturate(160%) blur(20px);",
+    "  backdrop-filter:saturate(160%) blur(20px);",
+    "  border-top:1px solid rgba(10,43,99,.08);",
+    "  box-shadow:0 -12px 40px rgba(10,43,99,.08);",
     "  padding-bottom:env(safe-area-inset-bottom);",
+    "}",
+    /* Yuqorida jimgina amber nur — "bozor jonli" belgisi. */
+    ".ober-tabbar::before{",
+    "  content:\"\";position:absolute;top:-1px;left:50%;transform:translateX(-50%);",
+    "  width:120px;height:3px;border-radius:0 0 999px 999px;",
+    "  background:linear-gradient(90deg,transparent,var(--amber,#f5a623) 50%,transparent);",
+    "  opacity:.75;",
     "}",
     ".ober-tabbar-inner{",
     "  max-width:560px;margin:0 auto;height:60px;",
@@ -79,21 +92,30 @@
     "  color:var(--muted,#667085);",
     "  font-size:10.5px;font-weight:700;line-height:1.2;",
     "  -webkit-tap-highlight-color:transparent;touch-action:manipulation;",
-    "  transition:color 160ms var(--ease,cubic-bezier(.2,0,0,1));",
+    "  transition:color 160ms var(--ease,cubic-bezier(.2,0,0,1)),transform 120ms var(--ease);",
     "}",
-    ".ober-tab:active{transform:translateY(1px)}",
+    ".ober-tab:active{transform:translateY(1px) scale(.96)}",
     ".ober-tab-ikon{",
     "  position:relative;width:40px;height:26px;border-radius:999px;",
     "  display:grid;place-items:center;",
-    "  transition:background 160ms var(--ease,cubic-bezier(.2,0,0,1));",
+    "  transition:background 160ms var(--ease,cubic-bezier(.2,0,0,1)),transform 160ms var(--ease);",
+    "}",
+    /* FAOL TAB — amber gradient pill + yumshoq nur (2026-08-12).
+       Eski: faqat rang o'zgarardi (amber-deep matn + amber-soft fon).
+       Endi ikona o'zi pill ichida ko'tariladi — "tanlangan" hissi
+       kuchli, mikro-harakat bilan. */
+    ".ober-tab.faol .ober-tab-ikon{",
+    "  transform:translateY(-2px);",
+    "  background:var(--cta-gradient);",
+    "  color:var(--on-cta);",
+    "  box-shadow:0 6px 16px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);",
     "}",
     ".ober-tab svg{width:22px;height:22px;display:block}",
     /* FAOL HOLAT — AMBER (2026-08-11, Aziz qarori). Sayt "navy + amber"
        tizimida; tabbar har sahifada ko'rinadigan eng katta urg'u.
        Faol tab, + E'lon tugmasi va o'qilmagan nishon amber — bosh
        sahifadagi amber CTA bilan bir xil til. */
-    ".ober-tab.faol{color:var(--amber-deep,#e08d00)}",
-    ".ober-tab.faol .ober-tab-ikon{background:var(--amber-soft,#fdf3de)}",
+    ".ober-tab.faol{color:var(--navy,#0b2559)}",
     ".ober-tab-asosiy{transform:translateY(-8px);color:var(--amber-deep,#e08d00)}",
     ".ober-tab-asosiy:active{transform:translateY(-7px)}",
     ".ober-tab-asosiy .ober-tab-ikon{",

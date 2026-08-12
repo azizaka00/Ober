@@ -123,9 +123,16 @@
   .inbox-head span{font-size:12px;color:var(--muted)}
   .offer-list{display:grid}
   .offer{position:relative;width:100%;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;padding:16px 16px 16px 20px;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;color:var(--ink);transition:background 180ms var(--ease),transform 180ms var(--ease)}
+  /* JONLI BOZOR CHATI (2026-08-12): hover'da chapda amber nur —
+     "suhbatda yangi gap borga o'xshaydi" hissi. Tanlangan suhbat
+     esa amber pill ichida. */
+  .offer::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;border-radius:0 var(--r-pill) var(--r-pill) 0;
+    background:linear-gradient(180deg,var(--amber-yorqin,#ffc24d),#ffd98a);opacity:0;transition:opacity 180ms var(--ease)}
   .offer:hover{background:rgba(238,246,255,.55)}
+  .offer:hover::before{opacity:.7}
   .offer.active{background:var(--blue)}
-  .offer.chosen::before{content:"";position:absolute;inset:8px auto 8px 0;width:4px;border-radius:0 var(--r-pill) var(--r-pill) 0;background:var(--green)}
+  .offer.active::before{opacity:1}
+  .offer.chosen::before{content:"";position:absolute;inset:8px auto 8px 0;width:4px;border-radius:0 var(--r-pill) var(--r-pill) 0;background:var(--green);opacity:1}
   .avatar{width:48px;height:48px;border-radius:var(--r-orta);object-fit:cover;background:var(--navy)}
   .offer-copy{min-width:0}
   .offer-line{display:flex;align-items:baseline;gap:7px;min-width:0}
@@ -137,7 +144,21 @@
   .offer-side{display:grid;justify-items:end;align-self:stretch;min-width:58px}
   .time{font-size:11px;color:var(--muted)}
   .unread{align-self:end;min-width:22px;height:22px;padding:0 7px;border-radius:var(--r-pill);background:var(--navy);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:900;box-shadow:0 0 0 7px rgba(14,65,145,.08)}
+  /* JONLI BOZOR CHATI (2026-08-12): o'qilmagan nishon amber —
+     "bozor javob berdi" signali. O'qilmagan xabarlar soni puls
+     qilib yonadi. */
+  .offer .unread{background:var(--cta-gradient,#f5a623);color:var(--on-cta,#231400);box-shadow:0 0 0 6px rgba(245,166,35,.14);animation:unreadpuls 2.4s infinite}
+  @keyframes unreadpuls{
+    0%{box-shadow:0 0 0 6px rgba(245,166,35,.18)}
+    60%{box-shadow:0 0 0 10px rgba(245,166,35,0)}
+    100%{box-shadow:0 0 0 6px rgba(245,166,35,.18)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .offer .unread,
+    .offer .unread.dot{animation:none}
+  }
   .unread.dot{min-width:9px;width:9px;height:9px;padding:0;box-shadow:none}
+  .offer .unread.dot{background:var(--amber-yorqin,#ffc24d);animation:unreadpuls 2.4s infinite}
   .thumb{width:48px;height:48px;border-radius:var(--r-kichik);object-fit:cover;border:1px solid var(--line);margin-top:4px}
   .offer-side.with-photo{position:relative}
   .offer-side.with-photo .unread{position:absolute;right:39px;bottom:-2px}

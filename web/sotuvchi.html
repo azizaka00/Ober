@@ -335,7 +335,7 @@
     margin-bottom:22px;
     padding:4px;
     border:1px solid var(--line);
-    border-radius:14px;
+    border-radius:var(--r-orta);
     background:var(--surface-2);
     width:fit-content;
     max-width:100%;
@@ -344,7 +344,7 @@
     min-height:40px;
     padding:0 18px;
     border:0;
-    border-radius:10px;
+    border-radius:var(--r-kichik);
     background:transparent;
     color:var(--muted);
     font:inherit;
@@ -367,20 +367,34 @@
 
   /* E'LONLARIM — kartalar ro'yxati */
   .elon-karta{
+    position:relative;
     display:grid;
     grid-template-columns:96px 1fr auto;
     gap:14px;
     align-items:center;
     padding:14px 16px;
     border:1px solid var(--line);
-    border-radius:14px;
+    border-radius:var(--r-orta);
     background:#fff;
     box-shadow:0 1px 2px rgba(11,37,89,.05),0 6px 20px rgba(11,37,89,.06);
+    transition:transform 140ms var(--ease),box-shadow 140ms var(--ease),border-color 140ms var(--ease);
   }
+  /* JONLI BOZOR KABINETI (2026-08-12): chapda amber chiziq —
+     "e'lon bozorda turibdi" belgisi. Hover'da karta ko'tariladi
+     va cheti amber rangga kiradi. */
+  .elon-karta::before{
+    content:"";position:absolute;left:0;top:16px;bottom:16px;width:3px;
+    border-radius:0 var(--r-pill) var(--r-pill) 0;
+    background:linear-gradient(180deg,var(--amber-yorqin,#ffc24d),#ffd98a);
+    opacity:0;transition:opacity 140ms var(--ease);
+  }
+  .elon-karta:hover{transform:translateY(-2px);border-color:rgba(245,166,35,.40);
+    box-shadow:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(245,166,35,.13)}
+  .elon-karta:hover::before{opacity:1}
   .elon-karta + .elon-karta{margin-top:10px}
   .elon-rasm{
     width:96px;height:72px;
-    border-radius:10px;
+    border-radius:var(--r-kichik);
     object-fit:cover;
     background:#eef0f3;
     display:block;
@@ -398,7 +412,7 @@
   .elon-tugmalar{display:flex;flex-direction:column;gap:6px}
   .elon-tugma{
     min-height:36px;padding:0 14px;
-    border:1px solid var(--line-strong);border-radius:10px;
+    border:1px solid var(--line-strong);border-radius:var(--r-kichik);
     background:#fff;font:inherit;font-size:12px;font-weight:700;
     color:var(--navy);cursor:pointer;white-space:nowrap;
   }
@@ -412,7 +426,7 @@
   .elon-bosh p{margin:3px 0 0;color:var(--muted);font-size:12.5px}
   .yangi-elon-btn{
     min-height:44px;padding:0 20px;
-    border-radius:10px;background:var(--cta-gradient);color:var(--on-cta);
+    border-radius:var(--r-kichik);background:var(--cta-gradient);color:var(--on-cta);
     font:inherit;font-size:13.5px;font-weight:800;cursor:pointer;
     box-shadow:0 10px 22px rgba(245,166,35,.28),inset 0 1px 0 rgba(255,255,255,.5);
     white-space:nowrap;transition:box-shadow 120ms var(--ease),transform 120ms var(--ease);

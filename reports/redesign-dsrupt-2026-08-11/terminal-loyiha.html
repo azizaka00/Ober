@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OBER — yorug' terminal draft (kuchaytirilgan)</title>
+<style>
+  /* ── YORUG' TERMINAL v2 (2026-08-12) ──────────────────────────
+     Aziz: "bundan ham mukammal, vizual jihatdan qiziqarli".
+     Qo'shilgan:
+       - typewriter (buyruq o'zi yoziladi)
+       - parallax (sichqoncha bilan oyna/hujayralar suriladi)
+       - 3D tilt (hujayralar hover'da egiladi)
+       - shine (qidiruv ustidan o'tuvchi nur)
+       - jonli loglar (terminalda vaqt o'tishi bilan chiqadi)
+       - raqam sanash (383 903 soni 0 dan sanab chiqadi)
+       - orqa fonda jimgina harakatlanuvchi to'lqin */
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#0a2b63;
+    --navy-2:#123a7d;
+    --amber:#f5a623;
+    --amber-yorqin:#ffc24d;
+    --yashil:#10b981;
+    --bg:#eef2f9;
+    --matn:#0f1c33;
+    --mut:#5a6a88;
+    --shisha:rgba(255,255,255,.55);
+    --ease:cubic-bezier(.2,0,0,1);
+  }
+  body{font-family:"Segoe UI Variable Display","Segoe UI",-apple-system,Roboto,Arial,sans-serif;
+       background:var(--bg);color:var(--matn);min-height:100vh;overflow-x:hidden}
+  .fonda{
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(46rem 30rem at 84% -8%,rgba(245,166,35,.16),transparent 60%),
+      radial-gradient(40rem 26rem at 8% 14%,rgba(70,110,190,.15),transparent 62%),
+      radial-gradient(34rem 22rem at 60% 90%,rgba(16,185,129,.07),transparent 60%),
+      linear-gradient(180deg,#f7f9fd,var(--bg));
+  }
+  /* To'r naqshi — terminal, juda yumshoq. */
+  .fonda::after{
+    content:"";position:absolute;inset:0;
+    background-image:linear-gradient(rgba(10,43,99,.04) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(10,43,99,.04) 1px,transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:radial-gradient(56rem 34rem at 50% 0%,#000 30%,transparent 78%);
+    mask-image:radial-gradient(56rem 34rem at 50% 0%,#000 30%,transparent 78%);
+    animation:to'lqin 22s ease-in-out infinite alternate;
+  }
+  /* To'r sekin suriladi — sayt "yashayapti" degan his. */
+  @keyframes to'lqin{
+    from{transform:translateY(0)}
+    to{transform:translateY(-14px)}
+  }
+  .ichki{width:min(100% - 48px,1080px);margin:0 auto}
+
+  /* ── GLASSMORPHISM TUGMA (iPhone shisha) ────────────────────── */
+  .shisha-tugma{
+    position:relative;
+    display:inline-flex;align-items:center;gap:9px;
+    padding:15px 28px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.75);
+    background:linear-gradient(160deg,rgba(255,255,255,.72),rgba(255,255,255,.30));
+    -webkit-backdrop-filter:blur(22px) saturate(160%);
+    backdrop-filter:blur(22px) saturate(160%);
+    box-shadow:0 10px 28px rgba(10,43,99,.14),
+               inset 0 1px 0 rgba(255,255,255,.9),
+               inset 0 -1px 0 rgba(10,43,99,.05);
+    color:var(--navy);font-weight:750;font-size:15px;text-decoration:none;
+    cursor:pointer;overflow:hidden;
+    transition:transform .18s var(--ease),box-shadow .18s var(--ease);
+  }
+  .shisha-tugma::before{ /* ichki nur */
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.55),transparent 45%);
+  }
+  /* Shine — tugma ustidan o'tuvchi yorug'lik chizig'i. */
+  .shisha-tugma::after{
+    content:"";position:absolute;top:0;bottom:0;left:-80%;width:50%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);
+    transform:skewX(-20deg);
+    transition:left .6s var(--ease);
+  }
+  .shisha-tugma:hover::after{left:130%}
+  .shisha-tugma:hover{
+    transform:translateY(-2px);
+    box-shadow:0 16px 38px rgba(10,43,99,.20),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .shisha-tugma:active{transform:translateY(0) scale(.97)}
+  .shisha-tugma.amber{
+    border-color:rgba(245,166,35,.55);
+    background:linear-gradient(160deg,rgba(255,196,77,.92),rgba(245,166,35,.72));
+    box-shadow:0 12px 30px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.85);
+    color:#2a1800;
+  }
+  .shisha-tugma.amber:hover{box-shadow:0 18px 44px rgba(245,166,35,.46),inset 0 1px 0 rgba(255,255,255,.95)}
+  .shisha-tugma .ok{transition:transform .18s var(--ease)}
+  .shisha-tugma:hover .ok{transform:translateX(4px)}
+
+  /* ── TERMINAL OYNA ─────────────────────────────────────────── */
+  .sahna{
+    padding:96px 24px 72px;
+    display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);
+    gap:44px;align-items:center;min-height:100vh;
+  }
+  /* Parallax o'ramlar — sichqoncha bilan sekin suriladi. */
+  .parallax-a{will-change:transform}
+  .parallax-b{will-change:transform}
+  .oyna{
+    position:relative;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.85);
+    background:linear-gradient(165deg,rgba(255,255,255,.80),rgba(255,255,255,.42));
+    -webkit-backdrop-filter:blur(26px) saturate(170%);
+    backdrop-filter:blur(26px) saturate(170%);
+    box-shadow:0 30px 70px rgba(10,43,99,.16),inset 0 1px 0 rgba(255,255,255,.95);
+    overflow:hidden;
+  }
+  .oyna-sarh{
+    display:flex;align-items:center;gap:8px;
+    padding:15px 18px;
+    border-bottom:1px solid rgba(10,43,99,.08);
+    background:rgba(255,255,255,.35);
+  }
+  .nuqta{width:12px;height:12px;border-radius:50%;flex:none}
+  .nuqta.qizil{background:#ff5f57}.nuqta.sariq{background:#febc2e}.nuqta.yashil{background:#28c840}
+  .oyna-nom{
+    margin-left:auto;font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+    font-size:12px;color:var(--mut);
+  }
+  .oyna-ichki{
+    padding:38px 40px 42px;
+    font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+    min-height:290px;
+  }
+  .belgi{color:var(--yashil);font-weight:700}
+  .buyruq{color:var(--navy);font-size:15px;line-height:1.7;margin-bottom:4px}
+  .param{color:var(--yashil)}
+  .param .tire{color:var(--mut)}
+  /* Typewriter kursor — yozuv tugagach ham miltillaydi. */
+  .kursor{
+    display:inline-block;width:9px;height:19px;background:var(--navy);
+    vertical-align:-3px;margin-left:2px;border-radius:2px;
+    animation:mil 1s steps(1) infinite;
+  }
+  @keyframes mil{50%{opacity:0}}
+
+  .holat{
+    display:inline-flex;align-items:center;gap:9px;
+    margin:14px 0 10px;
+    padding:8px 16px;border-radius:999px;
+    border:1px solid rgba(16,185,129,.35);
+    background:rgba(16,185,129,.10);
+    font-size:13px;font-weight:650;color:#0b6e4f;
+  }
+  .holat .jonli{
+    width:9px;height:9px;border-radius:50%;background:var(--yashil);
+    box-shadow:0 0 0 0 rgba(16,185,129,.5);
+    animation:jonli 2.2s infinite;
+  }
+  @keyframes jonli{
+    70%{box-shadow:0 0 0 10px rgba(16,185,129,0)}
+    100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}
+  }
+  /* Vaqt o'tishi bilan chiqadigan loglar — yashil/yorug'. */
+  .log{
+    color:rgba(90,106,136,.75);font-size:12.5px;line-height:1.8;
+    opacity:0;transform:translateY(4px);
+    transition:opacity .5s ease,transform .5s ease;
+  }
+  .log.korindi{opacity:1;transform:none}
+  .log .vaqt{color:rgba(10,43,99,.45)}
+  .log .ok{color:var(--yashil);font-weight:700}
+
+  /* ── CHAP QISM ─────────────────────────────────────────────── */
+  .ust-yozuv{
+    font-family:"Segoe UI Variable Display",sans-serif;
+    font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--amber);font-weight:800;
+  }
+  h1{
+    font-family:"Segoe UI Variable Display",sans-serif;
+    font-size:clamp(34px,4.8vw,54px);
+    line-height:1.06;letter-spacing:-.03em;font-weight:760;
+    color:var(--navy);margin:18px 0 20px;
+  }
+  h1 em{font-style:normal;position:relative;color:var(--amber)}
+  /* Italik so'z ostida chizilgan chiziq — hover'da kengayadi. */
+  h1 em::after{
+    content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;
+    background:linear-gradient(90deg,var(--amber),transparent);
+    border-radius:3px;
+  }
+  .tag{font-size:16.5px;line-height:1.7;color:var(--mut);max-width:32em}
+  .tag b{color:var(--navy)}
+
+  /* ── QIDIRUV — shisha, shine effekti bilan ─────────────────── */
+  .qidiruv{
+    position:relative;overflow:hidden;
+    display:flex;align-items:center;gap:8px;
+    margin-top:26px;max-width:560px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.85);
+    background:linear-gradient(165deg,rgba(255,255,255,.70),rgba(255,255,255,.35));
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    backdrop-filter:blur(20px) saturate(160%);
+    padding:6px 6px 6px 20px;
+    box-shadow:0 14px 34px rgba(10,43,99,.12),inset 0 1px 0 rgba(255,255,255,.9);
+    font-family:"Segoe UI Variable Display",sans-serif;
+    transition:box-shadow .2s var(--ease);
+  }
+  .qidiruv:focus-within{box-shadow:0 18px 44px rgba(245,166,35,.25),inset 0 1px 0 rgba(255,255,255,.95)}
+  .qidiruv input{
+    flex:1;min-width:0;border:0;outline:0;background:transparent;
+    font:inherit;font-size:15.5px;font-weight:600;color:var(--matn);padding:12px 4px;
+  }
+  .qidiruv input::placeholder{color:#8a97b0;font-weight:500}
+  .qidiruv .shisha-tugma{padding:12px 20px;border-radius:12px;font-size:14px}
+
+  .tugma-qator{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;
+    font-family:"Segoe UI Variable Display",sans-serif}
+  .shisha-tugma.kichik{
+    padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;
+    box-shadow:0 6px 16px rgba(10,43,99,.10),inset 0 1px 0 rgba(255,255,255,.85);
+  }
+
+  /* ── STATLAR — 3D tilt hujayralar ──────────────────────────── */
+  .statlar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:38px;
+    perspective:900px}
+  .hujayra{
+    position:relative;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.7);
+    background:linear-gradient(165deg,rgba(255,255,255,.62),rgba(255,255,255,.28));
+    -webkit-backdrop-filter:blur(18px) saturate(150%);
+    backdrop-filter:blur(18px) saturate(150%);
+    padding:20px 18px;
+    box-shadow:0 8px 22px rgba(10,43,99,.08),inset 0 1px 0 rgba(255,255,255,.85);
+    transform-style:preserve-3d;
+    transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+  }
+  .hujayra:hover{box-shadow:0 18px 40px rgba(10,43,99,.16),inset 0 1px 0 rgba(255,255,255,.95)}
+  .hujayra .kalit{
+    font-family:"Segoe UI Variable Display",sans-serif;
+    font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--yashil);font-weight:800;
+  }
+  .hujayra .qiymat{
+    font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--navy);
+    margin-top:8px;font-variant-numeric:tabular-nums;
+  }
+  .hujayra .qiymat span{color:var(--amber)}
+  .hujayra .izoh{font-family:"Segoe UI Variable Display",sans-serif;font-size:11.5px;color:var(--mut);margin-top:4px;line-height:1.5}
+
+  @media(max-width:900px){
+    .sahna{grid-template-columns:1fr;padding:84px 18px 56px;gap:32px}
+    .statlar{grid-template-columns:1fr;gap:10px}
+    .oyna-ichki{padding:26px 22px;min-height:auto}
+    .hujayra .qiymat{font-size:23px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .fonda::after{animation:none}
+  }
+</style>
+</head>
+<body>
+<div class="fonda"></div>
+
+<section class="sahna ichki">
+  <!-- CHAP: sarlavha + amal -->
+  <div class="parallax-a">
+    <div class="ust-yozuv">O'zbekiston bozori · terminal rejimi</div>
+    <h1>Bozor bilan <em>gaplashasiz,</em><br>kategoriya bilan emas.</h1>
+    <p class="tag"><b>"Menga soat kerak bambino 6, kim 800 000 so'mga beradi?"</b> — yozasiz, OBER indeksdan qidiradi, topilmasa mos sotuvchilardan so'raydi.</p>
+
+    <div class="qidiruv">
+      <span class="belgi">➜</span>
+      <input id="term-q" placeholder="ober@bozor:~$ divan yangi yumshoq --narx 2mln" aria-label="Qidiruv">
+      <button class="shisha-tugma amber" type="button">Topish <span class="ok">→</span></button>
+    </div>
+
+    <div class="tugma-qator">
+      <a class="shisha-tugma kichik" href="#">Rasm bilan qidirish</a>
+      <a class="shisha-tugma kichik" href="#">Sotuvchilardan so'rash</a>
+      <a class="shisha-tugma kichik" href="#">Chat</a>
+    </div>
+
+    <!-- STATLAR: 3D tilt, raqam sanash -->
+    <div class="statlar">
+      <div class="hujayra" data-tilt>
+        <div class="kalit">Faol e'lon</div>
+        <div class="qiymat"><span class="sanoq" data-sanoq="383903">0</span></div>
+        <div class="izoh">OLX va ochiq Telegram kanallaridan</div>
+      </div>
+      <div class="hujayra" data-tilt>
+        <div class="kalit">Hudud</div>
+        <div class="qiymat"><span class="sanoq" data-sanoq="14">0</span> <span>viloyat</span></div>
+        <div class="izoh">tuman darajasigacha</div>
+      </div>
+      <div class="hujayra" data-tilt>
+        <div class="kalit">Yangilanish</div>
+        <div class="qiymat">45 <span>daqiqa</span></div>
+        <div class="izoh">issiq kategoriyalar sikli</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- O'NG: terminal oynasi — typewriter + jonli loglar -->
+  <div class="parallax-b">
+    <div class="oyna" aria-label="Terminal ko'rinishi">
+      <div class="oyna-sarh">
+        <span class="nuqta qizil"></span><span class="nuqta sariq"></span><span class="nuqta yashil"></span>
+        <span class="oyna-nom">ober@bozor:~$</span>
+      </div>
+      <div class="oyna-ichki">
+        <div>
+          <span class="belgi">➜</span>
+          <span class="buyruq" id="yozuv-satr"></span><span class="kursor" id="yozuv-kursor"></span>
+        </div>
+        <div class="holat" id="holat-chip" style="opacity:0"><span class="jonli"></span> <span id="holat-matn">127 ta mos topildi · 45 soniya oldin yangilandi</span></div>
+        <div class="log" id="log-1"><span class="vaqt">[12:04:11]</span> indeks skanerlandi <span class="ok">✓</span></div>
+        <div class="log" id="log-2"><span class="vaqt">[12:04:11]</span> 127 ta mos · aniqlik <span class="ok">98.2%</span></div>
+        <div class="log" id="log-3"><span class="vaqt">[12:04:12]</span> topilmasa → <span class="ok">sotuvchilardan_so'raydi()</span></div>
+        <div class="log" id="log-4"><span class="vaqt">[12:04:13]</span> javob ~18 daqiqada kutiladi <span class="ok">●</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ── TYPEWRITER — buyruq satri o'zi yoziladi ──────────────────
+  var yozuv = 'ober "divan yangi yumshoq" --narx 2mln';
+  var satr = document.getElementById("yozuv-satr");
+  var kurs = document.getElementById("yozuv-kursor");
+  var tez = 34;  // ms / harf
+  (function yoz(i){
+    if(i <= yozuv.length){
+      satr.textContent = yozuv.slice(0, i);
+      setTimeout(function(){ yoz(i + 1); }, tez + Math.random() * 40);
+    } else {
+      // Yozuv tugadi — holat chipi chiqadi, loglar ketma-ket ko'rinadi
+      document.getElementById("holat-chip").style.transition = "opacity .5s ease";
+      document.getElementById("holat-chip").style.opacity = "1";
+      var loglar = ["log-1","log-2","log-3","log-4"];
+      loglar.forEach(function(id, idx){
+        setTimeout(function(){
+          document.getElementById(id).classList.add("korindi");
+        }, 300 + idx * 650);
+      });
+    }
+  })(0);
+
+  // ── RAQAM SANASH ─────────────────────────────────────────────
+  var format = function(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g," "); };
+  document.querySelectorAll(".sanoq").forEach(function(el){
+    var maqsad = Number(el.dataset.sanoq);
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+      el.textContent = format(maqsad);
+      return;
+    }
+    var davr = 1100, bosh = performance.now();
+    (function qadam(t){
+      var p = Math.min((t - bosh) / davr, 1);
+      el.textContent = format(Math.round(maqsad * (1 - Math.pow(1 - p, 3))));
+      if(p < 1) requestAnimationFrame(qadam);
+    })(performance.now());
+  });
+
+  // ── 3D TILT — hujayralar sichqoncha bilan egiladi ────────────
+  if(window.matchMedia("(hover:hover)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    document.querySelectorAll("[data-tilt]").forEach(function(k){
+      k.addEventListener("mousemove", function(e){
+        var r = k.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - .5;
+        var y = (e.clientY - r.top) / r.height - .5;
+        k.style.transform = "rotateY(" + (x * 10) + "deg) rotateX(" + (-y * 10) + "deg) translateY(-2px)";
+      });
+      k.addEventListener("mouseleave", function(){
+        k.style.transform = "";
+      });
+    });
+  }
+
+  // ── PARALLAX — sichqoncha bilan oyna va matn sekin suriladi ─
+  if(window.matchMedia("(hover:hover)").matches && window.innerWidth > 900 &&
+     !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    var a = document.querySelector(".parallax-a");
+    var b = document.querySelector(".parallax-b");
+    window.addEventListener("mousemove", function(e){
+      var cx = e.clientX / window.innerWidth - .5;
+      var cy = e.clientY / window.innerHeight - .5;
+      a.style.transform = "translate(" + (cx * -8) + "px," + (cy * -5) + "px)";
+      b.style.transform = "translate(" + (cx * 12) + "px," + (cy * 8) + "px)";
+    });
+  }
+
+  // ── QIDIRUV ──────────────────────────────────────────────────
+  var input = document.getElementById("term-q");
+  var ishga = function(){
+    var q = input.value.trim();
+    if(q) window.location.href = "/?q=" + encodeURIComponent(q);
+  };
+  input.addEventListener("keydown", function(e){ if(e.key === "Enter") ishga(); });
+  document.querySelector(".qidiruv button").addEventListener("click", ishga);
+</script>
+</body>
+</html>

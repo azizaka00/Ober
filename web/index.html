@@ -98,6 +98,11 @@
     --r-orta:14px;      /* karta, panel */
     --r-katta:20px;     /* katta panel, qidiruv qutisi */
     --r-pill:999px;     /* chip, yumaloq tugma */
+    /* --r-tig — EDITORIAL O'TKIR BURCHAK (2026-08-12, Aziz qarori).
+       Editorial uslub o'tkir burchakli formani ishlatadi (qidiruv qutisi,
+       tugmalar). `--r-quyruq` pretsedenti bo'yicha BESHINCHI nomlangan
+       qiymat qo'shildi — tasodifiy emas, ataylab. */
+    --r-tig:6px;
 
     --radius:var(--r-orta);   /* eski nom, mos kelishi uchun */
     --content:1180px;
@@ -776,6 +781,7 @@
      "OBER qanday ishlaydi" va "Nega OBER?" jadvalini ko'rardi.
      Bu bo'limlar tanishtirish uchun — natija bor odamga kerak emas. */
   body.is-results .qadamlar{display:none}
+  body.is-results .stats{display:none}
 
   /* ── FOOTER ────────────────────────────────────────────────────
      2026-08-06 audit: sahifa jonli bo'limdan keyin tugab qolardi — aloqa,
@@ -840,30 +846,155 @@
     .footer-kompaniya{order:3}
   }
 
-  /* ── OBER QANDAY ISHLAYDI ─────────────────────────────────────
-     2026-08-08: hero va jonli bo'lim bilan uyg'unlashdi — raqamlar
-     hero CTA kabi gradient (navy→navy-dark) va ko'taruvchi soyada,
-     sarlavhalar navy (jonli h2 bilan bir xil urg'u). */
+  /* ── EDITORIAL USLUB (Aziz qarori, 2026-08-12) ────────────────
+     Aziz: "eski hunik holatida bo'libdi, editorial skill qilganimiz
+     yaxshi — har xil animatsiyalar yuruvchi, ideal marketplace".
+     Hero serif sarlavha, editorial qidiruv qutisi, raqam hisoblagich,
+     scroll-reveal. Funksional logika (qidiruv, rasm qidiruv, joy,
+     jonli lenta, natijalar) buzilmaydi — faqat uslub qatlami. */
+  .hero{
+    background-color:var(--bg);
+    padding:118px 18px 64px;
+    text-align:left;
+  }
+  .hero::before{
+    background:
+      radial-gradient(46rem 22rem at 12% -4%,rgba(245,166,35,.10),transparent 70%),
+      linear-gradient(180deg,#f6f8fc,var(--bg));
+  }
+  .hero-inner{
+    width:min(100%,1100px);
+    text-align:left;
+  }
+  .hero h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-weight:400;
+    letter-spacing:-.02em;
+    font-size:clamp(42px,6.4vw,76px);
+    line-height:1.05;
+    max-width:11em;
+    margin:0 0 18px;
+  }
+  .hero h1 .amb{font-style:italic;color:var(--amber)}
+  .hero-copy{
+    margin:0 0 26px;
+    max-width:32em;
+    font-size:18px;
+    color:#111a2c;
+  }
+  .hero-copy b{color:var(--navy)}
+  /* EDITORIAL QIDIRUV QUTISI — o'tkir burchak + ofset soya,
+     ichida kattalashtirgich, rasm qidiruv va "Topish" saqlanadi. */
+  .search-panel{
+    border:1.5px solid var(--navy);
+    border-radius:var(--r-tig);
+    box-shadow:6px 6px 0 rgba(11,37,89,.14);
+    max-width:680px;
+  }
+  .search-panel:focus-within{box-shadow:6px 6px 0 rgba(245,166,35,.5)}
+  .search-panel input{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:17px}
+  .search-panel input::placeholder{color:#98a0af;font-weight:400}
+  .primary-btn{border-radius:var(--r-tig);background:var(--navy)}
+  .primary-btn:hover{background:var(--amber);color:var(--navy)}
+  .image-search-btn{border-radius:var(--r-tig)}
+  .location-row{justify-content:flex-start;max-width:680px}
+  .location-note{display:none}
+  .samples{justify-content:flex-start;max-width:680px}
+  /* HERO YONI — statistika ustuni (draftdagi .yon). */
+  .hero-yon{
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    width:290px;
+    border-left:1px solid var(--line-strong);
+    padding-left:26px;
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+  }
+  .hero-yon .st-q{font-family:Georgia,serif;font-size:38px;line-height:1;color:var(--navy)}
+  .hero-yon .st-q span{color:var(--amber);font-style:italic}
+  .hero-yon .st-izoh{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+  @media(max-width:1080px){.hero-yon{display:none}}
+  /* Natija sahifasida hero ixcham — yon ustun ham yashirinadi
+     (.samples va .database-trust bilan bir xil mantiq, 2026-08-12). */
+  body.is-results .hero-yon{display:none}
+  .hero .database-trust{max-width:680px}
+  body.is-results .hero{padding:26px 18px 26px;background:var(--bg)}
+  body.is-results .hero-inner{width:min(100%,1100px)}
+  body.is-results .hero h1{font-family:Onest,sans-serif;font-weight:770;font-size:20px;letter-spacing:-.02em}
+  body.is-results .hero h1 .amb{font-style:normal}
+  body.is-results .hero::before{opacity:1;background:linear-gradient(180deg,#f6f8fc,var(--bg))}
+
+  /* ── STATISTIKA PANJARASI (draftdagi .stats, 2026-08-12) ────── */
+  .stats{background:var(--navy);color:#f5f1e8}
+  .stats-ic{width:min(100% - 36px,var(--content));margin-inline:auto;
+    padding:70px 0 74px}
+  .stats .st-kichik{font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--amber);font-weight:700}
+  .stats h2{font-family:Georgia,serif;font-size:clamp(28px,3.8vw,44px);font-weight:400;
+    letter-spacing:-.015em;margin:16px 0 42px;max-width:18em;color:#f5f1e8}
+  .stats h2 em{font-style:italic;color:var(--amber)}
+  .stats-panjara{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:rgba(255,255,255,.14)}
+  .stats-hujayra{background:var(--navy);padding:28px 24px;transition:background .25s}
+  .stats-hujayra:hover{background:#0d3278}
+  .stats-hujayra .st-son{font-family:Georgia,serif;font-size:42px;line-height:1;color:var(--amber)}
+  .stats-hujayra .st-izoh{font-size:12.5px;color:rgba(245,241,232,.62);margin-top:10px;line-height:1.5}
+  .stats-eslatma{margin-top:36px;font-size:13.5px;color:rgba(245,241,232,.52);max-width:44em;line-height:1.7}
+  .stats-eslatma i{color:var(--amber)}
+  @media(max-width:760px){
+    .stats-panjara{grid-template-columns:repeat(2,1fr)}
+  }
+
+  /* SCROLL-REVEAL (editorial, 2026-08-12).
+     Bo'limlar ekranga kirganda silliq ko'tarilib chiqadi. Faqat
+     opacity+transform — layout xossasi emas (3.3-qoida).
+     prefers-reduced-motion da darhol ko'rinadi. */
+  .ochilmoqda{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+  .ochilmoqda.korindi{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .ochilmoqda{opacity:1;transform:none;transition:none}
+  }
+
+  /* ── OBER QANDAY ISHLAYDI — editorial qatorlar ─────────────────
+     2026-08-12: Aziz editorial yo'nalishni tanladi. Raqamlar o'rniga
+     "01/02/03" yozuvi + hover'da amber oqim chizig'i. Farq jadvali
+     saqlanadi — u ishlaydi va ma'lumot beradi. */
   .qadamlar{background:var(--surface);border-top:1px solid var(--line);
     border-bottom:1px solid var(--line)}
   .qadam-ic{width:min(100% - 36px,var(--content));margin-inline:auto;
     padding:52px 0 58px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);
     gap:clamp(36px,6vw,76px);align-items:start}
+  /* EDITORIAL QADAMLAR — raqamlar ustunda emas, qator boshida
+     "01" yozuvi; hover'da amber oqim chizig'i (draftdagi .qadam). */
   .qadam-royxat{list-style:none;margin:0;padding:0;display:grid;
-    grid-template-columns:1fr;gap:0}
-  .qadam-royxat li{position:relative;padding:18px 0;display:grid;
-    grid-template-columns:54px minmax(0,1fr);column-gap:16px;align-items:start}
+    grid-template-columns:1fr;gap:0;border-top:2px solid var(--navy)}
+  .qadam-royxat li{position:relative;padding:26px 22px 14px 0;display:grid;
+    grid-template-columns:1fr;gap:0;align-items:start}
   .qadam-royxat li+li{border-top:1px solid var(--line)}
   .qadam-raqam{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:38px;height:38px;border-radius:50%;
-    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
-    color:#fff;font-weight:800;font-size:15px;
-    box-shadow:0 6px 14px rgba(8,27,66,.22);
-    margin:0;grid-column:1;grid-row:1/3;
+    margin:0;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--amber);
   }
-  .qadam-royxat h3{grid-column:2;margin:0 0 6px;font-size:18px;letter-spacing:-.025em;color:var(--navy)}
-  .qadam-royxat p{grid-column:2;margin:0;color:var(--muted);font-size:13.5px;line-height:1.6;max-width:55ch}
+  .qadam-royxat h3{grid-column:auto;margin:10px 0 8px;font-family:Georgia,serif;
+    font-size:23px;font-weight:400;letter-spacing:-.01em;color:var(--navy)}
+  .qadam-royxat p{grid-column:auto;margin:0;color:var(--muted);font-size:14.5px;line-height:1.65;max-width:34em}
+  .qadam-royxat li::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:0;
+    height:2px;
+    background:var(--amber);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .4s var(--ease);
+  }
+  .qadam-royxat li:hover::after{transform:scaleX(1)}
 
   .farq{margin:0;padding:24px 24px 18px;border:1px solid var(--line);
     border-radius:var(--r-katta);background:var(--surface-2);box-shadow:var(--shadow-card)}
@@ -880,8 +1011,12 @@
 
   @media (max-width:760px){
     .qadam-ic{padding:30px 0 38px;display:grid;grid-template-columns:1fr;gap:28px}
-    .qadam-royxat li{padding:15px 0;grid-template-columns:48px minmax(0,1fr);column-gap:12px}
-    .qadam-raqam{width:36px;height:36px}
+    /* EDITORIAL QADAMLAR — bitta ustun saqlanadi (2026-08-12).
+       Eski qoida ikki ustunli (raqam + matn) edi va editorial bitta
+       ustunli layout bilan to'qnashardi. Endi raqam tepada, matn
+       ostida — draft bilan bir xil. */
+    .qadam-royxat li{padding:20px 0 8px;grid-template-columns:1fr;column-gap:0}
+    .qadam-raqam{width:auto;height:auto}
     .farq{padding:20px 16px 14px}
   }
 
@@ -1503,10 +1638,21 @@
     border-radius:var(--radius);
     background:var(--surface);
     box-shadow:var(--shadow-card);
-    transition:transform 120ms var(--ease),box-shadow 120ms var(--ease),border-color 120ms var(--ease);
+    transition:transform 120ms var(--ease),box-shadow 120ms var(--ease),
+      border-color 120ms var(--ease);
+    /* JONLI BOZOR KARTASI (2026-08-12): o'ng chetida nozik amber
+       chiziq — "bozor oqimidan kelgan e'lon" belgisi. Sukutda jimgina
+       turadi, hover'da yonadi. */
+    position:relative;
+  }
+  .card::after{
+    content:"";position:absolute;inset:0 auto 0 0;width:3px;
+    background:linear-gradient(180deg,var(--amber-yorqin),#ffd98a 60%,transparent);
+    opacity:0;transition:opacity 160ms var(--ease);
   }
   .card:hover{transform:translateY(-2px);border-color:var(--line-strong);
     box-shadow:var(--shadow-hover)}
+  .card:hover::after{opacity:1}
   .card:active{transform:scale(.98)}
 
   /* KARTALAR KETMA-KET CHIQADI (2026-08-11).
@@ -1570,7 +1716,12 @@
     line-height:1.4;
     font-weight:650;
   }
-  .card-price{font-size:19px;font-weight:780;letter-spacing:-.025em}
+  .card-price{
+    font-size:19px;font-weight:780;letter-spacing:-.025em;
+    /* JONLI BOZOR (2026-08-12): narx — kartaning yuragi. Navy rang
+       bilan "bozor bahosi" hissi. */
+    color:var(--navy);
+  }
   .negotiable{margin-left:5px;color:#9a6200;font-size:10.5px;font-weight:720}
   .card-meta{
     margin-top:11px;
@@ -1583,7 +1734,28 @@
   }
   .meta-location{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .meta-location.near{color:var(--green);font-weight:700}
-  .badge{padding:3px 7px;border-radius:var(--r-pill);background:#f0f0ee;font-size:10px;font-weight:750}
+  .badge{
+    padding:3px 7px;border-radius:var(--r-pill);background:#f0f0ee;
+    font-size:10px;font-weight:750;
+    /* JONLI BOZOR (2026-08-12): manba belgisida jonli nuqta —
+       "bu e'lon hozir bozorda turibdi" hissi. */
+    display:inline-flex;align-items:center;gap:4px;
+  }
+  .badge::before{
+    content:"";width:5px;height:5px;border-radius:50%;
+    background:currentColor;opacity:.7;
+  }
+  .badge.new::before{background:#e08d00;box-shadow:0 0 0 0 rgba(224,141,0,.5);
+    animation:yanginur 2s infinite}
+  @keyframes yanginur{
+    0%{box-shadow:0 0 0 0 rgba(224,141,0,.45)}
+    70%{box-shadow:0 0 0 5px rgba(224,141,0,0)}
+    100%{box-shadow:0 0 0 0 rgba(224,141,0,0)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .badge.new::before,
+    body.is-results .badge.new::before{animation:none}
+  }
   /* Telegram belgisi asosiy ko'k rangdan foydalanadi. Bugun men bu yerga
      beshinchi urg'u rangi (#1f6fa8) qo'shgan edim - o'z qoidamizni o'zim
      buzdim. Bitta palitra, bitta urg'u. */
@@ -1805,212 +1977,6 @@
     *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   }
 
-  /* ══ QUYUQ REJIM — TO'LIQ SAYT (A varianti, 2026-08-11) ══════════
-     Aziz: "dsrupt'dan kuchli va professional bo'lishi kerak". Bosh
-     sahifa "kechki bozor" uslubida: quyuq navy + amber urg'u. 2026-08-11
-     qaror: NATIJA SAHIFASI HAM QUYUQ — sayt bitta tilda gapiradi.
-     Bosh sahifa `body:not(.is-results)`, natija `body.is-results`
-     ostida; ikkalasi bitta CSS faylda, tanlagich ajratadi. */
-  /* ober-ui.css `html{background:var(--bg)}` beradi — sahifa qisqa bo'lsa
-     footer ostidan och ko'k ko'rinardi. Quyuq rejimda html foni ham
-     quyuq bo'ladi. Specificity: html(0,0,1) < html:not(.is-results)(0,1,1). */
-  html:not(.is-results),
-  html.is-results{background:#070e24;scrollbar-color:#3a4a6b transparent}
-  body:not(.is-results){
-    background:
-      radial-gradient(60rem 32rem at 82% -6%,rgba(245,166,35,.10),transparent 60%),
-      radial-gradient(46rem 28rem at 6% 12%,rgba(70,110,190,.18),transparent 62%),
-      linear-gradient(180deg,#070e24 0%,#0a1b42 45%,#0a2b63 80%,#081d45 100%);
-  }
-  body:not(.is-results) .topbar{border-bottom-color:rgba(255,255,255,.08)}
-  body:not(.is-results) .brand img{filter:brightness(0) invert(1);opacity:.96}
-  body:not(.is-results) .messages-link{
-    border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#e8eef8;
-  }
-  body:not(.is-results) .messages-link:hover{
-    background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.34);color:#fff;
-  }
-  body:not(.is-results) .seller-link{
-    background:var(--cta-gradient);color:var(--on-cta);
-    box-shadow:0 8px 22px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);
-  }
-  body:not(.is-results) .seller-link:hover{
-    filter:brightness(1.06);box-shadow:0 12px 30px rgba(245,166,35,.5),inset 0 1px 0 rgba(255,255,255,.5);
-  }
-
-  /* HERO — quyuq. Fon ochiq ko'k emas, "kechki bozor". */
-  body:not(.is-results) .hero{
-    background:linear-gradient(180deg,#070e24 0%,#0a1b42 40%,#0a2b63 78%,#081d45 100%);
-  }
-  body:not(.is-results) .hero::before{
-    background:
-      radial-gradient(56rem 30rem at 50% -12%,rgba(245,166,35,.16),transparent 62%),
-      radial-gradient(40rem 26rem at 12% 42%,rgba(80,120,200,.16),transparent 60%),
-      radial-gradient(46rem 30rem at 88% 56%,rgba(30,60,130,.28),transparent 65%);
-  }
-  body:not(.is-results) .hero h1{color:#fff}
-  body:not(.is-results) .amb{
-    background:linear-gradient(100deg,#ffd98a,#f5a623 55%,#ffc24d);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  body:not(.is-results) .hero-copy{color:#aebdd8}
-
-  /* Qidiruv qutisi — quyuq shisha. */
-  body:not(.is-results) .search-panel{
-    border-color:rgba(255,255,255,.18);
-    background:rgba(255,255,255,.10);
-    backdrop-filter:blur(18px);
-    box-shadow:0 24px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14);
-  }
-  body:not(.is-results) .search-panel:focus-within{
-    border-color:rgba(245,166,35,.55);
-    background:rgba(255,255,255,.14);
-    box-shadow:0 24px 60px rgba(0,0,0,.35),0 0 0 4px rgba(245,166,35,.16);
-  }
-  body:not(.is-results) .search-icon{color:#c9d6ee}
-  body:not(.is-results) .search-panel input{color:#fff}
-  body:not(.is-results) .search-panel input::placeholder{color:#8fa2c4}
-  body:not(.is-results) .primary-btn{
-    background:var(--cta-gradient);color:var(--on-cta);
-    box-shadow:0 10px 26px rgba(245,166,35,.38),inset 0 1px 0 rgba(255,255,255,.5);
-  }
-  body:not(.is-results) .primary-btn:hover{
-    background:linear-gradient(180deg,#ffcf6b,#f5a623);
-    box-shadow:0 14px 32px rgba(245,166,35,.5),inset 0 1px 0 rgba(255,255,255,.5);
-  }
-  body:not(.is-results) .image-search-btn{
-    border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.10);color:#e8eef8;
-  }
-  body:not(.is-results) .image-search-btn:hover{border-color:rgba(245,166,35,.6);background:rgba(255,255,255,.18);color:var(--amber-yorqin)}
-
-  /* Joy va namunalar — quyuqda ochiq. */
-  body:not(.is-results) .location-label,
-  body:not(.is-results) .location-note,
-  body:not(.is-results) .tez-yorliq{color:#8fa2c4}
-  body:not(.is-results) .location-row select{
-    border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#e8eef8;
-    box-shadow:none;
-  }
-  body:not(.is-results) .location-row select option{color:var(--text);background:var(--surface)}
-  body:not(.is-results) .select-wrap::after{border-color:#c9d6ee}
-  body:not(.is-results) .sample{
-    border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#c9d6ee;
-    box-shadow:none;
-  }
-  body:not(.is-results) .sample:hover{
-    border-color:rgba(245,166,35,.5);background:rgba(255,255,255,.14);color:#fff;
-  }
-
-  /* Dalil bloki — quyuq shisha, amber raqam. */
-  body:not(.is-results) .database-trust{
-    border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#aebdd8;
-    box-shadow:0 18px 44px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08);
-  }
-  body:not(.is-results) .dalil-son{color:var(--amber-yorqin)}
-  body:not(.is-results) .dalil-bosh,body:not(.is-results) .dalil-past{color:#8fa2c4}
-
-  /* Hozir bozorda — quyuq shisha kartalar. */
-  body:not(.is-results) .jonli{background:transparent}
-  body:not(.is-results) .jonli::before{
-    background:radial-gradient(46rem 20rem at 50% -20%,rgba(245,166,35,.10) 0%,transparent 62%);
-  }
-  body:not(.is-results) .jonli-bosh h2{color:#fff}
-  body:not(.is-results) .jonli-bosh p{color:#8fa2c4}
-  body:not(.is-results) .jonli-nuqta{
-    background:var(--amber);
-    box-shadow:0 0 0 4px rgba(245,166,35,.18);
-  }
-  body:not(.is-results) .jonli-skeleton{
-    border-color:rgba(255,255,255,.10);
-    background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
-    box-shadow:none;
-  }
-  body:not(.is-results) .jonli-karta{
-    border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.065);
-    box-shadow:none;
-  }
-  body:not(.is-results) .jonli-karta:hover{
-    border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.10);
-    transform:translateY(-4px);
-    box-shadow:0 22px 48px rgba(0,0,0,.4);
-  }
-  body:not(.is-results) .jonli-nom{color:#e6edf8}
-  body:not(.is-results) .jonli-narx{color:var(--amber-yorqin)}
-  body:not(.is-results) .jonli-joy{color:#8fa2c4}
-  body:not(.is-results) .jonli-karta img{background:#0d1d42}
-
-  /* Qanday ishlaydi — quyuq. */
-  body:not(.is-results) .qadamlar{
-    background:linear-gradient(180deg,#081d45,#0a1b42);
-    border-top:1px solid rgba(255,255,255,.08);
-    border-bottom:1px solid rgba(255,255,255,.08);
-  }
-  body:not(.is-results) .qadam-royxat h3{color:#fff}
-  body:not(.is-results) .qadam-royxat p{color:#aebdd8}
-  body:not(.is-results) .qadam-royxat li+li{border-top-color:rgba(255,255,255,.10)}
-  body:not(.is-results) .qadam-raqam{
-    background:var(--cta-gradient);color:var(--on-cta);
-    box-shadow:0 6px 14px rgba(245,166,35,.30);
-  }
-  /* FARQ JADVALI VA FOOTER — ikkala quyuq holat uchun BIR MANBADA
-     (bosh sahifa `body:not(.is-results)` + natija `body.is-results`).
-     Keyin takrorlanmaydi — rang o'zgarsa shu yerda tuzatiladi. */
-  body:not(.is-results) .farq,
-  body.is-results .farq{
-    border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.06);
-    box-shadow:none;
-  }
-  body:not(.is-results) .farq h3,
-  body.is-results .farq h3{color:#fff}
-  body:not(.is-results) .farq-jadval th,
-  body.is-results .farq-jadval th{color:#8fa2c4}
-  body:not(.is-results) .farq-jadval td:first-child,
-  body.is-results .farq-jadval td:first-child{color:#e6edf8}
-  body:not(.is-results) .farq-jadval th,body:not(.is-results) .farq-jadval td,
-  body.is-results .farq-jadval th,body.is-results .farq-jadval td{border-bottom-color:rgba(255,255,255,.10)}
-  body:not(.is-results) .farq-jadval th.biz,
-  body.is-results .farq-jadval th.biz{color:var(--amber-yorqin)}
-  body:not(.is-results) .farq-jadval td.biz,
-  body.is-results .farq-jadval td.biz{color:var(--amber)}
-
-  /* Rasm bilan qidirish paneli — quyuq shisha (avval oq edi). */
-  body:not(.is-results) .visual-search{
-    border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.10);
-    backdrop-filter:blur(14px);box-shadow:0 18px 44px rgba(0,0,0,.3);
-  }
-  body:not(.is-results) .visual-search-copy strong{color:#fff}
-  body:not(.is-results) .visual-search-copy span{color:#8fa2c4}
-  body:not(.is-results) .visual-remove{
-    border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#e8eef8;
-  }
-  body:not(.is-results) .visual-remove:hover{background:rgba(255,255,255,.16);color:#fff}
-
-  /* FOKUS HALQASI — quyuq fonda to'q ko'k outline ko'rinmaydi.
-     Amber fokus barcha bosiladigan elementlarga beriladi. */
-  body:not(.is-results) :focus-visible{
-    outline-color:rgba(245,166,35,.65);
-  }
-
-  /* Jonli narx — amber-deep bilan to'yingan (faqat quyuq rejimda). */
-  body:not(.is-results) .jonli-narx{color:var(--amber-yorqin);text-shadow:0 1px 14px rgba(245,166,35,.22)}
-
-  /* Footer — quyuq. */
-  body:not(.is-results) .footer,
-  body.is-results .footer{
-    background:linear-gradient(180deg,#0a1b42,#070e24);
-    border-top:1px solid rgba(255,255,255,.08);
-  }
-  body:not(.is-results) .footer-brand,
-  body.is-results .footer-brand{color:#fff}
-  body:not(.is-results) .footer-brand img,
-  body.is-results .footer-brand img{filter:brightness(0) invert(1);opacity:.96}
-  body:not(.is-results) .footer-tavsif,
-  body.is-results .footer-tavsif{color:#8fa2c4}
-  body:not(.is-results) .footer-sahifalar a,
-  body.is-results .footer-sahifalar a{color:#c9d6ee}
-  body:not(.is-results) .footer-sahifalar a:hover,
-  body.is-results .footer-sahifalar a:hover{background:rgba(255,255,255,.10)}
-  body:not(.is-results) .footer-kompaniya,
   body.is-results .footer-kompaniya{color:#8fa2c4}
 
   /* Mikro-harakat — karta hover, tugma glow, fokus halqa.
@@ -2152,6 +2118,18 @@
     background:url("/brend/icon.png") center/78px no-repeat;
     filter:brightness(0) invert(1);opacity:.7;
   }
+  /* JONLI BOZOR (2026-08-12): narx amber — quyuq fonda "bozor
+     bahosi" urg'usi. Hover'da karta cheti amber nur bilan yonadi. */
+  body.is-results .card{
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015)),
+      var(--surface,#0d1b3e);
+    border-color:rgba(255,255,255,.10);
+  }
+  body.is-results .card:hover{
+    border-color:rgba(245,166,35,.45);
+    box-shadow:0 18px 44px rgba(0,0,0,.5),0 0 0 1px rgba(245,166,35,.14),
+      0 12px 30px rgba(245,166,35,.10);
+  }
   body.is-results .card-price{color:#fff}
   body.is-results .negotiable{color:var(--amber-yorqin)}
 
@@ -2160,6 +2138,7 @@
   body.is-results .badge.tg{background:rgba(255,255,255,.12);color:#dbe6f7}
   body.is-results .badge.shop{background:var(--green-soft);color:#5fd3a3}
   body.is-results .badge.new{background:rgba(245,166,35,.16);color:#ffd98a}
+  body.is-results .badge.new::before{background:#ffd98a;animation:yanginur 2s infinite}
   body.is-results .chip{background:rgba(255,255,255,.10);color:#dbe6f7}
   body.is-results .chip.cut{background:rgba(192,57,43,.16);color:#ffb3a7}
 
@@ -2303,12 +2282,23 @@
       <p class="database-trust" id="holat" aria-live="polite">Bozor ma’lumoti yuklanmoqda…</p>
     </div>
   </div>
+
+  <!-- HERO YONI — jonli statistika ustuni (editorial, 2026-08-12).
+       Raqamlar /api/holat dan keladi: e'lon soni va viloyatlar. -->
+  <div class="hero-yon" aria-hidden="true">
+    <div class="st"><div class="st-q"><span id="h-elon">—</span></div>
+      <div class="st-izoh">faol e'lon — OLX va ochiq Telegram kanallaridan</div></div>
+    <div class="st"><div class="st-q"><span id="h-viloyat">—</span></div>
+      <div class="st-izoh">viloyat, tuman darajasigacha</div></div>
+    <div class="st"><div class="st-q">45 <span>daq</span></div>
+      <div class="st-izoh">issiq kategoriyalar shuncha tezlikda yangilanadi</div></div>
+  </div>
 </section>
 
 <!-- HAQIQIY E'LONLAR — bosh sahifadagi eng muhim blok.
      Va'da emas, isbot. Shablonni takrorlash oson; 126 ming o'zbek
      e'lonini rasmi va narxi bilan takrorlab bo'lmaydi. -->
-<section class="jonli" id="jonli" aria-label="Bugun qo‘shilgan e’lonlar">
+<section class="jonli ochilmoqda" id="jonli" aria-label="Bugun qo‘shilgan e’lonlar">
   <div class="jonli-ic">
     <div class="jonli-bosh">
       <h2><span class="jonli-nuqta" aria-hidden="true"></span>Hozir bozorda</h2>
@@ -2327,21 +2317,21 @@
      qutisidan boshqa hech narsa yo'q edi. Birinchi marta kirgan odam
      nima bo'lishini bilmaydi va OLX deb o'ylaydi.
      Carwow ham, Thumbtack ham modelini uch qadamda tushuntiradi. -->
-<section class="qadamlar" id="qadamlar" aria-label="OBER qanday ishlaydi">
+<section class="qadamlar ochilmoqda" id="qadamlar" aria-label="OBER qanday ishlaydi">
   <div class="qadam-ic">
     <ol class="qadam-royxat">
       <li>
-        <span class="qadam-raqam">1</span>
+        <span class="qadam-raqam">01</span>
         <h3>Nima kerakligini yozing</h3>
         <p>O‘zbekcha, ruscha, aralash — qanday yozsangiz ham tushunamiz. Ro‘yxatdan o‘tish shart emas.</p>
       </li>
       <li>
-        <span class="qadam-raqam">2</span>
+        <span class="qadam-raqam">02</span>
         <h3>Butun bozorni bir joyda ko‘ring</h3>
         <p>Har kartada manba ko‘rinadi. Tashqi e’lonni bossangiz, asl havolasi ochiladi.</p>
       </li>
       <li>
-        <span class="qadam-raqam">3</span>
+        <span class="qadam-raqam">03</span>
         <h3>Sotuvchilardan javob oling</h3>
         <p>Topilmasa, mos sotuvchilardan so‘rang. Chat aloqa uchun; to‘lov va yetkazish OBERda emas.</p>
       </li>
@@ -2361,6 +2351,22 @@
         <tr><td>Qidirmaysiz — so‘raysiz</td><td class="biz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></td><td></td><td></td></tr>
       </table>
     </div>
+  </div>
+</section>
+
+<!-- STATISTIKA — quyuq navy panjara, real API'dan (editorial, 2026-08-12).
+     Raqamlar /api/holat dan keladi: production'da 383 903 ta e'lon. -->
+<section class="stats ochilmoqda" id="stats" aria-label="OBER raqamlari">
+  <div class="stats-ic">
+    <div class="st-kichik">O'lchangan, va'da emas</div>
+    <h2>Ishonch <em>dalildan</em> boshlanadi. Har bir raqam orqasida o'lchov turibdi.</h2>
+    <div class="stats-panjara">
+      <div class="stats-hujayra"><div class="st-son" id="stat-jami">—</div><div class="st-izoh">faol e'lon indeksda — har 45 daqiqada yangilanadi</div></div>
+      <div class="stats-hujayra"><div class="st-son" id="stat-viloyat">—</div><div class="st-izoh">viloyat, tuman darajasigacha</div></div>
+      <div class="stats-hujayra"><div class="st-son">2 ta</div><div class="st-izoh">manba: OLX va ochiq Telegram kanallari</div></div>
+      <div class="stats-hujayra"><div class="st-son">45 daq</div><div class="st-izoh">issiq kategoriyalar yangilanish sikli</div></div>
+    </div>
+    <p class="stats-eslatma"><i>Ha, "eng arzon" degan so'zni aytmaymiz.</i> Isbotlab bo'lmaydigan da'vo ishonchni o'ldiradi — biz faqat o'lchanganini aytamiz.</p>
   </div>
 </section>
 
@@ -2393,6 +2399,41 @@
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
+
+// RAQAM HISOBLAGICH (editorial, 2026-08-12).
+// Son 0 dan maqsadgacha tez "sanab" boradi — diqqatni tortadi.
+// Element ekranga KIRGANDA boshlanadi (IntersectionObserver):
+// stats panjara ekrandan pastda, sanash u ko'ringuncha tugab
+// qolmasin. `prefers-reduced-motion` da darhol yoziladi.
+function raqamgaSan(id, maqsad, qoshimcha){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const n = Math.round(Number(maqsad) || 0);
+  const sanashniBoshlat = () => {
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+      el.textContent = formatInt(n) + (qoshimcha || "");
+      return;
+    }
+    const davr = 900, boshlanish = performance.now();
+    const qadam = t => {
+      const p = Math.min((t - boshlanish) / davr, 1);
+      const yumshoq = 1 - Math.pow(1 - p, 3);   // ease-out-cubic
+      el.textContent = formatInt(Math.round(n * yumshoq)) + (qoshimcha || "");
+      if(p < 1) requestAnimationFrame(qadam);
+    };
+    requestAnimationFrame(qadam);
+  };
+  if(!("IntersectionObserver" in window)){ sanashniBoshlat(); return; }
+  const kuzatuvchi = new IntersectionObserver(kirishlar => {
+    kirishlar.forEach(k => {
+      if(k.isIntersecting){
+        kuzatuvchi.disconnect();
+        sanashniBoshlat();
+      }
+    });
+  }, {threshold:0.3});
+  kuzatuvchi.observe(el);
+}
 const tr = text => window.OBER_I18N.t(text);
 const LOCALE = window.OBER_I18N.locale;
 const formatInt = n => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
@@ -2613,6 +2654,16 @@ async function holatniOl(){
          </span>`
       : `<span class="dalil-izoh"><span class="dalil-bosh">Ochiq e’lon narxlari
          va jonli sotuvchi javoblari</span></span>`;
+    // HERO YONI + STATISTIKA PANJARASI — real sonlar (2026-08-12).
+    // `h-` prefiksli — hero yon ustuni, `stat-` — quyuq panjara.
+    // Raqam hisoblagich: ko'z avval 0 dan songa "sanashni" ko'radi,
+    // keyin raqamni o'qiydi — diqqatni tortadi (prefers-reduced-motion
+    // da to'g'ridan-to'g'ri yoziladi, pastda sanash funksiyasi).
+    const viloyatlar = d.daraxt ? d.daraxt.length : 0;
+    raqamgaSan("h-elon", elonSoni, " ta");
+    raqamgaSan("h-viloyat", viloyatlar, " ta");
+    raqamgaSan("stat-jami", elonSoni, "");
+    raqamgaSan("stat-viloyat", viloyatlar, " ta");
     // Kurs allaqachon kelgan bo'lsa shu yerda qo'yiladi — sabab
     // `kursniQoy` izohida.
     kursniQoy();
@@ -3555,6 +3606,24 @@ searchPanel.addEventListener("drop", e => {
 holatniOl();
 jonliLenta();
 oldingiJavoblar();
+
+// SCROLL-REVEAL kuzatuvchisi (editorial, 2026-08-12).
+// .ochilmoqda bo'limlar ekranga kirganda .korindi oladi.
+// IntersectionObserver yo'q eski brauzerda hammasi darhol ko'rinadi.
+(function(){
+  const qismlar = document.querySelectorAll(".ochilmoqda");
+  if(!qismlar.length) return;
+  if(!("IntersectionObserver" in window)){
+    qismlar.forEach(el => el.classList.add("korindi"));
+    return;
+  }
+  const kuzatuvchi = new IntersectionObserver(kirishlar => {
+    kirishlar.forEach(k => {
+      if(k.isIntersecting) k.target.classList.add("korindi");
+    });
+  }, {threshold:0.12});
+  qismlar.forEach(el => kuzatuvchi.observe(el));
+})();
 let saqlanganSorov = localStorage.getItem("ober_sorov") || "";
 if(/^\d+$/.test(saqlanganSorov)){
   localStorage.removeItem("ober_sorov");

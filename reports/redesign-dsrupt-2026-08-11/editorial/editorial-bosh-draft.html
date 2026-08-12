@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OBER — siz yozasiz, bozor javob beradi</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI Variable Display","Segoe UI",-apple-system,Roboto,Arial,sans-serif;
+       background:#f5f7fb;color:#0a2b63}
+  .ichki{width:min(100% - 48px,1100px);margin:0 auto}
+  .sariq{background:#f5a623;color:#0a2b63;display:inline-block;padding:1px 6px 2px;font-style:normal;border-radius:3px}
+
+  /* ── TEPA PANEL ─────────────────────────── */
+  .panel{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;gap:28px;
+         padding:0 max(24px,calc((100% - 1100px)/2));height:68px;
+         background:rgba(250,247,242,.9);backdrop-filter:blur(14px);border-bottom:1px solid #dfe6f0}
+  .panel .logo{text-decoration:none;display:flex;align-items:center;gap:2px}
+  .panel .logo img{height:34px;width:auto}
+  .panel nav{display:flex;gap:22px;margin-left:auto}
+  .panel nav a{font-size:13.5px;color:#637087;text-decoration:none;font-weight:600;transition:color .2s}
+  .panel nav a:hover{color:#0a2b63}
+  .panel .kirish{background:#0a2b63;color:#f5f7fb;font-size:13px;font-weight:700;
+                 padding:10px 20px;border-radius:999px;text-decoration:none;transition:background .2s,transform .15s}
+  .panel .kirish:hover{background:#f5a623;transform:translateY(-1px)}
+  .panel .kirish:active{transform:scale(.97)}
+
+  /* ── HERO ───────────────────────────────── */
+  .hero{padding:150px max(24px,calc((100% - 1100px)/2)) 90px;min-height:100vh;
+        display:flex;align-items:center;position:relative}
+  .hero .kichik{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#f5a623;font-weight:700}
+  .hero h1{font-family:Georgia,serif;font-size:clamp(44px,7.5vw,82px);line-height:1.04;
+           letter-spacing:-.02em;font-weight:400;margin:22px 0 26px;max-width:11em}
+  .hero h1 em{font-style:italic;color:#f5a623}
+  .hero .tag{font-size:19px;line-height:1.65;color:#111a2c;max-width:30em}
+  .hero .tag b{font-weight:700;color:#0a2b63}
+
+  /* QIDIRUV — editorial ko'rinishda */
+  .qidiruv{display:flex;gap:0;margin-top:42px;max-width:640px;
+           background:#fff;border:1.5px solid #0a2b63;border-radius:6px;overflow:hidden;
+           box-shadow:6px 6px 0 rgba(10,43,99,.12)}
+  .qidiruv input{flex:1;border:0;outline:0;padding:17px 20px;font-size:16px;
+                 font-family:Georgia,serif;font-style:italic;background:transparent;color:#0a2b63}
+  .qidiruv input::placeholder{color:#98a0af}
+  .qidiruv button{border:0;background:#0a2b63;color:#f5f7fb;font-weight:700;font-size:15px;
+                  padding:0 28px;cursor:pointer;transition:background .2s}
+  .qidiruv button:hover{background:#f5a623}
+  .qidiruv button:active{transform:scale(.97)}
+  .hero .misol{margin-top:16px;font-size:13px;color:#637087}
+  .hero .misol a{color:#f5a623;text-decoration:none;font-weight:600}
+  .hero .misol a:hover{text-decoration:underline}
+
+  /* HERO YONI — raqam ustuni (real API'dan) */
+  .hero .yon{position:absolute;right:max(24px,calc((100% - 1100px)/2));top:50%;transform:translateY(-50%);
+             width:300px;border-left:1px solid #dfe6f0;padding-left:28px;display:flex;flex-direction:column;gap:26px}
+  .hero .yon .stat .q{font-family:Georgia,serif;font-size:40px;line-height:1;color:#0a2b63}
+  .hero .yon .stat .q span{color:#f5a623;font-style:italic}
+  .hero .yon .stat .izoh{font-size:12.5px;color:#637087;margin-top:6px;line-height:1.5}
+  @media(max-width:1000px){.hero .yon{display:none}}
+
+  /* ── QADAMLAR ───────────────────────────── */
+  .qadamlar{padding:96px 0;border-top:1px solid #dfe6f0}
+  .qadamlar .sarh{display:grid;grid-template-columns:1fr 1.6fr;gap:50px;margin-bottom:20px}
+  .qadamlar .sarh .yozuv{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#f5a623;font-weight:700}
+  .qadamlar h2{font-family:Georgia,serif;font-size:clamp(30px,4vw,44px);font-weight:400;letter-spacing:-.015em}
+  .qadamlar h2 em{font-style:italic;color:#f5a623}
+  .qadamlar .royxat{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid #0a2b63}
+  .qadamlar .qadam{padding:30px 24px 10px 0;border-bottom:1px solid #dfe6f0;position:relative}
+  .qadamlar .qadam .raqam{font-size:13px;color:#f5a623;font-weight:700;letter-spacing:.08em}
+  .qadamlar .qadam h3{font-family:Georgia,serif;font-size:23px;font-weight:400;margin:12px 0 10px;letter-spacing:-.01em}
+  .qadamlar .qadam p{font-size:14.5px;line-height:1.65;color:#637087;max-width:30em}
+  .qadamlar .qadam .oqim{display:block;width:0;height:2px;background:#f5a623;margin-top:20px;transition:width .5s ease}
+  .qadamlar .qadam:hover .oqim{width:100%}
+  .qadamlar .tugma{display:inline-block;margin-top:34px;background:#0a2b63;color:#f5f7fb;
+                   font-weight:700;font-size:14px;padding:14px 28px;border-radius:999px;
+                   text-decoration:none;transition:background .2s,transform .15s}
+  .qadamlar .tugma:hover{background:#f5a623;transform:translateY(-1px)}
+  .qadamlar .tugma:active{transform:scale(.97)}
+
+  /* ── STATISTIKA (real API'dan) ──────────── */
+  .stats{padding:90px 0;background:#0a2b63;color:#f5f1e8}
+  .stats .kichik{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#f5a623;font-weight:700}
+  .stats h2{font-family:Georgia,serif;font-size:clamp(30px,4vw,46px);font-weight:400;
+            letter-spacing:-.015em;margin:18px 0 46px;max-width:18em}
+  .stats h2 em{font-style:italic;color:#f5a623}
+  .stats .panjara{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.12)}
+  .stats .hujayra{background:#0a2b63;padding:30px 26px;transition:background .25s}
+  .stats .hujayra:hover{background:#0d3278}
+  .stats .hujayra .q{font-family:Georgia,serif;font-size:44px;line-height:1;color:#f5a623}
+  .stats .hujayra .izoh{font-size:13px;color:rgba(245,241,232,.6);margin-top:10px;line-height:1.5}
+  .stats .eshitma{margin-top:40px;font-size:14px;color:rgba(245,241,232,.5);max-width:44em;line-height:1.7}
+  .stats .eshitma i{color:#f5a623}
+
+  /* ── E'LONLAR LENTASI (real API'dan) ────── */
+  .lenta{padding:96px 0}
+  .lenta .sarh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:30px}
+  .lenta h2{font-family:Georgia,serif;font-size:clamp(26px,3.4vw,38px);font-weight:400}
+  .lenta .kop{font-size:13.5px;color:#f5a623;font-weight:700;text-decoration:none}
+  .lenta .kop:hover{text-decoration:underline}
+  .lenta .kartalar{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .lenta .karta{background:#fff;border:1px solid #dfe6f0;border-radius:8px;overflow:hidden;
+                text-decoration:none;color:#0a2b63;transition:transform .2s,box-shadow .2s}
+  .lenta .karta:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(10,43,99,.12)}
+  .lenta .karta .rasm{height:130px;background:#e8eef8;display:flex;align-items:center;justify-content:center;
+                      font-family:Georgia,serif;font-style:italic;font-size:14px;color:#98a0af;overflow:hidden}
+  .lenta .karta .rasm img{width:100%;height:100%;object-fit:cover}
+  .lenta .karta .tana{padding:14px 16px 16px}
+  .lenta .karta .nom{font-size:14px;font-weight:600;line-height:1.45;display:-webkit-box;
+                     -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:41px}
+  .lenta .karta .narx{margin-top:8px;font-size:15px;font-weight:700}
+  .lenta .karta .manba{display:inline-block;font-size:10.5px;font-weight:700;color:#637087;
+                       border:1px solid #dfe6f0;border-radius:4px;padding:2px 6px;margin-top:8px}
+  .lenta .karta .joy{font-size:12px;color:#637087;margin-top:4px}
+
+  /* ── PASTKI ─────────────────────────────── */
+  .pastki{padding:60px 0 80px;border-top:1px solid #dfe6f0;
+          display:flex;align-items:center;gap:20px;font-size:13px;color:#637087;flex-wrap:wrap}
+  .pastki .logo{display:flex;align-items:center}
+  .pastki .logo img{height:26px;width:auto}
+  .pastki a{margin-left:auto;color:#637087;text-decoration:none;font-weight:600}
+  .pastki a:hover{color:#f5a623}
+
+  @media(max-width:900px){
+    .panel nav{display:none}
+    .qadamlar .royxat{grid-template-columns:1fr}
+    .qadamlar .sarh{grid-template-columns:1fr}
+    .stats .panjara{grid-template-columns:repeat(2,1fr)}
+    .lenta .kartalar{grid-template-columns:repeat(2,1fr)}
+    .hero{padding-top:130px;min-height:auto}
+  }
+  @media(max-width:560px){
+    .hero h1{font-size:40px}
+    .lenta .kartalar{grid-template-columns:1fr}
+  }
+
+  /* Scroll-reveal */
+  .ochilmoqda{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .ochilmoqda.korindi{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    .ochilmoqda{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="panel">
+  <a class="logo" href="#bosh"><img src="/brend/logo.svg" alt="OBER"></a>
+  <nav>
+    <a href="#qadamlar">Qanday ishlaydi</a>
+    <a href="#stats">Raqamlar</a>
+    <a href="#lenta">E'lonlar</a>
+  </nav>
+  <a class="kirish" href="/sotuvchi">Sotishni boshlash</a>
+</header>
+
+<!-- HERO -->
+<section class="hero ochilmoqda" id="bosh">
+  <div>
+    <div class="kichik" id="hero-kichik">O'zbekiston bozori · e'lonlar yuklanmoqda…</div>
+    <h1>Siz <em>yozasiz.</em><br>Bozor <em>javob beradi.</em></h1>
+    <p class="tag">Kategoriya titkilamaysiz. <b>"Menga soat kerak, bambino 6, kim 800 000 so'mga beradi?"</b> — OBER indeksdan qidiradi, topilmasa mos sotuvchilardan so'raydi.</p>
+
+    <form class="qidiruv" id="qidiruv-form">
+      <input id="qidiruv-input" placeholder="Nima kerak? — yozing, qidiring…" aria-label="Qidiruv" autocomplete="off">
+      <button type="submit">Qidirish</button>
+    </form>
+    <div class="misol" id="misol">Misol: <a href="#" data-q="divan">divan yumshoq</a> · <a href="#" data-q="nexia kolodka">nexia kolodka</a> · <a href="#" data-q="soat">soat</a></div>
+  </div>
+
+  <div class="yon" id="yon-stats">
+    <div class="stat"><div class="q"><span id="s-elon">—</span></div><div class="izoh">faol e'lon — OLX va ochiq Telegram kanallaridan</div></div>
+    <div class="stat"><div class="q"><span id="s-viloyat">—</span></div><div class="izoh">viloyat, tuman darajasigacha</div></div>
+    <div class="stat"><div class="q">45 <span>daq</span></div><div class="izoh">issiq kategoriyalar shuncha tezlikda yangilanadi</div></div>
+  </div>
+</section>
+
+<!-- QADAMLAR -->
+<section class="qadamlar ochilmoqda" id="qadamlar">
+  <div class="ichki">
+    <div class="sarh">
+      <div class="yozuv">Uch qadam</div>
+      <h2>Talab <em>bozor ichida</em> hal bo'ladi.</h2>
+    </div>
+    <div class="royxat">
+      <div class="qadam">
+        <div class="raqam">01</div>
+        <h3>Yozasiz</h3>
+        <p>O'z so'zingiz bilan: nima kerak, qancha byudjet. Kategoriya tanlash shart emas.</p>
+        <span class="oqim"></span>
+      </div>
+      <div class="qadam">
+        <div class="raqam">02</div>
+        <h3>Tizim qidiradi</h3>
+        <p id="qadam-2-matn">Yuz ming e'lon ichidan moslari topiladi. Topilmasa — so'rov mos sotuvchilarga boradi.</p>
+        <span class="oqim"></span>
+      </div>
+      <div class="qadam">
+        <div class="raqam">03</div>
+        <h3>Sotuvchi javob beradi</h3>
+        <p>Narx, muddat, rasm — hammasi OBER chatida. To'lov va yetkazish siz bilan sotuvchi o'rtasida.</p>
+        <span class="oqim"></span>
+      </div>
+    </div>
+    <a class="tugma" href="/takliflar">Talabingizni yuborish →</a>
+  </div>
+</section>
+
+<!-- STATISTIKA -->
+<section class="stats ochilmoqda" id="stats">
+  <div class="ichki">
+    <div class="kichik">O'lchangan, va'da emas</div>
+    <h2>Ishonch <em>dalildan</em> boshlanadi. Har bir raqam orqasida o'lchov turibdi.</h2>
+    <div class="panjara">
+      <div class="hujayra"><div class="q" id="stat-jami">—</div><div class="izoh">faol e'lon indeksda — har 45 daqiqada yangilanadi</div></div>
+      <div class="hujayra"><div class="q" id="stat-viloyat">—</div><div class="izoh">viloyat, tuman darajasigacha</div></div>
+      <div class="hujayra"><div class="q" id="stat-manba">2 ta</div><div class="izoh">manba: OLX va ochiq Telegram kanallari</div></div>
+      <div class="hujayra"><div class="q" id="stat-tezlik">45 daq</div><div class="izoh">issiq kategoriyalar yangilanish sikli</div></div>
+    </div>
+    <p class="eshitma"><i>Ha, "eng arzon" degan so'zni aytmaymiz.</i> Isbotlab bo'lmaydigan da'vo ishonchni o'ldiradi — biz faqat o'lchanganini aytamiz.</p>
+  </div>
+</section>
+
+<!-- E'LONLAR LENTASI -->
+<section class="lenta ochilmoqda" id="lenta">
+  <div class="ichki">
+    <div class="sarh">
+      <h2>Bozor hozir nimani gapiryapti</h2>
+      <a class="kop" href="/">Barchasini ko'rish →</a>
+    </div>
+    <div class="kartalar" id="kartalar">
+      <div class="karta" style="border:none"><div class="rasm">yuklanmoqda…</div></div>
+      <div class="karta" style="border:none"><div class="rasm">yuklanmoqda…</div></div>
+      <div class="karta" style="border:none"><div class="rasm">yuklanmoqda…</div></div>
+      <div class="karta" style="border:none"><div class="rasm">yuklanmoqda…</div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="pastki ichki">
+  <span class="logo"><img src="/brend/logo.svg" alt="OBER"></span>
+  <span>NAIZA MChJ · STIR 313204884</span>
+  <a href="/maxfiylik">Maxfiylik</a>
+  <a href="/qoidalar">Qoidalar</a>
+  <a href="/aloqa">Aloqa</a>
+</footer>
+
+<script>
+  // ── YORDAMCHILAR ──────────────────────────────
+  var formatInt = function(n){ return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g," "); };
+  var som = function(n){ return Number(n) ? formatInt(n) + " so'm" : "narx ko'rsatilmagan"; };
+  var esc = function(s){ return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;"); };
+
+  // ── REAL STATISTIKA (/api/holat) ──────────────
+  fetch("/api/holat").then(function(r){ return r.json(); }).then(function(d){
+    var jami = d.jami || 0;
+    var vil = Object.keys(d.daraxt || {}).length;
+    document.getElementById("s-elon").textContent = formatInt(jami) + " ta";
+    document.getElementById("s-viloyat").textContent = vil + " ta";
+    document.getElementById("stat-jami").textContent = formatInt(jami);
+    document.getElementById("stat-viloyat").textContent = vil + " ta";
+    document.getElementById("hero-kichik").textContent =
+      "O'zbekiston bozori · " + formatInt(jami) + " ta e'lon";
+    document.getElementById("qadam-2-matn").textContent =
+      formatInt(jami) + " ta e'lon ichidan moslari topiladi. Topilmasa — so'rov mos sotuvchilarga boradi.";
+  }).catch(function(){});
+
+  // ── REAL E'LONLAR (/api/yangi) ────────────────
+  fetch("/api/yangi?n=4").then(function(r){ return r.json(); }).then(function(elonlar){
+    var joy = document.getElementById("kartalar");
+    joy.innerHTML = elonlar.map(function(e){
+      var rasm = e.rasm
+        ? '<img src="' + esc(e.rasm) + '" alt="" loading="lazy">'
+        : "rasm yo'q";
+      var manba = e.manba === "ober" ? "OBER" : (e.manba || "").toUpperCase();
+      return '<a class="karta" href="/?q=' + encodeURIComponent(e.nom || "") + '">' +
+        '<div class="rasm">' + rasm + '</div>' +
+        '<div class="tana"><div class="nom">' + esc(e.nom) + '</div>' +
+        '<div class="narx">' + som(e.narx_som) + '</div>' +
+        (e.joy_nom ? '<div class="joy">' + esc(e.joy_nom) + '</div>' : "") +
+        (manba ? '<div class="manba">' + esc(manba) + '</div>' : "") +
+        '</div></a>';
+    }).join("");
+  }).catch(function(){});
+
+  // ── QIDIRUV ───────────────────────────────────
+  document.getElementById("qidiruv-form").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var q = document.getElementById("qidiruv-input").value.trim();
+    if(q) window.location.href = "/?q=" + encodeURIComponent(q);
+  });
+  document.querySelectorAll("#misol a").forEach(function(a){
+    a.addEventListener("click", function(ev){
+      ev.preventDefault();
+      window.location.href = "/?q=" + encodeURIComponent(a.dataset.q || a.textContent);
+    });
+  });
+
+  // ── SCROLL-REVEAL ─────────────────────────────
+  var elementlar = document.querySelectorAll(".ochilmoqda");
+  var kuzatuvchi = new IntersectionObserver(function(kirishlar){
+    kirishlar.forEach(function(k){
+      if(k.isIntersecting) k.target.classList.add("korindi");
+    });
+  }, {threshold:0.15});
+  elementlar.forEach(function(el){kuzatuvchi.observe(el)});
+</script>
+</body>
+</html>
