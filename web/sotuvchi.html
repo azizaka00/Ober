@@ -267,6 +267,9 @@
     font-weight:700;
   }
   label span{color:var(--muted);font-size:11px;font-weight:500}
+  /* JONLI BOZOR RO'YXAT FORMASI (2026-08-12): inputlar shisha fon,
+     fokusda amber urg'u — saytning qolgan qismi bilan bitta til.
+     Eski: oq fon, fokusda ko'k. */
   input,select{
     width:100%;
     min-height:50px;
@@ -274,14 +277,19 @@
     border:1px solid var(--line-strong);
     border-radius:var(--r-kichik);
     outline:0;
-    background:#fff;
+    background:rgba(255,255,255,.72);
     color:var(--text);
-    transition:border-color 180ms var(--ease),box-shadow 180ms var(--ease),transform 180ms var(--ease),background 180ms var(--ease);
+    transition:border-color 180ms var(--ease),box-shadow 180ms var(--ease),
+      transform 180ms var(--ease),background 180ms var(--ease);
   }
-  input:focus,select:focus{border-color:#1b4da2;box-shadow:0 0 0 4px rgba(34,94,190,.10),0 10px 24px rgba(8,27,66,.08);transform:translateY(-2px);background:#fff}
+  input:focus,select:focus{
+    border-color:rgba(245,166,35,.55);background:#fff;
+    box-shadow:0 0 0 4px rgba(245,166,35,.14),0 10px 24px rgba(8,27,66,.08);
+    transform:translateY(-2px);
+  }
   input::placeholder{color:#9a9fa8}
   .field-group:focus-within label{color:var(--navy)}
-  input.has-value,select.has-value{border-color:#b9c8de;background:#fcfdff}
+  input.has-value,select.has-value{border-color:#b9c8de;background:rgba(255,255,255,.9)}
   .location-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .understood{
     margin-top:13px;
@@ -405,7 +413,7 @@
   .elon-nom{margin:0 0 5px;font-size:14.5px;font-weight:650;line-height:1.35}
   .elon-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
   .elon-narx{font-size:15.5px;font-weight:780;letter-spacing:-.02em}
-  .elon-holat{padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:750}
+  .elon-holat{padding:3px 9px;border-radius:var(--r-pill);font-size:10.5px;font-weight:750}
   .elon-holat.faol{background:var(--green-soft);color:var(--green)}
   .elon-holat.ochirildi{background:#f0f0ee;color:#667085}
   .elon-holat.sotildi{background:var(--amber-soft);color:#8d5b00}
@@ -444,13 +452,17 @@
   }
 
   /* E'LON FORMASI */
+  /* JONLI BOZOR ELON FORMASI (2026-08-12): oq panel endi yengil
+     shisha — qolgan sahifalar bilan bitta til. */
   .elon-forma{
     max-width:640px;
     margin:0 auto;
     padding:24px;
-    border:1px solid var(--line);
+    border:1px solid rgba(10,43,99,.10);
     border-radius:var(--r-orta);
-    background:#fff;
+    background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(247,249,252,.85));
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    backdrop-filter:saturate(140%) blur(14px);
     box-shadow:0 1px 2px rgba(11,37,89,.05),0 10px 30px rgba(11,37,89,.07);
   }
   .elon-forma h1{margin:0 0 6px;font-size:22px;letter-spacing:-.025em}
@@ -462,28 +474,44 @@
     display:block;margin-bottom:5px;
     color:var(--navy);font-size:12px;font-weight:750;
   }
+  /* JONLI BOZOR ELON FORMASI (2026-08-12): inputlar endi oq emas —
+     shisha fon + fokusda amber urg'u. Eski: oq fon, fokusda ko'k.
+     Saytning qolgan qismi amber+shisha tilida — forma ham shu tilde. */
   .forma-maydon input,.forma-maydon select,.forma-maydon textarea{
     width:100%;min-height:46px;padding:0 13px;
-    border:1px solid var(--line-strong);border-radius:10px;
-    background:#fff;font:inherit;font-size:14px;outline:0;
+    border:1px solid var(--line-strong);border-radius:var(--r-kichik);
+    background:rgba(255,255,255,.72);font:inherit;font-size:14px;outline:0;
+    transition:border-color 140ms var(--ease),box-shadow 140ms var(--ease),
+      background 140ms var(--ease);
   }
   .forma-maydon textarea{min-height:90px;padding:11px 13px;resize:vertical}
+  .forma-maydon input:hover,.forma-maydon select:hover,
+  .forma-maydon textarea:hover{border-color:var(--line-strong,#a8b6cc)}
   .forma-maydon input:focus,.forma-maydon select:focus,
-  .forma-maydon textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,37,89,.07)}
+  .forma-maydon textarea:focus{
+    border-color:rgba(245,166,35,.55);background:#fff;
+    box-shadow:0 0 0 3px rgba(245,166,35,.14);
+  }
   .forma-narx-qator{display:flex;align-items:center;gap:10px}
   .kelishiladi-chip{
     min-height:46px;padding:0 14px;white-space:nowrap;
-    border:1px solid var(--line-strong);border-radius:10px;
-    background:#fff;color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;
+    border:1px solid var(--line-strong);border-radius:var(--r-kichik);
+    background:rgba(255,255,255,.72);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;
+    transition:border-color 140ms var(--ease),color 140ms var(--ease),
+      background 140ms var(--ease),box-shadow 140ms var(--ease);
   }
-  .kelishiladi-chip.faol{border-color:var(--navy);color:var(--navy);background:var(--navy-soft)}
+  .kelishiladi-chip:hover{border-color:rgba(245,166,35,.45)}
+  .kelishiladi-chip.faol{
+    border-color:var(--amber,#f5a623);color:var(--amber-deep,#8d5b00);
+    background:var(--amber-soft);box-shadow:0 0 0 3px rgba(245,166,35,.12);
+  }
   .forma-rasmlar{display:flex;gap:8px;flex-wrap:wrap}
   .forma-rasm{
-    width:76px;height:76px;border-radius:10px;object-fit:cover;
+    width:76px;height:76px;border-radius:var(--r-kichik);object-fit:cover;
     border:1px solid var(--line);
   }
   .forma-rasm-joy{
-    width:76px;height:76px;border-radius:10px;
+    width:76px;height:76px;border-radius:var(--r-kichik);
     border:1px dashed var(--line-strong);
     display:grid;place-items:center;
     color:var(--muted);font-size:10.5px;text-align:center;
@@ -494,7 +522,7 @@
   .forma-izoh.xato{color:var(--red)}
   .forma-saqlash{
     margin-top:18px;width:100%;min-height:48px;
-    border-radius:10px;background:var(--cta-gradient);color:var(--on-cta);
+    border-radius:var(--r-kichik);background:var(--cta-gradient);color:var(--on-cta);
     font:inherit;font-size:14px;font-weight:800;cursor:pointer;
     box-shadow:0 10px 22px rgba(245,166,35,.28),inset 0 1px 0 rgba(255,255,255,.5);
     transition:box-shadow 120ms var(--ease),transform 120ms var(--ease);
