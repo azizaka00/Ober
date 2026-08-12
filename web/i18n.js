@@ -193,6 +193,25 @@
     "Telefon raqamingiz va Telegram orqali kelgan kod bilan istalgan qurilmadan kirasiz. Yangi so‘rov va xaridor xabari Telegram’ga ham keladi.":"Входите с любого устройства по номеру телефона и коду из Telegram. Новые запросы и сообщения покупателей также приходят в Telegram.",
     "30 soniya · kategoriya tanlash yo‘q":"30 секунд · без выбора категории",
     "Sotuvchi sifatida boshlang":"Начать как продавец",
+    // Chat bo'sh holati (2026-08-12): renderNoActor innerHTML orqali
+    // yozadi — MutationObserver tarjima qiladi, lekin lug'atda yo'q edi
+    // va rus tilida o'zbekcha qolib ketardi.
+    "Chatni boshlang":"Начните чат",
+    "Xaridor sifatida so‘rov yuboring yoki sotuvchi sifatida kiring.":"Отправьте запрос как покупатель или войдите как продавец.",
+    "Sotuvchi sessiyasi topilmadi":"Сессия продавца не найдена",
+    "Kabinetga qayta kiring yoki xaridor chatiga o‘ting.":"Войдите в кабинет или перейдите в чат покупателя.",
+    "Sotuvchi sifatida kirish":"Войти как продавец",
+    "Xaridor chatiga o‘tish":"Перейти в чат покупателя",
+    "Faol xaridor so‘rovi yo‘q":"Нет активных запросов покупателя",
+    "Bosh sahifadan so‘rov yuboring yoki sotuvchi chatiga o‘ting.":"Отправьте запрос с главной или перейдите в чат продавца.",
+    "Sotuvchi chatiga o‘tish":"Перейти в чат продавца",
+    // Sotuvchi kirish sahifasi bannerlari (2026-08-12): statik matnlar
+    // MutationObserver orqali tarjima qilinadi — lug'atda yo'q edi.
+    "Sotib olmoqchimisiz? Bu bo‘lim sotuvchilar uchun.":"Хотите купить? Этот раздел для продавцов.",
+    "Qidirish bo‘limiga o‘ting":"Перейти в раздел поиска",
+    "— nima kerakligini yozsangiz, sotuvchilar o‘zi javob beradi.":"— напишите, что нужно, продавцы сами ответят.",
+    "Ro‘yxatdan o‘tganmisiz? Shu raqam orqali kiring.":"Уже регистрировались? Войдите через этот номер.",
+    "Kategoriya daraxti va uzoq anketa yo‘q.":"Никакого дерева категорий и длинной анкеты.",
     "30 soniyada tayyor. Kategoriya daraxti va uzun anketa yo‘q. Odamlar qanday so‘rasa, shunday yozing.":"Готово за 30 секунд. Без дерева категорий и длинной анкеты. Пишите так, как спрашивают люди.",
     "Ro‘yxatdan tanlamang — odamlar qanday so‘rasa, shunday yozing.":"Не выбирайте из списка — пишите так, как спрашивают люди.",
     "Ismingiz yoki biznes nomi":"Ваше имя или название бизнеса",
