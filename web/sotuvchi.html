@@ -823,13 +823,6 @@
     font-weight:750;cursor:pointer;
   }
   .loading{display:grid;gap:12px}
-  .loading-card{
-    height:190px;
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    background:#fff;
-    opacity:.62;
-  }
 
   @media (max-width:760px){
     main{width:min(100% - 28px,980px);padding-top:14px}
@@ -1249,8 +1242,14 @@ function chiqish(){
 }
 
 function loading(){
-  $("#asosiy").innerHTML = `<div class="loading" aria-label="So‘rovlar yuklanmoqda">
-    <div class="loading-card"></div><div class="loading-card"></div>
+  $("#asosiy").innerHTML = `<div class="loading" aria-label="So‘rovlar yuklanmoqda" role="status">
+    ${Array.from({length:3}).map(() => `<div class="sk-blok">
+      <div class="sk-ustun">
+        <div class="sk-chiziq sk-katta"></div>
+        <div class="sk-chiziq sk-yarim"></div>
+        <div class="sk-chiziq sk-tor"></div>
+      </div>
+    </div>`).join("")}
   </div>`;
 }
 

@@ -234,8 +234,79 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         # OBER'ning o'z e'loni — /elon/{id} (o'z marketplace, 2026-08-06)
         # Sahifa statik, id'ni JS o'qiydi va /api/elon/{id} dan oladi.
         # 404 emas: yopilgan e'lon ham "yopilgan" xabari ko'rsatadi.
+        #
+        # OG meta'larini SERVER TOMONIDA to'ldiramiz (2026-08-12).
+        # Telegram/Facebook kabi skreperlar JavaScript ishlamaydi —
+        # ular og:title ni faqat statik HTML'dan o'qiydi. E'lon nomi
+        # uchun bazaga murojaat qilamiz; yopilgan e'lon bo'lsa eski
+        # (umumiy) meta qoladi, JS "yopilgan" xabarini ko'rsatadi.
         if u.path.startswith("/elon/") and u.path.count("/") == 2:
-            self._sahifa("elon.html")
+            html = (WEB / "elon.html").read_bytes()
+            try:
+                elon_id = int(u.path.rsplit("/", 1)[-1])
+            except ValueError:
+                elon_id = 0
+            if elon_id:
+                el = baza.ober_elon_ol(elon_id)
+                if el and not el.get("ochirilgan"):
+                    joy = ", ".join(x for x in
+                                     [el.get("viloyat"), el.get("shahar"),
+                                      el.get("tuman")] if x)
+                    if el.get("kelishiladi"):
+                        narx = "Narxi kelishiladi"
+                    elif el.get("narx_som"):
+                        try:
+                            narx = (f"{int(el['narx_som']):,}"
+                                    .replace(",", " ") + " so'm")
+                        except (TypeError, ValueError):
+                            narx = ""
+                    else:
+                        narx = ""
+                    import html as _html
+                    # Sotuvchi kiritgan matn — meta ichida xavfsiz
+                    # bo'lishi uchun to'liq escape qilinadi (review
+                    # 2026-08-12: faqat qo'shtirnoq yetarli emas,
+                    # `&`, `<`, `>` ham kelishi mumkin).
+                    nom = _html.escape(el.get("nom") or "E'lon")
+                    joy_esc = _html.escape(joy)
+                    og_title = nom + " — OBER"
+                    og_desc = " · ".join(
+                        x for x in [narx, joy_esc, "OBER bozorida"] if x)
+                    # Eski satrlar ham .encode() bilan — bytes literal
+                    # faqat ASCII qabul qiladi, `—` va `'` esa UTF-8.
+                    eski_t = ('<meta property="og:title" content="E\'lon — '
+                              'OBER">').encode()
+                    eski_d = ('<meta property="og:description" content="OBER '
+                              'bozoridagi e\'lon — narx, rasm va sotuvchi '
+                              'aloqasi.">').encode()
+                    eski_u = ('<meta property="og:url" '
+                              'content="https://ober.uz/elon/">').encode()
+                    # Google/skreperlar `<title>` ni ham o'qiydi —
+                    # og:title bilan birga u ham yangilanadi.
+                    eski_title = b'<title>E\'lon \xe2\x80\x94 OBER</title>'
+                    # Replace jimgina ishlamay qolmasin: elon.html
+                    # o'zgargan bo'lsa (eski serverdagi versiya) —
+                    # jurnalga yozamiz, generic meta qoladi.
+                    if eski_t not in html:
+                        print("  [og] elon.html meta satrlari mos emas",
+                              flush=True)
+                    html = html.replace(
+                        eski_t,
+                        ('<meta property="og:title" content="' + og_title
+                         + '">').encode())
+                    html = html.replace(
+                        eski_d,
+                        ('<meta property="og:description" content="'
+                         + og_desc + '">').encode())
+                    html = html.replace(
+                        eski_u,
+                        ('<meta property="og:url" content="https://ober.uz/elon/'
+                         + str(elon_id) + '">').encode())
+                    html = html.replace(
+                        eski_title,
+                        ('<title>' + og_title + '</title>').encode())
+            self._yubor(200, "text/html; charset=utf-8", html,
+                        {"Cache-Control": "no-cache, must-revalidate"})
             return
 
         # ── MAXFIYLIK VA QOIDALAR ────────────────────────────────────

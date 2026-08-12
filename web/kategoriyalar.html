@@ -7,6 +7,13 @@
 <meta name="description" content="OBER bozor bo'limlari — transport, uy va bog', elektronika, xizmatlar va boshqa kategoriyalar bo'yicha qidiruv.">
 <title>OBER — kategoriyalar</title>
 <link rel="icon" href="/brend/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OBER">
+<meta property="og:title" content="OBER — kategoriyalar">
+<meta property="og:description" content="Bozor bo'limlari bo'yicha qidiruv: transport, uy va bog', elektronika, xizmatlar.">
+<meta property="og:image" content="https://ober.uz/brend/ober-market-street-desktop.webp">
+<meta property="og:url" content="https://ober.uz/kategoriyalar">
+<meta property="og:locale" content="uz_UZ">
 <link rel="canonical" href="https://ober.uz/kategoriyalar">
 <link rel="preload" href="/shrift/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/shrift/onest.css">
@@ -296,12 +303,6 @@
   }
   .kat-qator:hover .kat-qator-ok{border-color:var(--navy);transform:translateX(2px) rotate(45deg)}
 
-  .yuklanmoqda{
-    padding:60px 20px;
-    color:var(--muted);
-    font-size:13.5px;
-    text-align:center;
-  }
   .error-box{
     padding:18px;
     border:1px solid #efc6c1;
@@ -399,7 +400,14 @@
     <span class="kat-non-yol">Kategoriyalar / <strong id="kat-non-nom"></strong></span>
     <span class="kat-non-son" id="kat-non-son"></span>
   </nav>
-  <div id="kat-joy" class="yuklanmoqda">Bozor bo'limlari yuklanmoqda…</div>
+  <div id="kat-joy" class="kat-grid" aria-hidden="true">
+    <div class="sk-blok kat-skeleton"><div class="sk-kat"><div class="sk-chiziq sk-ikon"></div><div class="sk-chiziq sk-nom"></div><div class="sk-chiziq sk-son"></div></div></div>
+    <div class="sk-blok kat-skeleton"><div class="sk-kat"><div class="sk-chiziq sk-ikon"></div><div class="sk-chiziq sk-nom"></div><div class="sk-chiziq sk-son"></div></div></div>
+    <div class="sk-blok kat-skeleton"><div class="sk-kat"><div class="sk-chiziq sk-ikon"></div><div class="sk-chiziq sk-nom"></div><div class="sk-chiziq sk-son"></div></div></div>
+    <div class="sk-blok kat-skeleton"><div class="sk-kat"><div class="sk-chiziq sk-ikon"></div><div class="sk-chiziq sk-nom"></div><div class="sk-chiziq sk-son"></div></div></div>
+    <div class="sk-blok kat-skeleton"><div class="sk-kat"><div class="sk-chiziq sk-ikon"></div><div class="sk-chiziq sk-nom"></div><div class="sk-chiziq sk-son"></div></div></div>
+    <div class="sk-blok kat-skeleton"><div class="sk-kat"><div class="sk-chiziq sk-ikon"></div><div class="sk-chiziq sk-nom"></div><div class="sk-chiziq sk-son"></div></div></div>
+  </div>
   <div class="kat-pastki" id="kat-pastki" hidden></div>
   <div class="kat-topilmadi" id="kat-topilmadi" hidden>
     <h2>Hech narsa topilmadi</h2>
@@ -481,6 +489,8 @@ function chizKartalar() {
   joy.hidden = false;
   pastki.hidden = true;
   non.hidden = true;
+  // Skeleton aria-hidden edi — haqiqiy kartalar ko'rinsin (2026-08-12)
+  joy.removeAttribute("aria-hidden");
   joy.innerHTML = mos.map(g => `
     <a class="kat-karta" href="/?q=${encodeURIComponent(g.q)}" data-slug="${esc(g.slug)}">
       <span class="kat-ikon">${IKONLAR[g.slug] || IKONLAR.boshqa}</span>

@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#eff2f7">
+<meta name="description" content="OBER chat — xaridor so'rovi, sotuvchi javobi va narx kelishuvi bitta joyda. Aloqa OBER ichida qoladi.">
 <title>OBER — Chat</title>
 <link rel="icon" href="/brend/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OBER">
+<meta property="og:title" content="OBER — Chat">
+<meta property="og:description" content="Xaridor so'rovi, sotuvchi javobi va narx kelishuvi bitta chatda.">
+<meta property="og:image" content="https://ober.uz/brend/ober-market-street-desktop.webp">
+<meta property="og:url" content="https://ober.uz/takliflar">
+<meta property="og:locale" content="uz_UZ">
 <!-- Shrift o'z serverimizda (2026-08-04). Sabab `web/shrift/onest.css`
      boshida yozilgan. -->
 <link rel="preload" href="/shrift/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -651,6 +659,16 @@ async function openChat(id){
   activeChat=id;activeOfferInfo=null;lastMessageCount=-1;updateChooseButton(null);$("#chat").hidden=false;
   const placeholder=$("#chat-placeholder");if(placeholder)placeholder.hidden=true;
   document.body.style.overflow=innerWidth<=760?"hidden":"";
+  // Suhbat yuklanayotganda skeleton (2026-08-12)
+  $("#messages").innerHTML=`<div class="sk-blok sk-chat" aria-hidden="true">
+    <div class="sk-ustun">
+      <div class="sk-qator"><div class="sk-chiziq sk-aylana"></div><div class="sk-chiziq sk-ism"></div></div>
+      <div class="sk-chiziq sk-katta"></div>
+      <div class="sk-chiziq sk-uzun"></div>
+      <div class="sk-chiziq sk-yarim"></div>
+      <div class="sk-chiziq sk-bulut"></div>
+    </div>
+  </div>`;
   const ok=await loadChat();if(ok)await loadInbox();
   clearInterval(refreshTimer);
   if(ok)refreshTimer=setInterval(()=>{if(!yashiringan())loadChat()},3500);

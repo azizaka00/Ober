@@ -487,3 +487,18 @@ Skillni ishda sinadik: `linear-gradient(180deg,#ffc24d,#f59e0b)` va `color:#2314
 - SABOQ (review): skip-link manzili `tabindex="-1"` bo'lishi shart — aks holda fokus main'ga o'tmaydi, keyingi Tab header'dan davom etadi. WCAG standart naqshi.
 - SABOQ: i18n kaliti va HTML matni apostrofda BIR XIL kod nuqtasida bo'lishi kerak (U+2018) — translate() normalizatsiyasi faqat ASCII ga o'giradi, mos kelmasa tarjima ishlamaydi.
 - `:focus-visible` bilan birga `:focus` fallback qo'shildi (eski brauzerlar).
+
+## 2026-08-12: Skeleton 4 sahifaga qo'shildi (kategoriyalar, sotuvchi, takliflar, elon)
+
+- ober-ui.css ga umumiy skeleton tizimi: .sk-blok/.sk-chiziq + shimmer animatsiya + 18 o'lcham sinfi (sk-kat, sk-ustun, sk-elon...). Inline style EMAS — barcha o'lchamlar sinf modifieri.
+- SABOQ (review 1): skeleton ichiga aria-hidden qo'yilsa, JS haqiqiy kontent chiqarganda uni REMOVE qilishi shart (kategoriyalar #kat-joy). Aks holda real kartalar screen reader'da ko'rinmay qoladi.
+- SABOQ (review 2): qo'shishli padding xatosi — .sk-elon 22px + .sk-ustun 20px = 42px. Ichki konteyner o'z paddingi bor blok ichida yana padding qo'shmasin (.sk-elon .sk-ustun{padding:0}).
+- Eski loading (spinner, loading-card, matn 'Yuklanmoqda...') o'rniga skeleton — dead CSS tozalandi.
+
+## 2026-08-12 — OG meta'lar JS'da ishlamaydi, serverda to'ldiriladi
+Telegram/Facebook skreperlari JavaScript ishlamaydi. `document.title` ni
+yangilab og:title ni setAttribute qilsak ham — ulashilganda eski "E'lon —
+OBER" chiqadi. Yechim: `/elon/{id}` route'ida server elon.html ni o'qib,
+baza.ober_elon_ol orqali e'lon nomini olib og:title/description/url va
+<title> ni almashtiradi. Sotuvchi kiritgan matnni html.escape qilish shart
+(XSS). Replace jimgina ishlamay qolmasin — mos kelmasa jurnalga yoziladi.

@@ -4,7 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>E'lon — OBER</title>
-<meta name="description" content="OBER bozoridagi e'lon">
+<meta name="description" content="OBER bozoridagi e'lon — narx, rasm va sotuvchi aloqasi bitta sahifada.">
+<link rel="icon" href="/brend/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OBER">
+<meta property="og:title" content="E'lon — OBER">
+<meta property="og:description" content="OBER bozoridagi e'lon — narx, rasm va sotuvchi aloqasi.">
+<meta property="og:image" content="https://ober.uz/brend/ober-market-street-desktop.webp">
+<meta property="og:url" content="https://ober.uz/elon/">
+<meta property="og:locale" content="uz_UZ">
 <link rel="stylesheet" href="/shrift/onest.css">
 <style>
   :root{
@@ -179,15 +187,9 @@
   .xabar-yopilgan p{color:var(--muted);margin-top:8px;font-size:14px}
 
   .yuklanmoqda{
-    display:flex;justify-content:center;align-items:center;min-height:60vh;
-    color:var(--muted);font-size:14px;gap:10px;
+    min-height:60vh;
+    padding:24px 0;
   }
-  .spinner{
-    width:18px;height:18px;border-radius:50%;
-    border:2px solid var(--line-strong);border-top-color:var(--navy);
-    animation:aylana .8s linear infinite;
-  }
-  @keyframes aylana{to{transform:rotate(360deg)}}
 
   @media (max-width:880px){
     .elon-tuzilma{grid-template-columns:1fr}
@@ -216,7 +218,19 @@
 </header>
 
 <main class="sahifa" id="sahifa" tabindex="-1">
-  <div class="yuklanmoqda"><div class="spinner"></div> E'lon ochilmoqda...</div>
+  <div class="yuklanmoqda" aria-hidden="true">
+    <div class="sk-blok sk-elon">
+      <div class="sk-chiziq sk-rasm"></div>
+      <div class="sk-ustun sk-keng">
+        <div class="sk-chiziq sk-badge"></div>
+        <div class="sk-chiziq sk-sarlavha"></div>
+        <div class="sk-chiziq sk-narx"></div>
+        <div class="sk-chiziq sk-uzun"></div>
+        <div class="sk-chiziq sk-uzun"></div>
+        <div class="sk-chiziq sk-bulut"></div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script src="/i18n.js"></script>
@@ -337,6 +351,15 @@
       '</div>';
 
     document.title = (e.nom || "E'lon") + " — OBER";
+
+    // OG meta'larini ham e'lon nomi bilan yangilaymiz — ulashilganda
+    // (Telegram/olti) sarlavha to'g'ri chiqishi uchun.
+    var ogT = document.querySelector('meta[property="og:title"]');
+    var ogD = document.querySelector('meta[property="og:description"]');
+    if (ogT) ogT.setAttribute("content", document.title);
+    if (ogD) ogD.setAttribute("content",
+      (e.kelishiladi ? "Narxi kelishiladi" : e.narx_som ? "Narxi: " + som(e.narx_som) : "") +
+      (joy ? " · " + joy : "") + " — OBER bozorida");
 
     // Galereya: kichik rasmga bosilganda katta rasm almashadi
     var katta = document.getElementById("rasm-katta");
