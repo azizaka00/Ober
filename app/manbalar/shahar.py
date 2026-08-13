@@ -38,6 +38,10 @@ import baza
 MANBA = "shahar"
 NOM = "Shahar.uz"
 KUTISH = 1.0            # soniya, so'rovlar orasida (saytni urishmaymiz)
+# Har bo'limda 21 karta/sahifa; 10 sahifa = ~200 e'lon/bo'lim.
+# E'lon sahifasi ham alohida olinadi (tavsif uchun) — KUTISH bilan
+# to'liq sikl ~35 daqiqa qo'shadi (avtoelon'ga o'xshash).
+CHUQUR_SAHIFA = 10
 _TAYANCH = "https://shahar.uz"
 _SARLAVHA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                            "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -243,7 +247,7 @@ def bosh(cheklov: int = 1, faqat: str = "") -> dict:
     return natija
 
 
-def chuqur(sahifalar: int = 3, faqat: str = "") -> dict:
+def chuqur(sahifalar: int = CHUQUR_SAHIFA, faqat: str = "") -> dict:
     """To'liq yig'ish: ko'p sahifa + e'lon tavsiflari.
 
     `sahifalar` — har bo'limdan nechta sahifa. E'lon tavsifi alohida

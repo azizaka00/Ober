@@ -257,10 +257,12 @@ Birlashtirish kerak — **AI ishi.**
    OLX'ni to'ldiradi.
 1a. ~~**Shahar.uz adapteri**~~ — **✅ 2026-08-13 ulandi**
    (`app/manbalar/shahar.py`). Ko'chmas mulk vertikali, 6 bo'lim,
-   narx dollar→so'm. Keyingi: `CHUQUR_SAHIFA` (avtoelon'dagi kabi).
+   narx dollar→so'm. **✅ To'liq sikl `CHUQUR_SAHIFA=10`** (avtoelon
+   bilan bir xil) — ~200 e'lon/bo'lim.
 2. ~~**Asaxiy.uz adapteri**~~ — **✅ 2026-08-13 yozildi** (`app/manbalar/asaxiy.py`),
    lekin **serverda bloklangan** (Hetzner IP 403 — yuqoriga qarang).
    Lokal ishlaydi, serverda yig'ilmaydi. Hamkorlik yoki o'zbek IP'si kerak.
+   Birinchi 403'da `_Bloklandi` bilan to'xtaydi — sayt urilmaydi.
 3. **Uzum bilan hamkorlik suhbati** — robots endi rasman ruxsat beradi,
    CAPTCHA to'siq. Rasmiy API/kelishuv — eng yirik bozor.
 4. ~~**Asaxiy qamrovini kengaytirish**~~ — **to'xtatildi**: serverda
