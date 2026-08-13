@@ -1402,6 +1402,19 @@ def telegram_ulanganmi(sotuvchi_id: int) -> bool:
     return bool(r and r["telegram_id"])
 
 
+def sotuvchi_telegrami(sotuvchi_id: int) -> str:
+    """Sotuvchiga ulangan Telegram chat ID.
+
+    Qiymat faqat server ichidagi bildirishnoma yuborish uchun ishlatiladi;
+    API javobiga yoki frontendga qaytarilmaydi.
+    """
+    init()
+    with ulan() as c:
+        r = c.execute("SELECT telegram_id FROM sotuvchilar WHERE id=?",
+                      (sotuvchi_id,)).fetchone()
+    return str(r["telegram_id"] or "") if r else ""
+
+
 def sotuvchi_telegramdan(telegram_id: str) -> dict | None:
     init()
     with ulan() as c:
@@ -1518,13 +1531,24 @@ def tg_holat() -> dict:
             " JOIN suhbatlar sh ON sh.id=x.suhbat_id"
             " JOIN sotuvchilar t ON t.id=sh.sotuvchi_id"
             " WHERE x.rol='xaridor' AND x.tg_yuborildi=0"
-            "   AND t.telegram_id IS NOT NULL").fetchone()["n"]
+            "   AND t.telegram_id IS NOT NULL"
+            "   AND COALESCE(x.vaqt, 0) > ?",
+            (now - BILDIRISH_ESKIRISH,)).fetchone()["n"]
+        chat_eski = c.execute(
+            "SELECT COUNT(*) n FROM xabarlar x"
+            " JOIN suhbatlar sh ON sh.id=x.suhbat_id"
+            " JOIN sotuvchilar t ON t.id=sh.sotuvchi_id"
+            " WHERE x.rol='xaridor' AND x.tg_yuborildi=0"
+            "   AND t.telegram_id IS NOT NULL"
+            "   AND COALESCE(x.vaqt, 0) <= ?",
+            (now - BILDIRISH_ESKIRISH,)).fetchone()["n"]
         ochiq = c.execute("SELECT COUNT(*) n FROM sorovlar"
                           " WHERE yopiladi > ?", (now,)).fetchone()["n"]
     return {"sotuvchilar": sotuvchilar, "telegramga_ulangan": ulangan,
             "ochiq_sorov": ochiq, "tg_kutayotgan": kutayotgan,
             "tg_yuborilgan": yuborilgan,
-            "tg_chat_kutayotgan": chat_kutayotgan}
+            "tg_chat_kutayotgan": chat_kutayotgan,
+            "tg_chat_eski": chat_eski}
 
 
 # ── FTS5 INDEKSI ─────────────────────────────────────────────────────────────

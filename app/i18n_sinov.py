@@ -31,10 +31,10 @@ def main() -> None:
             "tanlangan til lokal saqlanadi")
     tekshir('lang === "ru" ? "ru-RU" : "uz-UZ"' in i18n,
             "narx va sonlar tilga mos formatlanadi")
-    # 2026-08-11: h1 ichida amber urg'u uchun span qo'shildi — tarjima
-    # ikkiga bo'lindi: "Siz yozasiz." va "Bozor javob beradi.".
-    tekshir('"Siz yozasiz.":"Вы пишете."' in i18n and
-            '"Bozor javob beradi.":"Рынок отвечает."' in i18n,
+    # 2026-08-13: marketplace hooki ikki matn tugunidan iborat.
+    tekshir('"Bir qidiruv.":"Один поиск."' in i18n and
+            '"Butun bozor.":"Весь рынок."' in i18n and
+            '"OBER — bir qidiruv, butun bozor"' in i18n,
             "bosh sahifa ruscha lug‘atda bor")
     tekshir('"Sotuvchi sifatida boshlang":"Начать как продавец"' in i18n,
             "sotuvchi onboarding ruscha lug‘atda bor")
@@ -42,6 +42,10 @@ def main() -> None:
             "chat va notification ruscha lug‘atda bor")
     tekshir('MutationObserver' in i18n,
             "API dan keyin chizilgan dinamik matn ham tarjima qilinadi")
+    tekshir('"Bildirishnomani sinash":"Проверить уведомление"' in i18n and
+            '"Test xabar yuborildi. Telegramni tekshiring."' in i18n and
+            '"Test xabar yuborilmadi. Botni ochib /start bosing, keyin qayta sinang"' in i18n,
+            "Telegram test holatlari ruscha lug‘atda bor")
     # 2026-08-12: elon.html yopilgan-xabar holatlari — JS orqali
     # yoziladi, rus interfeysda o'zbekcha qolib ketmasligi uchun.
     for soz in ('"Bu e‘lon yopilgan":"Это объявление закрыто"',

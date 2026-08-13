@@ -79,6 +79,7 @@ _TEZLIK_QOIDA = {
     "/api/sotuvchi/tasdiq": (20, 3600),    # kod taxmin qilib bo'lmasin
     "/api/sotuvchi/chiqish": (60, 3600),   # chiqish — sessiyani o'chiradi
     "/api/sotuvchi/profil": (600, 3600),   # profil — o'z egasi, tez-tez yuklanadi
+    "/api/sotuvchi/telegram/sinov": (5, 3600),  # egasiga test xabari
     "/api/elon": (20, 3600),               # yangi e'lon — spam e'lonlarga qarshi
     # Rasmli qidiruv pullik vision chaqirig'iga aylanishi mumkin. Kalit
     # qo'yilmaganida tashqi chaqiriq yo'q; yoqilgach anonim suiiste'mol
@@ -146,6 +147,40 @@ class Ishlovchi(BaseHTTPRequestHandler):
             self.send_header(nom, qiymat)
         self.end_headers()
         self.wfile.write(tana)
+
+    def _ulashilgan(self, nom: str, tur: str,
+                    qoshimcha: dict[str, str] | None = None) -> None:
+        """UMUMIY FAYL — YANGILANSA YANGISI, YANGILANMASA BEPUL.
+
+        2026-08-12 da o'lchov bilan topilgan xato. `ober-ui.css`,
+        `tabbar.js` va `i18n.js` `Cache-Control: no-cache` bilan
+        berilardi. `no-cache` "ishlatishdan oldin tekshir" degani —
+        LEKIN tekshirish uchun brauzerga validator kerak, bizda esa
+        na `ETag`, na `Last-Modified` bor edi. Tekshiradigan narsa
+        yo'q, shuning uchun Chrome eskisini berardi.
+
+        Ko'rgan holat: deploy tugadi, server yangi CSS ni beryapti,
+        `fetch(cache:'reload')` yangisini oldi — lekin SAHIFA hali
+        eskisida (57 qoida, eski selektor). Foydalanuvchi uchun bu
+        "Aziz tuzatdi, menda o'zgarmadi" degani.
+
+        `ETag` — fayl mtime va hajmidan. O'zgarmasa brauzer
+        `If-None-Match` yuboradi va biz 304 qaytaramiz: tana yo'q,
+        trafik yo'q. O'zgarsa — yangi ETag, yangi tana.
+        """
+        fayl = WEB / nom
+        st = fayl.stat()
+        etag = '"%x-%x"' % (int(st.st_mtime), st.st_size)
+        boshliqlar = {"Cache-Control": "no-cache, must-revalidate",
+                      "ETag": etag}
+        boshliqlar.update(qoshimcha or {})
+        if self.headers.get("If-None-Match") == etag:
+            self.send_response(304)
+            for k, v in boshliqlar.items():
+                self.send_header(k, v)
+            self.end_headers()
+            return
+        self._yubor(200, tur, fayl.read_bytes(), boshliqlar)
 
     def _topilmadi(self) -> None:
         """404 — ORQAGA YO'L BOR.
@@ -422,26 +457,41 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
             return
 
         if u.path == "/i18n.js":
-            self._yubor(200, "application/javascript; charset=utf-8",
-                        (WEB / "i18n.js").read_bytes(), {
-                            "Cache-Control": "no-cache",
-                        })
+            self._ulashilgan("i18n.js",
+                             "application/javascript; charset=utf-8")
             return
 
         if u.path == "/ober-ui.css":
-            self._yubor(200, "text/css; charset=utf-8",
-                        (WEB / "ober-ui.css").read_bytes(), {
-                            "Cache-Control": "no-cache",
-                        })
+            self._ulashilgan("ober-ui.css", "text/css; charset=utf-8")
             return
 
         # Pastki tab navigatsiyasi (2026-08-07). Barcha sahifalarga
         # bitta fayl — navigatsiya bir joyda bo'lsin.
         if u.path == "/tabbar.js":
-            self._yubor(200, "application/javascript; charset=utf-8",
-                        (WEB / "tabbar.js").read_bytes(), {
-                            "Cache-Control": "no-cache",
-                        })
+            self._ulashilgan("tabbar.js",
+                             "application/javascript; charset=utf-8")
+            return
+
+        # FAVICON — BRAUZER UNI HAR DOIM ILDIZDAN SO'RAYDI (2026-08-12).
+        #
+        # Sahifalarda `<link rel="icon" href="/brend/icon.png">` bor va
+        # u to'g'ri ishlaydi. Lekin brauzer baribir `/favicon.ico` ni
+        # so'raydi — bu uning eski, o'zgarmas odati. Javob 404 bo'lgani
+        # uchun har sahifa ochilishida konsolga xato yozilardi.
+        #
+        # Tezlikka ta'siri yo'q (server ichida 0.75 ms), lekin konsolda
+        # doimiy qizil xato turishi ishning tugallanmaganini bildiradi
+        # va haqiqiy xatoni ko'rishga xalaqit beradi.
+        #
+        # PNG ni `.ico` manzilida berish mumkin — brauzerlar buni
+        # qabul qiladi, kengaytma emas, `Content-Type` hal qiladi.
+        if u.path == "/favicon.ico":
+            fayl = (WEB / "brend" / "icon.png")
+            if fayl.is_file():
+                self._yubor(200, "image/png", fayl.read_bytes(),
+                            {"Cache-Control": "public, max-age=31536000, immutable"})
+            else:
+                self._topilmadi()
             return
 
         # Brend va shrift fayllari: faqat o'sha papkalar ichidagi aniq
@@ -1051,6 +1101,17 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         # 2026-08-06 kod-review: uch holat uchun bir xil javob beriladi
         # (raqam ro'yxatda yo'q / Telegram ulanmagan / kod yuborilmadi) —
         # qaysi raqamlar ro'yxatda ekanini taxmin qilib bo'lmasin.
+        # Ulangan sotuvchi bildirishnoma haqiqatan kelishini o'zi tekshiradi.
+        # Sessiya tokeni serverda sotuvchiga yechiladi; Telegram chat ID
+        # frontenddan olinmaydi va API javobida oshkor qilinmaydi.
+        if u.path == "/api/sotuvchi/telegram/sinov":
+            d = self._tana()
+            kod, javob = _telegram_sinov((d.get("token") or "").strip())
+            self._yubor(kod, "application/json; charset=utf-8",
+                        json.dumps(javob, ensure_ascii=False).encode(),
+                        {"Cache-Control": "no-store"})
+            return
+
         if u.path == "/api/sotuvchi/kirish":
             d = self._tana()
             aloqa = _telefon_tozala(d.get("aloqa") or "")
@@ -1459,6 +1520,29 @@ def _telefon_tozala(aloqa: str) -> str:
     if len(raqam) == 12 and raqam.startswith("998"):
         return raqam
     return raqam
+
+
+def _telegram_sinov(token: str) -> tuple[int, dict]:
+    """Sotuvchining o'z Telegramiga bitta xavfsiz test xabari yuboradi."""
+    sotuvchi_id = baza.sessiya_sotuvchisi(token)
+    if not sotuvchi_id:
+        return 401, {"ok": False, "xato": "Sotuvchi sessiyasi topilmadi"}
+
+    telegram_id = baza.sotuvchi_telegrami(sotuvchi_id)
+    if not telegram_id:
+        return 409, {"ok": False,
+                     "xato": "Avval Telegramni ulang, keyin qayta sinang"}
+
+    import tg
+    matn = ("✅ <b>OBER bildirishnomasi ishlayapti</b>\n\n"
+            "Endi yangi so‘rov va xaridor chat xabarlari shu yerga keladi.")
+    tugmalar = [[{"text": "Sotish bo‘limini ochish",
+                  "url": "https://ober.uz/sotuvchi"}]]
+    if tg.yubor(telegram_id, matn, tugmalar):
+        return 200, {"ok": True}
+    return 502, {"ok": False,
+                 "xato": "Test xabar yuborilmadi. Botni ochib /start bosing, "
+                         "keyin qayta sinang"}
 
 
 def _sotuvchi_ident(p) -> int:

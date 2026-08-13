@@ -93,15 +93,13 @@ Bularning har biri buzilgan, o'lchangan va tuzatilgan. Takrorlanmasin.
   hisobga ol**. 2026-08-02: saralash paneli `top:0` edi va tepa panel
   (z-index 20) uni butunlay yopib turardi. Ko'rinmasdi ham, bosilmasdi ham.
 - Panel balandligi `--panel-h` o'zgaruvchisida. Qo'lda raqam yozilmaydi.
-- **Telefonda yopishqoq element eng ko'pi bilan bitta.** Ikkitasi ekranning
-  uchdan birini yeydi.
-- 2026-08-04 o'lchov (412x674): natija sahifasida **ikkitasi** bor edi —
-  tepa panel (sticky, 65 px) va suzuvchi so'rash tugmasi (fixed, 50 px).
-  Birgalikda 115 px = ekranning **17% i** doimiy band, ya'ni bitta karta.
-  Tepa panel telefonda `position:absolute` qilindi (ro'yxatni ko'rayotganda
-  logotip va til kerak emas), suzuvchi tugma qoldi — u OBER'ni oddiy
-  e'lonlar ro'yxatidan ajratib turadigan yagona harakat.
-  Natija: birinchi karta 484 px dan **427 px** ga ko'tarildi.
+- **Telefonda yopishqoq element eng ko'pi bilan bitta.** 2026-08-13
+  jonli 390×844 skrinshotida pastki tabbar, saralash qatori va suzuvchi
+  "Sotuvchilardan so‘rash" CTA bir vaqtda ko'rindi. CTA karta rasmi va
+  narxini yopdi, saralash esa yana bir panelga aylandi.
+- Yangi qaror: telefonda faqat **pastki tabbar** doimiy qoladi. Topbar
+  natijada normal oqimda, saralash/narx paneli ham static, teskari bozor
+  CTA esa natija tepasida bitta ixcham qator. Kontent ustiga CTA chiqarilmaydi.
 
 ### 3.2.1 CSS tartibi — @media har doim ham g'olib emas
 
@@ -232,6 +230,95 @@ qo'shilmaydi. 2026-08-02 da men Telegram belgisi uchun beshinchi ko'k
 **Bosilganda javob.** Har bosiladigan element `:active` da 1 px pastga
 tushadi. Telefonda hover yo'q — bosish yagona javob. Faylda atigi 2 ta
 `:active` bor edi, ya'ni tugmalar bosilganda o'lik turardi.
+
+### 3.6.0 Sahifa rangi uzilmaydi (2026-08-13)
+
+Bosh sahifa och bo'lsa, qidiruv natijasi birdan quyuq rejimga o'tmaydi.
+Jonli telefon skrinshotida bu OBER ichida boshqa mahsulotga o'tgandek
+ko'rindi: logo oqardi, karta va footer navy bo'lardi, tabbar ham alohida
+qorong'i qatlamga aylanardi.
+
+**Yangi qaror:** qidiruv → natija → footer bitta och bozor tizimi.
+Navy matn/boshqaruv uchun, amber faqat asosiy amal uchun. Qorong'i blok
+faqat mazmuniy kontrast kerak bo'lgan alohida bo'limda (masalan, bosh
+sahifadagi statistik dalil panjarasi) ishlatilishi mumkin; butun ish
+oqimi rang almashtirmaydi.
+
+### 3.6.1 Shisha — uchta daraja, boshqasi yo'q (2026-08-12)
+
+Radius bilan bo'lgan voqea `backdrop-filter` da takrorlandi. Audit:
+78 ta ishlatish, ichida **besh xil blur** (12, 14, 16, 18, 20px) va
+**to'rt xil saturate** — ikkitasi turli birlikda yozilgan: `1.05` va
+`140%`. Ya'ni `kategoriyalar` va `sotuvchi` tepa paneli 105% da,
+`takliflar` niki 140% da turardi. Bir xil element, qo'shni sahifalar.
+
+Hech kim ongli ravishda besh daraja tanlamagan. Har biri alohida
+yozilgan va bir-biridan bexabar edi.
+
+| O'zgaruvchi | Qiymat | Qayerda |
+|---|---|---|
+| `--shisha-yupqa` | `saturate(140%) blur(12px)` | chip, nishon, kichik boshqaruv |
+| `--shisha` | `saturate(140%) blur(14px)` | panel, karta, tugma |
+| `--shisha-quyuq` | `saturate(160%) blur(20px)` | **yopishqoq** qatlam: topbar, tabbar |
+
+Yopishqoq qatlam kontent **ustida** suzadi — unga kuchliroq ajratish
+kerak. Panel esa sahifa bilan bir tekislikda, unga yumshoq shisha
+yetarli.
+
+`filter:blur()` bunga **kirmaydi** — u boshqa xossa. `sotuvchi.html`
+dagi 4/5/8px animatsiya va bezak uchun, tegilmaydi. Modal ostidagi
+`blur(2px)` parda ham istisno: u shisha sirt emas, orqadagi sahifani
+xiralashtirish.
+
+**Har `backdrop-filter` ga `-webkit-` jufti shart.** iOS Safari
+prefikssiz tushunmaydi. 2026-08-12 da uchta joyda yo'q edi, ulardan
+biri natija sahifasidagi qidiruv qutisi: to'q hero ustida
+`rgba(255,255,255,.10)`, ya'ni iPhone'da **deyarli ko'rinmas**.
+`web_sinov` endi sonini taqqoslaydi.
+
+### 3.6.2 Tugma — uch daraja (2026-08-12)
+
+Saytda 16 ta tugma sinfi bor edi. Ular aslida uch guruh, lekin buni
+hech kim yozib qo'ymagandi:
+
+| Daraja | Ko'rinishi | Sinflar |
+|---|---|---|
+| **Asosiy** | to'ldirilgan (amber CTA yoki navy) | `.sora-btn`, `.yangi-elon-btn`, `.tg-btn`, `.primary-btn`, `.retry-btn`, `.call-btn`, `.bosh-tugma` |
+| **Ikkinchi** | shisha kapsula | `.yana-btn`, `.elon-tugma`, `.tartib-btn`, `.empty-tozalash` |
+| **Jim** | faqat matn | `.quiet-btn`, `.tg-keyin`, `.decline-btn`, `.link-btn` |
+
+Ikkinchi darajaning to'rttasi ham "oq fon + chegara" edi, lekin
+**uch xil oq** bilan: `#fff`, `#fff`, `var(--surface)`.
+
+**Hammasi shaffof bo'lmaydi.** iOS da ham yagona to'ldirilgan tugma
+qoladi. Hammasini shishaga aylantirish "bitta urg'u" qoidasini
+buzardi — qaysi biri asosiy ekani yo'qolardi.
+
+`inset 0 1px 0 rgba(255,255,255,.8)` — shishaning asosiy belgisi.
+Usiz element shaffof to'rtburchak bo'lib ko'rinadi; u bilan ustki
+qirrasi yorug'lik ushlagan sirtga o'xshaydi.
+
+### 3.6.3 Bosish nishoni — ko'rinadigan quti bosiladigan bo'lsin
+
+Ikki xil xato o'lchov bilan topildi (2026-08-12):
+
+**a) Markazlashgan input.** `.kat-qidiruv` — ota `align-items:center`
+va `height:52px`, input esa o'z tabiiy balandligida (25px). Maydon
+52px **ko'rinardi**, lekin tepa 14px va past 14px **bosilmasdi** —
+ko'rinadigan balandlikning 54% i o'lik. `document.elementFromPoint`
+chetlarda `INPUT` emas, `DIV` qaytardi. Yechim: `align-self:stretch`.
+
+**b) Yalang'och matn havolasi.** `Kirish` 34x19px, `Qidirish
+bo'limiga o'ting` 147x17px — ikkalasi ham `padding:0`. Padding
+qo'shish matnni siljitardi, shuning uchun ko'rinmas `::after`
+qatlami: layoutga tegmaydi, bosish o'shanga tushadi.
+
+Tekshirish usuli — taxmin emas, `elementFromPoint`:
+
+```js
+document.elementFromPoint(x, quti.top + 4)   // INPUT qaytishi kerak
+document.elementFromPoint(x, quti.bottom - 4)
+```
 
 ## 4. KONTENT ZICHLIGI
 

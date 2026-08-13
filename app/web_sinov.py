@@ -174,6 +174,113 @@ def main() -> int:
               "va soyasi bekor qilinmagan — hero ustida chiziq "
               "qoladi" % "index.html")
 
+    # 4h. NAVIGATSIYA IKKI QAVAT BO'LMASIN.
+    #
+    # 2026-08-12, Azizning ko'zi bilan topilgan: 798px kengligida
+    # tepada "Chat" va "Sotish", pastda esa tab barda yana "Chat" —
+    # ikkita navigatsiya bir vaqtda.
+    #
+    # Sabab: topbar havolalari `max-width:600px` da yashirinardi,
+    # tab bar esa `min-width:901px` da yo'qolardi. 601-900px oralig'i
+    # ikkalasiga ham tegishli emas edi. Kodda "ikkalasi bitta chegara"
+    # deb yozilgan edi — yozilgan, lekin tekshirilmagan.
+    #
+    # Qoida: tab barni yashiradigan `min-width:N` va topbar
+    # havolalarini yashiradigan `max-width:M` uchun M = N - 1.
+    # Aks holda oraliqda ikkalasi ko'rinadi (yoki ikkalasi yo'qoladi).
+    jami += 1
+    tb = (WEB / "tabbar.js").read_text(encoding="utf-8")
+    # `[^}]*` EMAS: media blok ichida boshqa qoidalar bor, ular `}` bilan
+    # tugaydi va sinf to'plami ularni kesib o'tolmaydi. Ochko'z bo'lmagan
+    # `.*?` kerak — eng yaqin `.ober-tabbar{display:none}` gacha boradi.
+    kiz = re.search(r"min-width:(\d+)px\).*?\.ober-tabbar\{display:none\}", tb, re.S)
+    yash = re.search(r"max-width:(\d+)px\)\{\s*\"?,?\s*\"?\s*"
+                     r"\.ober-tabbar-joy \.messages-link", tb, re.S)
+    if not kiz or not yash:
+        xato += 1
+        print("  XATO %-16s tab bar / topbar havola chegaralari topilmadi "
+              "— naqsh o'zgargan bo'lsa sinovni yangilang" % "tabbar.js")
+    elif int(yash.group(1)) != int(kiz.group(1)) - 1:
+        xato += 1
+        print("  XATO %-16s navigatsiya oralig'i: havolalar %spx da "
+              "yashirinadi, tab bar %spx da yo'qoladi — %s-%spx oralig'ida "
+              "IKKALASI ko'rinadi" % ("tabbar.js", yash.group(1), kiz.group(1),
+                                      int(yash.group(1)) + 1,
+                                      int(kiz.group(1)) - 1))
+
+    # 4f. SHISHA QIYMATI XOM YOZILMASIN.
+    #
+    # 2026-08-12 audit: `backdrop-filter` 78 marta, ichida 5 xil blur
+    # va 4 xil saturate — ikkitasi turli birlikda (`1.05` va `140%`).
+    # Kategoriyalar tepa paneli 105%, takliflar niki 140% edi.
+    # Endi uchta token: --shisha-yupqa / --shisha / --shisha-quyuq.
+    #
+    # Istisno: modal ostidagi `blur(2px)` parda — u shisha SIRT emas,
+    # orqadagi sahifani xiralashtirish. Boshqa maqsad, boshqa qiymat.
+    for nom in ("index.html", "takliflar.html", "sotuvchi.html",
+                "kategoriyalar.html", "elon.html", "tabbar.js"):
+        jami += 1
+        matn = (WEB / nom).read_text(encoding="utf-8")
+        xom = [q for q in re.findall(r"backdrop-filter:\s*([^;\"']+)", matn)
+               if "var(--shisha" not in q and "blur(2px)" not in q]
+        if xom:
+            xato += 1
+            print("  XATO %-16s xom shisha qiymati: %s — `var(--shisha)`, "
+                  "`var(--shisha-yupqa)` yoki `var(--shisha-quyuq)` "
+                  "ishlating" % (nom, ", ".join(sorted(set(xom))[:3])))
+
+    # 4g. HAR SHISHAGA `-webkit-` JUFTI BO'LSIN.
+    #
+    # iOS Safari `backdrop-filter` ni prefikssiz TUSHUNMAYDI. Prefiks
+    # yo'q bo'lsa telefonda shisha umuman ishlamaydi va element o'z
+    # yarim shaffof foni bilan qoladi.
+    #
+    # 2026-08-12 da uchta joyda yo'q edi, ulardan biri — natija
+    # sahifasidagi qidiruv qutisi: to'q hero ustida `rgba(255,255,255,.10)`,
+    # ya'ni iPhone'da deyarli ko'rinmas. Saytdagi eng muhim element.
+    for nom in ("index.html", "takliflar.html", "sotuvchi.html",
+                "kategoriyalar.html", "elon.html", "tabbar.js"):
+        jami += 1
+        matn = (WEB / nom).read_text(encoding="utf-8")
+        oddiy = len(re.findall(r"(?<!-webkit-)backdrop-filter:", matn))
+        webkit = len(re.findall(r"-webkit-backdrop-filter:", matn))
+        if oddiy != webkit:
+            xato += 1
+            print("  XATO %-16s backdrop-filter %d ta, -webkit- jufti %d ta "
+                  "— iOS Safari'da shisha ishlamaydi" % (nom, oddiy, webkit))
+
+    # 4d. JONLI LENTA QATORIGA O'RAM QO'YILMASIN.
+    #
+    # 2026-08-12, o'lchov: qator balandligi 1394px, har karta 144x1384 —
+    # butun lenta ulkan bo'sh ustunlarga aylangan edi. Jonli saytda.
+    #
+    # Sabab: ikkinchi nusxa `<span aria-hidden>` ichiga o'ralgan edi.
+    # O'ram `.jonli-yol` ning yagona flex bolasi bo'ldi, ichidagi
+    # `<a>` lar flex element bo'lmay qoldi (`flex:0 0 170px` o'lik),
+    # vertikal taxlandi, o'ram 1384px ga cho'zildi va `stretch` qolgan
+    # kartalarni ham tortdi.
+    #
+    # Qoida: `.jonli-yol` ning bolasi FAQAT karta bo'ladi. Nusxaga
+    # belgi kerak bo'lsa — `<a>` ning o'ziga, qo'shimcha qutisiz.
+    jami += 1
+    if re.search(r"jonli-yol[\"'][^`]{0,80}<span", bosh):
+        xato += 1
+        print("  XATO %-16s .jonli-yol ichida <span> o'ram — kartalar "
+              "flex bo'lmay qoladi va vertikal taxlanadi "
+              "(2026-08-12 saboqi)" % "index.html")
+
+    # 4e. LENTA KARTALARI TENG BALANDLIKDA TURSIN.
+    #
+    # O'lchov: 1 qatorli sarlavha 198px, 2 qatorli 219px. `flex-start`
+    # da tublari 21px notekis — gorizontal lentada darrov ko'rinadi.
+    # Shuning uchun `stretch` ATAYLAB yozilgan (sukut qiymati bo'lsa
+    # ham) — kimdir uni "keraksiz" deb o'chirmasin.
+    jami += 1
+    if not re.search(r"\.jonli-yol\s*\{[^}]*align-items\s*:\s*stretch", bosh, re.S):
+        xato += 1
+        print("  XATO %-16s .jonli-yol da `align-items:stretch` yo'q — "
+              "karta tublari 21px notekis bo'ladi" % "index.html")
+
     # 5. SOTISH OQIMI KONTEKSTNI YO'QOTMASIN.
     #
     # 2026-08-11: ro'yxatdan o'tish tugashi bilan Telegram alohida
@@ -204,6 +311,12 @@ def main() -> int:
         ('<div id="tg-quti"></div>' in sotuvchi and
          "telegramQadami" not in sotuvchi,
          "Telegram kabinet ichida qolsin, alohida majburiy qadam bo'lmasin"),
+        ('onclick="telegramSinov(this)"' in sotuvchi and
+         "Bildirishnomani sinash" in sotuvchi,
+         "ulangan sotuvchi Telegram bildirishnomasini o'zi sinay olsin"),
+        ('/api/sotuvchi/telegram/sinov' in sotuvchi and
+         'body:JSON.stringify({token:MEN})' in sotuvchi,
+         "Telegram testi sotuvchi sessiyasi bilan yuborilsin"),
     ]
     for shart, izoh in sotish_tekshiruvlari:
         jami += 1
@@ -228,7 +341,7 @@ def main() -> int:
         ('data-tab="sotish"' not in tabbar and
          'nom: "Sotish"' not in tabbar,
          "sotuvchi tomoniga ikkinchi takroriy eshik qo'shilmasin"),
-        ("grid-template-columns:1fr 1fr 1.2fr 1fr" in tabbar and
+        ("grid-template-columns:1fr 1fr 1.12fr 1fr" in tabbar and
          'querySelectorAll(".ober-tab").length !== 4' in tabbar,
          "tab bar to'rt vazifadan iborat bo'lsin va soni himoyalansin"),
         ('window.OBER_TAB_FAOL = faolQil' in tabbar,
@@ -243,6 +356,96 @@ def main() -> int:
             xato += 1
             print("  XATO %-16s %s" % ("tabbar.js", izoh))
 
+    # 7. LOCAL FONT ASSETS AND CHAT HEADING REGRESSIONS.
+    # onest.css local URLlarni ko'rsatib, fayllar bo'lmasa har sahifa
+    # ikki marta 404 beradi va qurilmaga qarab tizim shriftiga tushadi.
+    for font in (
+        "onest-latin.woff2",
+        "onest-latin-ext.woff2",
+        "onest-cyrillic.woff2",
+        "onest-cyrillic-ext.woff2",
+    ):
+        jami += 1
+        font_path = WEB / "shrift" / font
+        if not font_path.exists() or font_path.stat().st_size < 1000:
+            xato += 1
+            print("  XATO %-16s local Onest font fayli yo'q yoki bo'sh" % font)
+
+    chat = (WEB / "takliflar.html").read_text(encoding="utf-8")
+    jami += 1
+    if ".page-title{display:none}" not in chat or \
+            ".top-tools{grid-column:3;" not in chat:
+        xato += 1
+        print("  XATO %-16s tepa panel va kontekstda Chat sarlavhasi takrorlanadi" %
+              "takliflar.html")
+
+    # Jonli lenta ixtiyoriy: yetarli rasmli e'lon bo'lmasa jim yashirinadi.
+    # Bu expected empty state console.error bo'lib E2E auditni bulg'amasin.
+    jami += 1
+    if 'throw new Error("Jonli e\'lonlar yetarli emas")' in bosh:
+        xato += 1
+        print("  XATO %-16s expected jonli empty state console error beradi" %
+              "index.html")
+
+    # 8. 2026-08-13 JONLI MOBIL AUDIT REGRESSIYALARI.
+    # Natija bosh sahifadan quyuq rejimga sakramasin, qidiruv ikki qatorga
+    # bo'linmasin va suzuvchi reverse-market CTA kartani yopmasin.
+    natija_tekshiruvlari = [
+        ("NATIJA SAHIFASI QUYUQ" not in bosh and
+         "--bg:#f5f7fb" in bosh and
+         "NATIJA SAHIFASI — YAGONA OCH TIZIM" in bosh,
+         "natija sahifasi bosh sahifa bilan yagona och rang tizimida qolsin"),
+        (".search-panel{flex-wrap:nowrap;gap:6px}" in bosh and
+         ".search-panel::after{display:none}" in bosh,
+         "390px qidiruv kamera va Topish bilan bitta qatorda qolsin"),
+        (".tez-sora{display:none!important}" in bosh and
+         'suzuvchi = document.createElement("div")' not in bosh,
+         "suzuvchi Sotuvchilardan so‘rash CTA kartalarni yopmasin"),
+        ("kartalar.splice(" not in bosh and
+         '${soraChiziq()}' in bosh,
+         "teskari bozor CTA ro‘yxat tepasida bir marta chiqsin"),
+        ('id="tartib-select"' in bosh and
+         'id="filtr-ochish"' in bosh and
+         'id="filtr-qollash"' in bosh,
+         "mobil saralash va narx filtri sig‘adigan boshqaruvga ega bo‘lsin"),
+    ]
+    for shart, izoh in natija_tekshiruvlari:
+        jami += 1
+        if not shart:
+            xato += 1
+            print("  XATO %-16s %s" % ("index.html", izoh))
+
+
+    # 9. 2026-08-13 BRAND VA BIRINCHI EKRAN TARTIBI.
+    brand_tekshiruvlari = [
+        ('font-family:Georgia' not in bosh and 'Times New Roman' not in bosh,
+         "bosh sahifada marketplacega yot serif shrift qolmasin"),
+        ('Bir qidiruv.' in bosh and 'Butun bozor.' in bosh,
+         "hero agregator vazifasini bir qarashda aytsin"),
+        ('id="market-listings"' in bosh and 'id="market-rate"' in bosh and
+         '.market-metric strong' in bosh and 'white-space:nowrap' in bosh,
+         "e‘lon soni va kurs topbarda bir qatorda ko‘rinsin"),
+        ('id="tez"' in bosh and 'class="search-panel"' in bosh and
+         bosh.index('id="tez"') < bosh.index('class="search-panel"'),
+         "jonli qidiruvlar qidiruv maydonidan oldin tursin"),
+        ('id="jonli"' in bosh and 'id="qadamlar"' in bosh and
+         bosh.index('id="jonli"') < bosh.index('id="qadamlar"') and
+         "O'lchangan, va'da emas" not in bosh and
+         'Ishonch <em>dalildan</em>' not in bosh,
+         "ikki qatorli real e‘lonlar rasmiy statistika blokidan ustun tursin"),
+    ]
+    for shart, izoh in brand_tekshiruvlari:
+        jami += 1
+        if not shart:
+            xato += 1
+            print("  XATO %-16s %s" % ("index.html", izoh))
+
+    for nom, eng_kam in (("logo-ober-20260813.png", 5000), ("icon.png", 5000)):
+        jami += 1
+        aktiv = WEB / "brend" / nom
+        if not aktiv.exists() or aktiv.stat().st_size < eng_kam:
+            xato += 1
+            print("  XATO %-16s yangi brend PNG aktiv emas" % nom)
     print("\n  %d to'g'ri · %d xato  (%d tekshiruv)"
           % (jami - xato, xato, jami))
     return 1 if xato else 0

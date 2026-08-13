@@ -1,5 +1,53 @@
 # Saboqlar
 
+## 2026-08-12: O'ramning o'zi yo'q edi — u qo'shni ettitasini ham cho'zdi
+
+Jonli lenta qatori 1394px balandlikda edi, har karta 144x1384 — jonli
+saytda, ulkan bo'sh oq ustunlar. Men buni ko'rmagandim, chunki lenta
+telefon ekranining pastida edi va men faqat DOM tuzilmasini
+tekshirgandim ("2 qator bor, 14 tadan karta bor — demak ishlaydi").
+
+Sabab: nusxani `<span aria-hidden>` ichiga o'ragandim. O'ram
+`.jonli-yol` ning yagona flex bolasi bo'lib qoldi; ichidagi `<a>` lar
+endi flex element emas, `flex:0 0 170px` o'lik, vertikal taxlandi.
+O'ram 1384px ga cho'zildi va `align-items:stretch` qolgan yettita
+SOG'LOM kartani ham o'sha balandlikka tortdi.
+
+Ikki saboq:
+
+1. **"Element bor" ≠ "element to'g'ri".** Sanoq (2 qator, 14 karta)
+   to'g'ri edi, o'lcham esa falokat. Endi lenta uchun balandlik ham
+   o'lchanadi, faqat sanoq emas.
+2. **Bitta noto'g'ri bola butun qatorni buzadi.** Flex `stretch`
+   sukut bo'yicha ishlaydi — bir bola cho'zilsa, hammasi cho'ziladi.
+
+Birinchi tuzatishim `align-items:flex-start` edi — noto'g'ri yo'l.
+U simptomni yashirar, lekin karta tublarini 21px notekis qilardi
+(1 qatorli sarlavha 198px, 2 qatorli 219px). Sabab yo'qolgach
+`stretch` xavfsiz va TO'G'RI. Simptomni davolashdan oldin sababni top.
+
+## 2026-08-12: Hover uchun tuzatish yozildi, oddiy holat unutildi
+
+To'q natija sahifasida saralash chiplari oqish dog' bo'lib turardi.
+`index.html` da `body.is-results .tartib-btn:hover` bor edi — lekin
+ASOSIY qoida yo'q. Telefonda hover bo'lmaydi, demak chiplar hech
+qachon to'q holatga o'tmasdi.
+
+Bu 2026-08-04 dagi `.results` padding saboqining aynan o'zi: tuzatish
+yozilgan, ammo hech qachon ishlamagan. Yangi qoida: `:hover` yozganda
+o'zingdan so'ra — **hover bo'lmaganda nima ko'rinadi?**
+
+## 2026-08-12: Sodda qo'riqchi haqida gapirish ham uni buzadi
+
+`web_sinov` "JS ichida HTML izohi bo'lmasin" qoidasini ODDIY matn
+qidiruvi bilan tekshiradi (ilgari aqlliroq variant xatoni ko'rmagan
+edi, shuning uchun soddalashtirilgan). Men izohda o'sha belgini
+tushuntirish uchun yozdim — sinov darhol yiqildi.
+
+To'g'ri javob: qo'riqchini "aqlli" qilish emas, taqiqlangan naqshni
+izohda ham yozmaslik. So'z bilan tushuntir. Sodda qo'riqchi yolg'on
+tinchlik bermaydi — bugun u meni ikki marta ushladi.
+
 ## 2026-08-10: Bitta belgi butun sahifani o'ldirdi
 
 Aziz: *"yangi e'longa kirsam ham profilga kirsam ham hech narsa
@@ -511,3 +559,82 @@ Muhim: header'da 94x29 o'lchamda to'liq kompozitsiya (monogram+so'z+tagline)
 o'qilmaydi — ALohida KOMPAKT variant kerak (monogram+so'z, taglinesiz).
 Review topdi: logotip kompozitsiyasi ishlatiladigan o'lchamga mos bo'lishi
 shart, aks holda kichik o'lchamda shovqinga aylanadi.
+
+## 2026-08-13 ? Frontend auditi: eski skrinshot emas, joriy Chrome o'lchovi
+
+- Skrinshot va frontend faylining vaqtini solishtirish shart. 20:32 dagi
+  390px kesilish skrinshotidan keyin kod 23:07 gacha o'zgargan edi; joriy
+  Chrome o'lchovi `scrollWidth=390` va to'rt tabning ham sig'ganini isbotladi.
+- Faqat CSS/HTML guard yetmaydi: 1280x900 va 390x844 Google Chrome'da
+  `scrollWidth`, fixed/sticky qatlamlar, faol nav, console va failed request
+  birga o'lchandi. To'liq seller -> e'lon -> buyer qidiruv/so'rov -> seller
+  javob -> unread -> rasmli chat -> read-state oqimi har ikki viewportda 7/7.
+- Lokal CSS `woff2` URLni ko'rsatib, binar faylni faqat deploy paytida yuklash
+  clean clone va lokal Chrome'da yashirin 404 qoldiradi. 65 KB Onest aktivlari
+  repoda saqlanadi va `web_sinov` ularning mavjudligini qo'riqlaydi.
+- Bitta vazifa sarlavhasini topbarda va kontentda ketma-ket takrorlash
+  iyerarxiyani kuchaytirmaydi; mobil Chatda aynan ikki `h1` chiqardi. Bitta
+  ko'rinadigan kontekst sarlavhasi qoldi, topbar esa navigatsiya uchun.
+- Yetarli rasmli e'lon yo'qligi jonli lenta uchun expected empty state.
+  Uni `console.error` qilish haqiqiy E2E xatolarini shovqinda yashiradi;
+  blok jim yashirinadi, haqiqiy fetch/render xatosi esa logda qoladi.
+
+## 2026-08-13 — Skrinshot auditi: rejim almashishi emas, vazifa davomiyligi
+
+- Bosh sahifa och, natija esa birdan quyuq bo‘lsa, bu “dark mode” emas:
+  foydalanuvchiga boshqa mahsulot yoki boshqa rolga o‘tib ketgandek ko‘rinadi.
+  Qidiruv → natija → footer bitta och rang tizimida qolishi kerak. Oldingi
+  “quyuq natija” qarorini joriy foydalanuvchi skrinshoti va aniq shikoyati
+  bekor qildi; yangi qaror OBER-DIZAYN-QOIDALARI.md ga yozildi.
+- 390 px qidiruv ikki qator bo‘lishi shart emas. Qidiruv belgisi kichik
+  ekranda yashirilsa, kamera 48 px, Topish 76 px va matn maydoni bir qatorda
+  sig‘adi; 16 px input iOS zoomini ham oldini oladi.
+- “Sotuvchilardan so‘rash”ni uch joyga ko‘paytirish topiluvchanlik bermadi:
+  suzuvchi nusxa kartaning rasmi va narxini yopdi, ro‘yxat orasidagi nusxa
+  esa reklamaga o‘xshadi. Bitta ixcham inline CTA natija tepasida yetarli.
+- To‘rtta uzun saralash chipini gorizontal kesish o‘rniga mobil select,
+  narxni esa bosilganda ochiladigan panel qilish boshqaruvni bitta qatorga
+  sig‘dirdi. Narx “dan/gacha” qiymatlari alohida-alohida so‘rov yubormaydi;
+  Qo‘llash bilan bir marta yuboriladi.
+- Regression: web 65/65, i18n 22/22, suhbat/bildirishnoma 56/56, halqa
+  26/26, AI vision 8/8, moslik 51/51. Inline JS Node sintaksis tekshiruvidan
+  o‘tdi; izolyatsiyalangan lokal DB nusxasida sahifa 200 va qidiruv API 14
+  real “divan” natijasi qaytardi.
+- Muhim dalil chegarasi: joriy Chrome boshqaruvi Windows ACL helper xatosi
+  bilan ikki marta uzildi. Oldingi Chrome skrinshoti yangi CSS uchun dalil
+  emas. Yangi 390×844 va desktop skrinshot olinmaguncha “vizual E2E o‘tdi”
+  deb yozilmaydi; blocker ochiq aytiladi.
+## 2026-08-13 — Lokal tuzatish live emas: reliz va Telegram self-test
+
+- `D:\OBER`dagi o‘zgarish productionga alohida chiqarilmaguncha `ober.uz` o‘zgarmaydi. Cache’ni taxmin qilishdan oldin live va lokal SHA-256 ni solishtirish kerak: bu safar `index.html`, `tabbar.js`, `i18n.js` aniq eski edi.
+- Jonli bazani yoki `data/`ni qayta ko‘chirish shart emas. Farqli source fayllar vaqt-belgili `data/zaxira/*.tar.gz` arxiviga olindi, stage xeshi lokal bilan tekshirildi, keyin faqat o‘sha fayllar `install` qilindi. Telegram relizida server-side `py_compile`, service restart, ichki health-check va rollback yo‘li ishlatildi.
+- `no-cache` “kesh yo‘q” degani emas; validator bo‘lsa brauzer yangilikni tekshiradi. Live `tabbar.js` uchun ETag bilan conditional so‘rov `304`, yangi xesh esa oddiy so‘rovda qaytdi.
+- Telegram tashxisida barcha `tg_yuborildi=0` yozuvlarni “yangi navbat” deb sanash noto‘g‘ri. 24 soatdan eski 9 chat alohida `tg_chat_eski`, haqiqiy yuboriladigan navbat esa `tg_chat_kutayotgan=0` bo‘ldi.
+- `getUpdates` va `sendMessage` alohida threadlarda. Oxirgi HTTP kod umumiy global bo‘lsa polling timeouti yuborishning 403 holatini bosib ketishi mumkin; `threading.local()` va alohida regressiya testi buni qo‘riqlaydi.
+- Ulangan sotuvchi endi kabinetdagi “Bildirishnomani sinash” orqali faqat o‘z sessiyasi va o‘z Telegram chatiga test yuboradi. Begona token 401, yuborish xatosi esa `/start` bilan aniq recovery ko‘rsatadi.
+- Yakuniy lokal regressiya: web 67/67, i18n 23/23, suhbat/bildirishnoma 61/61, halqa 26/26, AI vision 8/8, moslik 51/51; sotuvchi inline JS `node --check`dan o‘tdi. Live fayllar lokal bilan bir xil, qidiruv 60 natija qaytardi, assetlar 200, 4 service active, Caddy recent 5xx=0.
+- Chrome, kengaytma va native-host diagnostikasi toza bo‘lsa ham Codex browser runtime Windows ACL helper xatosida uch marta ishga tushmadi. Bunday holatda HTTP/xesh dalilini vizual E2E deb atamaslik va yangi mobil/desktop skrinshotni foydalanuvchidan olish kerak.
+
+## 2026-08-13 — Marketplace hooki, brend aktivlari va live dalil
+
+- Marketplace/agregator bosh sahifasida editorial serif brend hissini kuchaytirmadi, vazifani sekin o‘qitdi. Lokal Onest 800 sarlavha, `Bir qidiruv. Butun bozor.` hooki va bevosita izoh agregator + teskari bozor modelini bir qarashda tushuntiradi.
+- Ochiq e’lon soni va dollar kursi alohida katta dalil kartasi emas, topbarning o‘ngidagi ixcham real ko‘rsatkich bo‘ldi. Raqam `white-space:nowrap` va tabular figures bilan bir qatorda qoladi; telefonda izohlar yashirinib, sonlarning o‘zi saqlanadi.
+- Haqiqiy qidiruvlar qidiruv maydonidan oldinga, ikki qatorli haqiqiy e’lonlar hero ortiga ko‘chirildi. Foydalanuvchi va’dadan oldin bozordagi real harakatni ko‘radi; rasmiy quyuq “O‘lchangan…” bloki olib tashlandi.
+- Foydalanuvchi bergan 4385×1466 logo va 1335×1335 icon xom holda webga yuklatilmadi. Asl `reports/` fayllari saqlandi, shaffof PNGlar 720×241 va 256×256 ga optimallashtirildi; live xeshlar lokal bilan 1:1 tekshirildi.
+- Chrome vizual auditi Windows sandbox ACL xatosida ochilmasa, boshqa browser bilan “o‘tdi” deb bo‘lmaydi. Bunday relizda statik regressiya, JS sintaksisi, cache-bypass live xesh va API dalillari alohida ko‘rsatiladi; Chrome screenshot blokeri halol yoziladi.
+- Brend rasmi binar jihatdan yangilansa ham eski URL (`/brend/logo-kompakt.png`) brauzer keshida eski ko‘rinishni saqlashi mumkin. Logo kabi ko‘zga darhol tashlanadigan aktivda xesh tekshiruvi bilan birga versiyalangan yangi fayl nomi ishlatiladi; 2026-08-13 relizida barcha 5 sahifa `/brend/logo-ober-20260813.png` ga o‘tdi.
+
+## 2026-08-13: `flex-start` chiplarni chapda qoldiradi, qidiruv esa markazda
+
+Aziz: *"so'nggi kunlarda qidirilgan chiplar qiyshiq joylashgan"*.
+
+Sabab: `.samples` (chiplar) `justify-content:flex-start; max-width:680px`
+edi — qidiruv qutisi bilan BIR XIL kenglikda, lekin O'ZI chapda turardi.
+Qidiruv qutisida `margin-inline:auto` bor edi (markazda), chiplarda yo'q.
+Natija: qidiruv x=305 dan, chiplar x=50 dan — 250px farq.
+
+O'lchov: qidiruv qutisi navy chegarasi y=282, x=305..974, markaz=639.
+
+Saboq: `max-width` kenglikni cheklaydi, MARKAZNI emas. Bir qatorda
+turgan elementlar bir xil `margin-inline` ga ega bo'lishi shart —
+aks holda bir xil kenglik ham, bir xil joy emas.

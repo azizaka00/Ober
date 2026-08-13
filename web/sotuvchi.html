@@ -106,12 +106,12 @@
     z-index:20;
     border-bottom:1px solid var(--line);
     background:rgba(255,255,255,.88);
-    backdrop-filter:blur(16px) saturate(1.05);
-    -webkit-backdrop-filter:blur(16px) saturate(1.05);
+    backdrop-filter:var(--shisha-quyuq);
+    -webkit-backdrop-filter:var(--shisha-quyuq);
     animation:topbar-in 620ms var(--ease) both;
   }
   .topbar-inner{
-    width:min(100% - 36px,980px);
+    width:min(100% - 36px,var(--content));
     min-height:68px;
     margin:auto;
     display:flex;
@@ -143,7 +143,7 @@
   .logout{color:var(--muted)}
   .buyer-link:hover,.logout:hover{background:var(--navy-soft)}
 
-  main{width:min(100% - 36px,980px);margin:0 auto;padding:32px 0 80px}
+  main{width:min(100% - 36px,var(--content));margin:0 auto;padding:32px 0 80px}
   .onboarding{
     display:grid;
     grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);
@@ -241,8 +241,8 @@
     border:1px solid rgba(255,255,255,.88);
     border-radius:var(--r-katta);
     background:rgba(255,255,255,.94);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
+    backdrop-filter:var(--shisha);
+    -webkit-backdrop-filter:var(--shisha);
     box-shadow:var(--shadow);
     animation:card-in 760ms 180ms var(--ease) both;
   }
@@ -466,8 +466,8 @@
     border:1px solid rgba(10,43,99,.10);
     border-radius:var(--r-orta);
     background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(247,249,252,.85));
-    -webkit-backdrop-filter:saturate(140%) blur(14px);
-    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:var(--shisha);
+    backdrop-filter:var(--shisha);
     box-shadow:0 1px 2px rgba(11,37,89,.05),0 10px 30px rgba(11,37,89,.07);
   }
   .elon-forma h1{margin:0 0 6px;font-size:22px;letter-spacing:-.025em}
@@ -629,11 +629,21 @@
 
   .tg-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .tg-keyin{
+    display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
     min-height:44px;padding:0 12px;border:0;border-radius:var(--r-kichik);
     background:transparent;color:var(--muted);font:inherit;font-size:12.5px;
     font-weight:700;cursor:pointer;
   }
   .tg-keyin:hover{background:var(--navy-soft);color:var(--navy)}
+  .tg-keyin:disabled{opacity:.55;cursor:wait}
+  .tg-test-holat{margin-top:6px!important;min-height:18px;font-size:11.5px!important;font-weight:700}
+  .tg-test-holat:empty{display:none}
+  .tg-test-holat.ok{color:var(--green)!important}
+  .tg-test-holat.error{color:#842b21!important}
+  @media (max-width:520px){
+    .tg-card.ulangan .tg-actions{width:100%}
+    .tg-card.ulangan .tg-keyin{flex:1}
+  }
   .count-box span{color:var(--muted);font-size:10.5px}
 
   /* TALAB BLOKI — kabinetdagi eng qimmatli jumla.
@@ -872,8 +882,8 @@
   .loading{display:grid;gap:12px}
 
   @media (max-width:760px){
-    main{width:min(100% - 28px,980px);padding-top:14px}
-    .topbar-inner{width:min(100% - 36px,980px);min-height:68px}
+    main{width:min(100% - 28px,var(--content));padding-top:14px}
+    .topbar-inner{width:min(100% - 36px,var(--content));min-height:68px}
     /* TELEFONDA SHAKL BIRINCHI.
        2026-08-02 o'lchov (390 px): birinchi maydon 692 px da, "Ro'yxatdan
        o'tish" tugmasi 1100 px da edi. Ekran 844 px. Ya'ni sotuvchi
@@ -919,7 +929,7 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="/" aria-label="OBER bosh sahifa">
-      <img src="/brend/logo-kompakt.png" alt="OBER" width="94" height="23">
+      <img src="/brend/logo-ober-20260813.png" alt="OBER" width="118" height="39">
     </a>
     <span class="cabinet-label">Sotish</span>
     <div class="header-actions">
@@ -1366,8 +1376,12 @@ function tgChiz(d){
     tgYashirildi = false;
     q.innerHTML = `<section class="tg-card ulangan">
       <div><h2>Telegram ulangan</h2>
-        <p>Yangi xaridor so‘rovi va chat xabari Telegram orqali keladi.</p></div>
-      <a class="tg-keyin" href="${d.havola}" target="_blank" rel="noopener">Botni ochish</a>
+        <p>Yangi xaridor so‘rovi va chat xabari Telegram orqali keladi.</p>
+        <p class="tg-test-holat" id="tg-sinov-holat" role="status" aria-live="polite"></p></div>
+      <div class="tg-actions">
+        <button class="tg-keyin" type="button" onclick="telegramSinov(this)">Bildirishnomani sinash</button>
+        <a class="tg-keyin" href="${d.havola}" target="_blank" rel="noopener">Botni ochish</a>
+      </div>
     </section>`;
     return;
   }
@@ -1388,6 +1402,36 @@ function tgChiz(d){
       <button class="tg-keyin" type="button" onclick="tgYop()">Hozir emas</button>
     </div>
   </section>`;
+}
+
+async function telegramSinov(tugma){
+  if(!MEN || !tugma) return;
+  const holat = $("#tg-sinov-holat");
+  tugma.disabled = true;
+  if(holat){
+    holat.className = "tg-test-holat";
+    holat.textContent = "Test xabar yuborilmoqda…";
+  }
+  try{
+    const r = await fetch("/api/sotuvchi/telegram/sinov", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({token:MEN})
+    });
+    const d = await r.json().catch(() => ({}));
+    if(!r.ok || !d.ok) throw new Error(d.xato || "Test xabar yuborilmadi");
+    if(holat){
+      holat.className = "tg-test-holat ok";
+      holat.textContent = "Test xabar yuborildi. Telegramni tekshiring.";
+    }
+  }catch(e){
+    if(holat){
+      holat.className = "tg-test-holat error";
+      holat.textContent = e.message || "Test xabar yuborilmadi. Botni ochib /start bosing, keyin qayta sinang";
+    }
+  }finally{
+    tugma.disabled = false;
+  }
 }
 
 window.addEventListener("focus", () => {

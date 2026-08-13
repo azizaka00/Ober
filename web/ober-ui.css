@@ -36,6 +36,39 @@
   --r-orta:14px;
   --r-katta:20px;
   --r-pill:999px;
+  /* KONTENT YO'LAGI — BUTUN SAYT UCHUN BITTA (2026-08-12).
+     Desktop o'lchovi: bosh sahifa 1180px yo'lakda, kategoriyalar va
+     sotuvchi 980px da, takliflar 1120px da edi. Uchta xil kenglik.
+     Natijasi: logotip sahifadan sahifaga o'tganda 107px SAKRARDI
+     (x=43 -> x=150). Bir xil element, bir xil joy, boshqa o'rin.
+     Aziz qarori: hamma joyda 1180. */
+  --content:1180px;
+
+  /* ── SHISHA SHKALASI (2026-08-12 audit) ───────────────────────────
+     O'lchov: `backdrop-filter` butun saytda 78 marta ishlatilgan.
+     Ichida BESH xil blur (12, 14, 16, 18, 20px) va TO'RT xil
+     saturate (1.05, 130%, 140%, 160%) — oxirgi ikkisi turli
+     BIRLIKDA yozilgan: `1.05` = 105%, `140%` = 140%.
+
+     Natijasi ko'rinib turardi: `kategoriyalar` va `sotuvchi` tepa
+     paneli 105% to'yinganlikda, `takliflar` niki 140% da edi.
+     Bir xil element, yonma-yon sahifalar, boshqacha shisha.
+
+     Bu 3.6-bo'limdagi radius kasalligining aynan o'zi: hech kim
+     ongli ravishda besh daraja tanlamagan — har biri alohida
+     yozilgan va bir-biridan bexabar edi. Endi uchta daraja:
+
+       yupqa  — kichik boshqaruv (chip, nishon)
+       oddiy  — panel, karta, tugma
+       quyuq  — YOPISHQOQ qatlam (tepa panel, tab bar): u kontent
+                USTIDA suzadi, shuning uchun kuchliroq ajratish kerak
+
+     DIQQAT: `filter:blur()` bunga kirmaydi. `sotuvchi.html` dagi
+     4/5/8px — animatsiya va bezak, boshqa xossa, tegilmaydi. */
+  --shisha-yupqa:saturate(140%) blur(12px);
+  --shisha:saturate(140%) blur(14px);
+  --shisha-quyuq:saturate(160%) blur(20px);
+
   /* KICHIK DEKORATIV BELGILAR radiusi (x belgisi 2px, kamera 5px).
      To'rtta katta token ularga mos emas: 22x17px belgida 10px radius
      butun belgini yeydi. Nomlangan — demak tasodifiy emas
@@ -108,7 +141,13 @@ body::after{
   box-shadow:0 1px 0 rgba(255,255,255,.72);
 }
 .topbar-inner,.shell>.topbar{isolation:isolate}
-.brand img,.logo{filter:drop-shadow(0 5px 12px rgba(10,43,99,.07))}
+.brand{width:118px;min-width:118px;height:auto}
+.brand img,.logo{width:118px;height:auto;max-height:40px;object-fit:contain;
+  filter:drop-shadow(0 5px 12px rgba(10,43,99,.07))}
+@media (max-width:600px){
+  .brand{width:104px;min-width:104px}
+  .brand img,.logo{width:104px;max-height:36px}
+}
 
 button,a,input,select,textarea{
   transition-timing-function:var(--ease);
@@ -227,6 +266,114 @@ input::placeholder,textarea::placeholder{color:#8894a7;opacity:1}
   transform:none;
   outline:3px solid var(--amber-yorqin);
   outline-offset:2px;
+}
+
+/* ── TUGMA DARAJALARI (2026-08-12) ────────────────────────────────
+   Audit: saytda 16 ta tugma sinfi bor edi. Ular uch guruhga
+   tushdi, lekin buni hech kim yozib qo'ymagandi:
+
+   1. ASOSIY, to'ldirilgan — `.sora-btn`, `.yangi-elon-btn`,
+      `.tg-btn` (amber CTA) va `.primary-btn`, `.retry-btn`,
+      `.call-btn`, `.bosh-tugma` (navy). Ular rang orqali MA'NO
+      tashiydi va oq matn kontrasti kerak — TEGILMAYDI.
+   2. IKKINCHI DARAJALI — `.yana-btn`, `.elon-tugma`,
+      `.tartib-btn`, `.empty-tozalash`. To'rttasi ham "oq fon +
+      chegara" edi, lekin UCH XIL oq bilan: `#fff`, `#fff`,
+      `var(--surface)`. Aynan shular shishaga o'tadi.
+   3. JIM — `.quiet-btn`, `.tg-keyin`, `.decline-btn`,
+      `.link-btn`. Allaqachon shaffof; ularga uslub emas, BOSISH
+      MAYDONI kerak (pastda).
+
+   Nega faqat 2-guruh: iOS da ham yagona to'ldirilgan tugma
+   qoladi, qolgani shaffof kapsula. Hammasini shaffof qilish
+   "bitta urg'u" qoidasini (3.6) buzardi — qaysi biri asosiy
+   ekani yo'qolardi.
+
+   `inset 0 1px 0` oq chiziq — shishaning asosiy belgisi. U
+   bo'lmasa element shaffof to'rtburchak bo'lib ko'rinadi;
+   u bilan ustki qirrasi yorug'lik ushlagan sirtga o'xshaydi. */
+   DIQQAT — `body:not(.is-results)`. Natija sahifasi TO'Q mavzuda.
+   Yorug' shishani u yerga qo'yish oq dog' beradi. O'lchov
+   (2026-08-12): to'q sahifada `.tartib-btn` foni `--surface`
+   (#fcfdff, deyarli oq) edi — yonidagi `.filtr-narx` esa to'g'ri
+   to'q. Ya'ni saralash chiplari MENING o'zgarishimdan OLDIN ham
+   to'q sahifada yorug' bo'lib turgan. Pastdagi ikkinchi blok
+   ularni nihoyat qo'shnilariga tenglaydi. */
+body:not(.is-results) .yana-btn,
+body:not(.is-results) .elon-tugma,
+body:not(.is-results) .tartib-btn,
+body:not(.is-results) .empty-tozalash,
+.elon-tugma{
+  background:rgba(255,255,255,.55);
+  -webkit-backdrop-filter:var(--shisha);
+  backdrop-filter:var(--shisha);
+  border:1px solid rgba(10,43,99,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),
+             0 2px 8px rgba(10,43,99,.055);
+  color:var(--navy);
+}
+@media (hover:hover){
+  body:not(.is-results) .yana-btn:hover,
+  body:not(.is-results) .elon-tugma:hover,
+  body:not(.is-results) .tartib-btn:hover,
+  body:not(.is-results) .empty-tozalash:hover,
+  .elon-tugma:hover{
+    background:rgba(255,255,255,.82);
+    border-color:rgba(10,43,99,.26);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
+               0 6px 18px rgba(10,43,99,.11);
+    color:var(--navy);
+  }
+}
+
+/* TO'Q MAVZU — natija sahifasi. Qiymatlar o'sha sahifadagi
+   `.yana-btn` va `.filtr-narx` dan o'lchab olindi, taxmin emas:
+   matn #e8eef8, chegara rgba(255,255,255,.18–.22). Saralash chipi
+   endi shu tilda gapiradi. Tanlangani (`.tanlangan`) amber CTA
+   bo'lib qoladi — u urg'u, unga tegilmaydi.
+
+   Sabab chuqurroq edi: `index.html` da `body.is-results .tartib-btn`
+   uchun ASOSIY qoida umuman yo'q, faqat `:hover` bor (2157-qator).
+   Telefonda hover bo'lmaydi — demak tanlanmagan chiplar to'q
+   sahifada yorug' asosiy qoidada qolib ketardi. Hover uchun
+   tuzatish yozilgan, oddiy holat esa unutilgan. */
+body.is-results .tartib-btn:not(.tanlangan),
+body.is-results .empty-tozalash{
+  background:rgba(255,255,255,.06);
+  -webkit-backdrop-filter:var(--shisha);
+  backdrop-filter:var(--shisha);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+  color:#e8eef8;
+}
+@media (hover:hover){
+  body.is-results .tartib-btn:not(.tanlangan):hover,
+  body.is-results .empty-tozalash:hover{
+    background:rgba(255,255,255,.13);
+    border-color:rgba(255,255,255,.34);
+    color:#fff;
+  }
+}
+/* `.elon-tugma.ochir` — o'chirish. Qizil MA'NO tashiydi,
+   shisha uni yutib yubormasin. */
+.elon-tugma.ochir{color:var(--red,#b3261e)}
+
+/* BOSISH MAYDONI — matnli tugmalar uchun (2026-08-12).
+   O'lchov: `Kirish` 34x19px, `Qidirish bo'limiga o'ting` 147x17px.
+   Ikkalasi ham `padding:0` — ya'ni nishon matnning o'zi.
+   19px barmoq uchun kam (WCAG 2.2 AA eng kami 24px).
+
+   Padding qo'shish matnni siljitardi. Shuning uchun KO'RINMAS
+   qatlam: `::after` elementni o'rab turadi, layoutga umuman
+   tegmaydi, lekin bosish o'sha qatlamga tushadi. */
+.link-btn,.intro-yonalish a,.tg-keyin{position:relative}
+.link-btn::after,.intro-yonalish a::after,.tg-keyin::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  top:50%;
+  transform:translateY(-50%);
+  height:44px;
 }
 
 @media (prefers-reduced-motion:reduce){

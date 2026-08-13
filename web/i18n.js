@@ -20,6 +20,13 @@
     "Telegram ulangan":"Telegram подключён",
     "Yangi xaridor so‘rovi va chat xabari Telegram orqali keladi.":"Новый запрос покупателя и сообщение в чате придут в Telegram.",
     "Botni ochish":"Открыть бота",
+    "Bildirishnomani sinash":"Проверить уведомление",
+    "Test xabar yuborilmoqda…":"Отправляем тестовое сообщение…",
+    "Test xabar yuborildi. Telegramni tekshiring.":"Тестовое сообщение отправлено. Проверьте Telegram.",
+    "Test xabar yuborilmadi":"Не удалось отправить тестовое сообщение",
+    "Test xabar yuborilmadi. Botni ochib /start bosing, keyin qayta sinang":"Тестовое сообщение не отправлено. Откройте бота, нажмите /start и повторите.",
+    "Avval Telegramni ulang, keyin qayta sinang":"Сначала подключите Telegram, затем повторите.",
+    "Sotuvchi sessiyasi topilmadi":"Сессия продавца не найдена",
     "Telegram holatini tekshira olmadik.":"Не удалось проверить подключение Telegram.",
     "Kategoriyalar":"Категории",
     "kategoriyalar":"категории",
@@ -58,6 +65,14 @@
     "Keraklisi shu yerda":"Всё нужное — здесь",
     "Siz yozasiz.":"Вы пишете.",
     "Bozor javob beradi.":"Рынок отвечает.",
+    "Bir qidiruv.":"Один поиск.",
+    "Butun bozor.":"Весь рынок.",
+    "OBER — bir qidiruv, butun bozor":"OBER — один поиск, весь рынок",
+    "OLX, Telegram va OBER e’lonlarini solishtiring. Topilmasa, sotuvchilardan so‘rang.":"Сравните объявления OLX, Telegram и OBER. Если не нашли — спросите продавцов.",
+    "Nima izlayapsiz? Masalan: iPhone 13":"Что ищете? Например: iPhone 13",
+    "Bozor ko‘rsatkichlari":"Показатели рынка",
+    "ochiq e’lon":"открытых объявлений",
+    "Markaziy bank":"Центральный банк",
     "OLX, Telegram va OBER e’lonlari — bitta qidiruvda.":"Объявления OLX, Telegram и OBER — в одном поиске.",
     "Hozir bozorda":"Сейчас на рынке",
     "Eng so‘nggi qo‘shilgan e’lonlar":"Последние добавленные объявления",
@@ -269,6 +284,9 @@
     "Narxi":"Цена",
     "Narxi (so‘m)":"Цена (сум)",
     "Narx":"Цена",
+    "Saralash":"Сортировка",
+    "Qo‘llash":"Применить",
+    "Tozalash":"Сбросить",
     "Narx dan":"Цена от",
     "Narx gacha":"Цена до",
     "Byudjet:":"Бюджет:",
@@ -670,7 +688,16 @@
     const slot = document.querySelector(".lang-slot");
     if (!slot || slot.children.length) return;
     const style = document.createElement("style");
-    style.textContent = `.ober-lang-switch{display:inline-flex;align-items:center;padding:3px;border:1px solid rgba(8,40,95,.13);border-radius:999px;background:rgba(255,255,255,.86);box-shadow:0 6px 18px rgba(8,40,95,.06)}.ober-lang-switch button{min-width:34px;height:28px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:#69758a;font:800 11px/1 Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer}.ober-lang-switch button.active{background:#08285f;color:#fff}.ober-lang-switch button:focus-visible{outline:3px solid rgba(36,113,220,.28);outline-offset:2px}@media(max-width:520px){.ober-lang-switch button{min-width:31px;padding:0 6px}.ober-lang-switch{padding:2px}}`;
+    style.textContent = `.ober-lang-switch{display:inline-flex;align-items:center;padding:3px;border:1px solid rgba(8,40,95,.13);border-radius:999px;background:rgba(255,255,255,.86);box-shadow:0 6px 18px rgba(8,40,95,.06)}.ober-lang-switch button{min-width:40px;height:34px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:#69758a;font-family:inherit;font-size:11.5px;font-weight:800;line-height:1;cursor:pointer}.ober-lang-switch button.active{background:#08285f;color:#fff}.ober-lang-switch button:focus-visible{outline:3px solid rgba(36,113,220,.28);outline-offset:2px}@media(max-width:520px){.ober-lang-switch button{min-width:37px;padding:0 8px}.ober-lang-switch{padding:2px}}`;
+    // 2026-08-12, ikki o'lchov:
+    //  1. Tugma 31x28px edi — WCAG 2.2 AA eng kami 24px dan o'tadi,
+    //     lekin barmoq uchun kam va u tepa panelning burchagida,
+    //     ya'ni noto'g'ri bosish ehtimoli eng yuqori joyda. 37x34.
+    //  2. `font:800 11px/1 Inter,...` — sayt Onest da yozadi, Inter
+    //     esa loyihada umuman yuklanmagan. Demak "O‘z / Рус" TIZIM
+    //     shriftida chiqardi (ui-sans-serif fallback).
+    //     Butun saytda yagona begona shrift shu yerda edi.
+    //     `font-family:inherit` uni Onest ga qaytaradi.
     document.head.appendChild(style);
     slot.innerHTML = `<div class="ober-lang-switch" role="group" aria-label="Til / Язык"><button type="button" data-lang="uz" class="${lang === "uz" ? "active" : ""}">O‘z</button><button type="button" data-lang="ru" class="${lang === "ru" ? "active" : ""}">Рус</button></div>`;
     slot.querySelectorAll("button").forEach(button => button.addEventListener("click", () => {

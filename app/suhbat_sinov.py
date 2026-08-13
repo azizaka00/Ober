@@ -78,6 +78,26 @@ def main() -> None:
             eski_yubor = tg.yubor
             yuborilgan_tg = []
             try:
+                kod, javob = server._telegram_sinov("notogri-token")
+                tekshir(kod == 401 and not javob["ok"],
+                        "begona sessiya Telegram test xabarini yubora olmaydi")
+
+                test_xabarlar = []
+                tg.yubor = lambda *args, **kwargs: test_xabarlar.append(args) or True
+                kod, javob = server._telegram_sinov(sotuvchi_token)
+                tekshir(kod == 200 and javob["ok"],
+                        "ulangan sotuvchi Telegram test xabarini yuboradi")
+                tekshir(len(test_xabarlar) == 1 and
+                        test_xabarlar[0][0] == "tg-test-1" and
+                        "OBER bildirishnomasi ishlayapti" in test_xabarlar[0][1],
+                        "test xabari faqat sessiya egasining Telegramiga boradi")
+
+                tg.yubor = lambda *args, **kwargs: False
+                kod, javob = server._telegram_sinov(sotuvchi_token)
+                tekshir(kod == 502 and not javob["ok"] and
+                        "/start" in javob["xato"],
+                        "Telegram test xatosi foydalanuvchidan yashirilmaydi")
+
                 tg.yubor = lambda *args, **kwargs: False
                 tekshir(tg.kutayotganlarni_yubor() == 0 and
                         len(baza.yuborilmagan_xabarlar()) == 1,
@@ -117,7 +137,9 @@ def main() -> None:
 
             tg_tashxis = baza.tg_holat()
             tekshir("ulanganlar" not in tg_tashxis and
-                    tg_tashxis["telegramga_ulangan"] == 1,
+                    tg_tashxis["telegramga_ulangan"] == 1 and
+                    tg_tashxis["tg_chat_kutayotgan"] == 0 and
+                    tg_tashxis["tg_chat_eski"] == 0,
                     "ochiq Telegram tashxisi sotuvchi ma'lumotini oshkor qilmaydi")
 
             suhbat = baza.javob_yoz(
@@ -301,7 +323,23 @@ def main() -> None:
             tekshir(len(baza.tg_kutayotgan_chat()) > 0,
                     "yangi chat xabari esa uzatiladi")
 
-            # ── 403 CHEKSIZ TAKRORLANMASIN (2026-08-11) ──────────────
+            # Kiruvchi getUpdates va chiquvchi sendMessage boshqa threadlarda.
+            # Birining natijasi ikkinchisining qayta-urinish qarorini bosmasin.
+            import threading as _threading
+            tg._OXIRGI_KOD.kod = 403
+            boshqa_thread = []
+
+            def _boshqa_thread_kodi():
+                tg._OXIRGI_KOD.kod = 0
+                boshqa_thread.append(tg.qaytarib_bolmaydi())
+
+            th = _threading.Thread(target=_boshqa_thread_kodi)
+            th.start()
+            th.join()
+            tekshir(tg.qaytarib_bolmaydi() and boshqa_thread == [False],
+                    "Telegram threadlari HTTP holatini bir-biridan ajratadi")
+
+            # ── 403 CHEKSIZ TAKRORLANMASIN (2026-08-11) ────────────────────
             # Jonli serverda bildirishnomalar yoqilganda jurnal har 2
             # soniyada "HTTP 403 (sendMessage)" bilan to'lgan edi:
             # sotuvchi botni ochmagan, xabar belgilanmagan, halqa esa
@@ -313,7 +351,7 @@ def main() -> None:
 
                 def _soxta_403(usul, _timeout=35, **maydonlar):
                     chaqirildi["soni"] += 1
-                    tg._OXIRGI_KOD["kod"] = 403
+                    tg._OXIRGI_KOD.kod = 403
                     return None
 
                 tg._sorov = _soxta_403
@@ -329,7 +367,7 @@ def main() -> None:
             finally:
                 tg._sorov, tg.SAVDO_XABARLARI = eski_sorov, eski_savdo
 
-            print("\nSUHBAT VA BILDIRISHNOMA SINOVI: 56/56")
+            print("\nSUHBAT VA BILDIRISHNOMA SINOVI: 61/61")
         finally:
             baza.DB = eski_db
             server.UPLOADS = eski_uploads

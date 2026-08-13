@@ -44,43 +44,22 @@
 
   var st = document.createElement("style");
   st.textContent = [
-    "/* OBER pastki tab bar — 2026-08-07 */",
+    "/* OBER pastki tabbar — yengil va bir xil, 2026-08-13 */",
     "[hidden]{display:none!important}",
-    "body.ober-tabbar-joy{padding-bottom:calc(66px + env(safe-area-inset-bottom));}",
-    /* Telefonda suzuvchi \"So'rash\" tugmasi tab bar ustida turadi.
-       2026-08-07: tab bar qo'shildi — tugma uning orqasida qolmasligi
-       uchun pastki chegarasi ko'tarildi. */
-    "body.ober-tabbar-joy .tez-sora{bottom:calc(72px + env(safe-area-inset-bottom));}",
-    "body.ober-tabbar-joy .results{padding-bottom:calc(142px + env(safe-area-inset-bottom));}",
+    "body.ober-tabbar-joy{padding-bottom:calc(70px + env(safe-area-inset-bottom));}",
+    "body.ober-tabbar-joy .results{padding-bottom:calc(92px + env(safe-area-inset-bottom));}",
     ".ober-tabbar{",
     "  position:fixed;left:0;right:0;bottom:0;z-index:25;",
-    /* JONLI BOZOR TABBARI (2026-08-12, Aziz): "yangicha ko'rinish".
-       Shisha oyna — yarim shaffof + blur, yuqorida nozik amber nur.
-       Eski `rgba(255,255,255,.96)` deyarli oq edi va tab bar saytdan
-       ajralib turardi. Endi u sahifa bilan birlashadi, faqat urg'u
-       (amber gradient pill) ko'zga tashlanadi. */
-    "  background:rgba(255,255,255,.78);",
-    "  -webkit-backdrop-filter:saturate(160%) blur(20px);",
-    "  backdrop-filter:saturate(160%) blur(20px);",
-    "  border-top:1px solid rgba(10,43,99,.08);",
-    "  box-shadow:0 -12px 40px rgba(10,43,99,.08);",
+    "  background:rgba(250,252,255,.94);",
+    "  -webkit-backdrop-filter:var(--shisha-quyuq);",
+    "  backdrop-filter:var(--shisha-quyuq);",
+    "  border-top:1px solid rgba(11,37,89,.10);",
+    "  box-shadow:0 -8px 28px rgba(11,37,89,.08);",
     "  padding-bottom:env(safe-area-inset-bottom);",
     "}",
-    /* Yuqorida jimgina amber nur — "bozor jonli" belgisi. */
-    ".ober-tabbar::before{",
-    "  content:\"\";position:absolute;top:-1px;left:50%;transform:translateX(-50%);",
-    "  width:120px;height:3px;border-radius:0 0 999px 999px;",
-    "  background:linear-gradient(90deg,transparent,var(--amber,#f5a623) 50%,transparent);",
-    "  opacity:.75;",
-    "}",
     ".ober-tabbar-inner{",
-    "  max-width:560px;margin:0 auto;height:60px;",
-    /* TO'RT USTUN — HAR BIRI BOSHQA MANZIL (2026-08-11).
-       Markazdagi + E'lon bo'lim emas: u e'lon formasini bevosita
-       ochadigan tezkor amal. "Sotish" olib tashlandi — u ham shu
-       sahifaga borardi va kirmagan odam uchun aynan bir xil ekran
-       chiqarardi. */
-    "  display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr;",
+    "  max-width:560px;margin:0 auto;height:62px;",
+    "  display:grid;grid-template-columns:1fr 1fr 1.12fr 1fr;",
     "}",
     ".ober-tab[data-tab=\"bosh\"]{grid-column:1}",
     ".ober-tab[data-tab=\"kategoriyalar\"]{grid-column:2}",
@@ -88,87 +67,63 @@
     ".ober-tab[data-tab=\"takliflar\"]{grid-column:4}",
     ".ober-tab{",
     "  display:flex;flex-direction:column;align-items:center;justify-content:center;",
-    "  gap:2px;text-decoration:none;",
-    "  color:var(--muted,#667085);",
-    "  font-size:10.5px;font-weight:700;line-height:1.2;",
+    "  gap:3px;text-decoration:none;color:var(--muted,#667085);",
+    "  font-size:10.5px;font-weight:700;line-height:1.15;",
     "  -webkit-tap-highlight-color:transparent;touch-action:manipulation;",
-    "  transition:color 160ms var(--ease,cubic-bezier(.2,0,0,1)),transform 120ms var(--ease);",
+    "  transition:color 140ms var(--ease,cubic-bezier(.2,0,0,1)),transform 120ms var(--ease);",
     "}",
-    ".ober-tab:active{transform:translateY(1px) scale(.96)}",
+    ".ober-tab:active{transform:translateY(1px) scale(.97)}",
     ".ober-tab-ikon{",
-    "  position:relative;width:40px;height:26px;border-radius:999px;",
+    "  position:relative;width:38px;height:27px;border-radius:999px;",
     "  display:grid;place-items:center;",
-    "  transition:background 160ms var(--ease,cubic-bezier(.2,0,0,1)),transform 160ms var(--ease);",
+    "  transition:background 140ms var(--ease,cubic-bezier(.2,0,0,1)),color 140ms var(--ease);",
     "}",
-    /* FAOL TAB — amber gradient pill + yumshoq nur (2026-08-12).
-       Eski: faqat rang o'zgarardi (amber-deep matn + amber-soft fon).
-       Endi ikona o'zi pill ichida ko'tariladi — "tanlangan" hissi
-       kuchli, mikro-harakat bilan. */
-    ".ober-tab.faol .ober-tab-ikon{",
-    "  transform:translateY(-2px);",
-    "  background:var(--cta-gradient);",
-    "  color:var(--on-cta);",
-    "  box-shadow:0 6px 16px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);",
+    ".ober-tab svg{width:21px;height:21px;display:block}",
+    ".ober-tab:not(.ober-tab-asosiy).faol{color:var(--navy,#0b2559)}",
+    ".ober-tab:not(.ober-tab-asosiy).faol .ober-tab-ikon{",
+    "  background:var(--navy-soft,#edf2fa);color:var(--navy,#0b2559);box-shadow:none;",
     "}",
-    ".ober-tab svg{width:22px;height:22px;display:block}",
-    /* FAOL HOLAT — AMBER (2026-08-11, Aziz qarori). Sayt "navy + amber"
-       tizimida; tabbar har sahifada ko'rinadigan eng katta urg'u.
-       Faol tab, + E'lon tugmasi va o'qilmagan nishon amber — bosh
-       sahifadagi amber CTA bilan bir xil til. */
-    ".ober-tab.faol{color:var(--navy,#0b2559)}",
-    ".ober-tab-asosiy{transform:translateY(-8px);color:var(--amber-deep,#e08d00)}",
-    ".ober-tab-asosiy:active{transform:translateY(-7px)}",
+    ".ober-tab-asosiy{transform:translateY(-4px);color:var(--navy,#0b2559)}",
+    ".ober-tab-asosiy:active{transform:translateY(-3px) scale(.97)}",
     ".ober-tab-asosiy .ober-tab-ikon{",
-    "  width:44px;height:44px;border:3px solid var(--surface,#fff);",
+    "  width:42px;height:42px;border:2px solid var(--surface,#fff);",
     "  background:var(--cta-gradient);color:var(--on-cta);",
-    "  box-shadow:0 8px 20px rgba(245,166,35,.34),inset 0 1px 0 rgba(255,255,255,.5);",
+    "  box-shadow:0 6px 16px rgba(245,166,35,.26),inset 0 1px 0 rgba(255,255,255,.5);",
     "}",
-    ".ober-tab-asosiy.faol .ober-tab-ikon{background:linear-gradient(180deg,#ffcf6b,#f5a623);",
-    "  box-shadow:0 0 0 4px var(--amber-soft,#fdf3de),0 8px 20px rgba(245,166,35,.34)}",
-    /* O'QILMAGAN NISHON — Chat tabida. Faqat raqam bor bo'lsa
-       ko'rinadi (hidden bilan yopiladi). */
+    ".ober-tab-asosiy.faol .ober-tab-ikon{",
+    "  background:linear-gradient(180deg,#ffcf6b,#f5a623);",
+    "  box-shadow:0 0 0 3px var(--amber-soft,#fff6e3),0 6px 16px rgba(245,166,35,.28);",
+    "}",
     ".ober-tab-nishon{",
-    "  position:absolute;top:-2px;right:-7px;",
-    "  min-width:16px;height:16px;padding:0 4px;border-radius:999px;",
-    "  background:var(--amber-deep,#e08d00);color:#fff;",
+    "  position:absolute;top:-2px;right:-7px;min-width:16px;height:16px;padding:0 4px;",
+    "  border-radius:999px;background:var(--amber-deep,#e08d00);color:#fff;",
     "  font-size:9.5px;font-weight:800;line-height:16px;text-align:center;",
     "  box-shadow:0 0 0 2px var(--surface,#fff);",
     "}",
     ".messages-link,.xabarlar-link{position:relative}",
     ".ober-top-nishon{",
-    "  position:absolute;top:-7px;right:-8px;",
-    "  min-width:18px;height:18px;padding:0 5px;border-radius:999px;",
-    "  display:grid;place-items:center;background:var(--amber-deep,#e08d00);color:#fff;",
-    "  font-size:9.5px;font-weight:850;line-height:18px;",
-    "  box-shadow:0 0 0 3px var(--surface,#fff);",
+    "  position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;padding:0 5px;",
+    "  border-radius:999px;display:grid;place-items:center;",
+    "  background:var(--amber-deep,#e08d00);color:#fff;font-size:9.5px;font-weight:850;",
+    "  line-height:18px;box-shadow:0 0 0 3px var(--surface,#fff);",
     "}",
     "@media (max-width:600px){",
-    "  .ober-tabbar-inner{height:56px}",
+    "  .ober-tabbar-inner{height:58px}",
     "  .ober-tab{font-size:10px}",
-    /* Telefonda topbar ortiqcha takrorlanmasin: endi navigatsiya bitta
-       joyda — pastki tab barda. 2026-08-07: "Chat" va "Profil"
-       havolalari ham tepada, ham pastda chiqardi. Pastkisi qoladi,
-       tepadagi ikki havola yashirinadi (logo va qidiruv qoladi). */
+    "}",
+    "@media (max-width:900px){",
     "  .ober-tabbar-joy .messages-link,.ober-tabbar-joy .seller-link,",
     "  .ober-tabbar-joy .buyer-link,.ober-tabbar-joy .xabarlar-link{display:none!important}",
     "}",
-    /* Tepadagi qo'shimcha havolalar FAQAT desktopda ko'rinadi.
-       Telefonda ular pastki tab barda bor — ikki joyda takrorlash
-       aynan 2026-08-07 da tuzatilgan xato edi. */
     ".ober-desktop-nav{display:none}",
     "@media (min-width:901px){",
     "  body.ober-tabbar-joy{padding-bottom:0}",
     "  body.ober-tabbar-joy .results{padding-bottom:34px}",
-    /* Tab bar shu yerda yo'qoladi — havolalar aynan shu yerda paydo
-       bo'ladi. Ikkalasi bitta chegara: navigatsiya hech qachon
-       yo'qolmaydi. */
     "  .ober-tabbar{display:none}",
     "  .ober-desktop-nav{",
-    "    display:inline-flex;align-items:center;min-height:38px;",
-    "    padding:0 12px;border-radius:999px;",
-    "    color:var(--navy,#0b2559);text-decoration:none;",
-    "    font-size:12.5px;font-weight:760;white-space:nowrap;",
-    "    transition:background 120ms ease;",
+    "    display:inline-flex;align-items:center;min-height:38px;padding:0 12px;",
+    "    border-radius:999px;color:var(--navy,#0b2559);text-decoration:none;",
+    "    font-size:12.5px;font-weight:760;white-space:nowrap;transition:background 120ms ease;",
     "  }",
     "  .ober-desktop-nav:hover{background:var(--navy-soft,#eaeff8)}",
     "  .ober-desktop-nav:active{transform:translateY(1px)}",

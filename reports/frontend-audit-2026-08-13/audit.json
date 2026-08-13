@@ -1,0 +1,617 @@
+{
+  "generatedAt": "2026-08-13T05:54:13.403Z",
+  "base": "http://127.0.0.1:8812",
+  "views": [
+    {
+      "device": "desktop",
+      "name": "bosh",
+      "route": "/",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "document": {
+          "width": 1280,
+          "height": 2015
+        },
+        "body": {
+          "width": 1280,
+          "height": 2015
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -51,
+            "width": 186,
+            "height": 40
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": true,
+            "x": 808,
+            "width": 70
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": false,
+            "x": 888,
+            "width": 106
+          },
+          {
+            "text": "+ E’lon",
+            "active": false,
+            "x": 1004,
+            "width": 65
+          },
+          {
+            "text": "Chat",
+            "active": false,
+            "x": 1079,
+            "width": 52
+          }
+        ],
+        "h1": [
+          "Siz yozasiz. Bozor javob beradi."
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\desktop-bosh.png"
+    },
+    {
+      "device": "desktop",
+      "name": "kategoriyalar",
+      "route": "/kategoriyalar",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "document": {
+          "width": 1280,
+          "height": 1158
+        },
+        "body": {
+          "width": 1280,
+          "height": 1158
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -51,
+            "width": 186,
+            "height": 40
+          },
+          {
+            "tag": "HEADER",
+            "cls": "topbar",
+            "position": "sticky",
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 73
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": false,
+            "x": 816,
+            "width": 70
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": true,
+            "x": 894,
+            "width": 106
+          },
+          {
+            "text": "+ E’lon",
+            "active": false,
+            "x": 1008,
+            "width": 65
+          },
+          {
+            "text": "Chat",
+            "active": false,
+            "x": 1081,
+            "width": 52
+          }
+        ],
+        "h1": [
+          "Kategoriyalar"
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\desktop-kategoriyalar.png"
+    },
+    {
+      "device": "desktop",
+      "name": "chat",
+      "route": "/takliflar",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "document": {
+          "width": 1280,
+          "height": 900
+        },
+        "body": {
+          "width": 1280,
+          "height": 900
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -47,
+            "width": 186,
+            "height": 37
+          },
+          {
+            "tag": "HEADER",
+            "cls": "topbar",
+            "position": "sticky",
+            "x": 50,
+            "y": 0,
+            "width": 1180,
+            "height": 64
+          },
+          {
+            "tag": "DIV",
+            "cls": "notification-scrim",
+            "position": "fixed",
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 900
+          },
+          {
+            "tag": "DIV",
+            "cls": "toast",
+            "position": "fixed",
+            "x": 625,
+            "y": 870,
+            "width": 30,
+            "height": 20
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": false,
+            "x": 655,
+            "width": 70
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": false,
+            "x": 733,
+            "width": 106
+          },
+          {
+            "text": "+ E’lon",
+            "active": false,
+            "x": 846,
+            "width": 65
+          },
+          {
+            "text": "Chat",
+            "active": true,
+            "x": 920,
+            "width": 52
+          }
+        ],
+        "h1": [
+          "Chat"
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\desktop-chat.png"
+    },
+    {
+      "device": "desktop",
+      "name": "sotuvchi",
+      "route": "/sotuvchi",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "document": {
+          "width": 1280,
+          "height": 900
+        },
+        "body": {
+          "width": 1280,
+          "height": 833
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -51,
+            "width": 186,
+            "height": 40
+          },
+          {
+            "tag": "HEADER",
+            "cls": "topbar",
+            "position": "sticky",
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 69
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": false,
+            "x": 816,
+            "width": 70
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": false,
+            "x": 894,
+            "width": 106
+          },
+          {
+            "text": "+ E’lon",
+            "active": true,
+            "x": 1008,
+            "width": 65
+          },
+          {
+            "text": "Chat",
+            "active": false,
+            "x": 1081,
+            "width": 52
+          }
+        ],
+        "h1": [
+          "Kerakli xaridor sizni o‘zi topadi."
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\desktop-sotuvchi.png"
+    },
+    {
+      "device": "mobile",
+      "name": "bosh",
+      "route": "/",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "document": {
+          "width": 390,
+          "height": 2707
+        },
+        "body": {
+          "width": 390,
+          "height": 2707
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -51,
+            "width": 186,
+            "height": 40
+          },
+          {
+            "tag": "NAV",
+            "cls": "ober-tabbar",
+            "position": "fixed",
+            "x": 0,
+            "y": 787,
+            "width": 390,
+            "height": 57
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": true,
+            "x": 0,
+            "width": 93
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": false,
+            "x": 93,
+            "width": 93
+          },
+          {
+            "text": "E’lon",
+            "active": false,
+            "x": 186,
+            "width": 111
+          },
+          {
+            "text": "Chat",
+            "active": false,
+            "x": 297,
+            "width": 93
+          }
+        ],
+        "h1": [
+          "Siz yozasiz. Bozor javob beradi."
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\mobile-bosh.png"
+    },
+    {
+      "device": "mobile",
+      "name": "kategoriyalar",
+      "route": "/kategoriyalar",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "document": {
+          "width": 390,
+          "height": 1426
+        },
+        "body": {
+          "width": 390,
+          "height": 1426
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -51,
+            "width": 186,
+            "height": 40
+          },
+          {
+            "tag": "NAV",
+            "cls": "ober-tabbar",
+            "position": "fixed",
+            "x": 0,
+            "y": 787,
+            "width": 390,
+            "height": 57
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": false,
+            "x": 0,
+            "width": 93
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": true,
+            "x": 93,
+            "width": 93
+          },
+          {
+            "text": "E’lon",
+            "active": false,
+            "x": 186,
+            "width": 111
+          },
+          {
+            "text": "Chat",
+            "active": false,
+            "x": 297,
+            "width": 93
+          }
+        ],
+        "h1": [
+          "Kategoriyalar"
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\mobile-kategoriyalar.png"
+    },
+    {
+      "device": "mobile",
+      "name": "chat",
+      "route": "/takliflar",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "document": {
+          "width": 390,
+          "height": 910
+        },
+        "body": {
+          "width": 390,
+          "height": 910
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -47,
+            "width": 186,
+            "height": 37
+          },
+          {
+            "tag": "DIV",
+            "cls": "notification-scrim",
+            "position": "fixed",
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          },
+          {
+            "tag": "DIV",
+            "cls": "toast",
+            "position": "fixed",
+            "x": 180,
+            "y": 814,
+            "width": 30,
+            "height": 20
+          },
+          {
+            "tag": "NAV",
+            "cls": "ober-tabbar",
+            "position": "fixed",
+            "x": 0,
+            "y": 787,
+            "width": 390,
+            "height": 57
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": false,
+            "x": 0,
+            "width": 93
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": false,
+            "x": 93,
+            "width": 93
+          },
+          {
+            "text": "E’lon",
+            "active": false,
+            "x": 186,
+            "width": 111
+          },
+          {
+            "text": "Chat",
+            "active": true,
+            "x": 297,
+            "width": 93
+          }
+        ],
+        "h1": [
+          "Chat"
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\mobile-chat.png"
+    },
+    {
+      "device": "mobile",
+      "name": "sotuvchi",
+      "route": "/sotuvchi",
+      "status": 200,
+      "errors": [],
+      "failed": [],
+      "metrics": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "document": {
+          "width": 390,
+          "height": 1334
+        },
+        "body": {
+          "width": 390,
+          "height": 1334
+        },
+        "horizontalOverflow": false,
+        "sticky": [
+          {
+            "tag": "A",
+            "cls": "skip-link",
+            "position": "fixed",
+            "x": 12,
+            "y": -51,
+            "width": 186,
+            "height": 40
+          },
+          {
+            "tag": "NAV",
+            "cls": "ober-tabbar",
+            "position": "fixed",
+            "x": 0,
+            "y": 787,
+            "width": 390,
+            "height": 57
+          }
+        ],
+        "nav": [
+          {
+            "text": "Qidirish",
+            "active": false,
+            "x": 0,
+            "width": 93
+          },
+          {
+            "text": "Kategoriyalar",
+            "active": false,
+            "x": 93,
+            "width": 93
+          },
+          {
+            "text": "E’lon",
+            "active": true,
+            "x": 186,
+            "width": 111
+          },
+          {
+            "text": "Chat",
+            "active": false,
+            "x": 297,
+            "width": 93
+          }
+        ],
+        "h1": [
+          "Kerakli xaridor sizni o‘zi topadi."
+        ]
+      },
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\mobile-sotuvchi.png"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "listing": "Chrome E2E stul 01626921",
+  "request": "Chrome E2E stul 01626921",
+  "steps": [
+    {
+      "name": "01-seller-inline-telegram-and-listing",
+      "url": "http://127.0.0.1:8812/sotuvchi?yangi=1",
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\flow-desktop\\01-seller-inline-telegram-and-listing.png"
+    },
+    {
+      "name": "02-listing-saved",
+      "url": "http://127.0.0.1:8812/sotuvchi",
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\flow-desktop\\02-listing-saved.png"
+    },
+    {
+      "name": "03-buyer-search-results",
+      "url": "http://127.0.0.1:8812/?q=Chrome+E2E+stul+01626921",
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\flow-desktop\\03-buyer-search-results.png"
+    },
+    {
+      "name": "04-buyer-request-sent",
+      "url": "http://127.0.0.1:8812/?q=Chrome+E2E+stul+01626921",
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\flow-desktop\\04-buyer-request-sent.png"
+    },
+    {
+      "name": "05-seller-replied",
+      "url": "http://127.0.0.1:8812/sotuvchi",
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\flow-desktop\\05-seller-replied.png"
+    },
+    {
+      "name": "06-buyer-chat-photo-message",
+      "url": "http://127.0.0.1:8812/takliflar",
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\flow-desktop\\06-buyer-chat-photo-message.png"
+    },
+    {
+      "name": "07-seller-read-state",
+      "url": "http://127.0.0.1:8812/takliflar?rol=sotuvchi",
+      "screenshot": "D:\\OBER\\reports\\frontend-audit-2026-08-13\\flow-desktop\\07-seller-read-state.png"
+    }
+  ],
+  "consoleErrors": [],
+  "failedRequests": [],
+  "ok": true
+}

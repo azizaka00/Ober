@@ -68,17 +68,17 @@ def _sorov(usul: str, _timeout: int = 35, **maydonlar):
             time.sleep(15)
         else:
             print(f"  [tg] HTTP {e.code} ({usul})")
-        _OXIRGI_KOD["kod"] = e.code
+        _OXIRGI_KOD.kod = e.code
         return None
     except Exception as e:                        # noqa: BLE001
         print(f"  [tg] {type(e).__name__} ({usul})")
-    _OXIRGI_KOD["kod"] = 0
+    _OXIRGI_KOD.kod = 0
     return None
 
 
 # Oxirgi HTTP xato kodi. `yubor` uni o'qib, xato QAYTARIB BO'LMAYDIGANmi
 # yoki vaqtinchalikmi ekanini ajratadi.
-_OXIRGI_KOD: dict[str, int] = {"kod": 0}
+_OXIRGI_KOD = threading.local()
 
 # QAYTA URINISH FOYDASIZ BO'LGAN KODLAR.
 #
@@ -88,6 +88,11 @@ _OXIRGI_KOD: dict[str, int] = {"kod": 0}
 # Bularda qayta urinish HECH QACHON yordam bermaydi: chat_id o'zgarmasa
 # javob ham o'zgarmaydi.
 QAYTARIB_BOLMAYDI = (400, 403)
+
+# Kiruvchi getUpdates va chiquvchi sendMessage alohida threadlarda ishlaydi.
+# Oxirgi HTTP kod umumiy global bo'lsa, getUpdates timeouti sendMessage'ning
+# 403 kodini bosib ketib, foydasiz xabarni cheksiz qayta yuborishi mumkin.
+# threading.local har halqaning natijasini o'zida saqlaydi.
 
 
 def yubor(chat_id, matn: str, tugmalar=None) -> bool:
@@ -100,7 +105,7 @@ def yubor(chat_id, matn: str, tugmalar=None) -> bool:
     d = {"chat_id": chat_id, "text": matn, "parse_mode": "HTML"}
     if tugmalar:
         d["reply_markup"] = {"inline_keyboard": tugmalar}
-    _OXIRGI_KOD["kod"] = 0
+    _OXIRGI_KOD.kod = 0
     natija = _sorov("sendMessage", **d)
     return bool(natija and natija.get("ok"))
 
@@ -130,7 +135,7 @@ def qaytarib_bolmaydi() -> bool:
     kabinetida xabarni baribir ko'radi, ulanishni o'zi tiklashi ham
     mumkin. Biz faqat foydasiz urinishni to'xtatamiz.
     """
-    return _OXIRGI_KOD["kod"] in QAYTARIB_BOLMAYDI
+    return getattr(_OXIRGI_KOD, "kod", 0) in QAYTARIB_BOLMAYDI
 
 
 _NOM_KESH = {"nom": None, "vaqt": 0.0}

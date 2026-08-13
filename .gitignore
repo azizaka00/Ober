@@ -73,8 +73,9 @@ data/qidiruv-kesh.version
 data/soz-kategoriya.json
 
 # ── YUKLAB OLINADIGAN, SAQLANMAYDIGAN ────────────────────────────────
-# Shrift Google'dan bir marta olinadi: `deploy/shrift-yuklab-ol.sh`.
-web/shrift/*.woff2
+# Onest WOFF2 repoda saqlanadi: clean clone va lokal Chrome ham bir xil
+# shriftni 404siz ishlatadi; deploy skriptiga yashirin bog'liqlik yo'q.
+!web/shrift/*.woff2
 
 # ── VAQTINCHALIK ─────────────────────────────────────────────────────
 tmp/
