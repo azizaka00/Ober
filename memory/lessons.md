@@ -638,3 +638,28 @@ O'lchov: qidiruv qutisi navy chegarasi y=282, x=305..974, markaz=639.
 Saboq: `max-width` kenglikni cheklaydi, MARKAZNI emas. Bir qatorda
 turgan elementlar bir xil `margin-inline` ga ega bo'lishi shart —
 aks holda bir xil kenglik ham, bir xil joy emas.
+
+## 2026-08-13 — Yangi manba: adapter yozish yetarli emas, sikl ham chaqirishi kerak
+
+Avtoelon.uz adapteri yozildi va sinovdan o'tdi — e'lonlar bazaga tushdi,
+FTS indeksiga kirdi, qidiruvda chiqdi. Lekin serverda `ober-yangilik`
+xizmati uni YIG'MAYDI: `yangilik.py` faqat OLX + Telegram chaqiradi,
+`yigish.py` runnerini (manbalar papkasidagi adapterlarni) hech kim
+chaqirmasdi. Telegram uchun shu xato 2026-08-02 da bo'lgan edi (adapter
+bor, chaqiriq yo'q) — avtoelon bilan takrorlandi.
+
+Saboq: adapter yozilgach, `yangilik.py` dagi sikl chaqiruvini tekshir.
+Yangi manba = kod emas, ikki joy: `app/manbalar/` fayli + `yangilik.py`
+dagi `yigish_sikli()` chaqiruvi.
+
+Ikkinchi saboq: `yigish.main("bosh")` oxirida `tahlil.main()` chaqiradi —
+issiq sikl ichida chaqirilsa tahlil ikki marta ishlaydi. Sikl o'z
+tahlilini boshqaradi, shuning uchun `yigish_sikli` adapterlarni
+to'g'ridan-to'g'ri chaqiradi (yigish.main emas).
+
+Uchinchi saboq: model yo'lidagi qidiruvda sarlavhadagi so'zga ball
+berilmasdi. "shazor" so'rovi `byd` modeliga aylanadi va HAMMA byd
+e'lonlari deyarli bir xil ball oladi — "Polik so'ng puls" (Chazor yo'q)
+1-o'ringa chiqdi, haqiqiy "BYD Chazor 2026" esa 344-o'rinda edi.
+Sarlavhada so'rov so'zi bor e'lon yuqoriroq ball oladi (2 ball/so'z).
+O'lchov: avtoelon Chazor e'lonlari 344 -> 42-o'rin.

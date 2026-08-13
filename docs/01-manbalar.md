@@ -1,6 +1,26 @@
 # MANBALAR — aniq tekshiruv natijasi
 _2026-07-30 · faqat SHAXSAN tekshirilgani yozilgan, taxmin yo'q_
 _Yangilandi: 2026-08-11 — butun O'zbekiston bozori qayta auditi_
+_Yangilandi: 2026-08-13 — Avtoelon adapteri ulandi_
+
+---
+
+# 2026-08-13 ULANGAN MANBALAR
+
+| Manba | Holat | Qanday yig'iladi |
+|---|---|---|
+| **OLX.uz** | ✅ ulangan | `yangilik.py` sikl — issiq har 45 daqiqada, to'liq sutkada |
+| **Avtoelon.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/avtoelon.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
+| **Telegram kanallar** | ✅ ulangan | `telegram_sikli` har siklda |
+
+Avtoelon adapteri: `/avto/` (avtomobillar) va `/zapchasti/` (ehtiyot qismlar)
+bo'limlarini yig'adi. Narx `y.e.` (dollar) da — `dollar_kursi()` orqali so'mga
+o'tkaziladi. E'lon sahifasidan tavsif, parametrlar va katta rasm olinadi.
+
+**Qidiruvda ko'rinishi:** yangi manba e'lonlari boshqalar bilan bir xil
+qidiruvda chiqadi, kartada "Avtoelon" manba belgisi bilan. Sarlavhada
+so'rov so'zi bor e'lonlar tepaga chiqadi (2026-08-13 o'lchov: "shazor"
+so'rovida avtoelon BYD Chazor e'lonlari 344-o'rindan 42-o'ringa chiqdi).
 
 ---
 
@@ -208,8 +228,12 @@ Birlashtirish kerak — **AI ishi.**
 
 # KEYINGI QADAM (ustuvorlik bo'yicha)
 
-1. **Avtoelon.uz adapteri** — A tur, eng kuchli yangi manba. SSR — oddiy HTTP
-   yig'ish yetarli. Avto vertikal uchun OLX'ni to'ldiradi.
+1. ~~**Avtoelon.uz adapteri**~~ — **✅ 2026-08-13 ulandi** (`app/manbalar/avtoelon.py`).
+   Issiq sikl `bosh(1)`, to'liq sikl `chuqur(3)`. Avto vertikal uchun
+   OLX'ni to'ldiradi.
 2. **Asaxiy.uz adapteri** — B tur tayanch narx, eng oson (SSR ochiq).
 3. **Uzum bilan hamkorlik suhbati** — robots endi rasman ruxsat beradi,
    CAPTCHA to'siq. Rasmiy API/kelishuv — eng yirik bozor.
+4. **Avtoelon qamrovini kengaytirish** — hozir har sikl 1-3 sahifa;
+   `chuqur` sahifalar soni ko'paytirilsa (masalan 5-10), bozordagi
+   barcha avtoelon e'lonlari indeksga tushadi.

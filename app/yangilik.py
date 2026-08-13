@@ -207,6 +207,44 @@ def telegram_sikli() -> dict:
         return {}
 
 
+def yigish_sikli(toliq: bool = False) -> dict:
+    """`app/manbalar/` dagi barcha adapterlar (avtoelon va keyingilar).
+
+    2026-08-13: avtoelon.uz adapteri yozildi, lekin issiq sikl uni
+    chaqirmaydigan bo'lsa — avvalgidek qo'lda yig'iladi, ya'ni hech
+    kim yig'maydi. Telegram uchun shu xato 2026-08-02 da qilingan edi
+    (adapter bor, chaqiriq yo'q).
+
+    `toliq=False` — `bosh(1)`: 1-2 sahifa, tez (har 45 daqiqada).
+    `toliq=True`  — `chuqur(3)`: ko'p sahifa + e'lon tavsiflari
+    (sutkada bir marta, to'liq qamrov). Har bir adapter xatosi alohida
+    hisoblanadi va boshqa adapterlarni to'xtatmaydi.
+    """
+    try:
+        import yigish
+    except Exception as e:                           # noqa: BLE001
+        print(f"  [yigish] modul yuklanmadi: {type(e).__name__}: {e}")
+        return {}
+    # `yigish.main` oxirida `tahlil.main()` chaqiradi — bu sikl uni
+    # allaqachon boshqaradi (tahlilsiz >= 500 da va oxirida). Tahlil
+    # idempotent, lekin har 45 daqiqada ikki marta ishlash ortiqcha.
+    # Shuning uchun adapterlarni to'g'ridan-to'g'ri chaqiramiz.
+    #
+    # OLX bu yerda ATAYLAB YO'Q: u yuqoridagi `sikl()` orqali yig'iladi.
+    # Ikkalasi ham yursa OLX har 45 daqiqada ikki marta o'qiladi.
+    jami = {}
+    for kalit, adapter in yigish.adapterlar().items():
+        if kalit == "olx":
+            continue
+        try:
+            natija = adapter.chuqur(3) if toliq else adapter.bosh(1)
+            jami[adapter.NOM] = natija
+        except Exception as e:                       # noqa: BLE001
+            print(f"  [yigish:{kalit}] xato: {type(e).__name__}: {e}")
+            jami[adapter.NOM] = {"xato": 1}
+    return jami
+
+
 def kuzat(sahifalar: int = 1) -> None:
     """To'xtamay yuradi: issiq har 45 daqiqada, to'liq sutkada bir marta."""
     print("=" * 66)
@@ -219,12 +257,16 @@ def kuzat(sahifalar: int = 1) -> None:
     while True:
         boshlandi = time.time()
         try:
-            if time.time() - oxirgi_toliq >= TOLIQ_ORALIQ:
+            toliq_vaqti = time.time() - oxirgi_toliq >= TOLIQ_ORALIQ
+            if toliq_vaqti:
                 sikl(faqat_issiq=False, sahifalar=sahifalar)
                 oxirgi_toliq = time.time()
             else:
                 sikl(faqat_issiq=True, sahifalar=sahifalar)
             telegram_sikli()
+            # Manba adapterlari: issiq siklda tez (1-2 sahifa), to'liq
+            # siklda chuqur (ko'p sahifa + tavsiflar).
+            yigish_sikli(toliq=toliq_vaqti)
         except KeyboardInterrupt:
             print("\n  To'xtatildi.")
             return

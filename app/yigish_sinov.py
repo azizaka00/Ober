@@ -101,7 +101,17 @@ def main() -> None:
             tek(r["faol"] == 1 and r["korilmadi"] == 0,
                 "qaytgan e’lon hisoblagichi tozalandi")
 
-            tek("olx" in yigish.adapterlar(), "OLX umumiy adapterdan topildi")
+            adapterlar = yigish.adapterlar()
+            tek("olx" in adapterlar, "OLX umumiy adapterdan topildi")
+            # Yangi manba qo'shilgach sinov uni ham tekshiradi: shartnoma
+            # (MANBA, NOM, bosh, chuqur) buzilsa — darhol ko'rinadi.
+            # 2026-08-13: avtoelon.uz qo'shildi.
+            tek("avtoelon" in adapterlar, "avtoelon adapteri topildi")
+            if "avtoelon" in adapterlar:
+                a = adapterlar["avtoelon"]
+                tek(a.MANBA == "avtoelon" and callable(a.bosh)
+                    and callable(a.chuqur),
+                    "avtoelon shartnomasi to'g'ri (MANBA/bosh/chuqur)")
         finally:
             # sqlite connection context manager commit qiladi, lekin Windowsda
             # obyektga oxirgi reference qolsa temp faylni darhol bo‘shatmaydi.

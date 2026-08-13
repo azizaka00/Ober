@@ -395,11 +395,30 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
             else:
                 ball += 5                        # modeli ko'rsatilmagan (umumiy)
 
-        # ── 3. Qolgan so'zlar (shu yerga kam e'lon yetib keladi)
+        # ── 3. Sarlavhadagi so'zlar — MODEL YO'LIDA HAM
+        #
+        # Model yo'lida faqat model+qism tekshirilardi, sarlavhadagi
+        # so'zga ball berilmasdi. O'lchov 2026-08-13 (avtoelon manbasi
+        # qo'shilgach): "shazor" so'rovi `byd` modeliga aylanadi va
+        # HAMMA byd e'lonlari deyarli bir xil ball oladi — natijada
+        # "Polik so'ng puls" (byd tegi bor, Chazor yo'q) 1-o'ringa
+        # chiqdi, haqiqiy "BYD Chazor 2026" avtoelon e'lonlari esa
+        # 344-o'ringa tushdi (narxi qimmat — narx bo'yicha pastda).
+        #
+        # Sarlavhada so'rov so'zi BOR bo'lsa — o'sha e'lon yuqoriga
+        # chiqadi. Qism so'zi model so'zidan ustun ("neksiya kolodka"
+        # da "kolodka" sarlavhada bo'lsa — aniq tovar).
         if erkin_sozlar:
             if n_matn is None:
                 n_matn = normalla(matn)
             ball += 4 * sum(1 for w in erkin_sozlar if w in n_matn)
+        if sorov_soz and not erkin_sozlar:
+            if n_matn is None:
+                n_matn = normalla(matn)
+            # Model so'zlari ham sarlavhada bo'lsa ball oladi, lekin
+            # qism so'ziga nisbatan kamroq (4 emas, 2): "byd" modeli
+            # minglab sarlavhada bor — u birinchi o'ringa chiqmasin.
+            ball += 2 * sum(1 for w in sorov_soz if w in n_matn)
 
         if ball <= 0:
             continue
