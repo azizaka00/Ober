@@ -32,6 +32,12 @@ import baza
 MANBA = "avtoelon"
 NOM = "Avtoelon"
 KUTISH = 1.2          # soniya, so'rovlar orasida (saytni urishmaymiz)
+# To'liq (sutkalik) sikl nechta sahifa yig'adi — har bo'lim uchun.
+# 2026-08-13: 3 -> 10 (bozor to'liq qamrovda bo'lsin). O'lchov:
+# avto bo'limida har sahifa 30 karta; 10 sahifa = ~300 e'lon/bo'lim.
+# E'lon sahifasi ham alohida olinadi (tavsif uchun) — 1.2s KUTISH bilan
+# to'liq sikl ~25 daqiqa qo'shadi (OLX siklidan ancha kam).
+CHUQUR_SAHIFA = 10
 _TAYANCH = "https://avtoelon.uz"
 _SARLAVHA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                            "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -291,13 +297,16 @@ def bosh(cheklov: int = 1, faqat: str = "") -> dict:
     return natija
 
 
-def chuqur(sahifalar: int = 3, faqat: str = "") -> dict:
+def chuqur(sahifalar: int | None = None, faqat: str = "") -> dict:
     """To'liq yig'ish: ko'p sahifa + har e'lon sahifasidan tavsif.
 
-    `sahifalar` — har bo'limda nechta sahifa. E'lon sahifasi ma'lumoti
-    (tavsif, parametrlar) alohida olinadi — baza mavjud ma'lumotni
-    saqlab qoladi (bo'sh qiymat bilan ustidan yozmaydi).
+    `sahifalar` — har bo'limda nechta sahifa (default: CHUQUR_SAHIFA).
+    E'lon sahifasi ma'lumoti (tavsif, parametrlar) alohida olinadi —
+    baza mavjud ma'lumotni saqlab qoladi (bo'sh qiymat bilan ustidan
+    yozmaydi).
     """
+    if sahifalar is None:
+        sahifalar = CHUQUR_SAHIFA
     sikl = baza.sikl_boshlash(MANBA)
     natija = {"yangi": 0, "yangilandi": 0, "ozgarmadi": 0, "xato": 0}
     for yol, _ in _BO_LIMLAR:
@@ -322,9 +331,10 @@ def chuqur(sahifalar: int = 3, faqat: str = "") -> dict:
 if __name__ == "__main__":
     import sys
     rejim = sys.argv[1] if len(sys.argv) > 1 else "bosh"
-    n = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+    # `n` berilmagan bo'lsa `chuqur` CHUQUR_SAHIFA (10) ni ishlatadi
+    n = int(sys.argv[2]) if len(sys.argv) > 2 else None
     f = sys.argv[3] if len(sys.argv) > 3 else ""
     if rejim == "chuqur":
         print(chuqur(n, f))
     else:
-        print(bosh(n, f))
+        print(bosh(n or 1, f))

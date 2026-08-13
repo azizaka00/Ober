@@ -663,3 +663,33 @@ e'lonlari deyarli bir xil ball oladi — "Polik so'ng puls" (Chazor yo'q)
 1-o'ringa chiqdi, haqiqiy "BYD Chazor 2026" esa 344-o'rinda edi.
 Sarlavhada so'rov so'zi bor e'lon yuqoriroq ball oladi (2 ball/so'z).
 O'lchov: avtoelon Chazor e'lonlari 344 -> 42-o'rin.
+
+## 2026-08-13 — B tur (do'kon) manbasi: Asaxiy.uz
+
+Avtoelon (A tur — e'lonlar taxtasi) dan farqli: Asaxiy — B tur (do'kon),
+ya'ni sotuvchi emas, NARX beradi. OBER uchun qiymati "bozor narxi qancha"
+degan savolga tayanch dalil.
+
+Saboq 1: sayt tuzilishi o'zgarishi mumkin — eski URL (`/ru/category/...`)
+2026-08-13 da 404 qaytardi, yangisi `/product/{slug}`. Audit sanasi bilan
+adapter ichida URL naqshi hujjatlashtirilishi kerak.
+
+Saboq 2: B tur uchun ro'yxat sahifasi yetarli — `data-actual-price`
+so'mda, `biznes=1` belgilanadi. Tovar sahifasi (574KB) faqat chuqur
+rejimda tavsif uchun olinadi.
+
+Saboq 3: `yigish_sikli` adapterlarni avtomatik topadi — yangi manba
+qo'shilsa kod o'zgarmaydi, faqat `app/manbalar/` fayli kerak. Ammo
+`yigish_sinov` shartnomani qo'riqlaydi — har yangi manba uchun u yerda
+tekshiruv qo'shilishi kerak.
+
+## 2026-08-13 — CHUQUR_SAHIFA: adapter o'z qamrovini e'lon qiladi
+
+`yigish_sikli(toliq=True)` avval hamma adapterga `chuqur(3)` berardi.
+Avtoelon uchun 10 kerak edi, asaxiy uchun 3 yetarli (tovar sahifalari
+katta). Yechim: adapter `CHUQUR_SAHIFA` atributini e'lon qiladi,
+`yigish_sikli` `getattr(adapter, "CHUQUR_SAHIFA", 3)` ishlatadi.
+
+Saboq: har bir manbaning qamrov chuqurligi boshqacha — umumiy son
+emas, adapterning o'zi aytadi. Qo'lda har adapter uchun alohida son
+yozish shart emas.

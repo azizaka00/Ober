@@ -216,8 +216,10 @@ def yigish_sikli(toliq: bool = False) -> dict:
     (adapter bor, chaqiriq yo'q).
 
     `toliq=False` — `bosh(1)`: 1-2 sahifa, tez (har 45 daqiqada).
-    `toliq=True`  — `chuqur(3)`: ko'p sahifa + e'lon tavsiflari
-    (sutkada bir marta, to'liq qamrov). Har bir adapter xatosi alohida
+    `toliq=True`  — `chuqur(...)`: ko'p sahifa + e'lon tavsiflari
+    (sutkada bir marta, to'liq qamrov). Har bir adapter o'z
+    `CHUQUR_SAHIFA`sini e'lon qiladi (avtoelon 10, qolganlari 3) —
+    `yigish_sikli` uni ishlatadi. Har bir adapter xatosi alohida
     hisoblanadi va boshqa adapterlarni to'xtatmaydi.
     """
     try:
@@ -237,7 +239,13 @@ def yigish_sikli(toliq: bool = False) -> dict:
         if kalit == "olx":
             continue
         try:
-            natija = adapter.chuqur(3) if toliq else adapter.bosh(1)
+            if toliq:
+                # Adapter o'z chuqurligini e'lon qiladi (CHUQUR_SAHIFA);
+                # e'lon qilmaganlar uchun 3 — eski me'yor.
+                chuqur = getattr(adapter, "CHUQUR_SAHIFA", 3)
+                natija = adapter.chuqur(chuqur)
+            else:
+                natija = adapter.bosh(1)
             jami[adapter.NOM] = natija
         except Exception as e:                       # noqa: BLE001
             print(f"  [yigish:{kalit}] xato: {type(e).__name__}: {e}")
