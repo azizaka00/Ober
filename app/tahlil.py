@@ -203,6 +203,13 @@ def main(qayta: bool = False) -> None:
             print(f"    {i}/{len(qatorlar)}")
 
     baza.fts_yoz(fts)
+    # FTS'ni toza ushlash: nofaol e'lonlar o'chiriladi (qidiruv nomzodlari
+    # eski e'lonlar bilan to'lmasin, 2026-08-13 o'lchov — 134 778 nofaol
+    # yozuv "kvartira" so'rovida yangi manba e'lonlarini limitdan chiqarib
+    # tashlagan edi).
+    ochirilgan = baza.fts_nofaollarni_ochir()
+    if ochirilgan:
+        print(f"  FTS'dan nofaol o'chirildi: {ochirilgan}")
 
     with baza.ulan() as c:
         c.executemany(

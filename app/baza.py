@@ -1570,6 +1570,35 @@ def fts_yoz(qatorlar: list[tuple[int, str, str]]) -> None:
         print(f"  [fts] indeks yozilmadi: {e}")
 
 
+def fts_nofaollarni_ochir() -> int:
+    """FTS'dan faol bo'lmagan e'lonlarni o'chiradi.
+
+    NEGA KERAK (2026-08-13 o'lchov, shahar.uz manbasi qo'shilgach):
+    FTS'da 134 778 ta yetim/nofaol yozuv qolib ketgan edi. Qidiruv
+    `fts_erkin` bilan eng yaxshi 900 ta mosni oladi, ularning aksariyati
+    eski/ochilgan e'lonlar bo'lsa — yangi manba e'lonlari limitdan
+    chiqib qoladi ("kvartira": FTS'da 14 024 mos, faol atigi 9 tasi
+    ko'rinardi).
+
+    `fts_erkin` ichida faol filtri qo'shish ikkala yo'lda ham yiqildi:
+    JOIN `ORDER BY rank` buzadi (FTS5 rank faqat to'g'ridan-to'g'ri
+    o'qilganda ishlaydi), subquery esa 550 000 qatorni skanerlab 60+
+    soniya oladi. To'g'ri yechim: FTS'ni toza ushlash — har tahlil
+    siklida nofaollar o'chiriladi (bir marta, qidiruv emas).
+    """
+    if not FTS_BOR:
+        return 0
+    try:
+        with ulan() as c:
+            c.execute("DELETE FROM elonlar_fts WHERE rowid IN"
+                      " (SELECT id FROM elonlar WHERE faol=0)")
+            n = c.total_changes
+        return n
+    except sqlite3.OperationalError as e:
+        print(f"  [fts] nofaollarni o'chirishda xato: {e}")
+        return 0
+
+
 def _fts_token(s: str) -> str:
     """FTS5 uchun xavfsiz token."""
     t = "".join(ch if ch.isalnum() else " " for ch in s).strip()
@@ -1980,6 +2009,13 @@ def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA,
     normallashtirmaslik uchun), lekin 2 500 qator uchun katta matn
     ustunini o'qish qidiruvni 4 781 ms ga cho'zdi (2026-08-02, "kvartira").
     Sarlavhani normallashtirish undan arzonroq.
+
+    FAQAT FAOL E'LONLAR (2026-08-13 o'lchov). FTS'da 134 778 ta
+    yetim/nofaol yozuv qolib ketgan — shahar.uz qo'shilgach sezildi:
+    "kvartira" so'rovida FTS'da 14 024 mos, faol atigi 9 tasi edi
+    (900 nomzodning aksariyati eski/ochilgan e'lonlar edi). JOIN
+    `e.faol=1` orqali faqat jonli e'lonlar qaytariladi — nomzodlar
+    bo'sh e'lonlar bilan to'lmaydi.
     """
     if not FTS_BOR or not sozlar:
         return []
