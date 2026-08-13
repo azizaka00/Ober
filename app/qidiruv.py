@@ -418,7 +418,16 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
             # Model so'zlari ham sarlavhada bo'lsa ball oladi, lekin
             # qism so'ziga nisbatan kamroq (4 emas, 2): "byd" modeli
             # minglab sarlavhada bor — u birinchi o'ringa chiqmasin.
-            ball += 2 * sum(1 for w in sorov_soz if w in n_matn)
+            soni = sum(1 for w in sorov_soz if w in n_matn)
+            ball += 2 * soni
+            # Sarlavhada so'rovning HAMMA so'zi bo'lsa — aniq tovar.
+            # O'lchov 2026-08-13 (production): "byd chazor" so'rovida
+            # avtoelon "BYD Chazor 2026" mashinasi OLX qismlari bilan
+            # bir xil ball (62) oldi va narxi qimmat bo'lgani uchun
+            # 888-o'ringa tushdi. Erkin rejimda `qayerda==len` +25
+            # beradi — model yo'lida ham shu mantiq kerak.
+            if soni == len(sorov_soz):
+                ball += 12
 
         if ball <= 0:
             continue
