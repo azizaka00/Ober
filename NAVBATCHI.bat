@@ -40,8 +40,10 @@ if exist "%BUYRUQ%" (
     scp -q -r "%~dp0web" %SERVER%:/home/ober/ober/ >> "%JAVOB%" 2>&1
     scp -q "%~dp0data\telegram-kanallar.txt" %SERVER%:/home/ober/ober/data/ >> "%JAVOB%" 2>&1
     rem 2026-08-13: faqat ober-server restart qilinardi - ober-yangilik
-    rem va ober-toliq eski kod bilan qolaverardi (avtoelon adapteri
-    rem serverda yig'ilmagan edi). Endi uchalasi birga restart bo'ladi.
+    rem va ober-toliq eski kod bilan qolaverardi - avtoelon adapteri
+    rem serverda yig'ilmagan edi. Endi uchalasi birga restart bo'ladi.
+    rem IZOH: blok ichidagi rem satrlarida qavs ishlatilmaydi -
+    rem muvozanatsiz qavs butun if blokini buzadi. 2026-08-13 xato.
     ssh -o BatchMode=yes %SERVER% systemctl restart ober-server ober-yangilik ober-toliq >> "%JAVOB%" 2>&1
     echo -- tayyor >> "%JAVOB%"
   ) else (
