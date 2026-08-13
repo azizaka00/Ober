@@ -11,7 +11,7 @@ _Yangilandi: 2026-08-13 — Avtoelon va Asaxiy adapterlari ulandi_
 |---|---|---|
 | **OLX.uz** | ✅ ulangan | `yangilik.py` sikl — issiq har 45 daqiqada, to'liq sutkada |
 | **Avtoelon.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/avtoelon.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
-| **Asaxiy.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/asaxiy.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
+| **Asaxiy.uz** | ⚠️ **lokal ishlaydi, serverda bloklangan** | `app/manbalar/asaxiy.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
 | **Telegram kanallar** | ✅ ulangan | `telegram_sikli` har siklda |
 
 Avtoelon adapteri: `/avto/` (avtomobillar) va `/zapchasti/` (ehtiyot qismlar)
@@ -27,6 +27,15 @@ Asaxiy adapteri: B tur (do'kon) — tayanch narx. 16 bo'lim yig'iladi
 (elektronika, maishiy texnika, avto, mebel...). Narx so'mda, `biznes=1`
 (do'kon) belgilanadi. O'lchov (2026-08-13): "samsung a57" so'rovida
 Asaxiy tovari OLX e'lonlari bilan aralash, 4-o'rinda chiqdi (ball 122).
+
+**MUHIM — serverda bloklangan (2026-08-13 o'lchov):** Asaxiy Hetzner
+server IP'sini (77.42.123.90) butunlay bloklagan — IPv4 ham, IPv6 ham
+403 qaytaradi (saytning o'z retro-403 sahifasi, Cloudflare emas). Lokal
+(uy IP) dan 200 — adapter to'g'ri ishlaydi. Shu sabab adapter birinchi
+403'da darhol to'xtaydi (`_Bloklandi`) — 16 bo'limni urib saytni
+bosmaydi. Serverda asaxiy e'lonlari yig'ilmaydi: qidiruvda faqat lokal
+yig'ilgan 369 ta e'lon bor. Yechim: hamkorlik yoki o'zbek IP'si.
+CLAUDE.md qoidasi: blok aylanib o'tilmaydi.
 
 ---
 
@@ -237,10 +246,11 @@ Birlashtirish kerak — **AI ishi.**
 1. ~~**Avtoelon.uz adapteri**~~ — **✅ 2026-08-13 ulandi** (`app/manbalar/avtoelon.py`).
    Issiq sikl `bosh(1)`, to'liq sikl `chuqur(3)`. Avto vertikal uchun
    OLX'ni to'ldiradi.
-2. ~~**Asaxiy.uz adapteri**~~ — **✅ 2026-08-13 ulandi** (`app/manbalar/asaxiy.py`).
-   B tur tayanch narx, 16 bo'lim. Issiq sikl `bosh(1)`, to'liq sikl `chuqur(3)`.
+2. ~~**Asaxiy.uz adapteri**~~ — **✅ 2026-08-13 yozildi** (`app/manbalar/asaxiy.py`),
+   lekin **serverda bloklangan** (Hetzner IP 403 — yuqoriga qarang).
+   Lokal ishlaydi, serverda yig'ilmaydi. Hamkorlik yoki o'zbek IP'si kerak.
 3. **Uzum bilan hamkorlik suhbati** — robots endi rasman ruxsat beradi,
    CAPTCHA to'siq. Rasmiy API/kelishuv — eng yirik bozor.
-4. **Asaxiy qamrovini kengaytirish** — avtoelon allaqachon 10 sahifa
-   (CHUQUR_SAHIFA, 2026-08-13), asaxiy 3. Asaxiy'ga ham o'z
-   `CHUQUR_SAHIFA` qiymati berilsa bozordagi barcha tovarlar tushadi.
+4. ~~**Asaxiy qamrovini kengaytirish**~~ — **to'xtatildi**: serverda
+   bloklangan, chuqurlikni oshirishning ma'nosi yo'q. Agar blok olinsa
+   — avtoelon'dagi kabi `CHUQUR_SAHIFA` beriladi.

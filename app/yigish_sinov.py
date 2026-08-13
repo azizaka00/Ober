@@ -114,6 +114,25 @@ def main() -> None:
                     tek(a.MANBA == manba and callable(a.bosh)
                         and callable(a.chuqur),
                         f"{nomi} shartnomasi to'g'ri (MANBA/bosh/chuqur)")
+
+            # 403-blok xulqi (2026-08-13): sayt IP'ni bloklaganda adapter
+            # birinchi xatoda to'xtaydi — 16 bo'limni urib saytni bosmaydi.
+            # Bu xulq buzilsa (masalan, 403 '' qaytarib davom etsa) sinov
+            # tutib qoladi.
+            if "asaxiy" in adapterlar:
+                import manbalar.asaxiy as asaxiy
+                asl_ol = asaxiy._sahifa_ol
+
+                def _blok(yol: str) -> str:  # har so'rov 403
+                    raise asaxiy._Bloklandi(f"{yol} -> test 403")
+
+                asaxiy._sahifa_ol = _blok
+                try:
+                    natija = asaxiy.bosh(1)
+                finally:
+                    asaxiy._sahifa_ol = asl_ol
+                tek(natija.get("xato") == 1 and natija.get("yangi") == 0,
+                    "asaxiy 403'da to'xtaydi (sayt urilmaydi)")
         finally:
             # sqlite connection context manager commit qiladi, lekin Windowsda
             # obyektga oxirgi reference qolsa temp faylni darhol bo‘shatmaydi.

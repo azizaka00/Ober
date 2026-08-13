@@ -30,6 +30,7 @@ from __future__ import annotations
 import json
 import re
 import time
+import urllib.error
 import urllib.request
 
 import baza
@@ -74,14 +75,41 @@ def _sozla(html: str) -> str:
     return re.sub(r"\s+", " ", matn).strip()
 
 
+class _Bloklandi(Exception):
+    """Sayt bizni butunlay bloklagan (403) — qolgan bo'limlarni urmaymiz.
+
+    2026-08-13 o'lchovi: Hetzner IP (77.42.123.90) Asaxiy tomonidan
+    bloklangan — IPv4 ham, IPv6 ham 403 (saytning o'z retro-403 sahifasi,
+    Cloudflare emas). Bitta 403 tasodif emas: 16 ta bo'limni ketma-ket
+    urib saytni bosish yomon odat. Birinchi 403'da to'xtaymiz va sabab
+    aniq ko'rinadi.
+    """
+
+
 def _sahifa_ol(yol: str) -> str:
-    """Sahifani oladi; HTTP xatosida '' qaytaradi."""
+    """Sahifani oladi; HTTP xatosida '' qaytaradi.
+
+    2026-08-13: serverdan 403 kelganda urlopen HTTPError ko'tarardi va
+    butun sikl to'xtab qolardi (`[yigish:asaxiy] xato` — sabab shu).
+    Endi HTTPError/URLError tutib olinadi: bitta bo'lim yiqilsa qolgan
+    bo'limlar davom etadi, xato sanoqqa tushadi. 403 esa alohida —
+    sayt bizni butunlay bloklaganini bildiradi, `_Bloklandi` ko'tariladi.
+    """
     soz = urllib.request.Request(_TAYANCH + yol, headers=_SARLAVHA)
-    with urllib.request.urlopen(soz, timeout=20) as r:
-        if r.status != 200:
-            print(f"  [asaxiy] {yol} -> HTTP {r.status}")
-            return ""
-        return r.read().decode("utf-8", errors="replace")
+    try:
+        with urllib.request.urlopen(soz, timeout=20) as r:
+            if r.status != 200:
+                print(f"  [asaxiy] {yol} -> HTTP {r.status}")
+                return ""
+            return r.read().decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as e:
+        if e.code == 403:
+            raise _Bloklandi(f"{yol} -> HTTP 403 (sayt IP'ni bloklagan)") from e
+        print(f"  [asaxiy] {yol} -> HTTP {e.code} ({e.reason})")
+        return ""
+    except urllib.error.URLError as e:
+        print(f"  [asaxiy] {yol} -> tarmoq xatosi: {e.reason}")
+        return ""
 
 
 def _kartalar(sahifa: str) -> list[tuple[str, str]]:
@@ -188,17 +216,21 @@ def bosh(cheklov: int = 1, faqat: str = "") -> dict:
     """
     sikl = baza.sikl_boshlash(MANBA)
     natija = {"yangi": 0, "yangilandi": 0, "ozgarmadi": 0, "xato": 0}
-    for slug, kategoriya in _BO_LIMLAR:
-        if faqat and faqat not in slug:
-            continue
-        html = _sahifa_ol(f"/product/{slug}")
-        if not html:
-            natija["xato"] += 1
-            continue
-        for e in _ro_kat(html, kategoriya):
-            holat = baza.saqla(e, sikl)
-            natija[holat] = natija.get(holat, 0) + 1
-        time.sleep(KUTISH)
+    try:
+        for slug, kategoriya in _BO_LIMLAR:
+            if faqat and faqat not in slug:
+                continue
+            html = _sahifa_ol(f"/product/{slug}")
+            if not html:
+                natija["xato"] += 1
+                continue
+            for e in _ro_kat(html, kategoriya):
+                holat = baza.saqla(e, sikl)
+                natija[holat] = natija.get(holat, 0) + 1
+            time.sleep(KUTISH)
+    except _Bloklandi as b:
+        print(f"  [asaxiy] BLOKLANDI: {b}")
+        natija["xato"] += 1
     return natija
 
 
@@ -210,28 +242,32 @@ def chuqur(sahifalar: int = 3, faqat: str = "") -> dict:
     """
     sikl = baza.sikl_boshlash(MANBA)
     natija = {"yangi": 0, "yangilandi": 0, "ozgarmadi": 0, "xato": 0}
-    for slug, kategoriya in _BO_LIMLAR:
-        if faqat and faqat not in slug:
-            continue
-        for sahifa in range(1, max(1, sahifalar) + 1):
-            manzil = f"/product/{slug}/page={sahifa}" if sahifa > 1 \
-                else f"/product/{slug}"
-            html = _sahifa_ol(manzil)
-            if not html:
-                natija["xato"] += 1
+    try:
+        for slug, kategoriya in _BO_LIMLAR:
+            if faqat and faqat not in slug:
                 continue
-            for e in _ro_kat(html, kategoriya):
-                # Tavsif uchun slug havoladan olinadi
-                slug_tovar = ""
-                m = re.search(r"/product/([^/]+)$", e.get("havola") or "")
-                if m:
-                    slug_tovar = m.group(1)
-                if slug_tovar:
-                    e.update(_tavsif_ol(e["tashqi_id"], slug_tovar))
-                holat = baza.saqla(e, sikl)
-                natija[holat] = natija.get(holat, 0) + 1
+            for sahifa in range(1, max(1, sahifalar) + 1):
+                manzil = f"/product/{slug}/page={sahifa}" if sahifa > 1 \
+                    else f"/product/{slug}"
+                html = _sahifa_ol(manzil)
+                if not html:
+                    natija["xato"] += 1
+                    continue
+                for e in _ro_kat(html, kategoriya):
+                    # Tavsif uchun slug havoladan olinadi
+                    slug_tovar = ""
+                    m = re.search(r"/product/([^/]+)$", e.get("havola") or "")
+                    if m:
+                        slug_tovar = m.group(1)
+                    if slug_tovar:
+                        e.update(_tavsif_ol(e["tashqi_id"], slug_tovar))
+                    holat = baza.saqla(e, sikl)
+                    natija[holat] = natija.get(holat, 0) + 1
+                    time.sleep(KUTISH)
                 time.sleep(KUTISH)
-            time.sleep(KUTISH)
+    except _Bloklandi as b:
+        print(f"  [asaxiy] BLOKLANDI: {b}")
+        natija["xato"] += 1
     baza.sikl_yakunla(MANBA, sikl, toliq=bool(not faqat))
     return natija
 

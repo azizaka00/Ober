@@ -693,3 +693,41 @@ katta). Yechim: adapter `CHUQUR_SAHIFA` atributini e'lon qiladi,
 Saboq: har bir manbaning qamrov chuqurligi boshqacha — umumiy son
 emas, adapterning o'zi aytadi. Qo'lda har adapter uchun alohida son
 yozish shart emas.
+
+## 2026-08-13 — Asaxiy serverda bloklangan
+
+Asaxiy.uz adapteri lokalda 200 bilan ishladi, serverda (Hetzner
+77.42.123.90) esa 403 — IPv4 ham, IPv6 ham. Bu saytning o'z himoyasi
+(retro-403 sahifa), Cloudflare emas. "Lokal ishlayapti" serverda ham
+ishlaydi degani emas — har yig'ish sikli boshqa IP'dan keladi.
+
+Saboq 1: yangi manbani faqat lokalda emas, SERVERDAN ham tekshirish
+kerak. Adapter yozilib "yashil sinovlar" ko'rsatilganda ham — asosiy
+savol: "server uni o'qiya oladimi?".
+
+Saboq 2: bloklanganda adapter to'xtashi kerak, 16 bo'limni urib saytni
+bosmasligi kerak. `_Bloklandi` — birinchi 403'da darhol to'xtash.
+Aks holda har 45 daqiqada 16 ta 403 so'rov — bu saytga hujumdek.
+
+Saboq 3: NAVBATCHI "yuklash" faqat ober-server'ni restart qilardi —
+ober-yangilik va ober-toliq eski kod bilan qolaverardi. Endi uchalasi
+birga restart bo'ladi (NAVBATCHI.bat 2026-08-13).
+
+## 2026-08-13 — Asaxiy serverda bloklangan
+
+Asaxiy.uz adapteri lokalda 200 bilan ishladi, serverda (Hetzner
+77.42.123.90) esa 403 — IPv4 ham, IPv6 ham. Bu saytning o'z himoyasi
+(retro-403 sahifa), Cloudflare emas. "Lokal ishlayapti" serverda ham
+ishlaydi degani emas — har yig'ish sikli boshqa IP'dan keladi.
+
+Saboq 1: yangi manbani faqat lokalda emas, SERVERDAN ham tekshirish
+kerak. Adapter yozilib "yashil sinovlar" ko'rsatilganda ham — asosiy
+savol: "server uni o'qiya oladimi?".
+
+Saboq 2: bloklanganda adapter to'xtashi kerak, 16 bo'limni urib saytni
+bosmasligi kerak. `_Bloklandi` — birinchi 403'da darhol to'xtash.
+Aks holda har 45 daqiqada 16 ta 403 so'rov — bu saytga hujumdek.
+
+Saboq 3: NAVBATCHI "yuklash" faqat ober-server'ni restart qilardi —
+ober-yangilik va ober-toliq eski kod bilan qolaverardi. Endi uchalasi
+birga restart bo'ladi (NAVBATCHI.bat 2026-08-13).

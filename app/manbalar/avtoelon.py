@@ -25,6 +25,7 @@ from __future__ import annotations
 import json
 import re
 import time
+import urllib.error
 import urllib.request
 
 import baza
@@ -79,13 +80,25 @@ def _sozla(html: str) -> str:
 
 
 def _sahifa_ol(yol: str) -> str:
-    """Sahifani oladi; HTTP xatosida '' qaytaradi."""
+    """Sahifani oladi; HTTP xatosida '' qaytaradi.
+
+    2026-08-13: serverdan 403/5xx kelganda urlopen HTTPError ko'tarardi
+    va butun sikl to'xtab qolardi. Endi HTTPError/URLError tutib
+    olinadi: bitta sahifa yiqilsa qolgan sahifalar davom etadi.
+    """
     soz = urllib.request.Request(_TAYANCH + yol, headers=_SARLAVHA)
-    with urllib.request.urlopen(soz, timeout=20) as r:
-        if r.status != 200:
-            print(f"  [avtoelon] {yol} -> HTTP {r.status}")
-            return ""
-        return r.read().decode("utf-8", errors="replace")
+    try:
+        with urllib.request.urlopen(soz, timeout=20) as r:
+            if r.status != 200:
+                print(f"  [avtoelon] {yol} -> HTTP {r.status}")
+                return ""
+            return r.read().decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as e:
+        print(f"  [avtoelon] {yol} -> HTTP {e.code} ({e.reason})")
+        return ""
+    except urllib.error.URLError as e:
+        print(f"  [avtoelon] {yol} -> tarmoq xatosi: {e.reason}")
+        return ""
 
 
 def _narx_qiymat(raqam: int | None, birlik: str = "") -> tuple[int | None, str | None]:
