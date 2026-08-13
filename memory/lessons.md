@@ -750,3 +750,13 @@ Saboq 3: `normalla("ijara")` -> "izara", `normalla("Аренда")` -> "arenda"
 — o'zbek/rus so'zlari FTS'da bir-birini topmaydi. Bu qidiruv tizimining
 umumiy masalasi (atama xaritasi faqat xususiyatlar uchun). Yechim:
 erkin rejimda so'rov so'zlariga atama juftini qo'shish.
+
+## NAVBATCHI.bat ochilmay qoldi — izoh satridan `rem` tushib ketgan (2026-08-13)
+
+Oyna "ochilib darhol yopiladi" edi. Sabab: `if exist (...)` blokidagi
+uch qatorli izohning uchinchi satridan `rem` prefiksi tushib ketgan
+edi — satr bajariladigan buyruqqa aylanib, ichidagi `).` blokni buzdi
+(`. was unexpected at this time.`). Xulosa: `.bat`dagi ko'p qatorli
+izoh `rem` bilan boshlangan HAR satrda `rem` yozilishi shart — blok
+ichida bitta satr ham buzilsa butun fayl ishlamaydi. Tekshiruv usuli:
+`timeout 8 cmd //c NAVBATCHI.bat` — xato darhol ko'rinadi.

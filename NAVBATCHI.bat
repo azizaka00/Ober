@@ -41,7 +41,7 @@ if exist "%BUYRUQ%" (
     scp -q "%~dp0data\telegram-kanallar.txt" %SERVER%:/home/ober/ober/data/ >> "%JAVOB%" 2>&1
     rem 2026-08-13: faqat ober-server restart qilinardi - ober-yangilik
     rem va ober-toliq eski kod bilan qolaverardi (avtoelon adapteri
-    serverda yig'ilmagan edi). Endi uchalasi birga restart bo'ladi.
+    rem serverda yig'ilmagan edi). Endi uchalasi birga restart bo'ladi.
     ssh -o BatchMode=yes %SERVER% systemctl restart ober-server ober-yangilik ober-toliq >> "%JAVOB%" 2>&1
     echo -- tayyor >> "%JAVOB%"
   ) else (
