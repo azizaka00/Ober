@@ -101,6 +101,15 @@ AI kaliti loyihada **umuman yo'q** — u serverda `/etc/ober-ai.env`
   Bitta faylni tuzatib "tugadi" deyish — saboqni yarim o'rganish.
 - Har ishdan keyin `memory/lessons.md` ga bitta xulosa.
 
+## COMMITDAN OLDIN — AVTOMAT TEKSHIRUV
+
+`hooks/pre-commit` har commitda `app/bat_sinov.py` ni yugurtiradi
+(`git config core.hooksPath hooks` orqali yoqilgan). U `.bat`
+fayllaridagi blok qavs xatolarini qo'riqlaydi — 2026-08-13 da
+NAVBATCHI.bat shunday xatodan oyna ochilib darhol yopilgan edi.
+Hook xato topsa commit bloklanadi. `bat_sinov.py` ni tuzatib,
+qayta commit qilinadi.
+
 ## Qidiruv qanday ishlaydi — ASOSIY QOIDA
 
 **Indeksning o'zi lug'at.** 300 000 dan ortiq e'lon bor va har

@@ -760,3 +760,12 @@ edi — satr bajariladigan buyruqqa aylanib, ichidagi `).` blokni buzdi
 izoh `rem` bilan boshlangan HAR satrda `rem` yozilishi shart — blok
 ichida bitta satr ham buzilsa butun fayl ishlamaydi. Tekshiruv usuli:
 `timeout 8 cmd //c NAVBATCHI.bat` — xato darhol ko'rinadi.
+
+## Har commit oldidan .bat tekshiruvi — pre-commit hook (2026-08-13)
+
+NAVBATCHI.bat xatosidan keyin `app/bat_sinov.py` yozildi, lekin
+qo'lda ishga tushirilsa unutiladi. Yechim: `hooks/pre-commit` +
+`git config core.hooksPath hooks` — har commitda avtomatik ishlaydi,
+xato topsa commitni bloklaydi. Xulosa: qo'lda bajariladigan sinov
+tezda unutiladi; qo'riqchi git hook bo'lishi kerak. Sinov: buzilgan
+.bat bilan commit bloklandi ✓, toza holatda o'tdi ✓.

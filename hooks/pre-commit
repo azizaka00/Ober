@@ -1,0 +1,26 @@
+#!/bin/sh
+# OBER — pre-commit: .bat sintaksis tekshiruvi
+#
+# NEGA (2026-08-13): NAVBATCHI.bat oyna ochilib darhol yopilardi —
+# `if exist (...)` blokidagi izoh satridan `rem` tushib ketgan edi,
+# satr bajariladigan buyruqqa aylanib `).` bilan blokni buzgan edi.
+# Bunday xato ko'z bilan topilmaydi — shuning uchun commit bloklanadi.
+#
+# `git config core.hooksPath hooks` orqali faollashtiriladi (lokal).
+# Ishlamay qolsa: bat_sinov.py ni to'g'rilab, qayta commit qiling.
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+if ! command -v python >/dev/null 2>&1; then
+    echo "pre-commit: python topilmadi — .bat tekshiruvi o'tkazib yuborildi"
+    exit 0
+fi
+
+if ! python app/bat_sinov.py; then
+    echo ""
+    echo "pre-commit: .bat faylda sintaksis xatosi — commit to'xtatildi."
+    echo "Yuqoridagi xatoni tuzating, keyin qayta commit qiling."
+    exit 1
+fi
+
+exit 0
