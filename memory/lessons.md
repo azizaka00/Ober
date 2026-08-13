@@ -731,3 +731,22 @@ Aks holda har 45 daqiqada 16 ta 403 so'rov — bu saytga hujumdek.
 Saboq 3: NAVBATCHI "yuklash" faqat ober-server'ni restart qilardi —
 ober-yangilik va ober-toliq eski kod bilan qolaverardi. Endi uchalasi
 birga restart bo'ladi (NAVBATCHI.bat 2026-08-13).
+
+## 2026-08-13 — Shahar.uz: yangi vertikal (ko'chmas mulk)
+
+Uchinchi adapter — ko'chmas mulk (kvartira, uy, dacha). Serverdan ochiq
+(200), narx dollarda — dollar_kursi() orqali so'mga (avtoelon'dagi kabi).
+
+Saboq 1: bo'lim slug'i bilan havola naqshi MOS KELMASLIGI mumkin.
+`/arenda-kvartir` sahifasida `/kvartira/...` havolalar, `/arenda-domov`
+da `/doma/...`. Kartani `property_wrapper` orqali kesish to'g'ri —
+havola ichidan olinadi.
+
+Saboq 2: sarlavhaga kategoriya prefiksi qo'shish XATO — qidiruv ballini
+pasaytiradi (qisqa sarlavha bonusi + so'z pozitsiyasi). Kategoriya
+alohida maydonda, FTS'ga tahlil qo'shadi.
+
+Saboq 3: `normalla("ijara")` -> "izara", `normalla("Аренда")` -> "arenda"
+— o'zbek/rus so'zlari FTS'da bir-birini topmaydi. Bu qidiruv tizimining
+umumiy masalasi (atama xaritasi faqat xususiyatlar uchun). Yechim:
+erkin rejimda so'rov so'zlariga atama juftini qo'shish.

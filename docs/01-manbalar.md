@@ -1,7 +1,7 @@
 # MANBALAR — aniq tekshiruv natijasi
 _2026-07-30 · faqat SHAXSAN tekshirilgani yozilgan, taxmin yo'q_
 _Yangilandi: 2026-08-11 — butun O'zbekiston bozori qayta auditi_
-_Yangilandi: 2026-08-13 — Avtoelon va Asaxiy adapterlari ulandi_
+_Yangilandi: 2026-08-13 — Avtoelon, Asaxiy va Shahar.uz adapterlari_
 
 ---
 
@@ -12,6 +12,7 @@ _Yangilandi: 2026-08-13 — Avtoelon va Asaxiy adapterlari ulandi_
 | **OLX.uz** | ✅ ulangan | `yangilik.py` sikl — issiq har 45 daqiqada, to'liq sutkada |
 | **Avtoelon.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/avtoelon.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
 | **Asaxiy.uz** | ⚠️ **lokal ishlaydi, serverda bloklangan** | `app/manbalar/asaxiy.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
+| **Shahar.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/shahar.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
 | **Telegram kanallar** | ✅ ulangan | `telegram_sikli` har siklda |
 
 Avtoelon adapteri: `/avto/` (avtomobillar) va `/zapchasti/` (ehtiyot qismlar)
@@ -36,6 +37,14 @@ server IP'sini (77.42.123.90) butunlay bloklagan — IPv4 ham, IPv6 ham
 bosmaydi. Serverda asaxiy e'lonlari yig'ilmaydi: qidiruvda faqat lokal
 yig'ilgan 369 ta e'lon bor. Yechim: hamkorlik yoki o'zbek IP'si.
 CLAUDE.md qoidasi: blok aylanib o'tilmaydi.
+
+Shahar.uz adapteri: A tur (sotuvchi beradi) — **ko'chmas mulk vertikali**.
+6 bo'lim: kvartira sotish/ijara, sutkalik, uy sotish/ijara, dacha.
+Narx DOLLARDA (`115 000 $`) — `baza.dollar_kursi()` orqali so'mga
+(avtoelon'dagi kabi). Serverdan ochiq (200) — Asaxiy'dan farqli.
+O'lchov (2026-08-13): 120 karta/sikl, "kvartira" so'rovida 36 ta shahar
+e'loni chiqadi (OLX bilan aralash, 701-o'rin — OLX yangiroq va do'kon
+bo'lgani uchun yuqorida; adolatli raqobat).
 
 ---
 
@@ -246,6 +255,9 @@ Birlashtirish kerak — **AI ishi.**
 1. ~~**Avtoelon.uz adapteri**~~ — **✅ 2026-08-13 ulandi** (`app/manbalar/avtoelon.py`).
    Issiq sikl `bosh(1)`, to'liq sikl `chuqur(3)`. Avto vertikal uchun
    OLX'ni to'ldiradi.
+1a. ~~**Shahar.uz adapteri**~~ — **✅ 2026-08-13 ulandi**
+   (`app/manbalar/shahar.py`). Ko'chmas mulk vertikali, 6 bo'lim,
+   narx dollar→so'm. Keyingi: `CHUQUR_SAHIFA` (avtoelon'dagi kabi).
 2. ~~**Asaxiy.uz adapteri**~~ — **✅ 2026-08-13 yozildi** (`app/manbalar/asaxiy.py`),
    lekin **serverda bloklangan** (Hetzner IP 403 — yuqoriga qarang).
    Lokal ishlaydi, serverda yig'ilmaydi. Hamkorlik yoki o'zbek IP'si kerak.
