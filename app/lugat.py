@@ -49,7 +49,52 @@ def normalla(s: str) -> str:
         "c": "s",      # lacetti / lasetti
     }))
     s = re.sub(r"([a-z])\1+", r"\1", s)       # takroriy harf: "kkk" -> "k"
-    return re.sub(r"\s+", " ", s).strip()
+    s = re.sub(r"\s+", " ", s).strip()
+    # ── O'ZBEKCHA↔RUSCHA KANONIK SINO.NIM (2026-08-13) ────────────────
+    # Yangi manbalar (Shahar.uz, Glotr) RUSCHA nom olib keladi. O'zbekcha
+    # so'rov ularni topa olmay qolgandi:
+    #
+    #   "zaryadka"      -> zariadka       "Зарядное устройство" -> zariadnoe
+    #   "kvartira ijara" -> izara          "Аренда квартиры"    -> arenda
+    #   "kir yuvish"     -> iuvish         "Стиральная машина"  -> stiralnaia
+    #   "muzlatgich"     -> muzlatgish     "Холодильник"        -> xolodilnik
+    #   "karavot"        -> karavot        "Кровать"            -> krovat
+    #
+    # FTS prefiks qidiruvi "zariadka*" bilan "zariadnoe"ni topa olmaydi
+    # — ildiz bir, qo'shimcha boshqa. Yechim: ruscha shakl normallashganda
+    # o'zbekcha KANONIK shaklga keladi. FTS indeksi ham shu normalla bilan
+    # qurilgani uchun ikkala tomon bir xil bo'ladi — qidiruv ham, indeks ham.
+    #
+    # Ro'yxat QISQA va ANIQ — faqat o'lchangan, bir ma'noli juftliklar.
+    # Kengaytirish shart emas: yangi manba qo'shilsa bozor_izi o'zi taniydi.
+    if s:
+        for rus, kanonik in _KANONIK.items():
+            s = s.replace(" " + rus + " ", " " + kanonik + " ")
+            if s.startswith(rus + " "):
+                s = kanonik + s[len(rus):]
+            if s.endswith(" " + rus):
+                s = s[:-(len(rus) + 1)] + " " + kanonik
+            if s == rus:
+                s = kanonik
+    return s
+
+
+# _KANONIK — normalla() oxirida qo'llanadi (yuqoridagi izoh). Lug'at
+# import paytida normalla() ni chaqiradi (TOXTA), shuning uchun bu ro'yxat
+# normalla() TA'RIFIDAN KEYIN turishi shart — import tartibi buzilmasin.
+_KANONIK = {
+    "zariadnoe": "zariadka",     # зарядное  -> zaryadka
+    "zariadnaia": "zariadka",    # зарядная  -> zaryadka
+    "arenda": "izara",           # аренда    -> ijara
+    "stiralnaia": "iuvish",      # стиральная -> yuvish
+    "xolodilnik": "muzlatgish",  # холодильник -> muzlatgich
+    "krovat": "karavot",         # кровать   -> karavot
+    "kvartiri": "kvartira",      # квартиры  -> kvartira (kelishik)
+    "kvartire": "kvartira",      # квартире  -> kvartira
+    "kvartiru": "kvartira",      # квартиру  -> kvartira
+    "prodaja": "sotish",         # продажа   -> sotish
+    "prodaza": "sotish",         # продажа   -> sotish (ts->s qoidasi)
+}
 
 
 # ── SO'ROVNI TOZALASH ───────────────────────────────────────────────────────
