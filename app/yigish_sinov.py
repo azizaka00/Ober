@@ -105,11 +105,12 @@ def main() -> None:
             tek("olx" in adapterlar, "OLX umumiy adapterdan topildi")
             # Yangi manba qo'shilgach sinov uni ham tekshiradi: shartnoma
             # (MANBA, NOM, bosh, chuqur) buzilsa — darhol ko'rinadi.
-            # 2026-08-13: avtoelon.uz, asaxiy.uz, shahar.uz, glotr.uz qo'shildi.
+            # 2026-08-13/14: avtoelon, asaxiy, shahar, glotr, avizinfo.
             for nomi, manba in (("avtoelon", "avtoelon"),
                                 ("asaxiy", "asaxiy"),
                                 ("shahar", "shahar"),
-                                ("glotr", "glotr")):
+                                ("glotr", "glotr"),
+                                ("avizinfo", "avizinfo")):
                 tek(nomi in adapterlar, f"{nomi} adapteri topildi")
                 if nomi in adapterlar:
                     a = adapterlar[nomi]

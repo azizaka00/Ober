@@ -1,11 +1,11 @@
 # MANBALAR — aniq tekshiruv natijasi
 _2026-07-30 · faqat SHAXSAN tekshirilgani yozilgan, taxmin yo'q_
 _Yangilandi: 2026-08-11 — butun O'zbekiston bozori qayta auditi_
-_Yangilandi: 2026-08-13 — Avtoelon, Asaxiy, Shahar.uz va Glotr adapterlari_
+_Yangilandi: 2026-08-14 — Avizinfo qo'shildi_
 
 ---
 
-# 2026-08-13 ULANGAN MANBALAR
+# ULANGAN MANBALAR
 
 | Manba | Holat | Qanday yig'iladi |
 |---|---|---|
@@ -14,6 +14,7 @@ _Yangilandi: 2026-08-13 — Avtoelon, Asaxiy, Shahar.uz va Glotr adapterlari_
 | **Asaxiy.uz** | ⚠️ **lokal ishlaydi, serverda bloklangan** | `app/manbalar/asaxiy.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
 | **Shahar.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/shahar.py` — issiq `bosh(1)`, to'liq `chuqur(10)` |
 | **Glotr.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/glotr.py` — issiq `bosh(1)`, to'liq `chuqur(10)` |
+| **Avizinfo.uz** | ✅ **ulangan (2026-08-14)** | `app/manbalar/avizinfo.py` — issiq `bosh(1)`, to'liq `chuqur(10)` |
 | **Telegram kanallar** | ✅ ulangan | `telegram_sikli` har siklda |
 
 Avtoelon adapteri: `/avto/` (avtomobillar) va `/zapchasti/` (ehtiyot qismlar)
@@ -58,6 +59,17 @@ so'rovida 7 ta glotr tovari chiqadi (ruscha nomlar o'zbekcha so'rovda
 kamroq topiladi — umumiy til moslashuvi masalasi, hujjat oxirida
 qayd etilgan).
 
+Avizinfo.uz adapteri: A tur (sotuvchi beradi) — e'lonlar taxtasi.
+Har shahar alohida SUBDOMEN: tashkent.avizinfo.uz, andijan.avizinfo.uz...
+Hozircha Toshkent (eng katta), `_SHAHARLAR` ro'yxatiga qo'shish orqali
+boshqalari ham ochiladi. 14 bo'lim yig'iladi (avto, avtoqism, kompyuter,
+uy texnikasi, mebel, qurilish, bolalar, sport, go'zallik...).
+Narx SO'MDA (`сўм` belgisi bilan), konvertatsiya kerak emas.
+Karta tuzilishi: `product-info` klassidan kesiladi (nom `item-title`,
+narx `item-price`, sana `item-tag`, shahar `entry-meta`).
+O'lchov (2026-08-14): 14 bo'lim x ~24 karta = ~300 e'lon/sikl,
+serverda 301 ta faol e'lon, "dveri toyota" so'rovida chiqadi.
+
 ---
 
 # 2026-08-11 QAYTA AUDIT — O'ZBEKISTONDAGI BARCHA BOZORLAR
@@ -74,7 +86,7 @@ sahifa kontenti, API prob). Xulosa:
 | **Avtoelon.uz** | ✅ **OCHIQ — yangi imkoniyat!** | yo'q (HTML) | SSR, real e'lon + narx (20–50 mln so'm namunalari), shahar bo'yicha |
 | **BirBir.uz** | ❌ **403 Cloudflare** (30.07 da ochiq edi) | yo'q | himoya qo'shilgan — tekshiruvda `403 Forbidden` |
 | **Glotr.uz** | ✅ jonli, eski va kichik | yo'q (HTML) | "первый торговый центр в интернете", qidiruv robots'da yopiq |
-| **Avizinfo.uz** | ⚠️ **portal** — har shaharga alohida subdomen | yo'q | `tashkent.avizinfo.uz`, `andijan.avizinfo.uz`... e'lon tuzilishi chuqur tekshirilmagan |
+| **Avizinfo.uz** | ✅ **ulangan (2026-08-14)** — har shaharga alohida subdomen | yo'q | `tashkent.avizinfo.uz`, `andijan.avizinfo.uz`... hozircha Toshkent yig'iladi, qolganlari `_SHAHARLAR` orqali |
 | **Torg.uz** | ❌ **DNS javob yo'q** | — | OLX'ga birlashib ketgan (eski nom) |
 | **Doska.uz** | ❌ **DNS javob yo'q** | — | o'lik |
 
@@ -284,6 +296,10 @@ Birlashtirish kerak — **AI ishi.**
 4. ~~**Asaxiy qamrovini kengaytirish**~~ — **to'xtatildi**: serverda
    bloklangan, chuqurlikni oshirishning ma'nosi yo'q. Agar blok olinsa
    — avtoelon'dagi kabi `CHUQUR_SAHIFA` beriladi.
+2c. ~~**Avizinfo.uz adapteri**~~ — **✅ 2026-08-14 ulandi**
+   (`app/manbalar/avizinfo.py`). A tur (e'lonlar taxtasi), Toshkent
+   subdomeni, 14 bo'lim, narx so'mda. Qolgan shaharlar `_SHAHARLAR`
+   ro'yxatiga qo'shish orqali ochiladi.
 5. **O'zbekcha↔ruscha so'z moslashuvi** (2026-08-13 o'lchov) —
    "zaryadka" so'rovi "Зарядное устройство" (Glotr) va "Аренда"
    (Shahar.uz) nomlarini topa olmaydi: normallashgan shakllar turli

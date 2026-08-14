@@ -793,3 +793,12 @@ MUHIM: normalla() o'zgarganda FTS QAYTA TAHLIL qilinishi shart
 mos kelmaydi (serverda 64 soniya).
 Xulosa: til moslashuvi muammosini qidiruv qatlamida emas, NORMALLA
 darajasida hal qilish kerak — bir joyda o'zgarish, hamma joyda ishlaydi.
+
+## 2026-08-14 — Avizinfo.uz adapteri: karta chegarasi product-info bo'lishi kerak
+Avizinfo karta kesishda dastlab `ru-i-offer` havolasidan kesdim —
+natijada narx/sana chiqmadi (ular `product-info` klassida, havoladan
+keyin). Yechim: `product-info` klassidan kesish (har kartada bittadan,
+ichida ID ham, narx ham, sana ham bor).
+Xulosa: ro'yxat sahifasida karta chegarasini eng TO'LIQ maydon
+joylashgan klassdan kesish kerak — havola chegarasi narx/sana kabi
+maydonlarni tashlab qo'yishi mumkin.
