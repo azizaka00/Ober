@@ -47,14 +47,16 @@ _SARLAVHA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                            "AppleWebKit/537.36 (KHTML, like Gecko) "
                            "Chrome/126.0 Safari/537.36"}
 
-# Bo'limlar — Glotr katalogi (2026-08-13 bosh sahifadan olingan).
-# OBER vertikallariga mos bo'lganlari tanlandi. `kategoriya` — qidiruvda
-# ko'rinadigan o'zbekcha nom.
+# Bo'limlar — Glotr katalogi (2026-08-13 bosh sahifadan olingan,
+# 2026-08-14 kengaytirildi). OBER vertikallariga mos bo'lganlari tanlandi.
+# `kategoriya` — qidiruvda ko'rinadigan o'zbekcha nom, OBER kategoriya
+# daraxti bilan mos (Kiyim, Oyoq kiyim, Musiqa asboblari, Oziq-ovqat...).
 _BO_LIMLAR = [
     ("avtotovari", "Avto tovarlar"),
     ("transport", "Transport"),
     ("telefoni-i-plansheti", "Telefon va planshetlar"),
     ("kompyuteri", "Kompyuterlar"),
+    ("orgtexnika", "Orgtexnika"),
     ("fototexnika", "Foto va video"),
     ("bitovaya-texnika", "Maishiy texnika"),
     ("videotexnika", "Video va audio"),
@@ -64,12 +66,18 @@ _BO_LIMLAR = [
     ("tovari-dlya-remonta", "Ta'mirlash uchun"),
     ("dlya-doma-i-sada", "Uy va bog'"),
     ("mebel", "Mebel"),
+    ("odejda", "Kiyim"),
+    ("obuv", "Oyoq kiyim"),
+    ("kosmetika", "Go'zallik va salomatlik"),
     ("detskie-tovari", "Bolalar tovarlari"),
     ("sporttovari", "Sport tovarlari"),
+    ("muzikalnie-instrumenti", "Musiqa asboblari"),
     ("knigi", "Kitoblar"),
+    ("produkti-pitaniya", "Oziq-ovqat"),
     ("zootovari", "Hayvonlar uchun"),
     ("zdorove-i-krasota", "Go'zallik va salomatlik"),
     ("sumki-i-chemodani", "Sumka va chamadonlar"),
+    ("podarki", "Sovg'alar"),
     ("ukrasheniya", "Taqinchoqlar"),
     ("galantereya", "Galantereya"),
 ]
@@ -224,11 +232,16 @@ def bosh(cheklov: int = 1, faqat: str = "") -> dict:
 
 
 def chuqur(sahifalar: int | None = None, faqat: str = "") -> dict:
-    """To'liq yig'ish: ko'p sahifa + tovar tavsiflari.
+    """To'liq yig'ish: ko'p sahifa + yangi tovarlar uchun tavsif.
 
     `sahifalar` — har bo'limdan nechta sahifa (default: CHUQUR_SAHIFA).
-    Tovar tavsifi alohida sahifadan olinadi (baza mavjud ma'lumotni
-    saqlab qoladi).
+
+    TAVSIF FAQAT YANGI E'LON UCHUN OLINADI (2026-08-14): avval har
+    karta uchun tovar sahifasi ochilardi — 21 bo'lim x 10 sahifa x 56
+    karta = 11 760 so'rov, ~8 soat. Mavjud e'lonning tavsifi bazada
+    turadi va `saqla` uni yo'qotmaydi, shuning uchun qayta olish
+    shart emas. Endi faqat `yangi` qaytargan e'longa tavsif olinadi:
+    birinchi chuqur sikl sekin, keyingilari faqat yangilarni o'qiydi.
     """
     if sahifalar is None:
         sahifalar = CHUQUR_SAHIFA
@@ -244,17 +257,19 @@ def chuqur(sahifalar: int | None = None, faqat: str = "") -> dict:
                 natija["xato"] += 1
                 continue
             for e in _ro_kat(html, kategoriya):
-                # Slug havoladan olinadi (tavsif sahifasi uchun)
-                slug_tovar = ""
-                m = re.search(r"/glotr\.uz/([^/]+?)-p-\d+/$",
-                              e.get("havola") or "")
-                if not m:
-                    m = re.search(r"/([^/]+?)-p-\d+/$", e.get("havola") or "")
-                if m:
-                    slug_tovar = m.group(1)
-                if slug_tovar:
-                    e.update(_tavsif_ol(e["tashqi_id"], slug_tovar))
                 holat = baza.saqla(e, sikl)
+                if holat == "yangi":
+                    # Yangi e'lon — tavsif va katta rasm tovar sahifasidan
+                    slug_tovar = ""
+                    m = re.search(r"/([^/]+?)-p-\d+/$",
+                                  e.get("havola") or "")
+                    if m:
+                        slug_tovar = m.group(1)
+                    if slug_tovar:
+                        qoshimcha = _tavsif_ol(e["tashqi_id"], slug_tovar)
+                        if qoshimcha:
+                            e.update(qoshimcha)
+                            baza.saqla(e, sikl)
                 natija[holat] = natija.get(holat, 0) + 1
                 time.sleep(KUTISH)
             time.sleep(KUTISH)

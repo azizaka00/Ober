@@ -815,3 +815,17 @@ bilan birga ishonchli — yangi manba o'z so'rovida ko'rinadi, lekin
 noto'g'ri e'lon siqib chiqarilmaydi. O'lchov vositasi:
 `app/olchov_bonus.py` (serverda ishlatiladi, lokal bazada yangi
 manba e'lonlari yo'q).
+
+## Glotr chuqur yig'ish sekin edi — tavsif faqat yangi e'lonlar uchun (2026-08-14)
+
+Har karta uchun tovar sahifasi ochilardi: 21 bo'lim x 10 sahifa x 56 karta
+= 11 760 so'rov ≈ 8 soat. `baza.saqla` mavjud e'lonning tavsifini
+YO'QOTMAYDI (bo'sh qiymat eski tavsifni saqlab qoladi) — shuning uchun
+qayta olish shart emas. Endi faqat `yangi` qaytargan e'longa tavsif
+olinadi: birinchi chuqur sikl sekin, keyingilari faqat yangilarni o'qiydi.
+
+Yana bir saboq: yangi manba qo'shilgach, `bosh()` (1-sahifa) ishlaydi-yu,
+lekin chuqur sahifalar (10-sahifagacha) faqat sutkalik sikl orqali yig'iladi.
+Glotr'ning mebel bo'limida divan/krovat/matras 10-sahifagacha tarqalgan —
+baza'da faqat 1-sahifa (61 ta) bor edi, "Mebel bo'sh" degan xulosa noto'g'ri
+edi. To'liq qamrov uchun chuqur sikl ishga tushirilishi shart.

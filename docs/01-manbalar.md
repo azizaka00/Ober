@@ -48,15 +48,21 @@ O'lchov (2026-08-13): 120 karta/sikl, "kvartira" so'rovida 36 ta shahar
 e'loni chiqadi (OLX bilan aralash, 701-o'rin — OLX yangiroq va do'kon
 bo'lgani uchun yuqorida; adolatli raqobat).
 
-Glotr.uz adapteri: B tur (do'kon) — tayanch narx. 21 bo'lim yig'iladi
+Glotr.uz adapteri: B tur (do'kon) — tayanch narx. 28 bo'lim yig'iladi
 (avto tovarlar, telefon, kompyuter, maishiy texnika, mebel, sport,
-kitob, zootovarlar...). Narx SO'MDA (konvertatsiya kerak emas),
-`biznes=1` (do'kon) belgilanadi. Karta tuzilishi: `product-card__header`
-chegarasi, nom rasm `title` atributidan, narx `price-retail` klassidan.
-Serverdan ochiq (200) — Asaxiy'dan farqli. O'lchov (2026-08-13):
+kitob, zootovarlar, Kiyim, Oyoq kiyim, Kosmetika, Musiqa asboblari,
+Oziq-ovqat, Sovg'alar, Orgtexnika... 2026-08-14 kengaytirildi).
+Narx SO'MDA (konvertatsiya kerak emas), `biznes=1` (do'kon)
+belgilanadi. Karta tuzilishi: `product-card__header` chegarasi, nom
+rasm `title` atributidan, narx `price-retail` klassidan. Serverdan
+ochiq (200) — Asaxiy'dan farqli. O'lchov (2026-08-13):
 21 bo'lim x 56 karta = ~1176 e'lon/sikl, qidiruvda "zaryadnoe"
 so'rovida 7 ta glotr tovari chiqadi (ruscha nomlar o'zbekcha so'rovda
 kamroq topiladi — umumiy til moslashuvi masalasi, hujjat oxirida
+qayd etilgan). 2026-08-14: +411 yangi e'lon (7 ta yangi bo'lim), chuqur
+yig'ish tezlashtirildi — tavsif faqat YANGI e'lonlar uchun olinadi
+(avval har karta uchun tovar sahifasi ochilardi: 11 760 so'rov ≈ 8 soat;
+endi birinchi sikl sekin, keyingilari faqat yangilarni o'qiydi).
 qayd etilgan).
 
 Avizinfo.uz adapteri: A tur (sotuvchi beradi) — e'lonlar taxtasi.
