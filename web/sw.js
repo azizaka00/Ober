@@ -22,6 +22,7 @@ const KESH_MANZIL = [
   "/kategoriyalar",
   "/takliflar",
   "/sotuvchi",
+  "/privacy",
   "/brend/icon.png",
   "/brend/icon-192.png",
   "/brend/icon-512.png",
