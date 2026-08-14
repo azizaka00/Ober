@@ -476,6 +476,19 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                              "application/javascript; charset=utf-8")
             return
 
+        # DIGITAL ASSET LINKS — TWA to'liq ekran rejimi uchun (2026-08-14).
+        # Play Store'ga APK yuklangach, Play Console'dan SHA-256 izi olinadi
+        # va `web/.well-known/assetlinks.json` ga yoziladi. Yo'riqnoma:
+        # reports/play-market-2026-08-14/TWA-YORIQNOMA.md
+        if u.path == "/.well-known/assetlinks.json":
+            fayl = (WEB / ".well-known" / "assetlinks.json")
+            if fayl.is_file():
+                self._yubor(200, "application/json; charset=utf-8",
+                            fayl.read_bytes())
+            else:
+                self._topilmadi()
+            return
+
         if u.path == "/ober-ui.css":
             self._ulashilgan("ober-ui.css", "text/css; charset=utf-8")
             return
