@@ -769,3 +769,13 @@ qo'lda ishga tushirilsa unutiladi. Yechim: `hooks/pre-commit` +
 xato topsa commitni bloklaydi. Xulosa: qo'lda bajariladigan sinov
 tezda unutiladi; qo'riqchi git hook bo'lishi kerak. Sinov: buzilgan
 .bat bilan commit bloklandi ✓, toza holatda o'tdi ✓.
+
+## 2026-08-13 — Glotr.uz adapteri: nom regex'i non-greedy kesadi
+Glotr karta nomini `title=.\s*([^"'<]{5,150}?)\s*.` bilan oldim —
+`{5,150}?` eng qisqa moslikni oladi, natijada nomlar kesildi:
+"Склад телефон и планшеты" → "Склад". Yig'ish 1100+ e'lon bilan
+"muvaffaqiyatli" o'tdi, lekin baza kesilgan nomlar bilan to'ldi.
+Sababni "zaryadka qidiruvda chiqmayapti" deb qidirib topdim.
+Yechim: `title=["']([^"']+)["']` — atribut qiymatini to'liq olish.
+Xulosa: regex qolipida non-greedy kvantifikator ishlatganda kesilgan
+qiymat xavfi bor — atribut qiymatini chegaralovchilar ichida olish.

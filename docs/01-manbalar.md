@@ -1,7 +1,7 @@
 # MANBALAR — aniq tekshiruv natijasi
 _2026-07-30 · faqat SHAXSAN tekshirilgani yozilgan, taxmin yo'q_
 _Yangilandi: 2026-08-11 — butun O'zbekiston bozori qayta auditi_
-_Yangilandi: 2026-08-13 — Avtoelon, Asaxiy va Shahar.uz adapterlari_
+_Yangilandi: 2026-08-13 — Avtoelon, Asaxiy, Shahar.uz va Glotr adapterlari_
 
 ---
 
@@ -10,9 +10,10 @@ _Yangilandi: 2026-08-13 — Avtoelon, Asaxiy va Shahar.uz adapterlari_
 | Manba | Holat | Qanday yig'iladi |
 |---|---|---|
 | **OLX.uz** | ✅ ulangan | `yangilik.py` sikl — issiq har 45 daqiqada, to'liq sutkada |
-| **Avtoelon.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/avtoelon.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
+| **Avtoelon.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/avtoelon.py` — issiq `bosh(1)`, to'liq `chuqur(10)` |
 | **Asaxiy.uz** | ⚠️ **lokal ishlaydi, serverda bloklangan** | `app/manbalar/asaxiy.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
-| **Shahar.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/shahar.py` — issiq `bosh(1)`, to'liq `chuqur(3)` |
+| **Shahar.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/shahar.py` — issiq `bosh(1)`, to'liq `chuqur(10)` |
+| **Glotr.uz** | ✅ **ulangan (2026-08-13)** | `app/manbalar/glotr.py` — issiq `bosh(1)`, to'liq `chuqur(10)` |
 | **Telegram kanallar** | ✅ ulangan | `telegram_sikli` har siklda |
 
 Avtoelon adapteri: `/avto/` (avtomobillar) va `/zapchasti/` (ehtiyot qismlar)
@@ -45,6 +46,17 @@ Narx DOLLARDA (`115 000 $`) — `baza.dollar_kursi()` orqali so'mga
 O'lchov (2026-08-13): 120 karta/sikl, "kvartira" so'rovida 36 ta shahar
 e'loni chiqadi (OLX bilan aralash, 701-o'rin — OLX yangiroq va do'kon
 bo'lgani uchun yuqorida; adolatli raqobat).
+
+Glotr.uz adapteri: B tur (do'kon) — tayanch narx. 21 bo'lim yig'iladi
+(avto tovarlar, telefon, kompyuter, maishiy texnika, mebel, sport,
+kitob, zootovarlar...). Narx SO'MDA (konvertatsiya kerak emas),
+`biznes=1` (do'kon) belgilanadi. Karta tuzilishi: `product-card__header`
+chegarasi, nom rasm `title` atributidan, narx `price-retail` klassidan.
+Serverdan ochiq (200) — Asaxiy'dan farqli. O'lchov (2026-08-13):
+21 bo'lim x 56 karta = ~1176 e'lon/sikl, qidiruvda "zaryadnoe"
+so'rovida 7 ta glotr tovari chiqadi (ruscha nomlar o'zbekcha so'rovda
+kamroq topiladi — umumiy til moslashuvi masalasi, hujjat oxirida
+qayd etilgan).
 
 ---
 
@@ -263,8 +275,19 @@ Birlashtirish kerak — **AI ishi.**
    lekin **serverda bloklangan** (Hetzner IP 403 — yuqoriga qarang).
    Lokal ishlaydi, serverda yig'ilmaydi. Hamkorlik yoki o'zbek IP'si kerak.
    Birinchi 403'da `_Bloklandi` bilan to'xtaydi — sayt urilmaydi.
+2b. ~~**Glotr.uz adapteri**~~ — **✅ 2026-08-13 ulandi**
+   (`app/manbalar/glotr.py`). B tur (do'kon), 21 bo'lim, narx so'mda.
+   Serverdan ochiq — Asaxiy'dan farqli, to'liq sikl `CHUQUR_SAHIFA=10`.
+   O'lchov: ~1176 e'lon/sikl, qidiruvda ruscha so'rov bilan chiqadi.
 3. **Uzum bilan hamkorlik suhbati** — robots endi rasman ruxsat beradi,
    CAPTCHA to'siq. Rasmiy API/kelishuv — eng yirik bozor.
 4. ~~**Asaxiy qamrovini kengaytirish**~~ — **to'xtatildi**: serverda
    bloklangan, chuqurlikni oshirishning ma'nosi yo'q. Agar blok olinsa
    — avtoelon'dagi kabi `CHUQUR_SAHIFA` beriladi.
+5. **O'zbekcha↔ruscha so'z moslashuvi** (2026-08-13 o'lchov) —
+   "zaryadka" so'rovi "Зарядное устройство" (Glotr) va "Аренда"
+   (Shahar.uz) nomlarini topa olmaydi: normallashgan shakllar turli
+   (`zariadka` vs `zariadnoe`, `izara` vs `arenda`). Bu yangi manba
+   e'lonlarining o'zbekcha qidiruvda ko'rinishini cheklaydi. Atama
+   xaritasi hozir faqat xususiyatlar uchun — nom/qidiruv uchun
+   alohida sinonim qatlami kerak.
