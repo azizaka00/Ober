@@ -839,3 +839,17 @@ cache. Ikonlar Chrome headless orqali SVG'dan generatsiya qilindi
 (--default-background-color=00000000 flag shaffof fon beradi, aks holda oq
 fon qo'shadi). `time.sleep` xatosi avtoelon/shahar/avizinfo'da ham bor —
 Glotr'da tuzatildi, boshqalarida keyingi bosqich.
+
+## Play/App Store do'kon materiallari (2026-08-14)
+
+Privacy policy sahifasi yaratildi (`web/privacy.html`), serverga
+`/privacy` va `/maxfiylik` marshrutlari qo'shildi. Footer'da allaqachon
+`/maxfiylik` havolasi bor edi — endpoint yo'q edi, ular mos keldi.
+
+Do'kon materiallari `reports/play-market-2026-08-14/DOKON-MATERIALLARI.md`:
+tavsiflar uz/ru, kalit so'zlar, ekran rasmlari ro'yxati. Skrinshotlar
+Chrome headless bilan: Play uchun 390x844, App Store uchun
+`--window-size=430,932 --force-device-scale-factor=3` → 1290x2796 (6.5" talab).
+
+Saboq: App Store skrinshoti uchun window-size ni shunchaki kattalashtirish
+yetmaydi — device-scale-factor kerak, aks holda CSS layout desktop bo'lib qoladi.

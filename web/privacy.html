@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a2b63">
+<meta name="description" content="OBER maxfiylik siyosati — qanday ma'lumot yig'iladi va qanday himoyalanadi.">
+<title>OBER — maxfiylik siyosati</title>
+<!-- PWA (2026-08-14): Play/App Store tayyorgarligi. -->
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/brend/icon.png">
+<link rel="apple-touch-icon" href="/brend/icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OBER">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OBER">
+<meta property="og:title" content="OBER — maxfiylik siyosati">
+<meta property="og:description" content="OBER maxfiylik siyosati — qanday ma'lumot yig'iladi va qanday himoyalanadi.">
+<link rel="stylesheet" href="/shrift/onest.css">
+<style>
+  /* Saytning umumiy dizayn tizimi bilan bir xil tokenlar. */
+  :root{
+    --navy:#0b2559;
+    --navy-dark:#081b42;
+    --amber:#f5a623;
+    --amber-yorqin:#ffb93c;
+    --bg:#eff2f7;
+    --surface:#fff;
+    --surface-2:#f7f9fc;
+    --line:#e3e8f0;
+    --text:#101828;
+    --text-2:#5a6478;
+    --r-kichik:10px;
+    --r-orta:16px;
+    --r-katta:22px;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{
+    margin:0;
+    font-family:"Onest","Segoe UI",system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--navy)}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-in{
+    max-width:760px;margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .topbar .logo{font-weight:800;font-size:18px;color:var(--navy);text-decoration:none;letter-spacing:-.02em}
+  .topbar .logo span{color:var(--amber)}
+  .topbar .orqa{margin-left:auto;font-size:14px;text-decoration:none;color:var(--text-2)}
+  .topbar .orqa:hover{color:var(--navy)}
+
+  main{max-width:760px;margin:0 auto;padding:36px 20px 80px}
+  h1{font-size:28px;line-height:1.25;letter-spacing:-.02em;margin:0 0 6px;color:var(--navy-dark)}
+  .sana{font-size:13px;color:var(--text-2);margin:0 0 28px}
+
+  h2{font-size:18px;margin:34px 0 10px;color:var(--navy-dark)}
+  p{margin:10px 0;font-size:15px}
+  ul{margin:10px 0;padding-left:22px}
+  li{margin:6px 0;font-size:15px}
+  .quti{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:var(--r-orta);
+    padding:16px 18px;
+    margin:18px 0;
+    font-size:14px;
+    color:var(--text-2);
+  }
+  strong{color:var(--text)}
+  code{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:1px 6px;
+    font-size:13px;
+  }
+  footer{
+    max-width:760px;margin:0 auto;padding:0 20px 48px;
+    font-size:13px;color:var(--text-2);
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#asosiy" style="position:absolute;left:-9999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;border-radius:0 0 8px 8px;z-index:100;font-size:14px">Asosiy kontentga o'tish</a>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="logo" href="/">OBER<span>.</span></a>
+    <a class="orqa" href="/">← Bosh sahifaga qaytish</a>
+  </div>
+</header>
+
+<main id="asosiy">
+  <h1>Maxfiylik siyosati</h1>
+  <p class="sana">Oxirgi yangilanish: 2026-yil 14-avgust</p>
+
+  <p>Ushbu siyosat <strong>ober.uz</strong> sayti va OBER ilovasidan foydalanishda
+  qanday ma'lumotlar yig'ilishi, qanday ishlatilishi va qanday himoyalanishini
+  tushuntiradi. Saytni ishlatish orqali siz ushbu siyosatga rozilik bildirasiz.</p>
+
+  <h2>1. Operator</h2>
+  <p>Sayt va ilova <strong>«NAIZA» MChJ</strong> (STIR 313204884) tomonidan
+  boshqariladi. Savollar uchun: <code>ober.uz</code> saytidagi Chat bo'limi.</p>
+
+  <h2>2. Qanday ma'lumotlar yig'iladi</h2>
+  <ul>
+    <li><strong>Telefon raqami</strong> — sotuvchi sifatida kirishda. Raqam
+    Telegram orqali yuborilgan bir martalik kod bilan tasdiqlanadi.</li>
+    <li><strong>E'lon va so'rov matnlari</strong> — siz joylagan e'lonlar,
+    yuborgan so'rovlar va chat xabarlari.</li>
+    <li><strong>Rasmlar</strong> — e'longa biriktirgan rasmlaringiz.</li>
+    <li><strong>Texnik ma'lumot</strong> — brauzer turi, taxminiy joylashuv
+    (shahar), saytdan foydalanish statistikasi. Bu ma'lumot xizmat sifatini
+    yaxshilash uchun ishlatiladi.</li>
+  </ul>
+
+  <h2>3. Ma'lumotlar qanday ishlatiladi</h2>
+  <ul>
+    <li>So'rovingizga mos sotuvchilarni topish va ularga xabar yuborish;</li>
+    <li>Sotuvchi kabinetini yuritish — e'lonlaringiz va javoblaringizni ko'rsatish;</li>
+    <li>Chat orqali xaridor va sotuvchi o'rtasida aloqa o'rnatish;</li>
+    <li>Qidiruv va moslik sifatini yaxshilash;</li>
+    <li>Firibgarlik va suiiste'mollikning oldini olish.</li>
+  </ul>
+
+  <div class="quti">
+    <strong>OBER to'lovlarni qayta ishlamaydi.</strong> To'lov, yetkazib berish
+    va oldi-sotdi OBER orqali bajarilmaydi — xaridor va sotuvchi o'zlari
+    kelishadi. Shuning uchun bank karta ma'lumotlari yig'ilmaydi va saqlanmaydi.
+  </div>
+
+  <h2>4. Uchinchi tomon xizmatlari</h2>
+  <p>OBER ochiq manbalardan (OLX, Telegram kanallari va boshqa ommaviy
+  e'lon taxtalari) e'lonlarni agregatsiya qiladi. Bu e'lonlar mualliflari
+  tomonidan ommaga ochiq joylangan va asl manba havolasi bilan ko'rsatiladi.
+  OBER ularning ma'lumotlarini sotmaydi.</p>
+  <p>Telegram raqamni tasdiqlash uchun ishlatiladi — boshqa hech qanday
+  Telegram ma'lumotiga kirish yo'q.</p>
+
+  <h2>5. Saqlash muddati</h2>
+  <ul>
+    <li><strong>Hisob:</strong> siz o'chirishni so'ramaguningizcha yoki
+    nofaol hisob 2 yil davomida saqlanadi.</li>
+    <li><strong>Xabarlar:</strong> suhbatda qatnashuvchilar uchun ko'rinib
+    turadi, o'chirish so'ralganda olib tashlanadi.</li>
+    <li><strong>Texnik jurnallar:</strong> 90 kungacha saqlanadi.</li>
+  </ul>
+
+  <h2>6. Ma'lumotlaringizni o'chirish</h2>
+  <p>Hisobingizni va ma'lumotlaringizni o'chirish uchun:</p>
+  <ul>
+    <li>Saytda sotuvchi kabinetiga kiring va «Hisobni o'chirish»ni tanlang
+    (agar mavjud bo'lsa);</li>
+    <li>yoki Chat orqali administratorga murojaat qiling.</li>
+  </ul>
+  <p>So'rov qabul qilingach, ma'lumotlar 30 kun ichida o'chiriladi.</p>
+
+  <h2>7. Ma'lumotlar xavfsizligi</h2>
+  <p>Ma'lumotlar himoyalangan serverda, shifrlangan ulanish (HTTPS) orqali
+  uzatiladi. Telefon raqamingiz boshqa foydalanuvchilarga ko'rsatilmaydi —
+  chat ichida aloqa OBER orqali o'tadi.</p>
+
+  <h2>8. Cookie-fayllar va saqlash</h2>
+  <p>OBER kirish sessiyasi va til sozlamalarini saqlash uchun brauzer
+  xotirasidan foydalanadi. Reklama cookie-fayllari ishlatilmaydi.</p>
+
+  <h2>9. O'zgarishlar</h2>
+  <p>Ushbu siyosat o'zgarsa, saytda yangilangan sana bilan e'lon qilinadi.
+  Muhim o'zgarishlar haqida sayt orqali xabar beriladi.</p>
+
+  <h2>10. Bog'lanish</h2>
+  <p>Maxfiylik bo'yicha savollar uchun: <code>ober.uz</code> saytining
+  Chat bo'limi orqali murojaat qiling.</p>
+</main>
+
+<footer>© 2026 «NAIZA» MChJ · OBER — bir qidiruv, butun bozor</footer>
+
+<script>
+  navigator.serviceWorker && navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{});
+</script>
+</body>
+</html>

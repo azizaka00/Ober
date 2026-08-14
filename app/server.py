@@ -266,6 +266,11 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
             self._sahifa("kategoriyalar.html")
             return
 
+        # Maxfiylik siyosati — Play/App Store talabi (2026-08-14)
+        if u.path in ("/privacy", "/privacy/", "/maxfiylik"):
+            self._sahifa("privacy.html")
+            return
+
         # OBER'ning o'z e'loni — /elon/{id} (o'z marketplace, 2026-08-06)
         # Sahifa statik, id'ni JS o'qiydi va /api/elon/{id} dan oladi.
         # 404 emas: yopilgan e'lon ham "yopilgan" xabari ko'rsatadi.
