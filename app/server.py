@@ -456,6 +456,16 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                         })
             return
 
+        # PWA MANIFEST (2026-08-14): Play/App Store tayyorgarligi.
+        # Brauzer o'rnatish paneli, Android TWA va iOS bosh ekran
+        # ikonasi shu fayl orqali ishlaydi. O'zgarmaydi — uzoq keshlansin.
+        if u.path == "/manifest.json":
+            self._yubor(200, "application/manifest+json; charset=utf-8",
+                        (WEB / "manifest.json").read_bytes(), {
+                            "Cache-Control": "public, max-age=86400",
+                        })
+            return
+
         if u.path == "/i18n.js":
             self._ulashilgan("i18n.js",
                              "application/javascript; charset=utf-8")

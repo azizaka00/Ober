@@ -829,3 +829,13 @@ lekin chuqur sahifalar (10-sahifagacha) faqat sutkalik sikl orqali yig'iladi.
 Glotr'ning mebel bo'limida divan/krovat/matras 10-sahifagacha tarqalgan —
 baza'da faqat 1-sahifa (61 ta) bor edi, "Mebel bo'sh" degan xulosa noto'g'ri
 edi. To'liq qamrov uchun chuqur sikl ishga tushirilishi shart.
+
+## PWA — Play/App Store tayyorgarligi (2026-08-14)
+
+Saytda manifest yo'q edi, sw.js faqat push uchun edi, theme-color redesign'dan
+oldingi eski rangda qolgan edi. Play Store TWA va App Store o'ramlari PWA
+talab qiladi: manifest.json, 192/512/180 ikonlar, standalone display, offline
+cache. Ikonlar Chrome headless orqali SVG'dan generatsiya qilindi
+(--default-background-color=00000000 flag shaffof fon beradi, aks holda oq
+fon qo'shadi). `time.sleep` xatosi avtoelon/shahar/avizinfo'da ham bor —
+Glotr'da tuzatildi, boshqalarida keyingi bosqich.

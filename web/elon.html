@@ -3,9 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a2b63">
 <title>E'lon — OBER</title>
 <meta name="description" content="OBER bozoridagi e'lon — narx, rasm va sotuvchi aloqasi bitta sahifada.">
+<!-- PWA (2026-08-14): Play/App Store tayyorgarligi. -->
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/brend/icon.png">
+<link rel="apple-touch-icon" href="/brend/icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OBER">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OBER">
 <meta property="og:title" content="E'lon — OBER">
@@ -389,6 +397,12 @@
       '<p style="margin-top:16px"><a href="/">← Bosh sahifaga</a></p></div>';
   });
 })();
+</script>
+<script>
+/* PWA service worker (2026-08-14): oflayn kesh + push bildirishnoma. */
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{});
+}
 </script>
 </body>
 </html>

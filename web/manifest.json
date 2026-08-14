@@ -1,0 +1,57 @@
+{
+  "name": "OBER — bir qidiruv, butun bozor",
+  "short_name": "OBER",
+  "description": "OBER — OLX, Telegram va boshqa manbalardagi e'lonlarni bitta joyda qidiradigan agregator va teskari bozor. Siz yozasiz, bozor javob beradi.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a2b63",
+  "theme_color": "#0a2b63",
+  "lang": "uz",
+  "dir": "ltr",
+  "categories": ["shopping", "marketplace"],
+  "icons": [
+    {
+      "src": "/brend/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brend/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brend/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Qidirish",
+      "url": "/",
+      "icons": [{ "src": "/brend/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Kategoriyalar",
+      "url": "/kategoriyalar",
+      "icons": [{ "src": "/brend/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Chat",
+      "url": "/takliflar",
+      "icons": [{ "src": "/brend/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Sotish",
+      "url": "/sotuvchi",
+      "icons": [{ "src": "/brend/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
