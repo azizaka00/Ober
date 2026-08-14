@@ -166,6 +166,23 @@ def _yakunla(r: dict, ball: float, tuman: str, ishonchli: bool,
     # "divan" so'rovida yangi OBER e'loni TOP-60 ga kirmasdi).
     if r.get("manba") == "ober":
         ball += 18
+    # YANGI MANBA BONUSI (2026-08-14 o'lchov). Avtoelon, Shahar, Glotr,
+    # Avizinfo yangi qo'shilgan manbalar — ularning e'lonlari OLX'ning
+    # ko'pligi va yangiligi orqasida ko'rinmay qolardi:
+    #
+    #   "zaryadnoe" -> Glotr 536-o'rin (ball 104.0)
+    #   "planshet"  -> Glotr 265-o'rin (ball 105.8)
+    #   "mebel"     -> Glotr 769-o'rin (ball 100.1)
+    #
+    # Bu manbalar bozorni KENGAYTIRADI (ruscha nomlar, yangi vertikallar)
+    # — xaridor ularni ko'rmasa, manba qo'shishdan foyda yo'q. Kichik
+    # bonus: OLX bilan adolatli raqobat buzilmasin (ober +18 dan past),
+    # noto'g'ri moslik tepaga chiqmasin (faqat ISHONCHLI e'longa).
+    # O'lchov: +12 bilan "zaryadnoe" da 4 ta, "planshet" da 2 ta
+    # Glotr TOP-60 ga chiqdi (avval 0).
+    if (r.get("manba") in ("avtoelon", "shahar", "glotr", "avizinfo")
+            and ishonchli):
+        ball += 12
     return {**r, "ball": round(ball, 1), "yosh_kun": yosh,
             # KO'RSATISH uchun toza nom: "Риштан" o'rniga "Rishton · Farg'ona"
             "joy_nom": (f"{e_joy}, {e_viloyat}" if e_joy and e_viloyat
