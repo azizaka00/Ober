@@ -779,3 +779,17 @@ Sababni "zaryadka qidiruvda chiqmayapti" deb qidirib topdim.
 Yechim: `title=["']([^"']+)["']` — atribut qiymatini to'liq olish.
 Xulosa: regex qolipida non-greedy kvantifikator ishlatganda kesilgan
 qiymat xavfi bor — atribut qiymatini chegaralovchilar ichida olish.
+
+## 2026-08-13 — O'zbekcha↔ruscha kanonik sinonim (normalla darajasida)
+Yangi manbalar (Shahar.uz, Glotr) ruscha nom olib keladi: "Аренда",
+"Зарядное устройство", "Холодильник". O'zbekcha so'rov ularni topa
+olmasdi: FTS prefiks qidiruvi ildiz bir, qo'shimcha boshqa bo'lganda
+mos kelmaydi (zariadka vs zariadnoe, izara vs arenda).
+Yechim normalla() darajasida: ruscha shakl o'zbekcha KANONIK shaklga
+keladi ("arenda" -> "izara"). FTS indeksi ham shu normalla bilan
+qurilgani uchun ikkala tomon bir xil bo'ladi — qidiruv ham, indeks ham.
+MUHIM: normalla() o'zgarganda FTS QAYTA TAHLIL qilinishi shart
+(`tahlil.py qayta`) — aks holda eski indeks yangi normalla bilan
+mos kelmaydi (serverda 64 soniya).
+Xulosa: til moslashuvi muammosini qidiruv qatlamida emas, NORMALLA
+darajasida hal qilish kerak — bir joyda o'zgarish, hamma joyda ishlaydi.
