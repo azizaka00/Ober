@@ -802,3 +802,16 @@ ichida ID ham, narx ham, sana ham bor).
 Xulosa: ro'yxat sahifasida karta chegarasini eng TO'LIQ maydon
 joylashgan klassdan kesish kerak — havola chegarasi narx/sana kabi
 maydonlarni tashlab qo'yishi mumkin.
+
+## 2026-08-14 — Yangi manba bonusini keng o'lchov (14 so'rov, production)
+
+Bonus (+12 ball, faqat ishonchli) noto'g'ri moslikni tepaga chiqarmaydi:
+tekshiruvda bonus olgan HAR bir e'lon nomida so'rov so'zi bor edi.
+"telefon"/"mebel"/"karavot" da bonus olgan 0 ta — sabab to'g'ri:
+Glotr'da "karavot" e'lonlari umuman yo'q, "mebel" e'lonlari nomida
+"mebel" so'zi yo'q (ofis texnikasi — ishonchsiz), "telefon" da OLX
+862 ta — adolatli raqobat. Xulosa: bonus ishonchlilik qo'riqchisi
+bilan birga ishonchli — yangi manba o'z so'rovida ko'rinadi, lekin
+noto'g'ri e'lon siqib chiqarilmaydi. O'lchov vositasi:
+`app/olchov_bonus.py` (serverda ishlatiladi, lokal bazada yangi
+manba e'lonlari yo'q).
