@@ -99,20 +99,29 @@ def _sahifa_ol(yol: str) -> str:
     bo'limlar davom etadi, xato sanoqqa tushadi. (Asaxiy'dagi kabi
     alohida `_Bloklandi` kerak emas — Glotr serverdan ochiq, 403
     kutilmaydi.)
+
+    KUTISH SHU YERDA (2026-08-14): har so'rovdan KEYIN — saytni
+    urishmaymiz. Ilgari `bosh`/`chuqur` siklida har KARTA uchun
+    `time.sleep(KUTISH)` bor edi — saqla esa lokal baza, tarmoq
+    emas. 28 bo'lim x 10 sahifa x 56 karta = 15 680 karta x 1.2s =
+    5.2 soat faqat behuda kutish (o'lchov: 4 daqiqada ~100 e'lon).
+    Endi kutish faqat tarmoq so'rovidan keyin: bosh ~34 soniya,
+    chuqur ~280 sahifa x 1.2s + yangilarning tavsiflari.
     """
     soz = urllib.request.Request(_TAYANCH + yol, headers=_SARLAVHA)
     try:
         with urllib.request.urlopen(soz, timeout=20) as r:
+            natija = ""
             if r.status != 200:
                 print(f"  [glotr] {yol} -> HTTP {r.status}")
-                return ""
-            return r.read().decode("utf-8", errors="replace")
+            else:
+                natija = r.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as e:
         print(f"  [glotr] {yol} -> HTTP {e.code} ({e.reason})")
-        return ""
     except urllib.error.URLError as e:
         print(f"  [glotr] {yol} -> tarmoq xatosi: {e.reason}")
-        return ""
+    time.sleep(KUTISH)          # tarmoq so'rovidan keyin — saytni urishmaymiz
+    return natija
 
 
 def _kartalar(sahifa: str) -> list[tuple[str, str]]:
@@ -227,7 +236,6 @@ def bosh(cheklov: int = 1, faqat: str = "") -> dict:
         for e in _ro_kat(html, kategoriya):
             holat = baza.saqla(e, sikl)
             natija[holat] = natija.get(holat, 0) + 1
-        time.sleep(KUTISH)
     return natija
 
 
@@ -271,8 +279,6 @@ def chuqur(sahifalar: int | None = None, faqat: str = "") -> dict:
                             e.update(qoshimcha)
                             baza.saqla(e, sikl)
                 natija[holat] = natija.get(holat, 0) + 1
-                time.sleep(KUTISH)
-            time.sleep(KUTISH)
     baza.sikl_yakunla(MANBA, sikl, toliq=bool(not faqat))
     return natija
 
