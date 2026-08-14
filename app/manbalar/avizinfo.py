@@ -57,10 +57,15 @@ _SARLAVHA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                            "AppleWebKit/537.36 (KHTML, like Gecko) "
                            "Chrome/126.0 Safari/537.36"}
 
-# Hozircha Toshkent (eng katta bozor). Boshqa shaharlar qo'shish uchun:
-#   ("andijan", "Andijon"), ("samarkand", "Samarqand") ...
+# Shaharlar — har biri alohida subdomen, bir xil kategoriya tuzilishi.
+# Toshkent eng katta; Andijon/Samarqand/Buxoro 2026-08-14 da qo'shildi
+# (serverdan ochiq, bir xil karta tuzilishi). Kichik shaharlarda ba'zi
+# bo'limlar bo'sh bo'lishi mumkin — bu xato emas, karta 0 chiqadi.
 _SHAHARLAR = [
     ("tashkent", "Toshkent"),
+    ("andijan", "Andijon"),
+    ("samarkand", "Samarqand"),
+    ("buhara", "Buxoro"),
 ]
 
 # Bo'limlar — 1-daraja kategoriyalar. OBER vertikallariga mos bo'lganlari.
@@ -212,11 +217,15 @@ def _ro_kat(sahifa: str, kategoriya: str, shahar: str) -> list[dict]:
 
 def _tavsif_ol(tashqi_id: str, havola: str) -> dict:
     """E'lon sahifasidan tavsif va katta rasmni oladi."""
-    # Havoladan to'g'ridan-to'g'ri olamiz (slug ichida)
-    yol = havola.replace(_TAYANCH, "") if havola.startswith(_TAYANCH) else ""
-    if not yol:
+    # Havola TO'LIQ URL (shahar subdomeni bilan) — `_sahifa_ol` tayanch
+    # qo'shmasdan ochishi uchun domenni ajratamiz. 2026-08-14: boshqa
+    # shaharlar (andijan, samarkand...) qo'shildi — faqat tashkent emas.
+    import re as _re
+    m = _re.match(r"(https://[^/]+)(/.*)", havola or "")
+    if not m:
         return {}
-    sahifa = _sahifa_ol(yol)
+    tayanch, yol = m.group(1), m.group(2)
+    sahifa = _sahifa_ol(yol, tayanch)
     natija: dict = {}
     if not sahifa:
         return natija
