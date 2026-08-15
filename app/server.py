@@ -489,6 +489,27 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                 self._topilmadi()
             return
 
+        # PUSH OCHIQ KALITI — brauzer `applicationServerKey` sifatida
+        # ishlatadi. Bu OCHIQ kalit, sir emas: u bilan faqat bizning
+        # imzomizni TEKSHIRISH mumkin, yuborish emas.
+        if u.path == "/api/push-kalit":
+            try:
+                import push
+                self._yubor(200, "application/json; charset=utf-8",
+                            json.dumps({"kalit": push.ochiq_kalit_b64()}).encode(),
+                            {"Cache-Control": "public, max-age=3600"})
+            except Exception:                     # noqa: BLE001
+                # Push sozlanmagan bo'lsa sahifa yiqilmasin — u shunchaki
+                # bildirishnomasiz ishlaydi.
+                self._yubor(503, "application/json; charset=utf-8",
+                            json.dumps({"xato": "push sozlanmagan"}).encode())
+            return
+
+        if u.path == "/push.js":
+            self._ulashilgan("push.js",
+                             "application/javascript; charset=utf-8")
+            return
+
         if u.path == "/ober-ui.css":
             self._ulashilgan("ober-ui.css", "text/css; charset=utf-8")
             return
@@ -957,6 +978,48 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         # Rasm diskka yozilmaydi. Vision adapter faqat API kaliti server
         # environment'ida bo'lsa tashqi xizmatni chaqiradi; aks holda 503
         # va aniq capability holati qaytadi.
+        # PUSH OBUNASI — brauzer o'z endpoint'ini shu yerga yozadi.
+        #
+        # XAVFSIZLIK — birinchi variantimda zaiflik bor edi: `egasi`
+        # ni mijoz o'zi aytardi. Ya'ni birov `{"rol":"sotuvchi",
+        # "egasi":104}` yuborib, 104-sotuvchining BARCHA chat
+        # bildirishnomalarini o'z telefoniga burib yuborardi.
+        #
+        # Endi ID mijozdan umuman olinmaydi. Faqat SESSIYA TOKENI
+        # qabul qilinadi va u serverda ID ga yechiladi — loyihada
+        # allaqachon shu tartib bor (`_actor_ident`, 2026-08-06).
+        # Token bo'lmasa obuna yozilmaydi.
+        if u.path == "/api/push-obuna":
+            try:
+                d = self._tana(8 * 1024)
+                endpoint = (d.get("endpoint") or "").strip()
+                rol = (d.get("rol") or "").strip()
+                token = (d.get("token") or "").strip()
+                if not endpoint.startswith("https://"):
+                    raise ValueError("endpoint noto'g'ri")
+                if rol not in ("sotuvchi", "xaridor"):
+                    raise ValueError("rol noto'g'ri")
+
+                egasi = _actor_ident({"actor": [token]}, rol)
+                if egasi <= 0:
+                    self._yubor(401, "application/json; charset=utf-8",
+                                json.dumps({"xato": "Sessiya topilmadi"},
+                                           ensure_ascii=False).encode())
+                    return
+
+                baza.push_obuna_yoz(
+                    endpoint, rol, egasi,
+                    str(d.get("p256dh") or "")[:200],
+                    str(d.get("auth") or "")[:100])
+                self._yubor(200, "application/json; charset=utf-8",
+                            json.dumps({"ok": True}).encode(),
+                            {"Cache-Control": "no-store"})
+            except (ValueError, KeyError, TypeError) as e:
+                self._yubor(400, "application/json; charset=utf-8",
+                            json.dumps({"xato": str(e)},
+                                       ensure_ascii=False).encode())
+            return
+
         if u.path == "/api/ai/rasm-qidiruv":
             try:
                 d = self._tana(6 * 1024 * 1024)
@@ -1803,6 +1866,21 @@ def main() -> None:
                   "(data/bot-token.txt yo'q)")
     except Exception as e:                        # noqa: BLE001
         print(f"  Telegram boti ishga tushmadi: {type(e).__name__}")
+
+    # WEB PUSH — telefon jiringlashi uchun (2026-08-14).
+    # Telegramdan MUSTAQIL: biri o'chiq bo'lsa ikkinchisi ishlaydi.
+    # Kalit yo'q bo'lsa bu yerda BIR MARTA yaratiladi va
+    # `data/vapid.json` ga saqlanadi (git'ga tushmaydi).
+    try:
+        import push
+        import push_halqa
+        push.kalit_ol()          # yo'q bo'lsa yaratadi
+        threading.Thread(target=push_halqa.halqa, daemon=True).start()
+        print("  Web Push bildirishnomalari: yoqilgan")
+    except Exception as e:                        # noqa: BLE001
+        # Push ishlamasa sayt baribir ishlashi kerak — bu qo'shimcha
+        # kanal, asosiy funksiya emas.
+        print(f"  Web Push ishga tushmadi: {type(e).__name__}: {e}")
 
     threading.Thread(target=_wal_qorovuli, daemon=True).start()
 

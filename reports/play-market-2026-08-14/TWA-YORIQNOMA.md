@@ -50,6 +50,30 @@ bubblewrap --version
 
 ## 3. Loyihani yaratish
 
+> ### ⚠️ 2026-08-14 da o'rganilgan: wizard TTY talab qiladi
+>
+> Quyidagi `bubblewrap init` buyrug'i **avtomatik skriptdan
+> ishlamaydi**. Sabab: bubblewrap `inquirer` kutubxonasini
+> ishlatadi, u esa `process.stdin.isTTY` ni tekshiradi.
+>
+> Skriptdan (yoki AI vositasidan) ishga tushirilganda stdin
+> quvurga ulanadi, `isTTY` false bo'ladi va wizard savolni
+> **cheksiz qayta chizadi** — jurnal ANSI boshqaruv belgilari
+> bilan to'ladi (`30D`, `30C`, `▀▀▀`) va jarayon osilib qoladi.
+>
+> `yes | bubblewrap ...` ham **yordam bermaydi**: quvurning o'zi
+> TTY ni yo'q qiladi. Javobni "yuborib" bo'lmaydi — TTY berish
+> kerak.
+>
+> **Yechim va hozirgi tartib:** `init` umuman ishlatilmaydi.
+> `twa-ober/twa-manifest.json` qo'lda yozilgan (u shu papkada
+> turibdi), keystore `keytool` bilan yaratilgan. Qurish uchun
+> ildizdagi **`TWA-QUR.bat`** ni ikki marta bosing — ochilgan cmd
+> oynasi haqiqiy konsol, TTY bor va wizard normal ishlaydi.
+>
+> Quyidagi bo'lim tarix uchun qoldirilgan: wizard'ni qo'lda,
+> haqiqiy terminalda ishlatmoqchi bo'lsangiz kerak bo'ladi.
+
 ```bash
 mkdir twa-ober && cd twa-ober
 
@@ -82,9 +106,39 @@ Wizard savollariga javoblar (OBER uchun tavsiya):
 
 ## 4. APK / AAB qurish
 
+**Hozirgi tartib — bitta qadam:**
+
+`D:\OBER\TWA-QUR.bat` ni ikki marta bosing.
+
+U o'zi tekshiradi (JDK, manifest, keystore), parolni so'raydi yoki
+`twa-ober/parol.txt` dan oladi, muhit o'zgaruvchilarini qo'yadi va
+`bubblewrap build` ni **haqiqiy konsolda** ishga tushiradi.
+
+Bubblewrap bitta savol beradi:
+
+```
+would you like to regenerate your project? (Y/n)
+```
+
+Javob: `y` + Enter. Bu yagona qo'l bilan kiritiladigan narsa.
+
+`build` paytida parol so'ralmaydi — u `BUBBLEWRAP_KEYSTORE_PASSWORD`
+va `BUBBLEWRAP_KEY_PASSWORD` muhit o'zgaruvchilaridan olinadi
+(bu nomlar bubblewrap'ning `build.js` kodidan aniqlangan).
+
+<details>
+<summary>Qo'lda qilmoqchi bo'lsangiz</summary>
+
 ```bash
+cd twa-ober
+export BUBBLEWRAP_KEYSTORE_PASSWORD=...
+export BUBBLEWRAP_KEY_PASSWORD=...
 bubblewrap build
 ```
+
+Git Bash'da TTY muammosi chiqsa `winpty` bilan o'rang:
+`winpty bubblewrap build`
+</details>
 
 Natija (loyiha papkasida):
 

@@ -99,13 +99,21 @@ self.addEventListener("fetch", (event) => {
 /* ── BILDIRISHNOMA (eskidan saqlanadi) ─────────────────────────────── */
 
 function bildirish(payload = {}) {
-  const title = payload.title || "OBER’da yangi xabar";
+  const title = payload.title || "OBER — yangi xabar";
   return self.registration.showNotification(title, {
-    body: payload.body || "Yangi taklif yoki xabar keldi.",
-    icon: "/brend/icon.png",
-    badge: "/brend/icon.png",
+    body: payload.body || "Chatda yangi xabar bor.",
+    icon: "/brend/icon-192.png",
+    badge: "/brend/icon-192.png",
+    /* `tag` + `renotify`: bir suhbatning xabarlari bir-birining
+       ustiga tushadi (ro'yxat to'lib ketmasin), lekin HAR SAFAR
+       qayta ogohlantiradi — aks holda ikkinchi xabar jimgina
+       kelardi. */
     tag: `ober-chat-${payload.chatId || "new"}`,
     renotify: true,
+    /* Tebranish — Aziz aynan shuni so'radi ("jingirlab tursin").
+       Telefon jimlik rejimida bo'lsa ham seziladi. Naqsh
+       Telegramnikiga yaqin: qisqa-pauza-qisqa. */
+    vibrate: [200, 100, 200],
     data: {url: payload.url || "/takliflar"},
   });
 }
@@ -116,12 +124,26 @@ self.addEventListener("message", event => {
   }
 });
 
-// Keyingi HTTPS/VAPID bosqichi uchun tayyor qabul nuqtasi. Hozirgi lokal
-// prototip notification’ni sahifadagi real-time polling orqali yuboradi.
+/* PUSH — server bo'sh xabar yuboradi (2026-08-14).
+ *
+ * `event.data` odatda NULL bo'ladi va bu ataylab: payloadni
+ * shifrlash ECDH + AES-GCM talab qiladi, ular Python standart
+ * kutubxonasida yo'q (sabab `app/push.py` izohida). Bo'sh push
+ * service worker'ni uyg'otadi, xolos.
+ *
+ * Yon foyda: xabar matni Google serveridan umuman o'tmaydi.
+ *
+ * SHART: `push` hodisasida ALBATTA bildirishnoma ko'rsatilishi
+ * kerak (`userVisibleOnly`). Ko'rsatilmasa brauzer obunani
+ * bekor qiladi — "jim push" ruxsat etilmaydi. Shuning uchun
+ * bu yerda hech qanday shart yo'q: har doim ko'rsatamiz.
+ */
 self.addEventListener("push", event => {
   let payload = {};
-  try { payload = event.data?.json() || {}; } catch (_) {
-    payload = {body: event.data?.text() || "Yangi xabar keldi."};
+  if (event.data) {
+    try { payload = event.data.json() || {}; } catch (_) {
+      payload = {body: event.data.text() || ""};
+    }
   }
   event.waitUntil(bildirish(payload));
 });

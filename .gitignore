@@ -24,6 +24,48 @@ data/*.env
 tmp/*token*
 tmp/*.token
 
+# ── VAPID MAXFIY KALITI (2026-08-14) ─────────────────────────────────
+# Web Push serverining shaxsiyati. Bu chiqsa begona odam BIZNING
+# nomimizdan foydalanuvchilarga bildirishnoma yuboradi — ya'ni
+# ilovaning ichidan turib firibgarlik xabari.
+#
+# Kalit o'zgarsa BARCHA mavjud obunalar kuchini yo'qotadi va
+# foydalanuvchilar qaytadan ruxsat berishi kerak bo'ladi. Ya'ni
+# uni ham yo'qotib bo'lmaydi — zaxira shart.
+data/vapid.json
+
+# ── ANDROID IMZO KALITI — ENG XAVFLI FAYL (2026-08-14) ───────────────
+# `twa-ober/android.keystore` — Play Store'ga yuklash kaliti.
+#
+# Bu bot tokenidan ham jiddiyroq. Token chiqsa uni bekor qilib, yangisini
+# olamiz. Keystore chiqsa:
+#   - begona odam OBER nomidan imzolangan paket yasay oladi;
+#   - kalitni "bekor qilish" degan narsa yo'q.
+# Va teskarisi ham yomon: keystore YO'QOLSA ilovani yangilab bo'lmaydi.
+#
+# Shuning uchun: git'ga tushmaydi, LEKIN alohida zaxirasi bo'lishi shart
+# (parol menejeri yoki shifrlangan disk). Ikkalasi ham majburiy.
+#
+# Parol ham shu yerda emas — `twa-ober/parol.txt` da, u ham chiqarilgan.
+twa-ober/*.keystore
+twa-ober/*.jks
+twa-ober/parol.txt
+*.keystore
+*.jks
+
+# Qurilgan paketlar — kod emas, natija. Har qurishda qaytadan yasaladi
+# va Play Console'ga yuklangandan keyin repoda turishi shart emas.
+twa-ober/*.aab
+twa-ober/*.apk
+twa-ober/*.idsig
+twa-ober/app/
+twa-ober/.gradle/
+twa-ober/build/
+twa-ober/store/
+
+# Zaxira parol fayli — qaysi papkada yaratilsa ham git'ga tushmaydi.
+parol.txt
+
 # ── BAZA VA YIG'ILGAN MA'LUMOT ───────────────────────────────────────
 # 400 MB+ — GitHub baribir qabul qilmaydi, ustiga foydalanuvchi
 # ma'lumotlari (telefon, chat) bor.

@@ -399,6 +399,50 @@ def _init_ichki() -> None:
             # bosish bo'shliqqa gapirgandek tuyuladi (Aziz, 2026-08-01).
             c.execute("ALTER TABLE xabarlar ADD COLUMN"
                       " tg_yuborildi INTEGER NOT NULL DEFAULT 0")
+        if "push_yuborildi" not in xabar_ustunlari:
+            # ATAYLAB `tg_yuborildi` dan ALOHIDA (2026-08-14).
+            # Telegram va Web Push — mustaqil ikki kanal. Bitta
+            # bayroqni bo'lishsa, Telegramga ketgan xabar push uchun
+            # "yuborilgan" hisoblanib o'tkazib yuborilardi (yoki
+            # teskarisi). Foydalanuvchi ikkalasiga ham obuna bo'lishi
+            # va ikkalasini ham olishi mumkin.
+            c.execute("ALTER TABLE xabarlar ADD COLUMN"
+                      " push_yuborildi INTEGER NOT NULL DEFAULT 0")
+
+        # PUSH OBUNALARI — telefon jiringlashi uchun (2026-08-14).
+        #
+        # Har brauzer/ilova o'zining `endpoint` manzilini beradi. Bir
+        # odamda bir nechta bo'lishi mumkin (telefon + noutbuk) —
+        # shuning uchun `egasi` bo'yicha ko'plik.
+        #
+        # `endpoint` UNIQUE: bir xil qurilma qayta obuna bo'lsa yangi
+        # yozuv emas, eskisi yangilanadi. Busiz har sahifa ochilishida
+        # dublikat yig'ilib, bitta telefonga o'nta bildirishnoma
+        # kelardi.
+        #
+        # `rol` + `egasi`:
+        #   ('sotuvchi', sotuvchilar.id) — sotuvchi kabineti
+        #   ('xaridor',  sorovlar.id)    — xaridorning so'rovi
+        # Xaridorda hisob yo'q, uni faqat so'rovi orqali tanimiz.
+        #
+        # `p256dh`/`auth` HOZIR ISHLATILMAYDI — biz payloadsiz push
+        # yuboramiz (sabab `push.py` izohida). Lekin saqlaymiz:
+        # kelajakda shifrlangan payloadga o'tsak, obunalarni qaytadan
+        # yig'ish shart bo'lmaydi.
+        c.execute("""
+        CREATE TABLE IF NOT EXISTS push_obunalar (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            endpoint   TEXT NOT NULL UNIQUE,
+            p256dh     TEXT,
+            auth       TEXT,
+            rol        TEXT NOT NULL,
+            egasi      INTEGER NOT NULL,
+            yaratildi  REAL,
+            oxirgi     REAL,
+            xatolar    INTEGER NOT NULL DEFAULT 0
+        )""")
+        c.execute("CREATE INDEX IF NOT EXISTS ix_push_egasi"
+                  " ON push_obunalar (rol, egasi)")
 
         # SO'ROV KIMGA YUBORILDI — to'lqin bo'yicha.
         # Ilgari sotuvchi o'zi mos so'rovlarni "tortib" olardi va so'rov
@@ -1549,6 +1593,109 @@ def tg_holat() -> dict:
             "tg_yuborilgan": yuborilgan,
             "tg_chat_kutayotgan": chat_kutayotgan,
             "tg_chat_eski": chat_eski}
+
+
+# ── PUSH OBUNALARI (2026-08-14) ──────────────────────────────────────────────
+
+def push_obuna_yoz(endpoint: str, rol: str, egasi: int,
+                   p256dh: str = "", auth: str = "") -> None:
+    """Obunani yozadi yoki yangilaydi.
+
+    `ON CONFLICT` shart: bitta telefon sahifani har ochganda qayta
+    obuna bo'lishga urinadi. INSERT bo'lsa dublikat yig'ilib, bitta
+    qurilmaga o'nlab bir xil bildirishnoma kelardi.
+
+    Qurilma egasi o'zgarishi ham mumkin: bitta telefonda avval
+    xaridor, keyin sotuvchi kirsa — `rol`/`egasi` yangilanadi,
+    yangi yozuv ochilmaydi. Aks holda eski egaga ham xabar borardi.
+    """
+    now = time.time()
+    with ulan() as c:
+        c.execute(
+            "INSERT INTO push_obunalar"
+            " (endpoint, p256dh, auth, rol, egasi, yaratildi, oxirgi, xatolar)"
+            " VALUES (?,?,?,?,?,?,?,0)"
+            " ON CONFLICT(endpoint) DO UPDATE SET"
+            "   rol=excluded.rol, egasi=excluded.egasi,"
+            "   p256dh=excluded.p256dh, auth=excluded.auth,"
+            "   oxirgi=excluded.oxirgi, xatolar=0",
+            (endpoint, p256dh, auth, rol, int(egasi), now, now))
+
+
+def push_obunalar(rol: str, egasi: int) -> list[str]:
+    """Bitta egaga tegishli barcha endpointlar (telefon + noutbuk)."""
+    with ulan() as c:
+        return [r["endpoint"] for r in c.execute(
+            "SELECT endpoint FROM push_obunalar WHERE rol=? AND egasi=?",
+            (rol, int(egasi)))]
+
+
+def push_obuna_ochir(endpoint: str) -> None:
+    """404/410 kelganda chaqiriladi — obuna butunlay o'lgan.
+
+    Uni saqlab qo'yish behuda: har yuborishda tarmoq so'rovi ketadi
+    va har safar shu xato qaytadi.
+    """
+    with ulan() as c:
+        c.execute("DELETE FROM push_obunalar WHERE endpoint=?", (endpoint,))
+
+
+def push_xato_qayd(endpoint: str) -> int:
+    """Vaqtinchalik xatoni sanaydi va yangi sonni qaytaradi.
+
+    Ketma-ket ko'p xato bo'lsa (masalan 5) obuna o'chiriladi:
+    o'lik obunalar har yuborishda 10 soniya kutishga sabab bo'lib,
+    butun navbatni sekinlashtiradi.
+    """
+    with ulan() as c:
+        c.execute("UPDATE push_obunalar SET xatolar=xatolar+1, oxirgi=?"
+                  " WHERE endpoint=?", (time.time(), endpoint))
+        r = c.execute("SELECT xatolar FROM push_obunalar WHERE endpoint=?",
+                      (endpoint,)).fetchone()
+    return r["xatolar"] if r else 0
+
+
+def push_suhbat_egasi(suhbat_id: int) -> dict | None:
+    """Suhbatning ikki tomonini qaytaradi: kimga xabar berish kerakligi.
+
+    Xabar `rol='xaridor'` bo'lsa — sotuvchiga, `rol='sotuvchi'`
+    bo'lsa — xaridorga bildirishnoma ketadi.
+    """
+    with ulan() as c:
+        r = c.execute(
+            "SELECT sh.sotuvchi_id, sh.sorov_id FROM suhbatlar sh"
+            " WHERE sh.id=?", (int(suhbat_id),)).fetchone()
+    if not r:
+        return None
+    return {"sotuvchi_id": r["sotuvchi_id"], "sorov_id": r["sorov_id"]}
+
+
+def push_yuborilmagan(limit: int = 50) -> list[dict]:
+    """Push yuborilmagan yangi chat xabarlari.
+
+    `tg_yuborildi` dan ALOHIDA ustun (`push_yuborildi`): Telegram va
+    push mustaqil kanallar. Biri ishlamasa ikkinchisi ishlashi kerak,
+    va ikkalasi bir xil bayroqni bo'lishsa biri ikkinchisini
+    "yuborilgan" deb o'tkazib yuborardi.
+
+    Eski xabarlar yuborilmaydi — `BILDIRISH_ESKIRISH` sababi
+    `yuborilmagan_xabarlar` izohida: server bir kun to'xtab qolsa,
+    qayta ishga tushganda hamma eski xabarni birdan jo'natib
+    foydalanuvchini ko'mib tashlamasin.
+    """
+    chegara = time.time() - BILDIRISH_ESKIRISH
+    with ulan() as c:
+        return [dict(r) for r in c.execute(
+            "SELECT x.id, x.suhbat_id, x.rol, x.matn, x.vaqt"
+            " FROM xabarlar x"
+            " WHERE x.push_yuborildi=0 AND COALESCE(x.vaqt,0) > ?"
+            " ORDER BY x.id LIMIT ?", (chegara, int(limit)))]
+
+
+def push_belgila(xabar_id: int) -> None:
+    with ulan() as c:
+        c.execute("UPDATE xabarlar SET push_yuborildi=1 WHERE id=?",
+                  (int(xabar_id),))
 
 
 # ── FTS5 INDEKSI ─────────────────────────────────────────────────────────────
