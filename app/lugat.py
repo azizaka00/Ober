@@ -14,6 +14,7 @@ Shu yerda tuzatamiz.
 
 from __future__ import annotations
 
+import functools
 import re
 
 # ── Kirill -> lotin (o'zbek va rus matnini bir shaklga keltirish) ────────────
@@ -31,8 +32,15 @@ def lotinlash(s: str) -> str:
     return "".join(KIRILL.get(ch, ch) for ch in s.lower())
 
 
+@functools.lru_cache(maxsize=16_384)
 def normalla(s: str) -> str:
-    """Har qanday matnni taqqoslash uchun bir shaklga keltiradi."""
+    """Har qanday matnni taqqoslash uchun bir shaklga keltiradi.
+
+    KESHLANADI (o'lchov 2026-08-16). Qidiruv ballashida har e'lon
+    nomi uchun chaqiriladi — 630 nomzod uchun 44 ms (har birida 49
+    ta `_KANONIK` almashtirish). Nomlar takrorlanadi (bir xil tovar
+    bir necha sotuvchida), shuning uchun kesh katta qismni qaytaradi.
+    """
     s = lotinlash(s)
     s = s.replace("'", "").replace("`", "").replace("ʻ", "").replace("’", "")
     s = re.sub(r"[^a-z0-9 ]+", " ", s)
