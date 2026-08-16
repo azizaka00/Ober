@@ -221,6 +221,17 @@
   .talab-chat-izoh{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
   .talab-chat-izoh a{color:var(--navy);font-weight:750;text-decoration:none}
   .talab-chat-izoh a:hover{text-decoration:underline}
+  /* XARIDOR VARIANTI (2026-08-16): "so'rovingiz N ta mos sotuvchiga
+     yuborildi" — yashil emas, AMBER. Sotuvchi bloki yashil edi, chunki
+     u "xaridor kutyapti — imkoniyat" degani; xaridor bloki esa
+     "so'rov ishlamoqda" — davom etish hissi. Amber saytning urg'u
+     rangi (qidiruv, tugmalar) — ikkala rol bitta tilda gapirsin. */
+  .talab-chat.xaridor{
+    border:1px solid rgba(255,168,0,.3);
+    background:linear-gradient(135deg,rgba(255,168,0,.07),rgba(255,168,0,.02));
+  }
+  .talab-chat.xaridor .talab-chat-bosh b{color:var(--amber)}
+  .talab-chat.xaridor .talab-chat-izoh{margin-top:8px}
   /* BO'SH HOLATDAGI SO'ROV MAYDONI (2026-08-15).
      Bo'sh ekran endi berk ko'cha emas — amal shu yerda bajariladi.
      Maydon va tugma bitta qatorda, telefonda ham: 320px da ham
@@ -799,7 +810,7 @@ async function loadInbox(){
     if(role === "xaridor"){
       const s=d.sorov;
       if(s){$("#context").innerHTML=`<h1>${esc(s.matn)}</h1><p>${esc(s.tuman || "O‘zbekiston")} · ${(d.takliflar||[]).length} sotuvchi chatda javob berdi</p>`}
-      renderOffers(d.takliflar||[]);
+      renderOffers(d.takliflar||[], d.yuborildi);
     }else{
       $("#sarlavha").textContent="Chat";
       $("#context").innerHTML='<h1>Xaridorlar bilan suhbatlar</h1><p>Taklif va yangi xabarlar bir joyda.</p>';
@@ -864,7 +875,7 @@ async function talabBlokniChiz(){
   }
 }
 
-function renderOffers(items){
+function renderOffers(items, yuborildi){
   const unread=items.reduce((n,x)=>n+Number(x.oqilmagan||0),0);
   $("#count").textContent=`${items.length} ta suhbat`;
   setNotice(unread);
@@ -882,7 +893,25 @@ function renderOffers(items){
     // emas. `misollar` ham faqat so'rov MATNI — telefon, ism, token
     // yo'q (baza.kutayotgan_talab izohi).
     if(role === "sotuvchi"){ talabBlokniChiz(); return; }
-    $("#offer-list").innerHTML='<div class="empty"><strong>Hali suhbat yo‘q</strong>Mos sotuvchilar javob berishi bilan shu yerda ko‘rinadi.</div>';return}
+    // XARIDOR BO'SH SUVHATLAR — BARK USLUBI (2026-08-16).
+    //
+    // Sotuvchida "xaridor allaqachon yozgan" bloki bor; xaridorda
+    // esa teskari ishonch kerak: "so'rovingiz allaqachon N ta mos
+    // sotuvchiga yuborilgan — javoblar shu yerda paydo bo'ladi".
+    // Bo'sh ekran o'rniga jarayon ko'rinadi: so'rov o'lik emas,
+    // ishlamoqda. `yuborildi` — /api/sorov/takliflar dagi son:
+    // so'rov qancha sotuvchiga yuborilgan (server `yuborildi`
+    // kalitini qo'shadi).
+    const n = Number(yuborildi || 0);
+    const gap = n
+      ? tr(`${formatInt(n)} ta mos sotuvchiga yuborildi`)
+      : tr("So‘rov mos sotuvchilarga yuborilmoqda");
+    const m = gap.match(/^(\d[\d ]*)/);
+    const bosh = m ? `<b>${m[1]}</b>${gap.slice(m[1].length)}` : gap;
+    $("#offer-list").innerHTML=`<div class="talab-chat xaridor">
+      <p class="talab-chat-bosh">${bosh}</p>
+      <p class="talab-chat-izoh">${tr("Javoblar shu yerda paydo bo‘ladi.")}</p>
+    </div>`;return}
   $("#offer-list").innerHTML=items.map(x=>{
     const img=safeImage(x.oxirgi_rasm);
     const active=Number(x.suhbat_id)===activeChat;

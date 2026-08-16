@@ -50,6 +50,8 @@
     "Suhbatlar bo‘sh ko‘rinsa ham bozor harakatda.":"Даже если диалоги пусты — рынок движется.",
     "Sotuvchi sahifasida":"В кабинете продавца",
     "javob yozing — xaridor shu yerda kutmoqda.":"напишите ответ — покупатель уже ждёт.",
+    "So‘rov mos sotuvchilarga yuborilmoqda":"Запрос отправляется подходящим продавцам",
+    "Javoblar shu yerda paydo bo‘ladi.":"Ответы появятся здесь.",
     "Yangi e'lon":"Новое объявление",
     "Sotuvchi":"Продавец",
     "Profil":"Профиль",
@@ -596,6 +598,12 @@
     if ((match = text.match(/^([\d ]+) ta xaridor shu hafta javob kutdi$/))) {
       const son = parseInt(match[1].replace(/\s/g, ""), 10);
       return `${match[1]} ${rusPlural(son, ["покупатель ждёт ответа на этой неделе", "покупателя ждут ответа на этой неделе", "покупателей ждут ответа на этой неделе"])}`;
+    }
+    // Bark uslubi: xaridor bloki (2026-08-16). "22 ta mos sotuvchiga
+    // yuborildi" — so'rov nechta sotuvchiga borganini ko'rsatadi.
+    if ((match = text.match(/^([\d ]+) ta mos sotuvchiga yuborildi$/))) {
+      const son = parseInt(match[1].replace(/\s/g, ""), 10);
+      return `${match[1]} ${rusPlural(son, ["подходящему продавцу отправлен", "подходящим продавцам отправлен", "подходящим продавцам отправлен"])}`;
     }
     if ((match = text.match(/^(\d+) ta ochiq e’lon narxi va jonli sotuvchi javoblari$/))) return `${match[1]} цен открытых объявлений и живых ответов продавцов`;
     if ((match = text.match(/^(\d+) sotuvchi (?:chatda )?javob berdi$/))) return `Ответили продавцы: ${match[1]}`;

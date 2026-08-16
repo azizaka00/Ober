@@ -64,6 +64,13 @@ def main() -> None:
             '"Suhbatlar bo‘sh ko‘rinsa ham bozor harakatda.":"Даже если диалоги пусты — рынок движется."' in i18n and
             '"Sotuvchi sahifasida":"В кабинете продавца"' in i18n,
             "Bark talab bloki ruscha lug‘atda bor")
+    # 2026-08-16: Bark uslubi — XARIDOR bloki. "22 ta mos sotuvchiga
+    # yuborildi" raqamli ko'plik qoidasi va ikkala izoh matni ruscha
+    # lug‘atda bo'lishi kerak ("Hali suhbat yo'q" emas, jarayon).
+    tekshir('ta mos sotuvchiga yuborildi' in i18n and
+            '"So‘rov mos sotuvchilarga yuborilmoqda":"Запрос отправляется подходящим продавцам"' in i18n and
+            '"Javoblar shu yerda paydo bo‘ladi.":"Ответы появятся здесь."' in i18n,
+            "Bark xaridor bloki ruscha lug‘atda bor")
     # 2026-08-12: elon.html yopilgan-xabar holatlari — JS orqali
     # yoziladi, rus interfeysda o'zbekcha qolib ketmasligi uchun.
     for soz in ('"Bu e‘lon yopilgan":"Это объявление закрыто"',
