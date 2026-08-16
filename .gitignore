@@ -172,3 +172,7 @@ sinov-muhiti/
 
 # TWA build artefakti — har qurishda o'zgaradi
 manifest-checksum.txt
+
+# FUSE/sync disk qoldiqlari — fayl ustida ishlayotgan jarayon borida
+# o'chirilganda paydo bo'ladi (2026-08-16: 76 ta topilgan edi)
+.fuse_hidden*
