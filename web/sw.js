@@ -12,7 +12,29 @@
  * xavfli emas — faqat ochilish uchun zaxira.
  */
 
-const CACHE = "ober-v1";
+/* KESH NOMI VERSIYALI BO'LISHI SHART (2026-08-15).
+
+   Ilgari bu `"ober-v1"` edi va HECH QACHON o'zgarmasdi. Natijasi:
+
+     `activate` hodisasida biz nomi CACHE ga teng bo'lmagan keshlarni
+     o'chiramiz. Nom hech qachon o'zgarmagani uchun o'chiriladigan
+     narsa ham bo'lmagan — eski kesh abadiy yashardi.
+
+   Buning ustiga statik fayllar `stale-while-revalidate` bilan
+   berilardi: avval KESHDAN, yangisi esa fon rejimida. Ya'ni deploy
+   qilingandan keyin foydalanuvchi ESKI kodni ko'rardi va yangisi
+   faqat KEYINGI ochilishda kelardi.
+
+   Aziz bugun aynan shuni ko'rdi: sayt serverda yangilangan, ekranda
+   esa eski. Men "deploy o'tmadi" deb o'ylab, uch marta qayta
+   yubordim — aslida server to'g'ri, kesh eski edi.
+
+   Endi ikki o'zgarish:
+     1. Nom versiyali — o'zgarganda eski kesh o'chadi;
+     2. O'z JS/CSS'imiz TARMOQDAN birinchi olinadi (pastda).
+   Versiyani deploy oldidan qo'lda oshirish SHART EMAS: nom ichida
+   sana bor, uni o'zgartirish odat bo'lib qolsin. */
+const CACHE = "ober-2026-08-16k";
 
 /* Ofine ochilishi kerak bo'lgan sahifalar va statik manbalar.
  * Dinamik sahifalar (elon/{id}, qidiruv natijalari) keshlanmaydi —
@@ -86,7 +108,33 @@ self.addEventListener("fetch", (event) => {
       }
     }
 
-    // Statik fayl — kesh birinchi, fonda yangilash.
+    /* O'Z KODIMIZ — TARMOQDAN BIRINCHI (2026-08-15).
+
+       Ilgari bu yerda `stale-while-revalidate` edi: avval keshdan,
+       yangisi fonda. Rasm va shrift uchun bu to'g'ri — ular
+       o'zgarmaydi. Lekin `ober-ui.css`, `tabbar.js`, `push.js`,
+       `i18n.js` HAR DEPLOYDA o'zgaradi va o'sha eski nusxa
+       foydalanuvchida qolib ketardi.
+
+       Bu fayllarda endi ETag bor, ya'ni o'zgarmagan bo'lsa server
+       304 qaytaradi — tana yo'q, trafik deyarli nol. Shuning uchun
+       tarmoqdan so'rash arzon, kesh esa faqat ZAXIRA bo'lib qoladi
+       (tarmoq yo'q bo'lsa ishlaydi). */
+    const ozKodimiz = /\.(css|js)$/.test(url.pathname);
+    if (ozKodimiz) {
+      try {
+        const jonli = await fetch(soz);
+        if (jonli.ok) kesh.put(soz, jonli.clone());
+        return jonli;
+      } catch (_) {
+        const zaxira = await kesh.match(soz);
+        if (zaxira) return zaxira;
+        throw new Error("Oflayn — kesh ham yo'q");
+      }
+    }
+
+    // Rasm, shrift, ikonka — kesh birinchi, fonda yangilash.
+    // Bular o'zgarmaydi (o'zgarsa nomi ham o'zgaradi).
     const eski = await kesh.match(soz);
     const yangilash = fetch(soz).then((javob) => {
       if (javob.ok) kesh.put(soz, javob.clone());

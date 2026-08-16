@@ -11,7 +11,7 @@
   "navigationDividerColor": "#000000",
   "navigationDividerColorDark": "#000000",
   "backgroundColor": "#0A2B63",
-  "enableNotifications": false,
+  "enableNotifications": true,
   "startUrl": "/",
   "iconUrl": "https://ober.uz/brend/icon-512.png",
   "maskableIconUrl": "https://ober.uz/brend/icon-512.png",
@@ -26,7 +26,11 @@
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://ober.uz/manifest.json",
   "fallbackType": "customtabs",
-  "features": {},
+  "features": {
+    "notifications_delegation": {
+      "enabled": true
+    }
+  },
   "alphaDependencies": {
     "enabled": false
   },

@@ -108,8 +108,15 @@ def _yangi_ulanish() -> sqlite3.Connection:
         c.execute("PRAGMA journal_mode=WAL")
         c.execute("PRAGMA synchronous=NORMAL")
         c.execute("PRAGMA busy_timeout=15000")
-    except sqlite3.DatabaseError:
-        pass
+    except sqlite3.DatabaseError as e:
+        # 2026-08-15: bu yerda `pass` turardi. Bu uch PRAGMA — WAL
+        # rejimi va 15 soniyalik kutish — butun loyihaning bir
+        # vaqtda o'qish/yozish modeli. O'rnatilmasa baza "database
+        # is locked" bera boshlaydi va sababi hech qayerda
+        # ko'rinmasdi. Ulanishning o'zi ishlayveradi, shuning uchun
+        # yiqitmaymiz — faqat aytamiz.
+        print(f"  [baza] PRAGMA o'rnatilmadi ({type(e).__name__}: {e})"
+              f" — WAL rejimi yoqilmagan bo'lishi mumkin", flush=True)
     return c
 
 
@@ -274,7 +281,7 @@ def _init_ichki() -> None:
             aloqa      TEXT,            -- telefon yoki telegram
             holat      TEXT DEFAULT 'yangi',   -- yangi|yuborildi|javob_bor|yopildi
             yaratildi  REAL,
-            yopiladi   REAL             -- 2 soatdan keyin
+            yopiladi   REAL             -- SOROV_MUDDATI dan keyin (2026-08-15: 24 soat)
         )""")
         sorov_ustunlari = {r["name"] for r in c.execute(
             "PRAGMA table_info(sorovlar)")}
@@ -710,6 +717,118 @@ def sorov_id_token(token: str) -> int | None:
         r = c.execute("SELECT id FROM sorovlar WHERE token=?",
                       (token,)).fetchone()
     return r["id"] if r else None
+
+
+def kutayotgan_talab(namuna: int = 5) -> dict:
+    """Javob kutayotgan so'rovlar — sotuvchini chaqirish uchun.
+
+    NEGA (2026-08-15)
+    -----------------
+    Sotuvchi sahifasi "30 soniyada tayyor, uzun anketa yo'q" deb
+    boshlanardi. Bu FORMA qulayligi haqida — sotuvchining yutug'i
+    haqida emas.
+
+    Bark.com va IndiaMART ikkalasi ham teskarisini qiladi:
+      Bark      — "1000's of clients are already waiting"
+      IndiaMART — "Connecting 21 Cr+ Buyers with Trusted Sellers"
+    Ya'ni birinchi gap TALAB haqida: xaridor allaqachon shu yerda.
+
+    Bizda aytishga haqiqiy raqam bor: bazada javobsiz so'rovlar
+    turibdi. Bu Bark'ning gapidan kuchliroq, chunki aniq va tekshirsa
+    bo'ladi.
+
+    MAXFIYLIK: faqat so'rov MATNI qaytariladi. Telefon, ism, token —
+    hech biri chiqmaydi. Matnni odam qidiruv qatoriga o'zi yozgan.
+    """
+    # OYNA — 7 KUN, "hozir ochiq" EMAS (2026-08-15 o'lchovi).
+    #
+    # Avval "hozir ochiq va javobsiz" so'rovlar sanalardi va natija
+    # NOL chiqdi. Sabab: so'rov 2 soatdan keyin yopiladi, ya'ni
+    # istalgan daqiqada ochiq so'rov deyarli bo'lmaydi.
+    #
+    # Bu sotuvchini chaqirish uchun noto'g'ri o'lchov. Yangi sotuvchi
+    # "shu daqiqada nima ochiq" ni emas, "bu yerda umuman xaridor
+    # bormi" ni bilmoqchi. 7 kunlik oyna shunga javob beradi va u
+    # ham rost: 60 so'rovdan 22 tasi oxirgi hafta ichida kelgan.
+    ETTI_KUN = 7 * 86400
+    init()
+    now = time.time()
+    with ulan() as c:
+        haftalik = c.execute(
+            "SELECT COUNT(*) n FROM sorovlar WHERE yaratildi > ?",
+            (now - ETTI_KUN,)).fetchone()["n"]
+        javobsiz = c.execute(
+            "SELECT COUNT(*) n FROM sorovlar s"
+            " WHERE s.yaratildi > ?"
+            "   AND NOT EXISTS (SELECT 1 FROM javoblar j"
+            "                    WHERE j.sorov_id = s.id AND j.holat <> 'yoq')",
+            (now - ETTI_KUN,)).fetchone()["n"]
+        ochiq = c.execute(
+            "SELECT COUNT(*) n FROM sorovlar WHERE yopiladi > ?",
+            (now,)).fetchone()["n"]
+        # TAKRORLARNI OLIB TASHLAYMIZ (2026-08-15).
+        # Ekranda "Qaychi kerak 300 ta" ikki marta chiqdi — odam
+        # so'rovni ikki marta yuborgan. Bir xil matn ketma-ket
+        # turishi ro'yxatni tartibsiz va e'tiborsiz ko'rsatadi.
+        # `LIMIT` dan ko'proq olamiz, chunki takrorlar tashlangach
+        # kerakli son qolishi kerak.
+        xom = [r["matn"] for r in c.execute(
+            "SELECT s.matn FROM sorovlar s"
+            " WHERE s.yaratildi > ? AND LENGTH(TRIM(s.matn)) > 4"
+            "   AND NOT EXISTS (SELECT 1 FROM javoblar j"
+            "                    WHERE j.sorov_id = s.id AND j.holat <> 'yoq')"
+            " ORDER BY s.yaratildi DESC LIMIT ?",
+            (now - ETTI_KUN, int(namuna) * 4))]
+
+    misollar: list[str] = []
+    korilgan: set[str] = set()
+    for m in xom:
+        toza = (m or "").strip()[:70]
+        if not toza:
+            continue
+        kalit = " ".join(toza.lower().split())
+        if kalit in korilgan:
+            continue
+        korilgan.add(kalit)
+        misollar.append(toza)
+        if len(misollar) >= namuna:
+            break
+    return {"haftalik": haftalik, "javobsiz": javobsiz, "ochiq": ochiq,
+            "misollar": misollar}
+
+
+def xaridor_sorovlari(aloqa: str, limit: int = 5) -> list[dict]:
+    """Telefon raqami bo'yicha xaridorning so'rovlari.
+
+    NEGA KERAK (2026-08-15)
+    -----------------------
+    Xaridorda hisob yo'q — u faqat brauzerdagi `ober_sorov` kaliti
+    bilan tanalardi. Brauzer tozalansa, telefon almashtirilsa yoki
+    ilova qayta o'rnatilsa, so'rov ham, sotuvchilar javobi ham
+    YO'QOLARDI. Tiklash yo'li umuman yo'q edi.
+
+    Bu OBER uchun oddiy noqulaylik emas: butun va'da "sotuvchilar
+    javob beradi" degani, javob esa bir necha soatdan keyin keladi.
+    Ya'ni foydalanuvchi aynan eng qimmatli daqiqada yo'qolardi.
+
+    Telefon `sorovlar.aloqa` da allaqachon saqlanadi — yangi
+    ma'lumot yig'ish shart emas. Tiklash Telegram boti orqali:
+    odam kontaktini ulashadi, bot raqamni shu funksiyaga beradi.
+
+    Faqat OCHIQ so'rovlar qaytariladi: yopilgani tiklansa ham
+    foydasi yo'q, sotuvchi u yerga javob yoza olmaydi.
+    """
+    if not aloqa:
+        return []
+    init()
+    with ulan() as c:
+        return [dict(r) for r in c.execute(
+            "SELECT s.id, s.token, s.matn, s.yaratildi, s.yopiladi,"
+            "       (SELECT COUNT(*) FROM javoblar j WHERE j.sorov_id=s.id) javob"
+            "  FROM sorovlar s"
+            " WHERE s.aloqa=? AND s.yopiladi > ?"
+            " ORDER BY s.yaratildi DESC LIMIT ?",
+            (aloqa, time.time(), int(limit)))]
 
 
 def sotuvchi_aloqasi(aloqa: str) -> dict | None:
@@ -1297,8 +1416,31 @@ def _mos_sotuvchilar(c, sorov) -> list:
     if not (sorov_qismlari or sorov_yonalishlari or sorov_sozlari):
         return []                       # umuman mazmun yo'q
 
+    # O'ZINGGA O'Z SO'ROVING KELMASIN (2026-08-15).
+    #
+    # Aziz topdi: u telefon sotuvchisi sifatida ro'yxatdan o'tgan va
+    # keyin o'zi telefon so'ragan — natijada o'z so'rovi haqidagi
+    # bildirishnoma o'ziga kelgan.
+    #
+    # Bu sinov artefakti emas. Kichik bozorda bu ODATIY holat:
+    # telefon sotadigan odam o'ziga telefon ham qidiradi, usta
+    # boshqa ustani ham izlaydi. Har safar o'z so'rovini olish —
+    # tizim "o'ylamayapti" degan taassurot beradi.
+    #
+    # Bog'lovchi belgi — telefon raqami: sotuvchi shu bilan
+    # ro'yxatdan o'tgan, xaridor shu bilan so'rov yuborgan.
+    # Format turlicha bo'lishi mumkin (+998.., 998.., 9 xonali),
+    # shuning uchun OXIRGI 9 RAQAM bo'yicha solishtiramiz.
+    def _oxirgi9(x: str) -> str:
+        raqam = "".join(ch for ch in str(x or "") if ch.isdigit())
+        return raqam[-9:] if len(raqam) >= 9 else ""
+
+    sorov_raqami = _oxirgi9(sorov["aloqa"])
+
     mos = []
     for s in c.execute("SELECT * FROM sotuvchilar WHERE faol=1"):
+        if sorov_raqami and _oxirgi9(s["aloqa"]) == sorov_raqami:
+            continue                    # so'rov egasining o'zi
         s_qism = {x for x in (s["qismlar"] or "").split(",") if x}
         s_yon = {x for x in (s["yonalishlar"] or "").split(",") if x}
 
@@ -1510,6 +1652,25 @@ def yuborilmagan_xabarlar(limit: int = 30) -> list[dict]:
 # Chegara xabarni o'chirmaydi: u OBER chatida joyida turadi va
 # sotuvchi kabinetga kirsa ko'radi. Faqat Telegramga uzatilmaydi.
 BILDIRISH_ESKIRISH = 24 * 3600
+
+# SO'ROV QANCHA VAQT OCHIQ TURADI (2026-08-15).
+#
+# Ilgari qat'iy 2 soat edi va bu ZICH bozor uchun to'g'ri o'lchov:
+# "bugun bormi?" degan savolning qiymati tez tushadi.
+#
+# Lekin o'lchov boshqacha ko'rsatdi. 60 so'rovdan 39 tasi javobsiz
+# qolgan, `/api/talab` esa "hozir ochiq" so'rovlar sonini NOL deb
+# qaytardi — ya'ni istalgan daqiqada ochiq so'rov deyarli yo'q.
+#
+# Sabab: sotuvchi 14 ta va ulardan 6 tasi bildirishnoma olmaydi.
+# 2 soat ichida so'rovni ko'radigan odam yo'q. So'rov tug'iladi,
+# hech kim ko'rmaydi, o'ladi.
+#
+# 24 soat — sotuvchi telefoniga kuniga kamida bir marta qaraydi.
+# Bozor zichlashgach bu qayta qisqartiriladi; o'shanda o'lchov
+# ko'rsatadi: javob mediana vaqti 2 soatdan ancha past bo'lsa,
+# uzoq oyna keraksiz.
+SOROV_MUDDATI = 24 * 3600
 
 
 def tg_kutayotgan_chat(limit: int = 20) -> list[dict]:
@@ -2177,6 +2338,27 @@ def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA,
     else:
         urinishlar.append(toklar[0])
         urinishlar.append(prefiks[0])
+    # ── OCHIQ MUAMMO: OR BOSQICHI BEGONA SO'ZNI OLIB KELADI ─────────
+    #
+    # 2026-08-16 o'lchovi. `divan charm` so'rovi:
+    #     1-bosqich (divan AND charm)    -> 0 ta
+    #     2-bosqich (divan* AND charm*)  -> 0 ta
+    #     3-bosqich (kamida bitta so'z)  -> 48 ta
+    # va o'sha 48 tadan 5 tasi "Charmhoo cotecho R13/R15/R16" —
+    # SHINA. Sabab: `charm*` `charmhoo` brendiga yopishadi.
+    #
+    # Ya'ni ayb prefiksda emas. Indeksda "divan" va "charm" so'zlarini
+    # BIRGA saqlagan e'lon yo'q, shuning uchun qidiruv OR ga tushadi
+    # va u yerda begona so'z aniq so'z bilan teng huquqli bo'lib
+    # qoladi. "Audit divan" e'loni `divan` ni AYNAN saqlaydi,
+    # "Charmhoo" esa faqat prefiks kengaytmasi — lekin ballari teng.
+    #
+    # YECHIM YO'NALISHI (hali qilinmagan): OR bosqichida AYNAN mos
+    # kelgan so'z prefiks-mosdan yuqori turishi kerak. Bu ballash
+    # o'zgarishi, ya'ni qidiruvning eng nozik joyi — `moslik_sinov`
+    # (57 ta) va `relevans_sinov` (13 ta) qo'riqlaydi. Ehtiyot
+    # bo'lib, o'lchov bilan qilinadi.
+    #
     # OXIRGI BOSQICH: kamida bitta so'z. Qidiruv uchun kerak — xaridor
     # bo'sh ekran ko'rmasin. Lekin `bozor_izi` uni SO'RAMAYDI: u
     # "so'zlar birga qanday kategoriyada uchraydi" degan savolga javob
@@ -2939,7 +3121,7 @@ def sorov_yoz(matn: str, tuman: str, aloqa: str,
             " aloqa, holat, yaratildi, yopiladi, yonalishlar, ism, token)"
             " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
             (matn, ",".join(modellar), ",".join(qismlar), tuman, byudjet,
-             aloqa, "yangi", now, now + 2 * 3600,
+             aloqa, "yangi", now, now + SOROV_MUDDATI,
              ",".join(yonalishlar or []), ism or None, token))
         return cur.lastrowid
 

@@ -1,5 +1,127 @@
 # Saboqlar
 
+## 2026-08-16 — Bosh sahifada `body` suriladi, oyna emas
+
+Tepa panelga navbatli qidiruv qo'shmoqchi bo'ldim: hero qutisi
+ekrandan chiqqach tepada ingichka qidiruv paydo bo'lsin.
+
+Yo'lda ikkita narsa bilindi:
+
+1. **`body{overflow:hidden auto}`** — sahifa `body` ichida
+   suriladi. `window.scrollTo()` va `document.scrollingElement.
+   scrollTop` ISHLAMAYDI, `document.body.scrollTop` kerak. Testim
+   uch marta "surildi" deb yolg'on javob berdi.
+2. Yopishqoq panel va qidiruvni joylash ishladi, lekin ko'rsatish
+   qoidasi ishlamadi. `body` ga sinf qo'yilganda ham hisoblangan
+   `visibility` `hidden` bo'lib qolaverdi — garchi `el.matches()`
+   true qaytarsa va qoida hujjatda mavjud bo'lsa ham. Sabab
+   topilmadi.
+
+Qaytardim. Yarim ishlaydigan funksiya jonli saytda qolgandan
+ko'ra, umuman bo'lmagani yaxshi — ayniqsa sabab noma'lum bo'lsa.
+Keyingi urinishda `visibility` o'rniga `display` bilan sinash
+kerak va avval MAHALLIY nusxada tekshirish, jonli saytda emas.
+
+
+## 2026-08-16 — "Vizual tekshirdim" deganda ekranni ko'rish kerak
+
+Aziz so'radi: "hammasini vizual test qildingmi?". Javob yo'q edi.
+Men kod ichidagi qiymatlarni o'lchagandim, ekranni emas. Bir
+soatdan keyin brauzer ishlagach uchta nuqson chiqdi — hech biri
+statik tahlilda ko'rinmasdi:
+
+1. **Qidiruv maydoni 250 px o'ngda.** Sarlavha, izoh, tugma va
+   raqamlar 203 px da; qidiruv va chiplar 453 px da. `margin-inline:
+   auto` + `max-width` — ikkalasi alohida to'g'ri, birga xato.
+2. **Raqamlar bloki markazda** — 1180 px keng qutida 664 px dan
+   boshlanardi.
+3. **Saralash tugmalari BUTUNLAY o'qilmas edi.** Matn #e8eef8,
+   fon deyarli oq, kontrast 1.1:1 (AA talabi 4.5:1).
+
+Uchinchisi eng og'ir va u MENING xatom. Natija sahifasidan to'q
+ko'k fonni bugun ertalab o'zim olib tashladim, o'sha fonga
+tayangan qoidani esa qoldirdim. CLAUDE.md da yozilgan qoidani
+buzdim: "Umumiy tamoyilni tuzatganda, u yana qayerda buzilganini
+qidir."
+
+Muhimi: bu xatoni EKRANDA HAM ko'rmadim. Skrinshotda tugmalar
+"och kulrang" bo'lib tuyulardi — men uni dizayn deb o'yladim.
+Faqat `getComputedStyle` bilan kontrastni HISOBLAGANDA chiqdi.
+
+Demak uch bosqich kerak, ikkitasi yetmaydi:
+kodni o'qish -> ekranni ko'rish -> hisoblab o'lchash.
+
+Uchalasi ham `web_sinov.py` ga qo'shildi (86 -> 103 tekshiruv).
+
+
+## 2026-08-16 — Qoida tekshirilmasa, qoida emas
+
+`OBER-DIZAYN-QOIDALARI.md` da "radius faqat tokendan" deb yozilgan
+edi. Bugun uchta xom qiymat topildi: `10px`, `4px`, `6px`. Uchalasi
+ham tizim qiymatiga YAQIN, lekin teng emas.
+
+Sabab oddiy: qoidani hech kim tekshirmasdi. Yozilgan qoida —
+niyat; tekshiriladigan qoida — poydevor. Ikkalasi bir narsa emas.
+
+Endi `web_sinov.py` uni o'zi qo'riqlaydi (86 -> 100 tekshiruv).
+Qoida yozganda darhol so'ra: buni nima tekshiradi? Javob "odam
+esida tutadi" bo'lsa, u qoida emas — umid.
+
+Yon topilma: `privacy.html` `ober-ui.css` ni umuman ulamaydi va o'z
+tokenlarini takrorlaydi — qiymatlari ham farq qiladi (orta 16 vs 14,
+katta 20 vs 22). Bir fayl tizimdan chiqib ketsa, uni faqat o'lchov
+ko'rsatadi.
+
+
+## 2026-08-15: Serverni tekshirdim, ekranni tekshirmadim
+
+Aziz "hech narsa chiqmadi" dedi. Men serverdagi HTML'ni tekshirdim —
+o'zgarish bor edi. "Deploy o'tdi, kesh muammosi" deb uch marta qayta
+yubordim. Uchinchi urinishda RENDER qilib ko'rdim va sabab darhol
+chiqdi: `sw.js` dagi kesh nomi `ober-v1` deb qotib qolgan edi va
+hech qachon o'zgarmasdi.
+
+`activate` hodisasi nomi CACHE ga teng bo'lmagan keshlarni o'chiradi.
+Nom o'zgarmagani uchun o'chiriladigan narsa ham yo'q edi. Ustiga
+statik fayllar `stale-while-revalidate` bilan berilardi — ya'ni
+foydalanuvchi deploydan keyin ESKI kodni ko'rardi.
+
+Bu faqat mening ishimga emas, HAR BIR foydalanuvchiga tegishli edi.
+
+Saboq: "server to'g'ri javob beryapti" bilan "foydalanuvchi to'g'ri
+ko'ryapti" — ikki xil narsa. Frontend o'zgarishidan keyin manba
+kodni emas, EKRANNI tekshirish kerak.
+
+## 2026-08-15: O'z test asbobim uch marta yolg'on gapirdi
+
+`srcdoc` stendim: (1) eski hujjatni ushlab qoldi, chunki ramkani
+qayta ishlatgandim; (2) `f.onload` srcdoc yuklanishidan OLDIN, bo'sh
+`about:blank` uchun ishladi; (3) `location.search` bo'sh bo'lgani
+uchun qidiruv umuman yugurmadi.
+
+Har uchalasida ham o'lchov "kod ishlamayapti" deb ko'rsatdi, aslida
+STEND ishlamayotgan edi. Bir marta esa `/api/javob/raqam` ni
+"himoyasiz" deb belgiladim — tekshirsam, himoya 28 qator pastda edi,
+mening vositam blokni erta kesgan.
+
+Saboq: vosita ham tekshirilishi kerak. Kutilmagan natija chiqsa,
+avval VOSITANI shubha ostiga ol, keyin kodni.
+
+## 2026-08-15: Qoida haqida yozish qoidani buzadi
+
+`web_sinov` "JS ichida HTML izohi bo'lmasin" qoidasini oddiy matn
+qidiruvi bilan tekshiradi. Men uni izohda TUSHUNTIRISH uchun o'sha
+belgini yozdim — sinov yiqildi. Keyin `goto` bilan ham, `<!--` bilan
+ham takrorladim. Bir kunda to'rt marta.
+
+Va to'rtinchisi HAQIQIY xato edi: sotuvchi sahifasining ro'yxat
+kartasi JS shablon satridan chiziladi, men u yerga HTML izohi
+qo'ydim. Bu 12-avgustda kabinetni bo'sh ochirgan xatoning aynan
+o'zi. Sinov bo'lmaganda buzuq sahifani chiqarib yuborardim.
+
+Saboq: sodda qo'riqchi yolg'on tinchlik bermaydi. Taqiqlangan
+naqshni izohda ham yozmang — so'z bilan tushuntiring.
+
 ## 2026-08-12: O'ramning o'zi yo'q edi — u qo'shni ettitasini ham cho'zdi
 
 Jonli lenta qatori 1394px balandlikda edi, har karta 144x1384 — jonli

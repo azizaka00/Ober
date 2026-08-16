@@ -190,6 +190,28 @@
   .empty strong{display:block;color:var(--navy);font-size:19px;margin-bottom:8px}
   .empty>span{display:block;max-width:38ch;margin:0 auto;line-height:1.5}
   .empty a{display:inline-block;margin-top:16px;color:#fff;background:var(--navy);padding:11px 16px;border-radius:var(--r-orta);text-decoration:none;font-weight:800}
+  /* BO'SH HOLATDAGI SO'ROV MAYDONI (2026-08-15).
+     Bo'sh ekran endi berk ko'cha emas — amal shu yerda bajariladi.
+     Maydon va tugma bitta qatorda, telefonda ham: 320px da ham
+     sig'adi, chunki tugma matni qisqa va maydon qisqaradi. */
+  .empty-sora{
+    display:flex;gap:8px;width:100%;max-width:420px;margin:0 auto;
+  }
+  .empty-sora input{
+    flex:1;min-width:0;min-height:46px;padding:0 14px;
+    border:1px solid var(--line-strong);border-radius:var(--r-kichik);
+    background:#fff;color:var(--text);font:inherit;font-size:14px;
+  }
+  .empty-sora input:focus{
+    outline:0;border-color:var(--navy);
+    box-shadow:0 0 0 3px rgba(10,43,99,.10);
+  }
+  .empty-sora button{
+    flex:none;min-height:46px;padding:0 18px;border:0;
+    border-radius:var(--r-kichik);background:var(--cta-gradient);
+    color:var(--on-cta);font:inherit;font-size:13.5px;font-weight:800;
+    cursor:pointer;white-space:nowrap;
+  }
   .empty-actions{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:18px}
   .empty-actions a{margin-top:0}
   .empty-retry{
@@ -219,6 +241,22 @@
   .chat-head{padding:14px 17px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 44px minmax(0,1fr) auto;gap:11px;align-items:center;background:rgba(255,255,255,.92);position:sticky;top:0;z-index:4}
   .chat-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px}
   /* Onlayn vaqtni yashirish — Telegramdagi kabi tanlov */
+  /* TEGINISH MAYDONI (2026-08-16).
+
+     Bu ikki tugma chat sarlavhasida turadi — telefonda eng ko'p
+     bosiladigan joy. Balandligi 32 va 34 px: ko'z uchun to'g'ri
+     (sarlavha ingichka bo'lishi kerak), barmoq uchun kichik.
+     iOS 44 px, Android 48 dp talab qiladi.
+
+     Kattalashtirish o'rniga KO'RINMAS maydon qo'shamiz: `::after`
+     tugmadan tashqariga chiqadi va bosishni ushlaydi. Ko'rinish
+     o'zgarmaydi, barmoq esa 44 px topadi. Loyihada bu usul
+     `.link-btn` va `.tg-keyin` da ham ishlatilgan. */
+  .quiet-toggle,.choose-active{position:relative}
+  .quiet-toggle::after,.choose-active::after{
+    content:"";position:absolute;left:0;right:0;
+    top:50%;transform:translateY(-50%);height:44px;
+  }
   .quiet-toggle{min-height:32px;padding:0 11px;border:1px solid var(--line);
     border-radius:var(--r-pill);background:rgba(255,255,255,.72);color:var(--muted);
     font:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
@@ -445,6 +483,11 @@
 <div class="toast" id="toast" role="status"></div>
 <script src="/i18n.js"></script>
 <script src="/tabbar.js"></script>
+<!-- Web Push obunasi. `OBER_PUSH` global obyektini beradi.
+     Ilova YOPIQ bo'lganda ham bildirishnoma kelishi shu faylga
+     bog'liq: usiz faqat sahifa ochiq turgandagi lokal xabar
+     ishlaydi (2026-08-15). -->
+<script src="/push.js"></script>
 <script>
 const $ = s => document.querySelector(s);
 const tr = text => window.OBER_I18N.t(text);
@@ -460,6 +503,23 @@ let storedSeller = demoMode ? "" : (localStorage.getItem("ober_sotuvchi") || "")
 if(/^\d+$/.test(storedSeller)){
   localStorage.removeItem("ober_sotuvchi");
   storedSeller = "";
+}
+/* TIKLASH HAVOLASI (2026-08-15).
+   Telegram boti `?kalit=<token>` bilan havola yuboradi. Xaridor uni
+   YANGI telefonda yoki tozalangan brauzerda ochadi — o'sha yerda
+   localStorage bo'sh bo'ladi.
+
+   Shuning uchun kalit localStorage'dan OLDIN o'qiladi va darhol
+   saqlanadi: keyingi ochilishlarda havola kerak bo'lmaydi.
+
+   Havola manzil satridan darhol olib tashlanadi — token nusxa
+   olinadigan joyda, tarixda va ulashishda qolmasin. */
+const tiklashKaliti = params.get("kalit") || "";
+if(tiklashKaliti && !demoMode){
+  localStorage.setItem("ober_sorov", tiklashKaliti);
+  const toza = new URL(location.href);
+  toza.searchParams.delete("kalit");
+  history.replaceState(null, "", toza.toString());
 }
 let requestId = demoMode ? "" : (localStorage.getItem("ober_sorov") || "");
 if(/^\d+$/.test(requestId)){
@@ -537,9 +597,33 @@ async function enablePush(){
   if(Notification.permission==="denied"){updatePushUI();toast("Brauzer sozlamasidan ruxsat bering");return}
   const permission=await Notification.requestPermission();
   if(permission==="granted"){
-    localStorage.setItem("ober_push","1");await registerServiceWorker();toast("Brauzer xabarlari yoqildi");
+    localStorage.setItem("ober_push","1");await registerServiceWorker();
+    // HAQIQIY PUSH OBUNASI (2026-08-15).
+    // Yuqoridagi qism faqat sahifa OCHIQ turganda ishlaydi:
+    // sahifa `/api/bildirishnomalar` ni so'rab, service worker'ga
+    // xabar uzatadi. Ilova yopilsa hech narsa kelmaydi.
+    //
+    // Telegram kabi ishlashi uchun server tomondan push kerak.
+    // `OBER_PUSH.sora` obunani serverga yozadi va shundan keyin
+    // ilova yopiq bo'lsa ham telefon jiringlaydi.
+    const holat = window.OBER_PUSH
+      ? await window.OBER_PUSH.sora(role, actorId) : "qollamaydi";
+    toast(holat === "yoqildi"
+      ? "Bildirishnoma yoqildi — ilova yopiq bo‘lsa ham keladi"
+      : "Brauzer xabarlari yoqildi");
   }
   updatePushUI();
+}
+
+/* Ruxsat allaqachon berilgan bo'lsa — jimgina qayta obuna bo'lamiz.
+   Obuna muddati tugashi yoki brauzer uni tozalashi mumkin; bunda
+   foydalanuvchi "yoqilgan" deb o'ylab yuraveradi, aslida esa hech
+   narsa kelmaydi. Har ochilishda tiklash shuni oldini oladi. */
+async function pushTikla(){
+  if(!window.OBER_PUSH || !actorId) return;
+  if(Notification.permission !== "granted") return;
+  if(localStorage.getItem("ober_push") !== "1") return;
+  await window.OBER_PUSH.tikla(role, actorId);
 }
 async function showBrowserNotification(item){
   if(Notification.permission!=="granted"||localStorage.getItem("ober_push")!=="1")return;
@@ -597,9 +681,31 @@ function renderNoActor(){
     actions.push('<a href="/sotuvchi">Sotuvchi sifatida kirish</a>');
     if(requestId)actions.push(`<a class="empty-secondary" href="${roleHref("xaridor")}">Xaridor chatiga o‘tish</a>`);
   }else if(role==="xaridor" && !requestId){
-    title="Faol xaridor so‘rovi yo‘q";
-    copy="Bosh sahifadan so‘rov yuboring yoki sotuvchi chatiga o‘ting.";
-    actions.push('<a href="/">So‘rov yuborish</a>');
+    /* BERK KO'CHA YOPILDI (2026-08-15).
+
+       Ilgari bu yerda bitta havola turardi: "So'rov yuborish" -> "/".
+       Ya'ni tugma va'da qilgan ishni BAJARMASDI: odam bosh sahifaga
+       tushardi, u yerda qidiruv yozardi, natijani kutardi, pastga
+       surardi va faqat o'shanda so'rash qatorini topardi. To'rt qadam
+       — "So'rov yuborish" deb yozilgan bitta tugmadan keyin.
+
+       IndiaMART'ning bo'sh holatlari teskarisini qiladi: keyingi
+       amalni AYTADI va tugma o'sha amalni bajaradi.
+
+       Endi maydon shu yerda. Odam nima kerakligini yozadi va
+       to'g'ridan-to'g'ri natija + so'rash qatoriga tushadi. */
+    title="Hali so‘rov yubormagansiz";
+    copy="Nima kerakligini shu yerda yozing — mos sotuvchilar javob beradi.";
+    actions.push(
+      '<form class="empty-sora" id="empty-sora">'
+      + '<input id="empty-sora-matn" placeholder="Masalan: divan kerak, charm"'
+      + ' aria-label="Nima kerak" autocomplete="off">'
+      + '<button type="submit">So‘rash</button></form>');
+    /* Sessiyani yo'qotganlar uchun — aynan shu ekran ular tushadigan
+       joy. Brauzer tozalangan yoki telefon almashtirilgan bo'lsa,
+       Telegram boti raqam orqali suhbatlarni qaytaradi. */
+    actions.push('<a class="empty-secondary" id="tiklash-havola" href="#" hidden>'
+                 + 'Suhbatlarim yo‘qoldi — tiklash</a>');
     if(storedSeller)actions.push(`<a class="empty-secondary" href="${roleHref("sotuvchi")}">Sotuvchi chatiga o‘tish</a>`);
   }
   if(!actions.length){
@@ -607,6 +713,27 @@ function renderNoActor(){
     actions.push('<a class="empty-secondary" href="/sotuvchi">Sotuvchi sifatida kirish</a>');
   }
   $("#offer-list").innerHTML=`<div class="empty"><strong>${title}</strong><span>${copy}</span><div class="empty-actions">${actions.join("")}</div></div>`;
+
+  /* Maydondan to'g'ridan-to'g'ri natijaga. `/?q=` qidiruvni
+     yugurtiradi va so'rash qatori o'sha sahifada chiqadi. */
+  const forma = $("#empty-sora");
+  if(forma) forma.onsubmit = ev => {
+    ev.preventDefault();
+    const matn = ($("#empty-sora-matn")?.value || "").trim();
+    if(!matn){ $("#empty-sora-matn")?.focus(); return; }
+    location.href = "/?q=" + encodeURIComponent(matn);
+  };
+
+  /* Tiklash havolasi faqat bot ishlayotgan bo'lsa ko'rinadi —
+     ishlamaydigan havola ko'rsatishdan ko'ra yashirgan yaxshi. */
+  const tiklash = $("#tiklash-havola");
+  if(tiklash) fetch("/api/holat").then(r=>r.json()).then(h=>{
+    if(!h || !h.bot) return;
+    tiklash.href = "https://t.me/" + h.bot;
+    tiklash.target = "_blank";
+    tiklash.rel = "noopener";
+    tiklash.hidden = false;
+  }).catch(()=>{});
 }
 
 function renderInboxError(){
@@ -893,7 +1020,11 @@ const yashiringan = () => document.visibilityState === "hidden";
 
 async function boot(){
   renderRoleSwitch();
-  await registerServiceWorker();updatePushUI();await loadInbox();await loadNotifications(false);
+  await registerServiceWorker();updatePushUI();
+  // Obunani jimgina tiklaymiz — natijasini kutmaymiz, chat
+  // yuklanishi bundan sekinlashmasin.
+  pushTikla();
+  await loadInbox();await loadNotifications(false);
   const requestedChat=Number(params.get("chat")||0);if(requestedChat)await openChat(requestedChat);
   setInterval(()=>{if(yashiringan())return;loadNotifications();if(!activeChat)loadInbox()},5000);
   // Tabga qaytilganda darhol yangilaymiz — foydalanuvchi kutib

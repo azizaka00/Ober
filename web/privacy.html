@@ -32,9 +32,17 @@
     --line:#e3e8f0;
     --text:#101828;
     --text-2:#5a6478;
+    /* DIQQAT (2026-08-16): bu sahifa `ober-ui.css` ni ULAMAYDI —
+       o'z tokenlarini takrorlaydi. Va qiymatlari tizimdan FARQ
+       qiladi: tizimda --r-orta:14px, --r-katta:20px. Ya'ni maxfiylik
+       sahifasi qolgan saytdan biroz boshqacha yumaloq.
+       Ataylab emas, e'tibordan chetda qolgan. Tuzatish uchun
+       ober-ui.css ni ulash kerak, lekin u butun sahifa ko'rinishini
+       o'zgartiradi — alohida o'lchov bilan qilinadi. */
     --r-kichik:10px;
     --r-orta:16px;
     --r-katta:22px;
+    --r-belgi:5px;
   }
   *{box-sizing:border-box}
   [hidden]{display:none!important}
@@ -85,7 +93,7 @@
   code{
     background:var(--surface-2);
     border:1px solid var(--line);
-    border-radius:6px;
+    border-radius:var(--r-belgi);
     padding:1px 6px;
     font-size:13px;
   }

@@ -242,10 +242,35 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         Sabab: sahifa Cache-Control'siz berilardi, brauzer esa uni
         o'zicha keshlab qo'yadi. Endi har ochilishda server tekshiriladi.
         JS/CSS bitta faylning ichida, shuning uchun bu yetarli.
+
+        2026-08-15: `no-cache` YETARLI EMAS ekan. U "ishlatishdan
+        oldin tekshir" degani, lekin tekshirish uchun brauzerga
+        VALIDATOR kerak — bizda na ETag, na Last-Modified bor edi.
+        Tekshiradigan narsa yo'q, shuning uchun brauzer eskisini
+        berardi.
+
+        Bugun shu meni bir marta chalg'itdi: sotuvchi sahifasini
+        deploy qildim, server yangi faylni beryapti, lekin brauzer
+        eskisini ko'rsatib turdi. Men "deploy yetmadi" deb o'yladim.
+        Foydalanuvchi uchun bu "Aziz tuzatdi, menda o'zgarmadi".
+
+        `ober-ui.css` va `tabbar.js` uchun bu 2026-08-12 da ETag
+        bilan tuzatilgan edi (`_ulashilgan`), lekin HTML sahifalar
+        e'tibordan chetda qolgan. Endi ular ham xuddi shunday.
         """
+        yol = WEB / fayl
+        st = yol.stat()
+        etag = '"%x-%x"' % (int(st.st_mtime), st.st_size)
+        boshliqlar = {"Cache-Control": "no-cache, must-revalidate",
+                      "ETag": etag}
+        if self.headers.get("If-None-Match") == etag:
+            self.send_response(304)
+            for k, v in boshliqlar.items():
+                self.send_header(k, v)
+            self.end_headers()
+            return
         self._yubor(200, "text/html; charset=utf-8",
-                    (WEB / fayl).read_bytes(),
-                    {"Cache-Control": "no-cache, must-revalidate"})
+                    yol.read_bytes(), boshliqlar)
 
     def do_GET(self):                          # noqa: N802
         u = urlparse(self.path)
@@ -503,6 +528,16 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                 # bildirishnomasiz ishlaydi.
                 self._yubor(503, "application/json; charset=utf-8",
                             json.dumps({"xato": "push sozlanmagan"}).encode())
+            return
+
+        # KUTAYOTGAN TALAB — sotuvchi sahifasi uchun, ochiq.
+        # Faqat so'rov matni chiqadi: telefon, ism, token yo'q.
+        # Matnni odam qidiruv qatoriga o'zi yozgan.
+        if u.path == "/api/talab":
+            self._yubor(200, "application/json; charset=utf-8",
+                        json.dumps(baza.kutayotgan_talab(),
+                                   ensure_ascii=False).encode(),
+                        {"Cache-Control": "public, max-age=60"})
             return
 
         if u.path == "/push.js":
@@ -841,9 +876,20 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                 jami = c.execute(
                     "SELECT COUNT(*) n FROM elonlar WHERE faol=1"
                 ).fetchone()["n"]
+            # BOT NOMI — sessiyani yo'qotgan xaridor uchun (2026-08-15).
+            # U chat bo'limiga kirganda "suhbatlarimni tiklash"
+            # havolasini ko'radi; havola shu nomdan quriladi.
+            # Bot username ochiq ma'lumot (Telegram'da izlab topiladi),
+            # shuning uchun bu yerda berish xavfsiz. Token EMAS.
+            try:
+                import tg
+                bot = tg.bot_nomi() if tg.token() else ""
+            except Exception:                     # noqa: BLE001
+                bot = ""
             self._yubor(200, "application/json; charset=utf-8",
                         json.dumps({"jami": jami,
                                     "daraxt": joylar.daraxt(),
+                                    "bot": bot,
                                     "ai_rasm": ai_vision.holat()},
                                    ensure_ascii=False).encode())
             return
@@ -1333,8 +1379,16 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
             # keyin yetib oladi (tahlil.py dagi qoida bilan bir xil).
             try:
                 tahlil.bitta(elon_id)
-            except Exception:
-                pass
+            except Exception as e:                # noqa: BLE001
+                # 2026-08-15: bu yerda `pass` turardi. Tahlil yiqilsa
+                # e'lon indeksga TUSHMAYDI — sotuvchi e'lon joylagan
+                # bo'ladi, lekin uni qidiruvda hech kim topolmaydi.
+                # Va hech qanday iz qolmasdi: na jurnal, na xabar.
+                #
+                # E'lonning o'zi saqlangan, shuning uchun javob
+                # baribir 200 — lekin endi sabab jurnalda qoladi.
+                print(f"  [tahlil] e'lon {elon_id} indekslanmadi: "
+                      f"{type(e).__name__}: {e}", flush=True)
             self._yubor(200, "application/json; charset=utf-8",
                         json.dumps({"ok": True, "id": elon_id},
                                    ensure_ascii=False).encode())
@@ -1405,8 +1459,16 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
             # Tahrirlangach yangi matn bo'yicha indeks yangilanadi.
             try:
                 tahlil.bitta(elon_id)
-            except Exception:
-                pass
+            except Exception as e:                # noqa: BLE001
+                # 2026-08-15: bu yerda `pass` turardi. Tahlil yiqilsa
+                # e'lon indeksga TUSHMAYDI — sotuvchi e'lon joylagan
+                # bo'ladi, lekin uni qidiruvda hech kim topolmaydi.
+                # Va hech qanday iz qolmasdi: na jurnal, na xabar.
+                #
+                # E'lonning o'zi saqlangan, shuning uchun javob
+                # baribir 200 — lekin endi sabab jurnalda qoladi.
+                print(f"  [tahlil] e'lon {elon_id} indekslanmadi: "
+                      f"{type(e).__name__}: {e}", flush=True)
             self._yubor(200, "application/json; charset=utf-8",
                         json.dumps({"ok": True, "id": elon_id},
                                    ensure_ascii=False).encode())

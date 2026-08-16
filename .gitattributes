@@ -1,0 +1,58 @@
+# OBER — SATR OXIRI QOIDASI (2026-08-15)
+#
+# NEGA KERAK
+# ----------
+# Bu fayl yo'q edi va natijada repo ikki tomonlama buzilgan edi:
+#
+#   - `.py`, `.html`, `.js` fayllari CRLF ga o'girilgan edi (git
+#     ichida LF turardi). Natija: `git diff` 21 789 qo'shilgan va
+#     21 724 o'chirilgan qator ko'rsatardi. Haqiqiy o'zgarish esa
+#     atigi 69 qator edi. Ya'ni diff foydasiz bo'lib qolgandi va
+#     nima o'zgarganini ko'rib bo'lmasdi.
+#
+#   - `.bat` fayllari esa LF bo'lib qolgandi — TESKARISI.
+#     `NAVBATCHI.bat` ichida `goto :aylana` halqasi bor. cmd.exe
+#     `goto` yorlig'ini fayl ichida BAYT bo'yicha izlaydi va LF
+#     satr oxirida adashishi mumkin. Navbatchi 2026-08-14 da ikki
+#     marta osilib qolgan va uch marta buyruq faylini o'chirib
+#     yuborgan edi — sabab shu bo'lishi ehtimoli yuqori.
+#
+# Endi qoida faylda yozilgan: kim qaysi tahrirchi ishlatishidan
+# qat'i nazar, git normallashtiradi.
+
+# Sukut bo'yicha: git o'zi matn/binar ekanini aniqlaydi, repoda
+# LF saqlaydi.
+* text=auto eol=lf
+
+# WINDOWS BUYRUQ FAYLLARI — CRLF SHART.
+# Yuqoridagi sababga qara. Bu istisno emas, talab.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Gradle wrapper — bubblewrap yaratadi, biz tahrirlamaymiz.
+gradlew text eol=lf
+gradlew.bat text eol=crlf
+
+# BINAR FAYLLAR — git ularga umuman tegmasin.
+# `text=auto` odatda o'zi aniqlaydi, lekin aniq yozib qo'yish
+# xavfsizroq: bir marta noto'g'ri normallashtirilgan shrift yoki
+# rasm buzilib qoladi va buni sezish qiyin.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff2 binary
+*.woff binary
+*.jar binary
+*.aab binary
+*.apk binary
+*.keystore binary
+*.jks binary
+*.db binary
+*.pptx binary
+*.pdf binary
+
+# Diffda foydasiz shovqin bermasin.
+*.min.js -diff
+data/olx-daraxt.txt -diff

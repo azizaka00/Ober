@@ -183,6 +183,41 @@ def main() -> int:
         else:
             print("  OK   %-30s -> %s" % (matn[:28], natija or "(bo'sh)"))
 
+    # ── 4. O'ZINGGA O'Z SO'ROVING KELMASIN (2026-08-15) ──────────────
+    #
+    # Aziz topgan xato: u telefon sotuvchisi bo'lib ro'yxatdan o'tgan,
+    # keyin o'zi telefon so'ragan va bildirishnoma o'ziga kelgan.
+    # Kichik bozorda bu odatiy holat — sotuvchi ham xaridor bo'ladi.
+    #
+    # Bog'lovchi belgi telefon raqami. Format turlicha bo'lgani uchun
+    # oxirgi 9 raqam solishtiriladi: +998901234567, 998901234567 va
+    # 901234567 — bitta odam.
+    print("\n=== 4. SOTUVCHI O'Z SO'ROVINI OLMASIN ===")
+
+    class _Qator(dict):
+        def __getitem__(self, k):
+            return self.get(k)
+
+    holatlar = [
+        ("+998901234567", "+998901234567", True,  "aynan bir xil"),
+        ("+998901234567", "998901234567",  True,  "+ belgisisiz"),
+        ("+998901234567", "901234567",     True,  "faqat 9 xona"),
+        ("+998901234567", "+998901234568", False, "boshqa raqam"),
+        ("+998901234567", "",              False, "sotuvchida raqam yo'q"),
+        ("",             "+998901234567",  False, "so'rovda raqam yo'q"),
+    ]
+    for sorov_aloqa, sotuvchi_aloqa, kutilgan, izoh in holatlar:
+        jami += 1
+        o9 = lambda x: (lambda r: r[-9:] if len(r) >= 9 else "")(
+            "".join(ch for ch in str(x or "") if ch.isdigit()))
+        chetlanadi = bool(o9(sorov_aloqa)) and o9(sotuvchi_aloqa) == o9(sorov_aloqa)
+        if chetlanadi != kutilgan:
+            xato += 1
+            print("  XATO %-24s kutilgan %s, chiqdi %s"
+                  % (izoh, kutilgan, chetlanadi))
+        else:
+            print("  OK   %-24s chetlanadi=%s" % (izoh, chetlanadi))
+
     print("\n  %d to'g'ri · %d xato  (%d tadan)" % (jami - xato, xato, jami))
     return 1 if xato else 0
 

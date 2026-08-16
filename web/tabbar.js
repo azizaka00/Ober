@@ -46,6 +46,70 @@
   st.textContent = [
     "/* OBER pastki tabbar — yengil va bir xil, 2026-08-13 */",
     "[hidden]{display:none!important}",
+    /* TEPA PANELDAGI QIDIRUV (2026-08-15) — ichki sahifalarda.
+       Logotip bilan amallar orasida, qolgan joyni oladi. Telefonda
+       ham sig'sin: `min-width:0` bo'lmasa flex element qisqarmaydi
+       va panel chetdan chiqib ketadi. */
+    ".ober-top-qidiruv{",
+    "  flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:6px;",
+    "  max-width:520px;margin:0 12px;padding:0 4px 0 12px;",
+    "  min-height:40px;border:1px solid rgba(10,43,99,.14);",
+    "  border-radius:var(--r-pill,999px);background:rgba(255,255,255,.72);",
+    "  -webkit-backdrop-filter:var(--shisha);backdrop-filter:var(--shisha);",
+    "  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);",
+    "  transition:border-color 140ms ease,box-shadow 140ms ease;",
+    "}",
+    ".ober-top-qidiruv:focus-within{",
+    "  border-color:var(--navy,#0a2b63);",
+    "  box-shadow:0 0 0 3px rgba(10,43,99,.10);",
+    "}",
+    ".ober-top-qidiruv input{",
+    "  flex:1;min-width:0;align-self:stretch;border:0;outline:0;",
+    "  background:transparent;color:var(--text,#111a2c);",
+    "  font:inherit;font-size:13.5px;",
+    "}",
+    ".ober-top-qidiruv input::placeholder{color:var(--faint,#98a0af)}",
+    ".ober-top-qidiruv button{",
+    "  flex:none;width:32px;height:32px;border:0;border-radius:50%;",
+    "  display:grid;place-items:center;cursor:pointer;",
+    "  background:var(--navy,#0a2b63);color:#fff;",
+    "}",
+    ".ober-top-qidiruv svg{width:15px;height:15px}",
+    /* 380px dan tor ekranda logotip + qidiruv + til bir qatorga
+       sig'maydi. Qidiruv o'z qatoriga tushadi. */
+    "@media (max-width:400px){",
+    "  .topbar-inner{flex-wrap:wrap;row-gap:8px}",
+    "  .ober-top-qidiruv{order:9;flex-basis:100%;margin:0 0 8px;max-width:none}",
+    "}",
+    /* BOSH SAHIFA — YOPISHQOQ TEPA PANEL + NAVBATLI QIDIRUV
+       (2026-08-16).
+
+       `--navbat` sinfi faqat bosh sahifada qo'yiladi. Boshlanishi
+       yashirin: hero'da katta quti bor, ikkitasi birga chalkash.
+       Hero qutisi surilib ketgach `body` ga `ober-tepa-qidiruv-
+       ochiq` qo'shiladi va bu ochiladi.
+
+       `visibility` ham kerak: faqat `opacity:0` bo'lsa maydon
+       ko'rinmasa ham Tab bilan fokus olardi va ekran o'quvchi uni
+       o'qirdi. */
+    "body.ober-bosh-yopishqoq .topbar{",
+    "  position:sticky;top:0;z-index:30;",
+    "  background:rgba(255,255,255,.9);",
+    "  -webkit-backdrop-filter:var(--shisha-quyuq);",
+    "  backdrop-filter:var(--shisha-quyuq);",
+    "}",
+    ".ober-top-qidiruv--navbat{",
+    "  opacity:0;visibility:hidden;",
+    "  transform:translateY(-6px);",
+    "  transition:opacity .18s ease,transform .18s ease,visibility .18s;",
+    "}",
+    "body.ober-tepa-qidiruv-ochiq .ober-top-qidiruv--navbat{",
+    "  opacity:1;visibility:visible;transform:none;",
+    "}",
+    /* Harakatni kamaytirish so'ralgan bo'lsa — siljish yo'q. */
+    "@media (prefers-reduced-motion:reduce){",
+    "  .ober-top-qidiruv--navbat{transition:none;transform:none}",
+    "}",
     "body.ober-tabbar-joy{padding-bottom:calc(70px + env(safe-area-inset-bottom));}",
     "body.ober-tabbar-joy .results{padding-bottom:calc(92px + env(safe-area-inset-bottom));}",
     ".ober-tabbar{",
@@ -222,6 +286,93 @@
   if (!joy) {
     var til = document.querySelector(".topbar .lang-slot, .lang-slot");
     joy = til ? til.parentElement : document.querySelector(".topbar-inner");
+  }
+
+  // TEPA PANELDA QIDIRUV — ICHKI SAHIFALARDA (2026-08-15).
+  //
+  // O'lchov: qidiruv maydoni faqat `index` va `kategoriyalar` da bor.
+  // `sotuvchi`, `takliflar`, `elon` da UMUMAN yo'q. E'lonni o'qib
+  // turgan odam boshqa narsa qidirmoqchi bo'lsa, avval bosh sahifaga
+  // qaytishi kerak edi.
+  //
+  // IndiaMART qidiruvni TEPA PANELDA saqlaydi — u har sahifada bor va
+  // odam kontekstni tark etmaydi. Aziz aynan shuni ko'rsatdi.
+  //
+  // BOSH SAHIFA — 2026-08-16 da QO'SHILDI.
+  //
+  // Ilgari bu yerda "bosh sahifada qo'yilmaydi, ikkitasi chalkash"
+  // deb yozilgandi. Aziz "ikkalasi ham bo'lsin" dedi va u haq —
+  // lekin ikkalasi BIR VAQTDA ko'rinsa chindan chalkash bo'ladi.
+  //
+  // Yechim: navbat bilan. Hero qutisi ekranda turganda tepa
+  // qidiruv yashirin; u yuqoriga surilib ketgach tepa panel
+  // yopishadi va ingichka qidiruv paydo bo'ladi. Ya'ni qidiruv
+  // HECH QACHON yo'qolmaydi, lekin hech qachon ikkilanmaydi ham.
+  //
+  // Bosh sahifada tepa panel ilgari umuman yopishmasdi — pastga
+  // surganda ketib qolardi va qidiruvga qaytish uchun tepaga
+  // qaytish kerak edi.
+  // 2026-08-16: bosh sahifaga qo'shish BOSHLANDI VA QAYTARILDI.
+  // Yopishqoq panel va qidiruvni joylash ishladi, lekin ko'rsatish
+  // qoidasi ishlamadi: `body.ober-tepa-qidiruv-ochiq` sinfi
+  // qo'yilganda ham hisoblangan `visibility` `hidden` bo'lib
+  // qolaverdi. Selektor mos keladi (`el.matches()` -> true), qoida
+  // hujjatda bor, xususiylik yuqori — sababi topilmadi.
+  // Yarim ishlaydigan narsa jonli saytda qolmasin.
+  var boshSahifa = false;
+  var ichkiSahifa = boshSahifa ||
+                    path.indexOf("/sotuvchi") === 0 ||
+                    path.indexOf("/takliflar") === 0 ||
+                    path.indexOf("/elon") === 0;
+  var topbarIchi = document.querySelector(".topbar-inner");
+  if (ichkiSahifa && topbarIchi && !document.querySelector(".ober-top-qidiruv")) {
+    var forma = document.createElement("form");
+    forma.className = "ober-top-qidiruv";
+    forma.setAttribute("role", "search");
+    forma.action = "/";
+    forma.method = "get";
+    var maydon = document.createElement("input");
+    maydon.name = "q";
+    maydon.type = "search";
+    maydon.autocomplete = "off";
+    maydon.placeholder = tr("Nima kerak?");
+    maydon.setAttribute("aria-label", tr("Qidirish"));
+    var tugma = document.createElement("button");
+    tugma.type = "submit";
+    tugma.setAttribute("aria-label", tr("Qidirish"));
+    tugma.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+      + ' stroke-width="2.2" stroke-linecap="round" aria-hidden="true">'
+      + '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+    forma.appendChild(maydon);
+    forma.appendChild(tugma);
+    // Bo'sh so'rov bilan bosh sahifaga o'tib ketmasin.
+    forma.addEventListener("submit", function (e) {
+      if (!maydon.value.trim()) { e.preventDefault(); maydon.focus(); }
+    });
+    // Logotipdan KEYIN, amallardan OLDIN — IndiaMART tartibi.
+    var brend = topbarIchi.querySelector(".brand");
+    if (brend && brend.nextSibling) topbarIchi.insertBefore(forma, brend.nextSibling);
+    else topbarIchi.appendChild(forma);
+
+    // BOSH SAHIFA: navbat bilan ko'rsatish (2026-08-16).
+    //
+    // Hero'dagi katta quti ekranda ekan — tepa qidiruv yashirin.
+    // U ketgach tepa panel yopishadi va qidiruv paydo bo'ladi.
+    //
+    // `IntersectionObserver` ishlatiladi, `scroll` hodisasi emas:
+    // scroll har kadrda o'qiladi va telefonni qizdiradi, observer
+    // esa faqat chegara kesib o'tilganda uyg'onadi.
+    var heroQidiruv = boshSahifa
+      && document.querySelector(".hero .search-panel");
+    if (heroQidiruv && "IntersectionObserver" in window) {
+      document.body.classList.add("ober-bosh-yopishqoq");
+      forma.classList.add("ober-top-qidiruv--navbat");
+      new IntersectionObserver(function (yozuvlar) {
+        var korinmoqda = yozuvlar[0].isIntersecting;
+        document.body.classList.toggle("ober-tepa-qidiruv-ochiq",
+                                       !korinmoqda);
+      }, {rootMargin: "-8px 0px 0px 0px"}).observe(heroQidiruv);
+    }
   }
   if (joy) {
     desktopTablar.forEach(function (x) {

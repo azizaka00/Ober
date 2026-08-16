@@ -92,6 +92,8 @@ data/javob.txt
 # alohida maxfiylik masalasi, (2) bu bizning bozorga chiqish
 # taktikamiz, raqobatchiga ko'rsatmaymiz.
 data/jalb-qilish.txt
+# `jalb.py` chiqaradigan nishonli ro'yxat — ichida telefon raqamlari.
+data/jalb-nishon.txt
 
 # ── ISHLAB CHIQARILGAN VA JURNAL FAYLLARI ────────────────────────────
 # Bular kod emas, natija. Har ishga tushirishda qaytadan yasaladi.
@@ -163,3 +165,10 @@ memory/state.md
 .claude/skills/
 skills-lock.json
 reports/**/*.png
+
+# mahalliy sinov muhiti
+/tmp/ober-sinov/
+sinov-muhiti/
+
+# TWA build artefakti — har qurishda o'zgaradi
+manifest-checksum.txt

@@ -233,6 +233,35 @@
      chalkashib ketmasligi kerak". Hech narsa sotmaydigan odam bu
      sahifaga tushsa, ro'yxatdan o'tish shaklidan boshqa hech narsa
      ko'rmasdi va tupikka kirardi. */
+  /* KUTAYOTGAN TALAB — sotuvchini chaqiradigan birinchi narsa.
+     Ro'yxatdan o'tish formasidan YUQORIDA turadi: odam avval
+     "menga nima beradi" ni ko'rsin, keyin maydonlarni. */
+  .talab-quti{
+    margin:0 0 22px;
+    padding:14px 16px;
+    border:1px solid rgba(8,118,74,.22);
+    border-radius:var(--r-orta);
+    background:rgba(8,118,74,.05);
+  }
+  .talab-bosh{margin:0;font-size:14px;color:var(--text)}
+  .talab-bosh b{
+    font-size:22px;color:var(--green);
+    font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  }
+  .talab-bosh span{color:var(--muted)}
+  .talab-royxat{
+    margin:10px 0 0;padding:0;list-style:none;
+    display:flex;flex-direction:column;gap:5px;
+  }
+  .talab-royxat li{
+    color:var(--muted);font-size:12.5px;line-height:1.45;
+    padding-left:14px;position:relative;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .talab-royxat li::before{
+    content:"";position:absolute;left:0;top:7px;
+    width:5px;height:5px;border-radius:50%;background:var(--green);
+  }
   .intro-yonalish{
     margin-top:20px;
     padding:12px 14px;
@@ -618,6 +647,23 @@
     border-radius:var(--r-orta);background:var(--red-soft);color:#842b21;font-size:12.5px}
   .tg-holat-xato button{margin-left:8px;border:0;background:transparent;color:var(--navy);
     font:inherit;font-weight:750;cursor:pointer;text-decoration:underline}
+  /* PUSH KARTASI — Telegram kartasi bilan bir tilda (2026-08-15).
+     Ataylab o'xshash: ikkalasi ham "xabar olish" haqida, faqat
+     yo'li boshqa. Ikki xil uslub bo'lsa foydalanuvchi ularni
+     butunlay boshqa narsa deb o'ylardi. */
+  .push-card{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+    margin:0 0 14px;padding:16px 18px;
+    border:1px solid rgba(8,118,74,.20);border-radius:var(--r-orta);
+    background:rgba(8,118,74,.05);
+  }
+  .push-card h2{margin:0 0 4px;font-size:15px;font-weight:800;color:var(--navy)}
+  .push-card p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.45;max-width:46ch}
+  .push-holat{margin-top:6px!important;color:var(--green)!important;font-weight:700}
+  @media (max-width:560px){
+    .push-card .tg-btn{width:100%}
+  }
   .tg-btn{
     display:inline-flex;align-items:center;justify-content:center;
     min-height:48px;padding:0 22px;
@@ -761,7 +807,15 @@
   }
   .send-btn:hover{background:var(--navy-dark)}
   .send-btn:active{transform:scale(.98)}
+  /* 38 px — barmoq uchun kichik (iOS 44 px talab qiladi). Tugmani
+     kattalashtirmasdan, ko'rinmas `::after` bilan teginish maydonini
+     44 px ga yetkazamiz (2026-08-16). */
+  .decline-btn::after{
+    content:"";position:absolute;left:0;right:0;
+    top:50%;transform:translateY(-50%);height:44px;
+  }
   .decline-btn{
+    position:relative;
     justify-self:start;
     min-height:38px;padding:0 8px;border:0;background:transparent;
     color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;
@@ -930,6 +984,9 @@
   }
 </style>
 <link rel="stylesheet" href="/ober-ui.css">
+<!-- Web Push. Usiz sotuvchi so'rov kelganini bilmaydi: 14 tadan
+     6 tasi Telegramni ham ulamagan (2026-08-15 o'lchovi). -->
+<script src="/push.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#asosiy">Asosiy kontentga o‘tish</a>
@@ -1178,9 +1235,15 @@ function royxatEkrani(){
     </section>
 
     <section class="register-card">
+      <div class="talab-quti" id="talab-quti" hidden>
+        <p class="talab-bosh"><b id="talab-son">0</b> ta xaridor
+          <span>shu hafta javob kutdi</span></p>
+        <ul class="talab-royxat" id="talab-royxat"></ul>
+      </div>
+
       <h2>Sotuvchi sifatida boshlang</h2>
-      <p class="lead">30 soniyada tayyor. Kategoriya daraxti va uzun anketa yo‘q.
-        Odamlar qanday so‘rasa, shunday yozing.</p>
+      <p class="lead">Mos so‘rov kelganda telefoningizga xabar keladi.
+        Narx yozasiz — xaridor siz bilan bog‘lanadi.</p>
 
       <div class="field-group">
         <label for="nom">Ismingiz yoki biznes nomi</label>
@@ -1224,6 +1287,14 @@ function royxatEkrani(){
   };
   maydonEffektlari();
   joylarniOl();
+  /* Talab bloki AYNAN SHU YERDA chaqiriladi (2026-08-15).
+     Ilgari chaqiruv skript oxirida turardi va hech qachon
+     ishlamasdi: `#talab-quti` ro'yxat ekrani chizilgandan KEYIN
+     paydo bo'ladi, chaqiruv esa undan oldin ketardi. Funksiya
+     elementni topmay jimgina qaytardi, keyin karta yangidan
+     chizilardi va uni hech kim to'ldirmasdi.
+     Xato ko'rinmasdi — blok shunchaki yashirin qolardi. */
+  talabniKorsat();
 }
 
 async function joylarniOl(){
@@ -1287,6 +1358,19 @@ async function royxat(){
 }
 
 function chiqish(){
+  /* TASDIQ SO'RALADI (2026-08-15, Aziz topdi).
+     Ilgari tugma bosilishi bilan darhol chiqarib yuborardi.
+
+     Bu oddiy noqulaylik emas. Sotuvchi kirishi TELEFON KODI bilan:
+     chiqib ketgach qaytish uchun Telegram'dan kod kutish kerak, va
+     Telegram ulanmagan bo'lsa (14 tadan 6 tasi shunday) — umuman
+     qaytolmaydi. Tasodifan bosilgan bitta tugma sotuvchini o'z
+     kabinetidan va suhbatlaridan ajratib qo'yardi.
+
+     Tugma tepa panelning burchagida, "Qidirish bo'limiga o'tish"
+     havolasining yonida turadi — noto'g'ri bosish ehtimoli yuqori. */
+  if(!confirm("Chiqasizmi?\n\nQaytish uchun telefon raqamingizga "
+              + "yuboriladigan kod kerak bo‘ladi.")) return;
   // 2026-08-06: tokenni SERVERDA ham o'chirish kerak — localStorage'ni
   // tozalash bilan sessiya bazada tirik qolardi. Endi chiqish tugmasi
   // tokenni serverga yuboradi va u o'chiriladi. So'rov xato bersa ham
@@ -1322,10 +1406,52 @@ function loading(){
 let tgHolat = null;
 let tgYashirildi = false;
 
+/* SOTUVCHINI PUSH'GA OBUNA QILISH (2026-08-15).
+
+   O'lchov: 14 ta sotuvchidan faqat 8 tasi Telegramga ulangan,
+   push obunasi esa 0 ta. Ya'ni 6 ta sotuvchi so'rov kelganini
+   UMUMAN bilmaydi — ular uchun OBER jim turadi.
+
+   Bu 19 ta so'rov javobsiz qolganining bevosita sababi.
+
+   Push tizimi 14-avgustda qurilgan va ishlaydi, faqat sotuvchi
+   kabinetiga ulanmagandi — chat sahifasidagi kabi. Yana o'sha
+   xato: komponent bor, zanjir ulanmagan.
+
+   Ruxsat AVTOMATIK so'ralmaydi. Chrome bir marta rad etilgan
+   so'rovni bir yilga bloklaydi — o'shanda kanal butunlay yopiladi.
+   Shuning uchun faqat ruxsat ALLAQACHON berilgan bo'lsa jimgina
+   qayta obuna bo'lamiz; so'rash esa kabinetdagi tugma orqali. */
+async function pushTikla(){
+  if(!window.OBER_PUSH || !MEN) return;
+  if(!("Notification" in window) || Notification.permission !== "granted") return;
+  await window.OBER_PUSH.tikla("sotuvchi", MEN);
+}
+
+/* Kabinetdagi tugma bosilganda — ongli harakat, ruxsat so'raymiz. */
+async function pushYoq(){
+  if(!window.OBER_PUSH || !MEN) return "qollamaydi";
+  const holat = await window.OBER_PUSH.sora("sotuvchi", MEN);
+  const el = $("#push-holat");
+  if(el){
+    el.textContent = holat === "yoqildi"
+      ? "Yoqildi — so‘rov kelganda telefoningiz jiringlaydi."
+      : holat === "rad"
+        ? "Brauzer sozlamasidan OBER xabarlariga ruxsat bering."
+        : "Bu brauzer bildirishnomani qo‘llamaydi.";
+    el.hidden = false;
+  }
+  return holat;
+}
+
 function sotishIshiniOch(){
   $("#chiq").hidden = false;
   $("#xabarlar-link").hidden = false;
   $("#xabarlar-link").href = "/takliflar?rol=sotuvchi";
+  pushTikla();
+  // Karta tab paneli chizilgandan keyin joylashadi — `sorovlar()`
+  // va `elonlarim()` ikkalasi ham `tabPaneli()` ni qayta chizadi,
+  // shuning uchun chaqiruv o'sha yerda (pastda).
   const p = new URLSearchParams(location.search);
   const tahrir = Number(p.get("tahrir") || 0);
   if(tahrir > 0) elonForma(tahrir);
@@ -1506,7 +1632,36 @@ function tabPaneli(faol){
       role="tab" aria-selected="${faol === "elonlar"}" onclick="elonlarim()">E’lonlarim</button>
   </div>
   <div id="profil-quti"></div>
+  <div id="push-quti"></div>
   <div id="tg-quti"></div>`;
+}
+
+/* PUSH KARTASI — faqat kerak bo'lganda (2026-08-15).
+
+   Ko'rsatiladi: brauzer qo'llasa VA ruxsat hali so'ralmagan bo'lsa.
+   Ruxsat berilgan yoki rad etilgan bo'lsa karta chiqmaydi — birinchi
+   holatda keraksiz, ikkinchisida foydasiz (Chrome rad etilgan
+   so'rovni bir yilga bloklaydi, qayta so'rab bo'lmaydi).
+
+   Nega Telegramdan alohida: Telegram ulash uchun odam OBER'dan
+   chiqib, botga o'tib, kod kiritishi kerak. Push esa bitta bosishda
+   yoqiladi va telefon jiringlaydi. 6 ta sotuvchi Telegramni
+   ulamagani bejiz emas — yo'l uzun. */
+function pushKartaChiz(){
+  const q = $("#push-quti");
+  if(!q) return;
+  if(!window.OBER_PUSH || !window.OBER_PUSH.qollab) return;
+  if(!("Notification" in window)) return;
+  if(Notification.permission !== "default") return;   // berilgan yoki rad etilgan
+  q.innerHTML = `<section class="push-card">
+    <div>
+      <h2>Xabar kelganda bilib turing</h2>
+      <p>So‘rov kelganda telefoningiz jiringlaydi — OBER yopiq bo‘lsa ham.
+         Bitta bosish, ro‘yxatdan o‘tish shart emas.</p>
+      <p class="push-holat" id="push-holat" hidden></p>
+    </div>
+    <button class="tg-btn" type="button" onclick="pushYoq()">Yoqish</button>
+  </section>`;
 }
 
 async function sorovlar(){
@@ -1553,6 +1708,8 @@ async function sorovlar(){
           </div>
         </section>`;
       telegramTaklif();
+      pushKartaChiz();
+    pushKartaChiz();
       talabniChiz();
       profilniChiz();
       return;
@@ -1567,6 +1724,7 @@ async function sorovlar(){
     <div class="requests">${d.map(sorovKarta).join("")}</div>`;
     bindPriceEnter();
     telegramTaklif();
+    pushKartaChiz();
     talabniChiz();
     profilniChiz();
   }catch(e){
@@ -1578,6 +1736,7 @@ async function sorovlar(){
       </div>`;
     profilniChiz();
     telegramTaklif();
+    pushKartaChiz();
   }finally{
     yuklanmoqda = false;
   }
@@ -1610,6 +1769,7 @@ async function elonlarim(){
       <div id="elon-ro" class="elonlar">${kartalar}</div>`;
     profilniChiz();
     telegramTaklif();
+    pushKartaChiz();
   }catch(e){
     console.error("[ober] sotuvchi e‘lonlari:", e);
     $("#asosiy").innerHTML = `${tabPaneli("elonlar")}
@@ -1619,6 +1779,7 @@ async function elonlarim(){
       </div>`;
     profilniChiz();
     telegramTaklif();
+    pushKartaChiz();
   }finally{
     yuklanmoqda = false;
   }
@@ -1975,6 +2136,55 @@ async function javob(id, holat){
   }
 }
 
+/* KUTAYOTGAN TALAB — `#talab-quti` bloki (2026-08-15).
+
+   Ilgari ro'yxatdan o'tish kartasi "30 soniyada tayyor, uzun anketa
+   yo'q" deb boshlanardi — ya'ni FORMA qulayligi haqida. Sotuvchi esa
+   forma uchun emas, XARIDOR uchun keladi.
+     Bark      — "1000's of clients are already waiting"
+     IndiaMART — "Connecting 21 Cr+ Buyers with Trusted Sellers"
+   Ikkalasi ham birinchi gapni TALAB bilan boshlaydi.
+
+   Bizda aytishga aniq raqam bor: javobsiz so'rovlar soni.
+
+   DIQQAT: bu izoh shu yerda turibdi, chunki `register-card` bo'limi
+   JS SHABLON SATRIDAN chiziladi. Shablon ichiga HTML uslubidagi
+   izoh qo'yilsa butun skript yiqiladi — 2026-08-12 da kabinet aynan
+   shundan bo'sh ochilgan edi. Bugun men o'sha xatoni takrorladim,
+   `web_sinov` ushlab qoldi. Qoida sodda matn qidiruvi bilan
+   tekshiriladi, shuning uchun taqiqlangan belgini IZOHDA ham
+   yozib bo'lmaydi — faqat so'z bilan tushuntiriladi.
+
+   KO'RSATISH QOIDASI (pastdagi funksiya).
+
+   Raqam BO'LMASA blok umuman chiqmaydi. Sabab: "0 ta xaridor
+   kutmoqda" degan yozuv chaqiruv emas, ogohlantirish — u sotuvchini
+   qaytarib yuboradi. Bo'sh va'dadan ko'ra jimlik yaxshiroq.
+
+   So'rov matnlari ochiq: odam ularni qidiruv qatoriga o'zi yozgan.
+   Telefon, ism va token serverdan umuman kelmaydi. */
+async function talabniKorsat(){
+  const quti = $("#talab-quti");
+  if(!quti) return;
+  try{
+    const r = await fetch("/api/talab");
+    if(!r.ok) return;
+    const d = await r.json();
+    /* `javobsiz` — hafta ichida so'ragan, lekin JAVOB OLMAGAN
+       xaridorlar. Aynan shu raqam sotuvchiga tegishli: bu uning
+       o'tkazib yuborgan ishi. `haftalik` (jami so'rov) kattaroq
+       ko'rinadi, lekin unda javob olganlar ham bor — ular sotuvchi
+       uchun imkoniyat emas. Kattaroq raqamni tanlash vasvasasi
+       bor, lekin u rost bo'lmaydi. */
+    const son = d.javobsiz || 0;
+    if(!son) return;                   // nol bo'lsa jim qolamiz
+    $("#talab-son").textContent = formatInt ? formatInt(son) : son;
+    const ro = $("#talab-royxat");
+    ro.innerHTML = (d.misollar || []).slice(0, 4)
+      .map(m => `<li>${esc(m)}</li>`).join("");
+    quti.hidden = false;
+  }catch(_){ /* talab ko'rsatilmasa sahifa baribir ishlaydi */ }
+}
 $("#chiq").addEventListener("click", chiqish);
 // 2026-08-06: kabinetga kirish endi telefon + kod orqali. Eski qurilmada
 // localStorage'da ID raqami saqlangan bo'lsa ham ishlaydi.

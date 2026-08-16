@@ -35,6 +35,39 @@ Bitta odam ham sotadi, ham sotib oladi. Shuning uchun tab nomi u
 QAYERGA borishini emas, NIMA QILISHINI aytadi. Sotuvchi sahifasida
 xaridor uchun chiqish yo'li bor ("Qidirish bo'limiga o'ting").
 
+## MAHALLIY SINOV MUHITI — ISH BOSHIDA KO'TARILADI
+
+Jonli saytga deploy qilib sinash **taqiqlanmagan, lekin oxirgi
+chora**. Bir deploy ~100 soniya; 2026-08-16 da shu sabab bir kunda
+~40 daqiqa kutishga ketdi va bitta xato topilmay qoldi.
+
+    python app/sinov_muhiti.py --ishga     # http://127.0.0.1:8811
+
+Nima qiladi:
+
+- `app/` ni `/tmp/ober-sinov` ga nusxalaydi;
+- **`web/` ni NUSXA OLMAYDI — bog'laydi.** HTML/CSS tahriri darhol
+  ko'rinadi, serverni qayta yoqish shart emas;
+- jonli bazani FAQAT O'QIB, undan e'lonlar namunasini oladi.
+
+**Shaxsiy ma'lumot ko'chirilmaydi.** `sotuvchilar`, `suhbatlar`,
+`xabarlar`, `sorovlar`, `javoblar`, `push_obunalar` bo'sh qoladi va
+skript buni yozishdan oldin tekshiradi — bo'sh bo'lmasa to'xtaydi.
+
+Javob vaqti ~6 ms.
+
+**Ma'lum cheklov:** namuna `ORDER BY id DESC LIMIT 3000` — ya'ni
+faqat eng yangi e'lonlar. Qidiruv sifatini (masalan `divan charm`
+-> Charmhoo shinalari) sinash uchun bu YETMAYDI, chunki kerakli
+tovar namunaga tushmaydi. Bunday ish uchun `OBER_SINOV_NAMUNA`
+ni oshiring yoki `sinov_muhiti.py` dagi tanlovni mavzuga qarab
+o'zgartiring.
+
+**Brauzer yo'q.** Qumtepada Chromium o'rnatib bo'lmadi (tarmoq
+ruxsati yo'q). Ya'ni bu muhit serverni, API'ni, qidiruvni va
+ballashni tekshiradi — LEKIN ko'rinishni emas. Vizual tekshiruv
+hamon jonli saytda va Azizning brauzerida bo'ladi.
+
 ## FRONTEND ISHIDAN OLDIN — MAJBURIY
 
 `web_sinov.py` har sahifani tekshiradi. Uchta qoida, uchalasi ham

@@ -157,12 +157,39 @@ def bot_nomi() -> str:
 
 # ── Kiruvchi xabarlar ────────────────────────────────────────────────────────
 
+def _kontakt_sora(chat_id) -> bool:
+    """Raqamni ulashish tugmasini chiqaradi.
+
+    `yubor()` faqat `inline_keyboard` ni biladi, kontakt so'rash esa
+    `reply_keyboard` + `request_contact` talab qiladi — Telegram'da
+    bu ikki xil markup. Shuning uchun alohida funksiya.
+
+    `one_time_keyboard`: tugma bir marta bosilgach yo'qoladi, chat
+    tozaligicha qoladi.
+    """
+    natija = _sorov("sendMessage",
+                    chat_id=chat_id,
+                    text="Raqamingizni ulashing — so‘rovlaringizni topaman.",
+                    reply_markup={
+                        "keyboard": [[{"text": "📱 Raqamni ulashish",
+                                       "request_contact": True}]],
+                        "resize_keyboard": True,
+                        "one_time_keyboard": True,
+                    })
+    return bool(natija and natija.get("ok"))
+
+
 def _start(chat_id, kod: str) -> None:
     if not kod:
         yubor(chat_id,
-              "Salom! Bu — <b>OBER</b> sotuvchi boti.\n\n"
-              "Ulanish uchun OBER sotuvchi kabinetidagi "
-              "<b>“Telegramga ulash”</b> tugmasini bosing.")
+              "Salom! Bu — <b>OBER</b> boti.\n\n"
+              "<b>Sotuvchi bo‘lsangiz:</b> OBER kabinetidagi "
+              "“Telegramga ulash” tugmasini bosing.\n\n"
+              "<b>Xaridor bo‘lsangiz:</b> telefoningizni almashtirgan "
+              "yoki brauzerni tozalagan bo‘lsangiz — pastdagi tugma "
+              "bilan raqamingizni ulashing, so‘rovlaringizni "
+              "qaytarib beraman.")
+        _kontakt_sora(chat_id)
         return
     s = baza.telegram_ulash(kod, chat_id)
     if not s:
@@ -173,6 +200,60 @@ def _start(chat_id, kod: str) -> None:
           f"✅ Ulandi: <b>{nom}</b>\n\n"
           "Yangi mos so‘rov va xaridor xabari shu yerga keladi. "
           "Batafsil yozishma OBER chatida davom etadi.")
+
+
+def _kontakt(chat_id, kontakt: dict) -> None:
+    """Xaridor kontaktini ulashdi — so'rovlarini topib qaytaramiz.
+
+    NEGA SHU YO'L TANLANDI (2026-08-15)
+    -----------------------------------
+    Xaridorda hisob yo'q va u faqat brauzerdagi kalit bilan tanalardi.
+    Brauzer tozalansa suhbat butunlay yo'qolardi.
+
+    Uch yo'l ko'rib chiqildi:
+      SMS      — pul va tashqi provayder kerak, loyihada yo'q.
+      Parol    — xaridorni ro'yxatdan o'tishga majburlash. OBER'ning
+                 butun ma'nosi "ro'yxatsiz so'ra" edi, buzardi.
+      Telegram — bot ALLAQACHON bor, raqam `sorovlar.aloqa` da
+                 ALLAQACHON saqlanadi. Yangi hech narsa kerak emas.
+
+    Telegram kontakt tugmasi raqamni O'ZI beradi — odam qo'lda
+    yozmaydi, xato qilmaydi. Va bu raqam Telegram tomonidan
+    tasdiqlangan, ya'ni birov begona raqamni kiritolmaydi.
+    """
+    raqam = str(kontakt.get("phone_number") or "")
+    # Telegram raqamni "+998901234567" yoki "998901234567" beradi.
+    # Bazada qanday saqlanganini bilmaymiz, shuning uchun oxirgi
+    # 9 raqam bo'yicha solishtiramiz — O'zbekiston uchun yetarli.
+    oxirgi9 = "".join(ch for ch in raqam if ch.isdigit())[-9:]
+    if len(oxirgi9) < 9:
+        yubor(chat_id, "Raqam tanilmadi. Qaytadan urinib ko'ring.")
+        return
+
+    topildi = []
+    for shakl in (f"+998{oxirgi9}", f"998{oxirgi9}", oxirgi9, f"+{oxirgi9}"):
+        topildi = baza.xaridor_sorovlari(shakl)
+        if topildi:
+            break
+
+    if not topildi:
+        yubor(chat_id,
+              "Bu raqam bo‘yicha <b>ochiq so‘rov topilmadi</b>.\n\n"
+              "So‘rov yopilgan bo‘lishi yoki boshqa raqam bilan "
+              "yuborilgan bo‘lishi mumkin. "
+              "Yangi so‘rov yuborish: https://ober.uz")
+        return
+
+    qatorlar = ["🔎 <b>Sizning so‘rovlaringiz</b>\n"]
+    for s in topildi:
+        matn = html.escape(str(s.get("matn") or "")[:60])
+        javob = s.get("javob") or 0
+        holat = f"{javob} ta javob" if javob else "javob kutilmoqda"
+        qatorlar.append(
+            f"• <b>{matn}</b> — {holat}\n"
+            f"  https://ober.uz/takliflar?rol=xaridor&kalit={s['token']}")
+    qatorlar.append("\nHavolani bosing — suhbat o‘sha telefonda ochiladi.")
+    yubor(chat_id, "\n".join(qatorlar))
 
 
 def _javob_yoz(chat_id, sorov_id: int, sotuvchi_id: int,
@@ -368,7 +449,14 @@ def halqa() -> None:
                 ofset = u["update_id"] + 1
                 if "message" in u:
                     m = u["message"]
-                    _matn(m["chat"]["id"], (m.get("text") or "").strip())
+                    # KONTAKT ULASHISH — xaridor suhbatlarini tiklaydi.
+                    # Telegram "Raqamni yuborish" tugmasi `contact`
+                    # yuboradi, matn emas. Shuning uchun matndan OLDIN
+                    # tekshiriladi.
+                    if m.get("contact"):
+                        _kontakt(m["chat"]["id"], m["contact"])
+                    else:
+                        _matn(m["chat"]["id"], (m.get("text") or "").strip())
                 elif "callback_query" in u:
                     q = u["callback_query"]
                     _sorov("answerCallbackQuery", callback_query_id=q["id"])

@@ -174,6 +174,34 @@ def main() -> int:
               "va soyasi bekor qilinmagan — hero ustida chiziq "
               "qoladi" % "index.html")
 
+    # 4i. PUSH ZANJIRI UZILMASIN (2026-08-15).
+    #
+    # Butun push tizimi qurilgan edi — VAPID kaliti, yuborish halqasi,
+    # `/api/push-kalit` javob berardi, `enableNotifications:true` ham
+    # qo'yilgan edi. Hammasi "tayyor" ko'rinardi.
+    #
+    # Lekin `push.js` HECH QAYSI sahifaga ulanmagandi va `OBER_PUSH`
+    # hech qayerdan chaqirilmasdi. Ya'ni hech kim obuna bo'lmasdi:
+    # `push_obunalar` jadvali abadiy bo'sh qolardi va bildirishnoma
+    # hech qachon kelmasdi. Xato xabari ham chiqmasdi.
+    #
+    # Saboq: "komponent bor" != "zanjir ulangan". Oxirgi bo'g'in —
+    # foydalanuvchi tomonidagi chaqiruv — eng oson unutiladigani.
+    jami += 1
+    chat = (WEB / "takliflar.html").read_text(encoding="utf-8")
+    yetishmaydi = []
+    if 'src="/push.js"' not in chat:
+        yetishmaydi.append("push.js ulanmagan")
+    if "OBER_PUSH" not in chat:
+        yetishmaydi.append("OBER_PUSH chaqirilmagan")
+    if "pushTikla" not in chat:
+        yetishmaydi.append("obuna tiklanmaydi")
+    if yetishmaydi:
+        xato += 1
+        print("  XATO %-16s push zanjiri uzilgan: %s — hech kim obuna "
+              "bo'lmaydi, bildirishnoma kelmaydi"
+              % ("takliflar.html", ", ".join(yetishmaydi)))
+
     # 4h. NAVIGATSIYA IKKI QAVAT BO'LMASIN.
     #
     # 2026-08-12, Azizning ko'zi bilan topilgan: 798px kengligida
@@ -439,6 +467,133 @@ def main() -> int:
         if not shart:
             xato += 1
             print("  XATO %-16s %s" % ("index.html", izoh))
+
+    # 10. DIZAYN TIZIMI: XOM QIYMAT YOZILMASIN (2026-08-16).
+    #
+    # `OBER-DIZAYN-QOIDALARI.md`: burchak radiusi faqat
+    # `--r-kichik/orta/katta/pill/belgi` orqali beriladi. Qoida bor
+    # edi, lekin uni HECH KIM tekshirmasdi — shuning uchun bugun
+    # uchta xom qiymat topildi (index.html'da 10px va 4px, privacy'da
+    # 6px). Ular tizim qiymatiga yaqin, lekin teng emas: ya'ni ko'z
+    # ilg'amaydigan nomutanosiblik sekin to'planardi.
+    #
+    # Endi qoida o'zi o'zini qo'riqlaydi. Ruxsat etilgan istisnolar:
+    #   `border-radius:0`      — burchakni ataylab o'chirish
+    #   `border-radius:50%`    — doira (avatar, nuqta)
+    #   `border-radius:999px`  — tabletka (tokeni ham bor, lekin
+    #                            eski joylarda xom qolgan)
+    xom_radius = re.compile(r"border-radius:\s*(?![0%]|50%|999px)[0-9.]+(px|rem|em)")
+    for yol in sorted(WEB.glob("*.html")) + [WEB / "ober-ui.css"]:
+        if not yol.exists():
+            continue
+        jami += 1
+        matn = yol.read_text(encoding="utf-8")
+        topilgan = [
+            "%d-qator" % qator(matn, m.start())
+            for m in xom_radius.finditer(matn)
+        ]
+        if topilgan:
+            xato += 1
+            print("  XATO %-16s tizimdan tashqari radius: %s"
+                  % (yol.name, ", ".join(topilgan[:4])))
+
+    # 11. BOSH SAHIFA CHAP CHEKKASI BIR CHIZIQDA (2026-08-16).
+    #
+    # 1440 px ekranda o'lchandi:
+    #   sarlavha / izoh / tugma / raqamlar -> chap chekka 203 px
+    #   qidiruv maydoni va chiplar         -> chap chekka 453 px
+    #
+    # Sabab: `.search-panel` va `.samples` da `margin-inline:auto`
+    # qolgan edi — ular `max-width` bilan cheklangani uchun 1180 px
+    # konteynerda markazga tushardi. Ya'ni sahifadagi ENG MUHIM
+    # element qolganidan 250 px o'ngda turardi.
+    #
+    # Telefonda sezilmasdi (u yerda en 100%), shuning uchun uzoq
+    # payqalmagan. Aynan shunday xatolar faqat o'lchov bilan
+    # topiladi — ko'z 250 px siljishni "shunchaki dizayn" deb
+    # qabul qilib yuboradi.
+    tekislash = re.compile(
+        r"\.(search-panel|samples)\{[^{}]*margin-inline:\s*auto")
+    jami += 1
+    # IZOHLARNI OLIB TASHLAYMIZ. Birinchi urinishda tashlamagandim va
+    # sinov o'z izohimdagi "margin-inline:auto" so'zini xato deb
+    # ko'rsatdi — ya'ni sinov KODNI emas, MATNNI o'qiyotgan edi.
+    # Izoh o'rniga BIR XIL UZUNLIKDAGI bo'shliq qo'yamiz — shunda
+    # qator raqamlari surilmaydi va xato xabari to'g'ri joyni
+    # ko'rsatadi.
+    bosh_matn = re.sub(
+        r"/\*.*?\*/",
+        lambda m: re.sub(r"[^\n]", " ", m.group()),
+        (WEB / "index.html").read_text(encoding="utf-8"), flags=re.S)
+    yomon = [
+        "%d-qator" % qator(bosh_matn, m.start())
+        for m in tekislash.finditer(bosh_matn)
+    ]
+    if yomon:
+        xato += 1
+        print("  XATO %-16s qidiruv bloki markazga tushgan (chap "
+              "chekka sarlavhadan farq qiladi): %s"
+              % ("index.html", ", ".join(yomon)))
+
+    # 12. YORUG' FONDA OQ MATN BO'LMASIN (2026-08-16).
+    #
+    # Bugun jonli saytda o'lchandi: natija sahifasidagi saralash
+    # tugmalari ("Avval arzoni", "Avval yangisi", "Avval yaqini")
+    # matn rangi #e8eef8 — deyarli oq — va foni ham deyarli oq edi.
+    # Kontrast ~1.1:1. WCAG AA eng kami 4.5:1. Ya'ni tugmalar
+    # BUTUNLAY o'qilmasdi.
+    #
+    # Sabab: o'sha qoida natija sahifasi TO'Q KO'K bo'lgan paytda
+    # yozilgan. Fon yorug'ga o'zgartirilganda qoida qolib ketdi.
+    # Bu men qilgan xato va uni ko'z bilan ham payqamagandim —
+    # faqat `getComputedStyle` bilan o'lchaganda chiqdi.
+    #
+    # Tekshiruv: `is-results` uchun yozilgan qoidalarda matn rangi
+    # oqqa yaqin (#dde... dan yorug') bo'lmasin. Fon endi yorug'.
+    # `(?<![-a-z])` MUHIM: busiz qolip `background-color:#eef2f7` ni
+    # ham matn rangi deb o'qidi va toza kodda yolg'on xato berdi.
+    # Faqat `color:` ning o'zi kerak — `border-color`, `background-
+    # color`, `outline-color` emas.
+    oq_matn = re.compile(
+        r"body\.is-results[^{}]*\{[^{}]*(?<![-a-z])color:\s*"
+        r"(#(?:f[0-9a-f]|e[89a-f])[0-9a-f]{4}\b|rgba?\(\s*2[3-5][0-9])",
+        re.I)
+    for yol in (WEB / "ober-ui.css", WEB / "index.html"):
+        if not yol.exists():
+            continue
+        jami += 1
+        matn = re.sub(r"/\*.*?\*/",
+                      lambda m: re.sub(r"[^\n]", " ", m.group()),
+                      yol.read_text(encoding="utf-8"), flags=re.S)
+        yomon_rang = [
+            "%d-qator" % qator(matn, m.start())
+            for m in oq_matn.finditer(matn)
+        ]
+        if yomon_rang:
+            xato += 1
+            print("  XATO %-16s yorug' natija sahifasida oqqa yaqin "
+                  "matn (o'qilmaydi): %s"
+                  % (yol.name, ", ".join(yomon_rang[:4])))
+
+    # Layout xossasini animatsiya qilish — kadr tushishining eng
+    # keng tarqalgan sababi. `transform`/`opacity` GPU'da, qolgani
+    # har kadrda qayta hisoblanadi.
+    layout_animatsiya = re.compile(
+        r"transition:[^;{}]*?\b(max-height|padding|margin|top|left|"
+        r"right|bottom)\b[^;{}]*")
+    for yol in sorted(WEB.glob("*.html")) + [WEB / "ober-ui.css"]:
+        if not yol.exists():
+            continue
+        jami += 1
+        matn = yol.read_text(encoding="utf-8")
+        topilgan = [
+            "%d-qator" % qator(matn, m.start())
+            for m in layout_animatsiya.finditer(matn)
+        ]
+        if topilgan:
+            xato += 1
+            print("  XATO %-16s layout xossasi animatsiyada: %s"
+                  % (yol.name, ", ".join(topilgan[:4])))
 
     for nom, eng_kam in (("logo-ober-20260813.png", 5000), ("icon.png", 5000)):
         jami += 1

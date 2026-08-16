@@ -34,7 +34,18 @@ if exist "%BUYRUQ%" (
   rem Buyruq faylining birinchi qatori - nima qilish kerakligi
   set /p AMAL=<"%BUYRUQ%"
 
-  if "!AMAL!"=="yuklash" (
+  rem TEZKOR: FAQAT web/ - QAYTA YOQISH YO'Q. 2026-08-16.
+  rem web ichidagi HTML, CSS va JS statik fayllar - server ularni
+  rem diskdan o'qiydi. Ya'ni qayta yoqish umuman shart emas.
+  rem To'liq yuklash ~100 soniya edi: app va web butunlay
+  rem ko'chirilardi va uchta xizmat qayta yoqilardi. Frontend
+  rem ishida bularning hech biri kerak emas.
+  rem DIQQAT: blok ichidagi rem satrlarida qavs ishlatilmaydi.
+  if "!AMAL!"=="web" (
+    echo -- faqat web yuklanmoqda >> "%JAVOB%"
+    scp -q -r "%~dp0web" %SERVER%:/home/ober/ober/ >> "%JAVOB%" 2>&1
+    echo -- tayyor, qayta yoqilmadi >> "%JAVOB%"
+  ) else if "!AMAL!"=="yuklash" (
     echo -- kod yuklanmoqda >> "%JAVOB%"
     scp -q -r "%~dp0app" %SERVER%:/home/ober/ober/ >> "%JAVOB%" 2>&1
     scp -q -r "%~dp0web" %SERVER%:/home/ober/ober/ >> "%JAVOB%" 2>&1

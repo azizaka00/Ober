@@ -229,24 +229,56 @@
   }
   .brand img{display:block;width:94px;height:auto}
   .topbar-right,.top-actions{display:flex;align-items:center;gap:10px}
+  /* RAQAMLAR QATORI — HERO OSTIDA, TEPA PANELDA EMAS (2026-08-15).
+
+     Ilgari bu blok tepa panelda, logotip yonida turardi. Ikki muammo:
+
+       1. Tepa panelning eng qimmatli joyini BEZAK egallagandi.
+          IndiaMART va Thumbtack o'sha joyda QIDIRUV saqlaydi —
+          har sahifada ishlaydigan funksiya.
+       2. Telefonda `.market-metric span{display:none}` edi, ya'ni
+          "ochiq e'lon" va "Markaziy bank" yozuvlari yo'qolib,
+          faqat ikkita tushunarsiz raqam qolardi: `496 915` va
+          `$ 11 938`. Raqam bor, ma'nosi yo'q.
+
+     Endi u hero ostida, alohida qator. Yorliqlar telefonda ham
+     ko'rinadi — joy yetarli. IndiaMART'dagi `21Cr+ BUYERS ·
+     84L+ SELLERS` qatori bilan bir vazifa. */
+  /* RAQAMLAR BLOKI QIDIRUV USTUNI BILAN BIR CHIZIQDA (2026-08-16).
+
+     O'lchov 1440 px da: quti 203 -> 1383 (1180 px keng) edi, lekin
+     ichidagi raqamlar `justify-content:center` tufayli 664 px dan
+     boshlanardi. Ya'ni sahifadagi hamma narsa 203 px da, bu blok
+     esa 461 px o'ngda — keng bo'sh qutining o'rtasida osilib
+     turgan ikkita raqam.
+
+     Endi quti ham 680 px (qidiruv maydoni bilan teng) va kontent
+     chapdan boshlanadi. Telefonda 680 px dan tor bo'lgani uchun
+     hech narsa o'zgarmaydi. */
   .market-pulse{
-    min-height:44px;padding:6px 12px;
+    display:flex;align-items:center;justify-content:flex-start;
+    max-width:680px;
+    gap:18px;flex-wrap:wrap;
+    margin:18px 0 0;padding:12px 16px;
     border:1px solid rgba(11,37,89,.10);border-radius:var(--r-orta);
-    background:rgba(255,255,255,.78);box-shadow:0 8px 22px rgba(11,37,89,.06);
-    display:grid;grid-template-columns:auto 1px auto;align-items:center;gap:12px;
+    background:rgba(255,255,255,.62);
+    -webkit-backdrop-filter:var(--shisha);backdrop-filter:var(--shisha);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
   }
-  .market-metric{display:grid;gap:1px;min-width:0}
-  .market-metric strong{color:var(--navy);font-size:14px;font-weight:800;line-height:1;
+  .market-metric{display:grid;gap:2px;min-width:0;text-align:left}
+  .market-metric strong{color:var(--navy);font-size:19px;font-weight:800;line-height:1;
     letter-spacing:-.025em;white-space:nowrap;font-variant-numeric:tabular-nums}
-  .market-metric span{color:var(--muted);font-size:9.5px;line-height:1.15;white-space:nowrap}
-  .market-divider{width:1px;height:26px;background:rgba(11,37,89,.12)}
+  .market-metric span{color:var(--muted);font-size:11px;line-height:1.2;white-space:nowrap}
+  .market-divider{width:1px;height:30px;background:rgba(11,37,89,.12)}
   @media (max-width:620px){
     .topbar-inner{gap:8px}
     .topbar-right{gap:6px;min-width:0}
-    .market-pulse{min-height:40px;padding:5px 8px;gap:7px;border-radius:12px;box-shadow:none}
-    .market-metric strong{font-size:12px}
-    .market-metric span{display:none}
-    .market-divider{height:20px}
+    .market-pulse{gap:14px;padding:11px 12px;margin-top:16px}
+    .market-metric strong{font-size:17px}
+    /* Yorliqlar TELEFONDA HAM ko'rinadi — ilgari yashirilar edi
+       va raqam ma'nosiz qolardi. */
+    .market-metric span{font-size:10.5px}
+    .market-divider{height:26px}
   }
   .mobile-label{display:none}
   /* IKKALA TUGMA — bitta pill oilasi: Chat outlined, Sotish primary. */
@@ -395,7 +427,11 @@
 
   .search-panel{
     width:min(100%,800px);
-    margin-inline:auto;
+    /* Chapga tekislangan — sababi pastdagi editorial blokda
+       (2026-08-16 o'lchovi). Bu yerda `auto` qolgani xavfli edi:
+       pastki qoida uni bekor qilardi, lekin qaysidir kun pastki
+       qoida o'chsa, markazlashuv jimgina qaytib kelardi. */
+    margin-inline:0;
     padding:7px;
     border:1px solid var(--line-strong);
     border-radius:var(--r-katta);
@@ -589,7 +625,7 @@
   .visual-search img{
     width:48px;
     height:48px;
-    border-radius:10px;
+    border-radius:var(--r-kichik);
     object-fit:cover;
     background:var(--surface-2);
   }
@@ -937,6 +973,20 @@
     border-radius:var(--r-tig);
     box-shadow:6px 6px 0 rgba(11,37,89,.14);
     max-width:680px;
+    /* CHAPGA TEKISLASH (2026-08-16 o'lchovi).
+
+       Ilgari asosiy qoidada `margin-inline:auto` bor edi va u shu
+       yerda ham amal qilardi. Natijasi 1440 px ekranda:
+
+         sarlavha, izoh, tugma, raqamlar -> chap chekka 203 px
+         QIDIRUV MAYDONI                 -> chap chekka 453 px
+
+       Ya'ni sahifadagi eng muhim element qolganidan 250 px o'ngda
+       turardi. Ko'z sarlavhani chapdan o'qib tugatadi, keyin
+       qidiruvni topish uchun o'ngga sakrashi kerak edi. Telefonda
+       sezilmasdi (u yerda maydon 100% en), shuning uchun uzoq
+       payqalmagan. */
+    margin-inline:0;
   }
   .search-panel:focus-within{box-shadow:6px 6px 0 rgba(245,166,35,.5)}
   .search-panel input{font-family:Onest,"Segoe UI",sans-serif;font-style:normal;font-weight:520;font-size:17px}
@@ -953,7 +1003,9 @@
      O'ZI chapda turardi. Natija: qidiruv markazda, chiplar ~250px
      chapda — "qiyshiq" ko'rinish. `margin-inline:auto` ularni ham
      markazga oladi, kenglik bir xil qoladi. */
-  .samples{margin-inline:auto;justify-content:flex-start;max-width:680px}
+  /* Chiplar qatori qidiruv maydoni ustida turadi — u bilan bir
+     chiziqda boshlanishi shart (2026-08-16). */
+  .samples{margin-inline:0;justify-content:flex-start;max-width:680px}
   /* HERO YONI — statistika ustuni (draftdagi .yon). */
   .hero-yon{
     position:absolute;
@@ -1244,6 +1296,68 @@
   .sora-orta{grid-column:1/-1;margin:4px 0}
   .sora-chiziq p,.sora-orta p{
     margin:0;font-size:13.5px;font-weight:640;color:var(--navy)}
+  /* HERO'DAGI ASOSIY AMAL (2026-08-15).
+
+     Aziz to'g'ri aytdi: men OBER'ni OBER qiladigan amalni chat
+     bo'limining burchagiga qo'ygandim. U yerga hech kim bormaydi,
+     natijada kirgan odam oddiy agregator ko'rardi.
+
+     IndiaMART va Thumbtack ikkalasi ham teskarisini qiladi:
+       IndiaMART — `Post Requirement` sarlavha ostidagi birinchi tugma
+       Thumbtack — butun hero so'rash oynasi, ostida bitta tinch gap
+                   ("No calls or text until you message a pro")
+
+     Shuning uchun tugma qidiruv qutisining ostida, birinchi ekranda.
+     Izoh esa Thumbtack naqshi bo'yicha: nima bo'lishini oldindan
+     aytadi va qo'rquvni oladi ("ro'yxatdan o'tish shart emas"). */
+  .hero-amal{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    margin:14px 0 0;
+  }
+  /* 48px — `.sora-btn` asosidagi 42px dan baland. Ikki sabab:
+     bosish nishoni 44px dan kam bo'lmasligi kerak (o'lchandi: 42
+     edi), va bu sahifadagi ikkinchi eng muhim amal — "Topish"
+     bilan bir og'irlikda turishi kerak, undan past emas. */
+  /* `.hero-amal .sora-btn` — IKKI sinf, ataylab.
+     Bir sinfli `.hero-sora` yozgandim va u ishlamadi: `.sora-btn`
+     faylda PASTROQDA turadi, ustunlik teng bo'lgani uchun u yutadi
+     va tugma 42px bo'lib qolardi (o'lchandi). Bu `OBER-DIZAYN-
+     QOIDALARI.md` 3.2.1-bo'limidagi saboqning o'zi.
+     Tartibga tayanmaymiz — ustunlikni oshiramiz.
+
+     48px: bosish nishoni 44px dan kam bo'lmasin, va bu amal
+     "Topish" bilan bir og'irlikda tursin — undan past emas. */
+  .hero-amal .sora-btn{
+    flex:none;min-height:48px;padding-inline:26px;font-size:13.5px;
+    /* NAVY, AMBER EMAS (2026-08-15, skrinshotdan keyin).
+       Birinchi variantda bu tugma ham amber edi — qidiruv qutisidagi
+       "Topish" ham amber. Ikkita bir xil tugma ustma-ust turardi va
+       qaysi biri asosiy ekani bilinmasdi. Dizayn qoidasi: rang —
+       bitta urg'u (3.6-bo'lim).
+       Endi til aniq: AMBER = indeksdan qidirish, NAVY = sotuvchidan
+       so'rash. Ikkalasi kuchli, lekin bir-birini takrorlamaydi. */
+    background:linear-gradient(180deg,var(--navy),var(--navy-dark));
+    color:#fff;
+    box-shadow:0 8px 20px rgba(8,27,66,.26),
+               inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  @media (hover:hover){
+    .hero-amal .sora-btn:hover{
+      box-shadow:0 12px 28px rgba(8,27,66,.34),
+                 inset 0 1px 0 rgba(255,255,255,.16);
+    }
+  }
+  .hero-amal-izoh{
+    margin:0;flex:1 1 220px;min-width:0;
+    color:var(--muted);font-size:12.5px;line-height:1.45;
+  }
+  @media (max-width:620px){
+    /* Telefonda tugma butun kenglikni oladi va izoh ostiga tushadi —
+       ikkovi bir qatorda 390px ga sig'maydi. */
+    .hero-amal{gap:9px}
+    .hero-amal .sora-btn{width:100%}
+    .hero-amal-izoh{flex-basis:100%;font-size:12px}
+  }
   .sora-btn{
     min-height:42px;padding:0 22px;
     border:0;border-radius:var(--r-pill);
@@ -1605,7 +1719,7 @@
   .histogram span{
     flex:1;
     min-height:5px;
-    border-radius:4px 4px 0 0;
+    border-radius:var(--r-belgi) var(--r-belgi) 0 0;
     background:var(--navy);
     opacity:.18;
   }
@@ -2000,7 +2114,12 @@
     .image-search-btn::after{left:21px;top:20px}
     .primary-btn{min-width:88px;min-height:52px;padding:0 16px;border-radius:var(--r-kichik)}
     .location-row{align-items:stretch}
-    .location-label,.location-note{width:100%;text-align:center}
+    /* CHAPGA (2026-08-16, 386 px da o'lchandi). Ilgari `center` edi
+       va telefonda "Qayerdan qidiramiz?" yorlig'i yolg'iz o'zi
+       markazda turardi — sarlavha, izoh, qidiruv, tugma va raqamlar
+       esa chap chekkada. Bitta markazlashgan satr butun ustunning
+       tartibini buzadi. */
+    .location-label,.location-note{width:100%;text-align:left}
     .select-wrap{flex:1;min-width:0}
     .location-row select{width:100%;max-width:none}
     /* 2026-08-11: chiplar endi o'zi yuradigan lenta. Ilgari bu yerda
@@ -2014,7 +2133,10 @@
     .samples{flex-wrap:wrap;justify-content:center;
       margin-inline:-14px;padding:0 14px 5px;gap:6px}
     .sample{flex:0 0 auto}
-    .tez-yorliq{flex:1 0 100%;justify-content:center}
+    /* Yashil nuqta + "so'nggi kunlarda qidirilgan" — chapdan.
+       Markazda turganda u ham ustun tartibidan chiqib ketardi
+       (2026-08-16). */
+    .tez-yorliq{flex:1 0 100%;justify-content:flex-start}
     .tez-oyna{flex:1 0 100%}
     /* 2026-08-11: dalil bloki yangilandi. Bu yerdagi eski qoida
        (`padding:6px 12px; min-height:34px`) undan KEYIN turgani uchun
@@ -2156,7 +2278,9 @@
     box-shadow:0 7px 18px rgba(11,37,89,.22);
   }
   body.is-results .primary-btn:hover{background:var(--navy-dark);color:#fff;box-shadow:0 9px 22px rgba(11,37,89,.25)}
-  body.is-results .location-row{max-width:760px;margin-inline:auto;justify-content:flex-start}
+  /* `auto` -> `0` (2026-08-16): natija sahifasida qidiruv 203 px da,
+     bu qator esa 413 px da turardi — 210 px farq. */
+  body.is-results .location-row{max-width:760px;margin-inline:0;justify-content:flex-start}
 
   /* Bitta tartibli qator va ochilgandagina ko'rinadigan narx paneli. */
   .boshqaruv-yopishqoq{
@@ -2319,11 +2443,6 @@
       <img src="/brend/logo-ober-20260813.png" alt="OBER" width="118" height="39">
     </a>
     <div class="topbar-right">
-      <div class="market-pulse" aria-label="Bozor ko‘rsatkichlari">
-        <span class="market-metric"><strong id="market-listings">—</strong><span>ochiq e’lon</span></span>
-        <span class="market-divider" aria-hidden="true"></span>
-        <span class="market-metric"><strong id="market-rate">—</strong><span id="market-rate-meta">Markaziy bank</span></span>
-      </div>
       <div class="top-actions">
         <div class="lang-slot"></div>
         <a class="messages-link" id="takliflar-link" href="/takliflar"><span class="desktop-label">Chat</span><span class="mobile-label">Chat</span></a>
@@ -2352,6 +2471,21 @@
               aria-label="Rasm bilan qidirish" title="Rasm bilan qidirish"></button>
       <button class="primary-btn" id="btn" type="button">Topish</button>
     </div>
+
+    <div class="hero-amal">
+      <button class="sora-btn hero-sora" id="hero-sora" type="button">
+        Sotuvchilardan so‘rash
+      </button>
+      <p class="hero-amal-izoh">Topilmasa yoki narx kerak bo‘lsa — so‘rovingiz
+        mos sotuvchilarga boradi. Ro‘yxatdan o‘tish shart emas.</p>
+    </div>
+
+    <div class="market-pulse" aria-label="Bozor ko‘rsatkichlari">
+      <span class="market-metric"><strong id="market-listings">—</strong><span>ochiq e’lon</span></span>
+      <span class="market-divider" aria-hidden="true"></span>
+      <span class="market-metric"><strong id="market-rate">—</strong><span id="market-rate-meta">Markaziy bank</span></span>
+    </div>
+
     <div class="visual-search" id="visual-search" hidden>
       <img id="visual-preview" alt="Qidiruv uchun tanlangan rasm">
       <div class="visual-search-copy">
@@ -3774,6 +3908,18 @@ async function jonliLenta(){
 
 $("#btn").addEventListener("click", rasmBilanQidir);
 $("#q").addEventListener("keydown", e => { if(e.key === "Enter") rasmBilanQidir(); });
+
+/* HERO'DAGI "SOTUVCHILARDAN SO'RASH" (2026-08-15).
+
+   Bu OBER'ni agregatordan ajratadigan yagona amal, shuning uchun u
+   birinchi ekranda va bosh sahifada turadi — natija sahifasida yoki
+   chat burchagida emas.
+
+   `sorovYubor()` matn bo'sh bo'lsa maydonga fokus qaytaradi, ya'ni
+   odam nima so'rayotganini yozishi kerakligini o'zi tushunadi.
+   Alohida tekshiruv yozmaymiz — bitta joyda bitta qoida. */
+$("#hero-sora")?.addEventListener("click", sorovYubor);
+
 $("#image-search-btn").addEventListener("click", () => $("#image-search-input").click());
 $("#image-search-input").addEventListener("change", e => rasmTanla(e.target.files?.[0]));
 $("#visual-remove").addEventListener("click", rasmniOlibTashla);
