@@ -231,8 +231,9 @@ talab qiladi.
    18 ta 390px skrinshot bor va qo'shimcha tizimli o'lchov: har
    sahifa 390px iframe'da — **yopishqoq element bitta** (elon'da
    topbar sticky edi — tuzatildi, `61cea1b`) va **horizontal
-   overflow yo'q** (6/6 sahifa). Qoldiq: haqiqiy telefonda
-   (Android/iOS) jonli interaktiv sinov — brauzer emas, qurilma.
+   overflow yo'q** (6/6 sahifa). Qoldiq: haqiqiy qurilmada jonli
+   sinov — reja `reports/qurilma-sinov-2026-08-16/REJA.md` da
+   (TWA APK + xaridor/sotuvchi oqimi + push + offline + safe-area).
 3. ~~`nexia kolodka` 205 tadan 20 taga tushdi~~ — **✅ 2026-08-16 o'lchandi:**
    haqiqiy tovar kesilmagan. Butun indeksda "neksia + kolodka" birga
    atigi 2 ta e'lon bor (ikkalasi ham natijada), 178 kesilgani —
