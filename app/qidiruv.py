@@ -466,18 +466,37 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
         # Sarlavhada so'rov so'zi BOR bo'lsa — o'sha e'lon yuqoriga
         # chiqadi. Qism so'zi model so'zidan ustun ("neksiya kolodka"
         # da "kolodka" sarlavhada bo'lsa — aniq tovar).
+        # ANIQ SO'Z PREFIKS-MOSDAN USTUN — MODEL YO'LIDA HAM
+        # (o'lchov 2026-08-16, relevans_sinov 6-bo'limi qo'riqlaydi)
+        #
+        # Erkin yo'lda `x == w` aniq (10), `x.startswith(w)` prefiks
+        # (2.5) deb ajratilgan. Model yo'lida esa `w in n_matn` QISM-SATR
+        # tekshiruvi turardi: "kolodka" so'rovi "KolodkaX" (begona so'z,
+        # kolodka PREFIKSI) ni ham to'liq mos deb ballardi va aniq
+        # "Nexia tormoz kolodka" bilan bir xil ball olardi. Endi
+        # so'zlarga bo'lib, aniq va prefiks alohida hisoblanadi.
         if erkin_sozlar:
             if n_matn is None:
                 n_matn = normalla(matn)
-            ball += 4 * sum(1 for w in erkin_sozlar if w in n_matn)
+            n_sozlar = n_matn.split()
+            nomda = sum(1 for w in erkin_sozlar if w in n_sozlar)
+            prefikda = sum(1 for w in erkin_sozlar
+                           if w not in n_sozlar
+                           and any(x.startswith(w) for x in n_sozlar))
+            ball += 4.0 * nomda + 1.0 * prefikda
         if sorov_soz and not erkin_sozlar:
             if n_matn is None:
                 n_matn = normalla(matn)
             # Model so'zlari ham sarlavhada bo'lsa ball oladi, lekin
             # qism so'ziga nisbatan kamroq (4 emas, 2): "byd" modeli
             # minglab sarlavhada bor — u birinchi o'ringa chiqmasin.
-            soni = sum(1 for w in sorov_soz if w in n_matn)
-            ball += 2 * soni
+            n_sozlar = n_matn.split()
+            nomda = sum(1 for w in sorov_soz if w in n_sozlar)
+            prefikda = sum(1 for w in sorov_soz
+                           if w not in n_sozlar
+                           and any(x.startswith(w) for x in n_sozlar))
+            soni = nomda + prefikda
+            ball += 2.0 * nomda + 0.5 * prefikda
             # Sarlavhada so'rovning HAMMA so'zi bo'lsa — aniq tovar.
             # O'lchov 2026-08-13 (production): "byd chazor" so'rovida
             # avtoelon "BYD Chazor 2026" mashinasi OLX qismlari bilan

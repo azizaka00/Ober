@@ -34,6 +34,53 @@ def elon(tashqi_id: str, nom: str) -> dict:
     }
 
 
+# ---------------------------------------------------------------- #
+# 6. MODEL YO'LIDA ANIQ SO'Z PREFIKS-MOSDAN USTUN
+#
+# 2026-08-16: erkin yo'lda aniq so'z (10 ball) prefiksdan (2.5 ball)
+# ustun qilindi (moslik_sinov 5-bo'limi). Model yo'lida esa `w in
+# n_matn` QISM-SATR tekshiruvi turardi: "kolodka" so'rovi "KolodkaX"
+# (begona so'z, kolodka PREFIKSI) ni ham to'liq mos deb ballardi va
+# aniq "Nexia tormoz kolodka" bilan bir xil ball olardi. Shu bo'lim
+# model yo'lida ham aniq/prefiks farqini qo'riqlaydi.
+# ---------------------------------------------------------------- #
+
+def _model_prefiks_sinovlari() -> tuple[int, int]:
+    import qidiruv
+
+    indeks = [
+        elon("aniq", "Nexia tormoz kolodka old"),
+        elon("prefiks", "Nexia KolodkaX rul"),
+        elon("boshqa", "Matiz tormoz kolodka"),
+    ]
+
+    eski_nomzodlar = qidiruv._nomzodlar
+    qidiruv._nomzodlar = lambda *_: indeks
+    try:
+        natija = qidiruv.qidir("Neksiya kolodka", limit=10)
+    finally:
+        qidiruv._nomzodlar = eski_nomzodlar
+
+    tartib = [x["tashqi_id"] for x in natija["natijalar"]]
+    ballar = {x["tashqi_id"]: x["ball"] for x in natija["natijalar"]}
+
+    holatlar = [
+        # Aniq "Nexia tormoz kolodka" prefiks "KolodkaX" dan ustun.
+        (ballar.get("aniq", 0) > ballar.get("prefiks", 0),
+         "aniq so'z prefiks-mosdan yuqori ball olsin (model yo'li)"),
+        # Boshqa model (Matiz) kesilsin.
+        ("boshqa" not in tartib, "boshqa model kesilsin"),
+    ]
+    for shart, nom in holatlar:
+        if shart:
+            print("  OK   %s" % nom)
+        else:
+            print("  XATO %s  (tartib: %s, ballar: %s)"
+                  % (nom, tartib, ballar))
+    return len(holatlar) - sum(not s for s, _ in holatlar), \
+        sum(not s for s, _ in holatlar)
+
+
 def main() -> None:
     indeks = [
         elon("nexia", "Nexia old tormoz kolodkasi"),
@@ -94,8 +141,11 @@ def main() -> None:
     for shart, nom in sinovlar:
         print(f"  [{'OK  ' if shart else 'XATO'}] {nom}")
         xato += not shart
+    print("\n  --- 6. MODEL YO'LIDA ANIQ > PREFIKS ---")
+    t, x = _model_prefiks_sinovlari()
+    xato += x
     print("-" * 64)
-    print(f"  NATIJA: {len(sinovlar) - xato} to'g'ri · {xato} xato")
+    print(f"  NATIJA: {len(sinovlar) + t - xato} to'g'ri · {xato} xato")
     if xato:
         raise SystemExit(1)
 

@@ -1099,3 +1099,16 @@ edi (121px doim band). CSS qoidasini "ko'z bilan" emas, iframe
 o'lchovi bilan qo'riqlash kerak — dump-dom'ning regex'i yetarli emas,
 chunki yashirin elementlarni (scrim, toast, skip-link) ajrata olmaydi.
 Tuzatish: elon.html 880px media blokiga `.topbar{position:static}`.
+
+## 2026-08-16 — Model yo'lida ham aniq so'z prefiksdan ustun
+
+Erkin yo'lda `x == w` aniq (10 ball), `x.startswith(w)` prefiks
+(2.5 ball) deb ajratilgan edi. Model yo'lida esa `w in n_matn`
+QISM-SATR tekshiruvi turardi — "kolodka" so'rovi "KolodkaX"
+(begona so'z, kolodka PREFIKSI) ni ham to'liq mos deb ballardi
+va aniq "Nexia tormoz kolodka" bilan bir xil ball olardi.
+O'lchov: ikkalasi 105.0 — farq yo'q edi. Tuzatish: so'zlarga
+bo'lib aniq (4.0/2.0) va prefiks (1.0/0.5) alohida hisoblanadi.
+relevans_sinov 6-bo'limi (13 -> 15) qo'riqlaydi. Xulosa: bir
+yo'lda tuzatilgan sifat xatosi boshqa yo'lda qolishi mumkin —
+har yo'lning o'z qo'riqchisi bo'lishi shart.
