@@ -328,11 +328,27 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
         for r in hammasi:
             n_nom = normalla(r["nom"] or "")
             sozlari = n_nom.split()
-            nomda, eng_erta = 0, 99
+            # ANIQ SO'Z PREFIKS-MOSDAN USTUN (o'lchov 2026-08-16).
+            #
+            # "divan charm" so'rovida "Charmhoo cotecho R13" (charm
+            # PREFIKSI — shina brendi) "Audit divan" (ANIQQ divan) dan
+            # yuqori ball olardi: `x == w or x.startswith(w)` ikkalasini
+            # bir xil hisoblardi. Buni moslik_sinov 5-bo'limi ushladi.
+            #
+            # Endi aniq moslik `nomda` ga, prefiks esa `prefikda` ga
+            # yoziladi va pastroq ball oladi (10 -> 2.5). So'zning o'zi
+            # sarlavhada bo'lsa — aniq tovar; prefiks kengaytmasi esa
+            # begona brend bo'lishi mumkin (Charmhoo, Kolodka...).
+            nomda, prefikda, eng_erta = 0, 0, 99
             for w in sorov_soz:
                 for i, x in enumerate(sozlari):
-                    if x == w or x.startswith(w):
+                    if x == w:
                         nomda += 1
+                        if i < eng_erta:
+                            eng_erta = i
+                        break
+                    if x.startswith(w):
+                        prefikda += 1
                         if i < eng_erta:
                             eng_erta = i
                         break
@@ -348,11 +364,12 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
             qayerda = sum(1 for w in sorov_soz if w in n_hammasi)
             if not qayerda:
                 continue
-            ball = 8.0 * qayerda + 10.0 * nomda
+            # Aniq so'z 10 ball, prefiks kengaytmasi 2.5 ball.
+            ball = (8.0 * qayerda + 10.0 * nomda + 2.5 * prefikda)
             if qayerda == len(sorov_soz):
                 ball += 25                       # so'rovning hammasi bor
-            if nomda == len(sorov_soz):
-                ball += 30                       # va aynan sarlavhada
+            if nomda + prefikda == len(sorov_soz):
+                ball += 30                       # hammasi sarlavhada
             if len(sorov_soz) > 1 and sorov_matn in n_nom:
                 ball += 45                       # ketma-ket — eng kuchli belgi
             if eng_erta < 99:

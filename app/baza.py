@@ -2035,13 +2035,17 @@ def fts_nomzodlar(teglar: list[str], sozlar: list[str],
     # ko'p nomzod qaytaradi va natija Python'da qayta ballanadi —
     # FTS rank'iga hojat yo'q. `ORDER BY rank` bo'lsa FTS butun
     # moslar to'plamini bm25 bilan baholaydi (4000 nomzod uchun
-    # yuzlab ms); oddiy LIMIT esa bir necha ms.
+    # yuzlab ms); rowid DESC esa bir necha ms.
+    #
+    # YANGI AVVAL (o'lchov 2026-08-16): tartibsiz LIMIT eski
+    # e'lonlarni olardi — yangilari nomzodga kirmasdi. rowid DESC
+    # yangilarni beradi, Python ballash ular orasidan tanlaydi.
     ifoda = bolaklar[0] if len(bolaklar) == 1 else f"{bolaklar[0]} OR {bolaklar[1]}"
     try:
         with ulan() as c:
             return [r["rowid"] for r in c.execute(
                 "SELECT rowid FROM elonlar_fts WHERE elonlar_fts MATCH ?"
-                " LIMIT ?", (ifoda, limit))]
+                " ORDER BY rowid DESC LIMIT ?", (ifoda, limit))]
     except sqlite3.OperationalError:
         return []
 
@@ -2502,12 +2506,21 @@ def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA,
         # (900) ko'p natija qaytaradi va natija OXIRIDA Python'da
         # qayta ballanadi (`qidir` — sarlavha, ketma-ketlik, joy,
         # narx...). FTS rank'i o'sha yerda ishlatilmaydi — faqat
-        # "qaysi 900 tasi" degan savolni hal qiladi. Raqamsiz
-        # (rowid bo'yicha) olingan nomzodlar ham xuddi shu ballash
+        # "qaysi 900 tasi" degan savolni hal qiladi. rowid DESC
+        # (eng yangilari) olingan nomzodlar ham xuddi shu ballash
         # orqali o'tadi, natija sifati o'zgarmaydi — tezligi esa
         # 50-100x yaxshilanadi.
-        # AND bosqichlari (1-2) rank bilan, OR bosqichi (3) — oddiy LIMIT.
-        tartib = " ORDER BY rank" if ifoda.count(" AND ") else ""
+        # AND bosqichlari (1-2) rank bilan, OR bosqichi (3) — rowid DESC.
+        #
+        # YANGI AVVAL (o'lchov 2026-08-16). Tartibsiz `LIMIT` FTS'ni
+        # rowid O'SISH bo'yicha o'qiydi — "kvartira" 3212 mos, plain
+        # LIMIT 900 eng ESKI 900 ni oldi (rowid <= 109 736). Barcha
+        # yangi e'lonlar nomzoddan tashqarida qoldi — yangilik bonusi
+        # ularga hech qachon yetib bormasdi. `ORDER BY rowid DESC`
+        # yangilarni beradi (4 ms, rank hisobi yo'q) — Python ballash
+        # ular orasidan eng mosini tanlaydi.
+        tartib = (" ORDER BY rank" if ifoda.count(" AND ")
+                  else " ORDER BY rowid DESC")
         try:
             with ulan() as c:
                 idlar = [r["rowid"] for r in c.execute(

@@ -1068,3 +1068,23 @@ yo'lida NISBAT qoidasi (yetakchidan 0.75 dan past kategoriya
 tashlanadi). Production'da 8 so'z o'lchandi: faqat gilam va oltin
 o'zgardi, karavot ikkalasini saqladi (42/55=0.76). O'zgarish kichik
 va o'lchov bilan — butun bozor_izi qayta sozlanmadi.
+
+## 2026-08-16 — Tartibsiz LIMIT eski e'lonlarni qaytaradi; prefiks aniqdan ustun chiqardi
+
+OR bosqichida `ORDER BY rank` ni tashlagach ikkita yashirin xato chiqdi:
+
+1. **Tartibsiz `LIMIT` FTS'ni rowid O'SISH bo'yicha o'qiydi** — "kvartira"
+   3212 mos, plain LIMIT 900 eng ESKI 900 ni oldi (rowid <= 109 736).
+   Barcha yangi e'lonlar nomzodga kirmasdi — yangilik bonusi ularga
+   yetib bormasdi. Yechim: `ORDER BY rowid DESC` (4 ms, rank hisobi yo'q).
+
+2. **Prefiks-mos aniq so'zdan yuqori ball oldi** — "divan charm" da
+   "Charmhoo" (charm PREFIKSI) "Audit divan" (aniq divan) dan yuqori
+   chiqdi. `x == w or x.startswith(w)` ikkalasini bir xil hisoblardi.
+   Buni moslik_sinov 5-bo'limi ushladi (yangi deterministik erkin
+   qidiruv testi). Yechim: aniq 10 ball, prefiks 2.5 ball.
+
+Saboq: tezlik uchun rank'ni olib tashlash — bu "bir xil natija, tezroq"
+emas. Tartib natijani belgilaydi (eski vs yangi) va sinov buni
+qo'riqlamasa, jimgina yomonlashib boradi. Har tartib o'zgarishidan
+keyin NATIJA (qaysi e'lonlar chiqadi), faqat vaqt emas, tekshiriladi.

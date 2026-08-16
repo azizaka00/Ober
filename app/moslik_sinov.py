@@ -218,9 +218,101 @@ def main() -> int:
         else:
             print("  OK   %-24s chetlanadi=%s" % (izoh, chetlanadi))
 
+    print("\n=== 5. ERKIN QIDIRUV — OR NOMZODLARINI BALLASH ===")
+    t, x = _erkin_qidiruv_sinovlari()
+    jami += t
+    xato += x
+
     print("\n  %d to'g'ri · %d xato  (%d tadan)" % (jami - xato, xato, jami))
     return 1 if xato else 0
 
+
+# ---------------------------------------------------------------- #
+# 5. ERKIN QIDIRUV — OR BOSQICHI NOMZODLARINI PYTHON BALLASHI
+#
+# 2026-08-16: OR bosqichi `ORDER BY rank` dan `rowid DESC` ga o'tdi
+# (tezlik: 458-1167 ms -> 5-9 ms). Endi nomzodlar QANDAY TARTIBDA
+# kelsa ham sifat Python ballashiga bog'liq — bu bo'lim shuni qattiq
+# qo'riqlaydi. `relevans_sinov` faqat model yo'lini qamraydi, erkin
+# yo'l (lug'at tanimagan so'rov) shu yerda tekshiriladi.
+#
+# Nomzodlar deterministik — haqiqiy baza va FTS tartibidan mustaqil.
+# ---------------------------------------------------------------- #
+
+def _erkin_elon(tashqi_id: str, nom: str, sana: str = "2026-08-10",
+                kategoriya: str = "") -> dict:
+    return {
+        "id": 0, "manba": "olx", "tashqi_id": tashqi_id, "nom": nom,
+        "narx_som": 250_000, "narx_asl": "", "holat": "yangi",
+        "viloyat": "Toshkent shahri", "shahar": "Toshkent",
+        "tuman": "Chilonzor", "sana": sana,
+        "havola": f"https://example.test/{tashqi_id}",
+        "rasm": "", "biznes": 0, "qism_turi": "",
+        "sotuvchi_nomi": "Sinov", "kategoriya": kategoriya,
+        "tan_modellar": None, "tan_qismlar": None, "tan_nom_qismlar": None,
+    }
+
+
+def _erkin_qidiruv_sinovlari() -> tuple[int, int]:
+    """Erkin yo'l sifatini deterministik nomzod to'plamida tekshiradi."""
+    import qidiruv
+
+    # "divan charm" so'rovi OR bosqichidan shu nomzodlarni oldi deb
+    # olaylik (tartib ATABAY aralash — Python qayta ballashi shart):
+    #   a — aniq "divan" sarlavhada  (xaridor shuni ko'rishi kerak)
+    #   b — faqat "charm" PREFIKSI    (Charmhoo — begona brend)
+    #   c — ikkala so'z               (eng yuqori ball)
+    #   d — hech biri yo'q            (filtrlanishi shart)
+    #   e — faqat KATEGORIYAda "divan" (qoladi, lekin pastda)
+    nomzodlar = [
+        _erkin_elon("a", "Audit divan yangi 2 orinli"),
+        _erkin_elon("b", "Charmhoo cotecho R13"),
+        _erkin_elon("c", "Yumshoq divan zamonaviy charm"),
+        _erkin_elon("d", "Kir yuvish mashinasi 10 kg"),
+        _erkin_elon("e", "Yumshoq mebel", kategoriya="Uy va bog'/Divanlar"),
+    ]
+    for i, x in enumerate(nomzodlar, 1):
+        x["id"] = i
+    idlar = list(range(1, len(nomzodlar) + 1))
+
+    eski_fts = baza.fts_erkin
+    eski_idlardan = baza.elonlar_idlardan
+    baza.fts_erkin = lambda sozlar, limit=900, faqat_birga=False: idlar
+    baza.elonlar_idlardan = lambda lst: [x for x in nomzodlar if x["id"] in lst]
+    try:
+        natija = qidiruv.qidir("divan charm", limit=10)
+    finally:
+        baza.fts_erkin = eski_fts
+        baza.elonlar_idlardan = eski_idlardan
+
+    tartib = [x["tashqi_id"] for x in natija["natijalar"]]
+    ballar = {x["tashqi_id"]: x["ball"] for x in natija["natijalar"]}
+
+    holatlar = [
+        # Eng muhimi: "d" (hech qanday so'z yo'q) UMUMAN chiqmaydi.
+        ("d" not in tartib, "ma'nosiz nomzod (hech bir so'z yo'q) filtrlansin"),
+        # "c" ikkala so'zni sarlavhada saqlaydi — eng yuqori.
+        (tartib and tartib[0] == "c", "ikkala so'zli sarlavha birinchi bo'lsin"),
+        # Aniq "divan" prefiks-mosdan (Charmhoo) yuqori turadi.
+        (ballar.get("a", 0) > ballar.get("b", 0),
+         "aniq so'z prefiks-mosdan yuqori ball olsin"),
+        # Kategoriyadagi so'z sarlavhadagidan past ball oladi, lekin qoladi.
+        ("e" in tartib and ballar.get("e", 10**9) < ballar.get("c", 0),
+         "kategoriya mosligi sarlavha mosligidan past bo'lsin"),
+    ]
+    for shart, nom in holatlar:
+        if shart:
+            print("  OK   %s" % nom)
+        else:
+            print("  XATO %s  (tartib: %s, ballar: %s)"
+                  % (nom, tartib, ballar))
+    return len(holatlar) - sum(not s for s, _ in holatlar), \
+        sum(not s for s, _ in holatlar)
+
+
+# 5-bo'lim asosiy main() ichidan chaqiriladi — oxirgi umumiy sanashdan
+# oldin. `_erkin_qidiruv_sinovlari` o'z holatlarini bosadi, qaytaradi:
+# (to'g'ri, xato).
 
 if __name__ == "__main__":
     sys.exit(main())
