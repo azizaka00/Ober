@@ -1257,7 +1257,24 @@ def _ballar(sozlar, limit: int, ulush: float) -> list[tuple[str, float]]:
         return []
     sanoq, jami = _kategoriya_sanogi(sozlar, limit)
     if jami >= _YETARLI or len(sozlar) == 1:
-        return _tartib(_ishonchli(sanoq, jami, ulush))
+        ishonchli = _ishonchli(sanoq, jami, ulush)
+        # YOLG'IZ SO'Z — NISBAT HAM (o'lchov 2026-08-16, production 519k).
+        #
+        # Mutlaq ulush (15%) yolg'iz so'zda ikkinchi darajali kategoriyani
+        # ham qoldiradi: `gilam` -> Uy va bog' 77% + Xizmatlar 20%.
+        # Gilam SOTUVCHISI xizmat yorlig'ini olib, "gilam yuvish"
+        # so'rovlariga mos kelib qolardi (noto'g'ri — u yuvmaydi, sotadi).
+        #
+        # NISBAT 8 ta so'zda o'lchandi (production): faqat `gilam` va
+        # `oltin` ikkinchi kategoriyasini yo'qotadi (20% < 75% × yetakchi),
+        # `karavot` ikkalasini saqlaydi (42/55 = 0.76), qolganlari
+        # o'zgarmaydi. Ko'p so'zli yo'l bu qoidaga tegmaydi — "gilam
+        # yuvish xizmati" Xizmatlar yorlig'ini o'zida saqlaydi (to'g'ri).
+        if len(sozlar) == 1 and ishonchli:
+            eng = max(ishonchli.values())
+            ishonchli = {k: v for k, v in ishonchli.items()
+                         if v >= _NISBAT * eng}
+        return _tartib(ishonchli)
 
     # SO'ZMA-SO'Z OVOZ. Har so'z avval ISHONCH SINOVIDAN o'tadi
     # (`_kerakli_ulush`) — o'tmagani umuman ovoz bermaydi. Bu mutlaq

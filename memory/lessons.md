@@ -1052,3 +1052,19 @@ Saboq: FTS5 optimallashtirishda "so'rov uzun — OR ga tushadi" degan
 taxmin noto'g'ri edi. Asl qiymat umumiy so'zning postings ro'yxati
 o'lchamida va `ORDER BY rank` baholashida. Har bosqich alohida
 o'lchanmasa, xato manbai ko'rinmaydi.
+
+## 2026-08-16 — "Indeks o'sgach o'zi to'g'rilanadi" — amalga oshdi, lekin bir qo'shimcha kerak bo'ldi
+
+`gilam sotaman` muammosi (kat:Xizmatlar yorlig'i) CLAUDE.md da
+"indeks o'sgach o'zi to'g'rilanadi" deb yozilgan edi. Indeks 519k ga
+o'sgach nisbat haqiqatan to'g'rilandi: Xizmatlar 85% -> 20%, Uy va
+bog' yetakchiga chiqdi (77%). Lekin mutlaq ulush (15%) qoidasi
+ikkinchi darajali kategoriyani ham qoldirdi — Xizmatlar 20% o'tib
+ketdi.
+
+Saboq: indeks o'sishi asosiy signalni to'g'riladi, lekin chegara
+mutlaq bo'lsa (15%) shovqin hali ham qoladi. Yechim: yolg'iz so'z
+yo'lida NISBAT qoidasi (yetakchidan 0.75 dan past kategoriya
+tashlanadi). Production'da 8 so'z o'lchandi: faqat gilam va oltin
+o'zgardi, karavot ikkalasini saqladi (42/55=0.76). O'zgarish kichik
+va o'lchov bilan — butun bozor_izi qayta sozlanmadi.

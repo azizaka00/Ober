@@ -226,8 +226,11 @@ talab qiladi.
 1. Dizayn tizimida tizimdan tashqari radius qiymatlari (`elon.html`
    va `sotuvchi.html` da), `elon.html` da `[hidden]` qoidasi yo'q.
 2. Telefon ko'rinishi to'liq sinalmagan.
-3. `nexia kolodka` 205 tadan 20 taga tushdi — aniqlik oshdi, lekin
-   haqiqiy tovar ham kesilgan bo'lishi mumkin. O'lchash kerak.
+3. ~~`nexia kolodka` 205 tadan 20 taga tushdi~~ — **✅ 2026-08-16 o'lchandi:**
+   haqiqiy tovar kesilmagan. Butun indeksda "neksia + kolodka" birga
+   atigi 2 ta e'lon bor (ikkalasi ham natijada), 178 kesilgani —
+   boshqa modellar (matiz, cobalt). TOP-5 Nexia kolodkalari, umumiy
+   kolodkalar pastda — to'g'ri ishlaydi.
 4. ~~**Xaridor qidiruvi 4+ so'zda ~200 ms.**~~ — **✅ 2026-08-16 yopildi.**
    Uchta aybdor topildi va tuzatildi: (a) AND bosqichlariga umumiy
    so'zlar kirardi (`pro`, `yangi` → 7 157 ms) — endi `fts_erkin`
@@ -246,12 +249,14 @@ talab qiladi.
    endi `sotuvchi_ochir` ni ishlatadi — yangi yetim paydo bo'lmaydi.
    DIQQAT: `javoblar.sotuvchi` TEXT — eski nomli yozuvlarga tegmaydi,
    faqat raqamli ID lar solishtiriladi.
-6. **`gilam sotaman` degan sotuvchi `kat:Xizmatlar` yorlig'ini
-   oladi.** Indeksda gilam YUVISH xizmati e'lonlari gilamning
-   o'zidan ko'p (85%). Moslik baribir ishlaydi — so'z ustma-ustligi
-   orqali — lekin yorliq noto'g'ri. Sotuvchi matni odatda qisqa
-   (2-3 so'z) va tuzatadigan boshqa signal yo'q. Indeks o'sgach
-   o'zi to'g'rilanadi.
+6. ~~**`gilam sotaman` degan sotuvchi `kat:Xizmatlar` yorlig'ini
+   oladi.**~~ — **✅ 2026-08-16 yopildi.** Indeks o'sishi (519k) va
+   yolg'iz so'z yo'lidagi NISBAT qoidasi: `gilam` endi faqat
+   `kat:Uy va bog'` (avval 85% Xizmatlar). Production'da o'lchandi:
+   gilam → Uy va bog' 77% + Xizmatlar 20% → NISBAT (0.75) Xizmatlar
+   ni tashladi. 8 so'z sinovida faqat `gilam` va `oltin` o'zgardi,
+   `karavot` ikkalasini saqladi (0.76). Ko'p so'zli "gilam yuvish
+   xizmati" Xizmatlar yorlig'ini o'zida saqlaydi — to'g'ri.
 
 **Yopilgan:** OBER o'z e'lonlarida kategoriya bo'sh edi — endi
 `baza.taxminiy_kategoriya()` uni indeksdan aniqlaydi, sotuvchidan
