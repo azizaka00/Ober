@@ -577,6 +577,20 @@
     if (RU_NORM[normText]) return RU_NORM[normText];
     let match;
     if ((match = text.match(/^(\d+) ta suhbat$/))) return `${match[1]} чатов`;
+    // Ruscha ko'plik: son uchun [1 → bir, 2-4 → ko'p, 5+ → juda ko'p]
+    // shakllarini beradi. `kunlar` va `takliflar` ikkalasi ham shu orqali.
+    //
+    // FUNKSIYA DEKLARATSIYASI — const EMAS (2026-08-16, jonli sinovda
+    // topildi). Bark qolipi quyida `rusPlural` ni ishlatadi; `const`
+    // bo'lsa TDZ (temporal dead zone) da qolib ReferenceError berardi —
+    // rus tilida talab bloki o'rniga "Hali suhbat yo'q" chiqardi.
+    // Deklaratsiya hoisting qilinadi, shuning uchun xato yo'qoladi.
+    function rusPlural(n, [bir, kop, kopkop]) {
+      const m = n % 100;
+      if (m >= 11 && m <= 14) return kopkop;
+      const o = n % 10;
+      return o === 1 ? bir : o >= 2 && o <= 4 ? kop : kopkop;
+    }
     // Bark uslubi: chat va sotuvchi sahifalaridagi talab bloki (2026-08-16).
     // "22 ta xaridor shu hafta javob kutdi" — raqam bilan ko'plik qoidasi.
     if ((match = text.match(/^([\d ]+) ta xaridor shu hafta javob kutdi$/))) {
@@ -588,14 +602,6 @@
     if ((match = text.match(/^(.+) · (\d+) sotuvchi (?:chatda )?javob berdi$/))) return `${match[1]} · Ответили продавцы: ${match[2]}`;
     if ((match = text.match(/^(\d+) ta sotuvchi (?:chatda )?javob berdi$/))) return `Ответили продавцы: ${match[1]}`;
     if ((match = text.match(/^(\d+) ta natijadan eng moslari$/))) return `Лучшие из ${match[1]} результатов`;
-    // Ruscha ko'plik: son uchun [1 → bir, 2-4 → ko'p, 5+ → juda ko'p]
-    // shakllarini beradi. `kunlar` va `takliflar` ikkalasi ham shu orqali.
-    const rusPlural = (n, [bir, kop, kopkop]) => {
-      const m = n % 100;
-      if (m >= 11 && m <= 14) return kopkop;
-      const o = n % 10;
-      return o === 1 ? bir : o >= 2 && o <= 4 ? kop : kopkop;
-    };
     if ((match = text.match(/^(\d+\+?) ta taklif · (.+) dan$/))) {
       const son = parseInt(match[1], 10);
       return `${match[1]} ${rusPlural(son, ["предложение", "предложения", "предложений"])} · от ${match[2].replace(/ so[‘’']m$/, " сум")}`;
