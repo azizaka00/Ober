@@ -36,6 +36,13 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
+python sinonim_sinov.py
+if errorlevel 1 (
+  echo.
+  echo   SINONIM QATLAMI SINOVI YIQILDI - yig'ish boshlanmadi.
+  pause
+  exit /b 1
+)
 python suhbat_sinov.py
 if errorlevel 1 (
   echo.

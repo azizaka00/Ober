@@ -306,10 +306,13 @@ Birlashtirish kerak — **AI ishi.**
    (`app/manbalar/avizinfo.py`). A tur (e'lonlar taxtasi), Toshkent
    subdomeni, 14 bo'lim, narx so'mda. Qolgan shaharlar `_SHAHARLAR`
    ro'yxatiga qo'shish orqali ochiladi.
-5. **O'zbekcha↔ruscha so'z moslashuvi** (2026-08-13 o'lchov) —
-   "zaryadka" so'rovi "Зарядное устройство" (Glotr) va "Аренда"
-   (Shahar.uz) nomlarini topa olmaydi: normallashgan shakllar turli
-   (`zariadka` vs `zariadnoe`, `izara` vs `arenda`). Bu yangi manba
-   e'lonlarining o'zbekcha qidiruvda ko'rinishini cheklaydi. Atama
-   xaritasi hozir faqat xususiyatlar uchun — nom/qidiruv uchun
-   alohida sinonim qatlami kerak.
+5. ~~**O'zbekcha↔ruscha so'z moslashuvi**~~ — **✅ 2026-08-16 yopildi**.
+   `_KANONIK` sinonim xaritasi 11 tadan 49 ta kalitga kengaytirildi
+   (kitob/kniga, soat/chasi, eshik/dver, ko'ylak/rubashka, dazmol/utiug,
+   changyutgich/pilesos, sovun/milo, qo'lqop/pershatki, zanjir/seposhka
+   va boshqalar). `app/sinonim_sinov.py` (44 juftlik) har birini ASL
+   yozuvdan hisoblab qo'riqlaydi. Indeks to'liq qayta qurildi
+   (519 408 e'lon) — production o'lchovi 32/32 juftlikda ishlaydi.
+   Ataylab kiritilmagan: "ручка" (qalam/eshik tutqichi), "стекло"
+   (oyna ikki ma'noli), "дом" ("uy" 2 harf — qidiruv tozalagichi
+   tashlaydi, alohida masala).

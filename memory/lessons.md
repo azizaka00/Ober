@@ -975,3 +975,30 @@ Chrome headless bilan: Play uchun 390x844, App Store uchun
 
 Saboq: App Store skrinshoti uchun window-size ni shunchaki kattalashtirish
 yetmaydi — device-scale-factor kerak, aks holda CSS layout desktop bo'lib qoladi.
+
+
+## 2026-08-16 — Sinonim qatlami: ruscha shakllarni qo'lda hisoblamang
+
+O'zbekcha-ruscha sinonim xaritasini kengaytirishda (kitob/kniga,
+soat/chasi, eshik/dver...) har juftlikning normallashgan shaklini
+QO'LDAN hisoblash xato beradi. `normalla()` qoidalari kutilmagan
+joyda ishlaydi: "часы" -> "shasi" (ч->ch, c->s), "кирпич" ->
+"kirpish" (ч->ch, c->s), "цепочка" -> "seposhka" (ts->s, c->s).
+"chasi" deb yozilsa sinov yiqilardi.
+
+Yechim: `sinonim_sinov.py` har juftlikni ASL yozuvdan (kirillcha
+ruscha + lotincha o'zbekcha) hisoblab, ikkala shakl tengligini
+tekshiradi. Qo'lda hisoblanadigan narsani sinovga topshirdik.
+
+Ikkinchi saboq: `_KANONIK` o'zgarishi normalla'ni HAMMA joyda
+(bozor_izi, yonalishlar, soz_kategoriya) o'zgartiradi — shuning
+uchun faqat bir ma'noli juftliklar kiritiladi ("ручка" qalam ham,
+eshik tutqichi ham; "стекло" oyna ikki ma'noli — ikkalasi ham
+kiritilmadi), va o'zgarishdan keyin indeks `tahlil.py qayta`
+bilan to'liq qayta quriladi (519 408 e'lon, 98 soniya; yo'lda
+3.3 million nofaol FTS yozuvi ham tozalandi).
+
+Uchinchi saboq: NAVBATCHI buyrug'i bilan ishlaganda javob.txt
+ESKI yuklash matnini ko'rsatsa, buyruq skript sifatida bajarilganini
+aniqlash uchun skript boshiga MARKER qo'yish kerak — `yuklash`
+va ixtiyoriy skript ikkalasi ham javob yozadi.
