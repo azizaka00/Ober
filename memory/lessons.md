@@ -1112,3 +1112,15 @@ bo'lib aniq (4.0/2.0) va prefiks (1.0/0.5) alohida hisoblanadi.
 relevans_sinov 6-bo'limi (13 -> 15) qo'riqlaydi. Xulosa: bir
 yo'lda tuzatilgan sifat xatosi boshqa yo'lda qolishi mumkin —
 har yo'lning o'z qo'riqchisi bo'lishi shart.
+
+## 2026-08-16 — Yangi e'lon FTS'ga darhol tushishi shart
+
+Audit production'da 46 ta yangi OLX e'loni FTS'da yo'qligini topdi —
+ular qidiruvda umuman ko'rinmasdi. Sabab: `saqla()` FTS'ga yozmasdi,
+e'lon indeksga `tahlil_qil()` orqali tushardi — u yo 500 ta yangi
+e'lon yig'ilganda, yo butun issiq sikl tugaganda ishlaydi. Issiq
+sikl 5+ soat davom etganda yangi e'lonlar yarim kun ko'rinmaydi.
+Yechim: `saqla()` yangi/qaytgan e'lonni FTS'ga o'zi yozadi
+(`_fts_tez_yoz`, teg tahlilga qoldiriladi). Xulosa: yig'ilgan
+ma'lumot qidiruvga tushmasa, butun yig'ish ma'nosiz — FTS sinxron
+bo'lishi shart, oraliq tahlilga tayanib bo'lmaydi.

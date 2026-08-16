@@ -1951,6 +1951,24 @@ def push_belgila(xabar_id: int) -> None:
 
 # ── FTS5 INDEKSI ─────────────────────────────────────────────────────────────
 
+def _fts_tez_yoz(c, elon_id: int, matn: str) -> None:
+    """Bitta e'lonni FTS'ga darhol yozadi (ochiq ulanish ichida).
+
+    `saqla()` uchun: yangi/qaytgan e'lon qidiruvda ko'rinsin. Teg
+    (model/qism) bo'sh — ularni `tahlil_qil()` to'liq tahlilda to'ldiradi.
+    FTS yo'q bo'lsa yoki xato bersa — yig'ish to'xtamasin.
+    """
+    if not FTS_BOR:
+        return
+    from lugat import normalla
+    try:
+        c.execute("DELETE FROM elonlar_fts WHERE rowid=?", (elon_id,))
+        c.execute("INSERT INTO elonlar_fts (rowid, norm, teg) VALUES (?,?,?)",
+                  (elon_id, normalla(matn or "")[:3000], ""))
+    except sqlite3.OperationalError as e:
+        print(f"  [fts] tezkor yozilmadi ({elon_id}): {e}")
+
+
 def fts_yoz(qatorlar: list[tuple[int, str, str]]) -> None:
     """(elon_id, normallashtirilgan matn, teglar) — indeksga yozadi."""
     if not FTS_BOR or not qatorlar:
@@ -3338,7 +3356,7 @@ def saqla(e: dict, sikl: str = "") -> str:
             (e["manba"], e["tashqi_id"])).fetchone()
 
         if eski is None:
-            c.execute("""
+            cur = c.execute("""
                 INSERT INTO elonlar
                 (manba, tashqi_id, nom, narx_som, narx_asl, valyuta, kelishiladi,
                  holat, viloyat, shahar, tuman, sana, havola, rasm, telefon, biznes,
@@ -3359,6 +3377,18 @@ def saqla(e: dict, sikl: str = "") -> str:
                 c.execute("INSERT INTO narx_tarix (manba, tashqi_id, narx_som, vaqt)"
                           " VALUES (?,?,?,?)",
                           (e["manba"], e["tashqi_id"], e["narx_som"], now))
+            # YANGI E'LON DARHOL QIDIRILSIN (o'lchov 2026-08-16).
+            #
+            # `saqla` FTS'ga yozmasdi — e'lon qidiruvda ko'rinishi uchun
+            # `tahlil_qil()` chaqirilishi shart edi, u esa yo 500 ta yangi
+            # e'lon yig'ilganda, yo butun sikl tugaganda ishlaydi. Issiq
+            # sikl 5+ soat davom etganda 46 ta yangi e'lon FTS'da yo'q
+            # bo'lib, qidiruvda umuman ko'rinmadi (production o'lchovi).
+            # Endi yangi e'lon o'zi FTS'ga tushadi; `tahlil_qil()` keyin
+            # teg (model/qism) bilan ustidan yozadi.
+            _fts_tez_yoz(c, cur.lastrowid,
+                         f"{e.get('nom') or ''} {e.get('kategoriya') or ''}"
+                         f" {e.get('tavsif') or ''}")
             return "yangi"
 
         # Mavjud — narx o'zgarganmi yoki oldin nofaol bo'lganmi?
@@ -3404,6 +3434,11 @@ def saqla(e: dict, sikl: str = "") -> str:
                       " VALUES (?,?,?,?)",
                       (e["manba"], e["tashqi_id"], e["narx_som"], now))
         if qaytdi:
+            # Nofaoldan qaytgan e'lon FTS'dan o'chirilgan bo'lishi mumkin
+            # (`fts_nofaollarni_ochir`) — qidiruvda yana ko'rinsin.
+            _fts_tez_yoz(c, eski["id"],
+                         f"{e.get('nom') or ''} {e.get('kategoriya') or ''}"
+                         f" {e.get('tavsif') or ''}")
             return "qaytdi"
         if ozgardi:
             return "yangilandi"
