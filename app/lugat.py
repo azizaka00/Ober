@@ -94,6 +94,58 @@ _KANONIK = {
     "kvartiru": "kvartira",      # квартиру  -> kvartira
     "prodaja": "sotish",         # продажа   -> sotish
     "prodaza": "sotish",         # продажа   -> sotish (ts->s qoidasi)
+
+    # ── 2026-08-16 KENGAYTIRISH — PRODUCTION O'LCHOVI ──────────────────
+    # 29 ta keng tarqalgan mahsulot so'zi production'da sinaldi: "soat"
+    # "Книга" e'lonini, "eshik" "Дверь"ni, "ko'ylak" "Рубашка"ni topa
+    # olmasdi. Sotuvchi aralash sarlavha yozganida ishlaydi, lekin faqat
+    # RUSCHA nom bilan chiqqan e'lon o'zbekcha so'rovga ko'rinmas edi.
+    #
+    # Kalit — normalla() qoidalaridan O'TGAN ruscha shakl (ch->sh, c->s,
+    # y->i, ts->s ekanini unutmang: "часы" -> "shasi"). Sinov:
+    # `sinonim_sinov.py` har juftlikni ASL yozuvdan hisoblab tekshiradi —
+    # qo'lda hisoblangan xato sinovda chiqadi.
+    #
+    # FAQAT bir ma'noli juftliklar. "ручка" (qalam) kiritilmadi — eshik
+    # tutqichi ham ручка, "стекло" kiritilmadi — oyna ikkita ma'noli.
+    "kniga": "kitob",            # книга    -> kitob
+    "knigi": "kitob",            # книги    -> kitob
+    "shasi": "soat",             # часы     -> soat
+    "kover": "gilam",            # ковер    -> gilam
+    "kovri": "gilam",            # ковры    -> gilam
+    "podushka": "iostik",        # подушка  -> yostiq
+    "dver": "eshik",             # дверь    -> eshik
+    "dveri": "eshik",            # двери    -> eshik
+    "okno": "deraza",            # окно     -> deraza
+    "okna": "deraza",            # окна     -> deraza
+    "kirpish": "gisht",          # кирпич   -> g'isht
+    "kraska": "boiok",           # краска   -> bo'yoq
+    "truba": "kuvur",            # труба    -> quvur
+    "trubi": "kuvur",            # трубы    -> quvur
+    "kazan": "kozon",            # казан    -> qozon
+    "shainik": "shoinak",        # чайник   -> choynak
+    "shainiki": "shoinak",       # чайники  -> choynak
+    "sergi": "zirak",            # серьги   -> zirak
+    "braslet": "bilaguzuk",      # браслет  -> bilaguzuk
+    "oshki": "kozoinak",         # очки     -> ko'zoynak
+    "polotense": "soshik",       # полотенце -> sochiq
+    "rubashka": "koilak",        # рубашка  -> ko'ylak
+    "plate": "koilak",           # платье   -> ko'ylak (ayollar ko'ylagi)
+    "obuv": "poiabzal",          # обувь    -> poyabzal
+    "utiug": "dazmol",           # утюг     -> dazmol
+    "pilesos": "shangiutgish",   # пылесос  -> changyutgich
+    "fen": "parmaxona",          # фен      -> parmaxona
+    "tetrad": "daftar",          # тетрадь  -> daftar
+    "milo": "sovun",             # мыло     -> sovun
+    "obogrevatel": "isitgish",   # обогреватель -> isitgich
+    "zont": "soiabon",           # зонт     -> soyabon
+    "pershatki": "kolkop",       # перчатки -> qo'lqop
+    "briuki": "shim",            # брюки    -> shim
+    "karandash": "kalam",        # карандаш -> qalam
+    "seposhka": "zanzir",        # цепочка  -> zanjir
+    "sovutgish": "muzlatgish",   # sovutgich -> muzlatgich (uz-uz sinonimi)
+    "posudomoeshnaia": "idish iuvish",  # посудомоечная -> idish yuvish
+    "gazovaia": "gaz",           # газовая  -> gaz
 }
 
 
