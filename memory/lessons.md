@@ -1088,3 +1088,14 @@ Saboq: tezlik uchun rank'ni olib tashlash — bu "bir xil natija, tezroq"
 emas. Tartib natijani belgilaydi (eski vs yangi) va sinov buni
 qo'riqlamasa, jimgina yomonlashib boradi. Har tartib o'zgarishidan
 keyin NATIJA (qaysi e'lonlar chiqadi), faqat vaqt emas, tekshiriladi.
+
+## 2026-08-16 — Mobil audit: yopishqoq element qoidasi iframe bilan o'lchanadi
+
+O'lchov: har sahifa 390px iframe'da ochilib, computed style bo'yicha
+`position:fixed|sticky` va haqiqiy ko'rinish (opacity, pointer-events,
+ekran maydoni) tekshirildi. Boshqa sahifalar `.topbar{position:static}`
+qilgan edi — elon.html qilmagan, topbar + tabbar ikkalasi yopishqoq
+edi (121px doim band). CSS qoidasini "ko'z bilan" emas, iframe
+o'lchovi bilan qo'riqlash kerak — dump-dom'ning regex'i yetarli emas,
+chunki yashirin elementlarni (scrim, toast, skip-link) ajrata olmaydi.
+Tuzatish: elon.html 880px media blokiga `.topbar{position:static}`.

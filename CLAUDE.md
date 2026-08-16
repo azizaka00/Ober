@@ -227,11 +227,12 @@ talab qiladi.
    **✅ yopiq.** `grep 'border-radius:[0-9]+px' web/*.html` — 0 natija
    (elon, sotuvchi toza), `[hidden]{display:none!important}` har
    sahifada bor. `web_sinov.py` (103 tekshiruv) ikkalasini qo'riqlaydi.
-2. **Telefon ko'rinishi qisman sinalgan.** 18 ta 390px skrinshot
-   bor (`reports/redesign-dsrupt-2026-08-11/skrinshotlar/`), ikkala
-   rol va til mobil ko'rinishda tekshirilgan. Qoldiq: barcha
-   sahifalarning jonli telefonda (Android/iOS) to'liq interaktiv
-   sinovi — brauzer emas, haqiqiy qurilma.
+2. **Telefon ko'rinishi — iframe o'lchovi bilan yopildi (2026-08-16).**
+   18 ta 390px skrinshot bor va qo'shimcha tizimli o'lchov: har
+   sahifa 390px iframe'da — **yopishqoq element bitta** (elon'da
+   topbar sticky edi — tuzatildi, `61cea1b`) va **horizontal
+   overflow yo'q** (6/6 sahifa). Qoldiq: haqiqiy telefonda
+   (Android/iOS) jonli interaktiv sinov — brauzer emas, qurilma.
 3. ~~`nexia kolodka` 205 tadan 20 taga tushdi~~ — **✅ 2026-08-16 o'lchandi:**
    haqiqiy tovar kesilmagan. Butun indeksda "neksia + kolodka" birga
    atigi 2 ta e'lon bor (ikkalasi ham natijada), 178 kesilgani —
