@@ -221,11 +221,17 @@ Yangi manba qo'shish — kod ishi emas, **hamkorlik ishi**: rasmiy API yoki
 kelishuv. Lekin ochiq SSR manbalar (avtoelon, asaxiy) oddiy HTTP adapter
 talab qiladi.
 
-## Ochiq muammolar (2026-08-10)
+## Ochiq muammolar (2026-08-16 holatiga yangilandi)
 
-1. Dizayn tizimida tizimdan tashqari radius qiymatlari (`elon.html`
-   va `sotuvchi.html` da), `elon.html` da `[hidden]` qoidasi yo'q.
-2. Telefon ko'rinishi to'liq sinalmagan.
+1. ~~Dizayn tizimida tizimdan tashqari radius qiymatlari~~ —
+   **✅ yopiq.** `grep 'border-radius:[0-9]+px' web/*.html` — 0 natija
+   (elon, sotuvchi toza), `[hidden]{display:none!important}` har
+   sahifada bor. `web_sinov.py` (103 tekshiruv) ikkalasini qo'riqlaydi.
+2. **Telefon ko'rinishi qisman sinalgan.** 18 ta 390px skrinshot
+   bor (`reports/redesign-dsrupt-2026-08-11/skrinshotlar/`), ikkala
+   rol va til mobil ko'rinishda tekshirilgan. Qoldiq: barcha
+   sahifalarning jonli telefonda (Android/iOS) to'liq interaktiv
+   sinovi — brauzer emas, haqiqiy qurilma.
 3. ~~`nexia kolodka` 205 tadan 20 taga tushdi~~ — **✅ 2026-08-16 o'lchandi:**
    haqiqiy tovar kesilmagan. Butun indeksda "neksia + kolodka" birga
    atigi 2 ta e'lon bor (ikkalasi ham natijada), 178 kesilgani —
@@ -257,6 +263,19 @@ talab qiladi.
    ni tashladi. 8 so'z sinovida faqat `gilam` va `oltin` o'zgardi,
    `karavot` ikkalasini saqladi (0.76). Ko'p so'zli "gilam yuvish
    xizmati" Xizmatlar yorlig'ini o'zida saqlaydi — to'g'ri.
+7. ~~**OR bosqichi begona so'zni olib keladi** ("divan charm" →
+   Charmhoo shina tepada).~~ — **✅ 2026-08-16 yopildi.** Aniq so'z
+   endi 10 ball, prefiks kengaytmasi 2.5 ball (`qidiruv` erkin
+   ballash). "divan charm" production'da: divanlar birinchi,
+   Charmhoo pastga tushdi. `moslik_sinov` 5-bo'limi (erkin qidiruv,
+   deterministik nomzodlar) buni qo'riqlaydi.
+
+**2026-08-16 qo'shimchasi — qidiruv tartibi xavfi:** OR bosqichi
+`ORDER BY rank` dan `rowid DESC` ga o'tdi (tezlik). Tartibsiz `LIMIT`
+FTS'ni eski e'lonlardan o'qirdi — keng so'rovlarda yangi e'lonlar
+nomzodga kirmasdi. `rowid DESC` yangilarni beradi (4 ms). Saboq:
+tartib o'zgarishi natijani ham o'zgartiradi — `moslik_sinov` endi
+buni qo'riqlaydi.
 
 **Yopilgan:** OBER o'z e'lonlarida kategoriya bo'sh edi — endi
 `baza.taxminiy_kategoriya()` uni indeksdan aniqlaydi, sotuvchidan

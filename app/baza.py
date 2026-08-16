@@ -2465,26 +2465,21 @@ def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA,
     else:
         urinishlar.append(and_toklar[0])
         urinishlar.append(prefiks[0])
-    # ── OCHIQ MUAMMO: OR BOSQICHI BEGONA SO'ZNI OLIB KELADI ─────────
+    # ── OR BOSQICHI BEGONA SO'Z — TUZATILDI (2026-08-16) ────────────
     #
     # 2026-08-16 o'lchovi. `divan charm` so'rovi:
     #     1-bosqich (divan AND charm)    -> 0 ta
     #     2-bosqich (divan* AND charm*)  -> 0 ta
     #     3-bosqich (kamida bitta so'z)  -> 48 ta
-    # va o'sha 48 tadan 5 tasi "Charmhoo cotecho R13/R15/R16" —
+    # va o'sha 48 tadan bir nechasi "Charmhoo cotecho R13/R15/R16" —
     # SHINA. Sabab: `charm*` `charmhoo` brendiga yopishadi.
     #
-    # Ya'ni ayb prefiksda emas. Indeksda "divan" va "charm" so'zlarini
-    # BIRGA saqlagan e'lon yo'q, shuning uchun qidiruv OR ga tushadi
-    # va u yerda begona so'z aniq so'z bilan teng huquqli bo'lib
-    # qoladi. "Audit divan" e'loni `divan` ni AYNAN saqlaydi,
-    # "Charmhoo" esa faqat prefiks kengaytmasi — lekin ballari teng.
-    #
-    # YECHIM YO'NALISHI (hali qilinmagan): OR bosqichida AYNAN mos
-    # kelgan so'z prefiks-mosdan yuqori turishi kerak. Bu ballash
-    # o'zgarishi, ya'ni qidiruvning eng nozik joyi — `moslik_sinov`
-    # (57 ta) va `relevans_sinov` (13 ta) qo'riqlaydi. Ehtiyot
-    # bo'lib, o'lchov bilan qilinadi.
+    # Ayb PREFIKSDA emas — ballashda edi: "Audit divan" `divan` ni
+    # AYNAN saqlaydi, "Charmhoo" faqat prefiks kengaytmasi, lekin
+    # ikkalasi bir xil ball olardi (`x == w or x.startswith(w)`).
+    # Yechim `qidiruv.py` erkin ballashida: aniq so'z 10 ball, prefiks
+    # kengaytmasi 2.5 ball. `moslik_sinov` 5-bo'limi (erkin qidiruv,
+    # deterministik nomzodlar) buni qo'riqlaydi.
     #
     # OXIRGI BOSQICH: kamida bitta so'z. Qidiruv uchun kerak — xaridor
     # bo'sh ekran ko'rmasin. Lekin `bozor_izi` uni SO'RAMAYDI: u
