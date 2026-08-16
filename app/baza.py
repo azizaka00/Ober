@@ -1995,24 +1995,36 @@ def fts_nomzodlar(teglar: list[str], sozlar: list[str],
     """
     if not FTS_BOR:
         return []
+    # UMUMIY SO'Z KIRMAYDI (o'lchov 2026-08-16). `fts_erkin` da bu
+    # filtr bor edi, lekin model yo'li `fts_nomzodlar` orqali o'tadi —
+    # u erda yo'q edi. "soat ... bambino 6" so'rovida "6" (raqam)
+    # butun indeks bo'yicha OR kengaytmasiga qo'shilib, 4000 nomzodni
+    # shovqin bilan to'ldirardi va `ORDER BY rank` bm25 baholashni
+    # cho'zardi. Endi ikkala yo'l bir xil filtrni qo'llaydi.
+    mazmunli = [t for t in (_fts_token(w) for w in sozlar) if t
+                and not _umumiy_soz(t)]
     bolaklar = []
     if teglar:
         ichi = " OR ".join(x for x in (_fts_token(t) for t in teglar) if x)
         if ichi:
             bolaklar.append(f"teg:({ichi})")
-    if sozlar:
-        ichi = " OR ".join(x for x in (_fts_token(w) for w in sozlar) if x)
-        if ichi:
-            bolaklar.append(f"norm:({ichi})")
+    if mazmunli:
+        ichi = " OR ".join(mazmunli)
+        bolaklar.append(f"norm:({ichi})")
     if not bolaklar:
         return []
     # Teg bo'lsa u MAJBURIY (qism turi shart), so'zlar qo'shimcha.
+    # RANK SARALANMAYDI (o'lchov 2026-08-16): bu yo'l ham chegaradan
+    # ko'p nomzod qaytaradi va natija Python'da qayta ballanadi —
+    # FTS rank'iga hojat yo'q. `ORDER BY rank` bo'lsa FTS butun
+    # moslar to'plamini bm25 bilan baholaydi (4000 nomzod uchun
+    # yuzlab ms); oddiy LIMIT esa bir necha ms.
     ifoda = bolaklar[0] if len(bolaklar) == 1 else f"{bolaklar[0]} OR {bolaklar[1]}"
     try:
         with ulan() as c:
             return [r["rowid"] for r in c.execute(
                 "SELECT rowid FROM elonlar_fts WHERE elonlar_fts MATCH ?"
-                " ORDER BY rank LIMIT ?", (ifoda, limit))]
+                " LIMIT ?", (ifoda, limit))]
     except sqlite3.OperationalError:
         return []
 
@@ -2403,13 +2415,34 @@ def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA,
     toklar = [t for t in (_fts_token(w) for w in sozlar) if t]
     if not toklar:
         return []
-    prefiks = [t + "*" for t in toklar]
+    # UMUMIY SO'Z AND BOSQICHIGA KIRMAYDI (o'lchov 2026-08-16).
+    #
+    # "iphone 13 pro max yangi original" so'rovi:
+    #   1-bosqich (6 so'z AND)  -> 7 157 ms (natija 1)
+    #   2-bosqich (prefiks AND) -> 1 017 ms (natija 1)
+    #
+    # Aybdor `pro` va `yangi` (normallashganda `iangi`) — indeksning
+    # 5% idan ortiq e'londa bor. FTS5 AND kesishmasi ularning butun
+    # postings ro'yxatini ko'rib chiqadi, natija bor bo'lsa ham.
+    #
+    # `qidir` nomzod tanlashda ularni allaqachon tashlaydi, lekin AND
+    # bosqichlari bu yerda toklar ASL HOLIDA qurilardi — shuning uchun
+    # sekinlik qolgan edi. Endi AND bosqichlari umumiy so'zsiz quriladi:
+    #
+    #   AND (tanlab)  -> 7 ms
+    #   OR  (tanlab)  -> 86 ms
+    #
+    # Hammasi umumiy so'z bo'lsa ("yangi original") — asl toklar
+    # qoladi, aks holda xaridor bo'sh ekran ko'radi.
+    mazmunli = [t for t in toklar if not _umumiy_soz(t)]
+    and_toklar = mazmunli or toklar
+    prefiks = [t + "*" for t in and_toklar]
     urinishlar = []
-    if len(toklar) > 1:
-        urinishlar.append(" AND ".join(toklar))
+    if len(and_toklar) > 1:
+        urinishlar.append(" AND ".join(and_toklar))
         urinishlar.append(" AND ".join(prefiks))
     else:
-        urinishlar.append(toklar[0])
+        urinishlar.append(and_toklar[0])
         urinishlar.append(prefiks[0])
     # ── OCHIQ MUAMMO: OR BOSQICHI BEGONA SO'ZNI OLIB KELADI ─────────
     #
@@ -2440,11 +2473,29 @@ def fts_erkin(sozlar: list[str], limit: int = ERKIN_CHEGARA,
     if not faqat_birga:
         urinishlar.append(" OR ".join(prefiks))
     for ifoda in urinishlar:
+        # OR BOSQICHI — FAQAT NOMZOD YIG'ADI, RANK SARALAMAYDI
+        # (o'lchov 2026-08-16). `ORDER BY rank` FTS'ni butun moslar
+        # to'plamini bm25 bilan baholashga majbur qiladi:
+        #
+        #   "kvartira* OR xonali*"    rank bilan 458 ms, oddiy 9 ms
+        #   "iphone* OR 13* OR ..."   rank bilan 1167 ms, oddiy 8 ms
+        #
+        # AND bosqichlari aniq (kam natija) — ularda rank kerak:
+        # eng mosini tanlab olish uchun. OR bosqichi esa chegaradan
+        # (900) ko'p natija qaytaradi va natija OXIRIDA Python'da
+        # qayta ballanadi (`qidir` — sarlavha, ketma-ketlik, joy,
+        # narx...). FTS rank'i o'sha yerda ishlatilmaydi — faqat
+        # "qaysi 900 tasi" degan savolni hal qiladi. Raqamsiz
+        # (rowid bo'yicha) olingan nomzodlar ham xuddi shu ballash
+        # orqali o'tadi, natija sifati o'zgarmaydi — tezligi esa
+        # 50-100x yaxshilanadi.
+        # AND bosqichlari (1-2) rank bilan, OR bosqichi (3) — oddiy LIMIT.
+        tartib = " ORDER BY rank" if ifoda.count(" AND ") else ""
         try:
             with ulan() as c:
                 idlar = [r["rowid"] for r in c.execute(
                     "SELECT rowid FROM elonlar_fts WHERE elonlar_fts MATCH ?"
-                    " ORDER BY rank LIMIT ?", (f"norm:({ifoda})", limit))]
+                    f"{tartib} LIMIT ?", (f"norm:({ifoda})", limit))]
         except sqlite3.OperationalError:
             continue
         if idlar:
@@ -2460,6 +2511,12 @@ def elonlar_idlardan(idlar: list[int]) -> list[dict]:
         for i in range(0, len(idlar), 900):        # SQLite parametr chegarasi
             bolak = idlar[i:i + 900]
             belgi = ",".join("?" * len(bolak))
+            # `id IN` BIRINCHI bo'ladi (o'lchov 2026-08-16). Ilgari
+            # `faol=1 AND id IN (...)` edi va SQLite ix_faol_manba
+            # indeksini tanlardi: 4000 id uchun butun faol to'plamni
+            # (126 873 qator) ko'rib, har birini id ro'yxatiga solishtirib
+            # chiqardi — 20 129 ms. `id IN` birinchi bo'lsa PK indeks
+            # ishlatiladi va faol filter shu 4000 id ustida tekshiriladi.
             natija.extend(dict(r) for r in c.execute(
                 # `manba` SHART. Ilgari tanlanmasdi va sahifada har e'lon
                 # "olx" deb belgilanardi — Telegramdan kelgani ham.
@@ -2469,7 +2526,8 @@ def elonlar_idlardan(idlar: list[int]) -> list[dict]:
                 " viloyat, shahar, tuman, sana, havola, rasm, biznes,"
                 " qism_turi, sotuvchi_nomi, kategoriya, tan_modellar,"
                 " tan_qismlar, tan_nom_qismlar"
-                f" FROM elonlar WHERE faol=1 AND id IN ({belgi})", bolak))
+                f" FROM elonlar WHERE id IN ({belgi}) AND faol=1"
+                " ORDER BY id", bolak))
     return natija
 
 

@@ -260,7 +260,31 @@ def qidir(sorov: str, tuman: str = "", limit: int = 20,
     ms_lugat = round((time.perf_counter() - _t0) * 1000)
     _t = time.perf_counter()
     if erkin:
-        hammasi = baza.elonlar_idlardan(baza.fts_erkin(sorov_soz))
+        # UMUMIY SO'Z NOMZOD TANLASHGA KIRMAYDI (o'lchov 2026-08-16).
+        #
+        # "divan yangi yumshoq zamonaviy" so'rovi:
+        #   1-bosqich (4 so'z AND)  -> 0 natija, LEKIN 525 ms
+        #   2-bosqich (prefiks AND) -> 0 natija, 2 ms
+        #   3-bosqich (OR)          -> 16 natija, 1 ms
+        #
+        # Aybdor "yangi" — indeksning 32% ida bor. FTS5 AND kesishmasi
+        # umumiy so'zning butun postings ro'yxatini ko'rib chiqadi,
+        # natija 0 bo'lsa ham. `bozor_izi` buni allaqachon qiladi
+        # (`_mazmunli_sozlar`), qidiruv ham endi qiladi — 5% dan ortiq
+        # e'londa uchragan so'z nomzod haqida hech narsa aytmaydi.
+        #
+        # `fts_erkin` ichidagi AND bosqichlari ham shu filterni
+        # qo'llaydi (2026-08-16 o'lchov: "iphone 13 pro max yangi
+        # original" AND 7 157 ms -> 7 ms) — bu yerda filtr OR bosqichi
+        # uchun: umumiy so'z OR'ni ham sekinlashtiradi (653 -> 86 ms)
+        # va nomzodlarni shovqin bilan to'ldiradi.
+        #
+        # BALLASHDA `sorov_soz` O'ZI QOLADI: "iphone 13" dagi "13"
+        # nomzod tanlashda ma'nosiz (raqam hamma joyda), lekin pastda
+        # aniqlikni oshirishda davom etadi.
+        nomzod_sozlar = [w for w in sorov_soz if not baza._umumiy_soz(w)]
+        hammasi = baza.elonlar_idlardan(
+            baza.fts_erkin(nomzod_sozlar or sorov_soz))
     else:
         hammasi = _nomzodlar(sorov_modellar, sorov_qismlar,
                              sorov_soz if not sorov_qismlar else erkin_sozlar)

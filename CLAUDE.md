@@ -228,10 +228,16 @@ talab qiladi.
 2. Telefon ko'rinishi to'liq sinalmagan.
 3. `nexia kolodka` 205 tadan 20 taga tushdi — aniqlik oshdi, lekin
    haqiqiy tovar ham kesilgan bo'lishi mumkin. O'lchash kerak.
-4. **Xaridor qidiruvi 4+ so'zda ~200 ms.** `fts_erkin` "hamma so'z"
-   bosqichlaridan o'tolmay butun indeks bo'yicha OR qidiruviga
-   tushadi (1 so'z 1 ms, 3 so'z 8 ms, 4+ so'z ~200 ms). `bozor_izi`
-   bu bosqichni endi so'ramaydi, lekin `qidir()` hali so'raydi.
+4. ~~**Xaridor qidiruvi 4+ so'zda ~200 ms.**~~ — **✅ 2026-08-16 yopildi.**
+   Uchta aybdor topildi va tuzatildi: (a) AND bosqichlariga umumiy
+   so'zlar kirardi (`pro`, `yangi` → 7 157 ms) — endi `fts_erkin`
+   va `fts_nomzodlar` ularni filtri; (b) OR bosqichida `ORDER BY
+   rank` butun moslar to'plamini bm25 bilan baholardi (458–1167 ms)
+   — endi OR faqat nomzod yig'adi, natija Python'da ballanadi;
+   (c) `elonlar_idlardan` da `faol=1 AND id IN` SQLite'ni ix_faol_manba
+   indeksiga tashlardi (4000 id uchun 20 129 ms) — `id IN` birinchi
+   bo'ldi. Natija: 4+ so'zli so'rovlar ~120–200 ms, model so'rovlari
+   ham (neksiya kolodka 339→101 ms, kobalt fara 695→201 ms).
 5. ~~**Yetim yozuvlar**~~ — **✅ 2026-08-16 yopildi.**
    `baza.sotuvchi_ochir()` sotuvchini VA bog'liq yozuvlarni bir
    tranzaksiyada o'chiradi (xabarlar → suhbatlar → javoblar →

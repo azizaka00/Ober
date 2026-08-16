@@ -1026,3 +1026,29 @@ Eski yozuvlarda NOM bo'lishi mumkin. Tozalashda faqat raqamli qiymatlar
 solishtiriladi (`sotuvchi GLOB '*[0-9]*' AND NOT GLOB '*[^0-9]*'`) —
 nomli eski javob "yetim" deb o'chib ketmasligi uchun sinov bilan
 qo'riqlanadi.
+
+## 2026-08-16 — Qidiruv sekinligining uchta asl aybdori
+
+"Qidiruv 4+ so'zda ~200 ms" muammosi uch xil joyda edi, uchalasi ham
+o'lchov bilan topildi:
+
+1. **AND bosqichiga umumiy so'z kirardi.** `fts_erkin` ning 1-bosqichi
+   (6 so'z AND) "iphone 13 pro max yangi original" uchun 7 157 ms oldi —
+   aybdor `pro` va `yangi` (indeksning 5% idan ortiq e'londa bor). FTS5
+   AND kesishmasi umumiy so'zning butun postings ro'yxatini ko'rib
+   chiqadi, natija bor bo'lsa ham. Yechim: `_umumiy_soz` filtrini AND
+   bosqichiga qo'llash (7 157 -> 7 ms).
+
+2. **OR bosqichida `ORDER BY rank` butun to'plamni bm25 bilan baholaydi.**
+   "kvartira* OR xonali*" 458 ms, "iphone* OR 13* OR max* OR original*"
+   1167 ms — oddiy LIMIT esa 8-9 ms. FTS rank'i oxirida ishlatilmaydi
+   (Python qayta ballaydi), shuning uchun OR bosqichida tashlandi.
+
+3. **`faol=1 AND id IN (...)` SQLite'ni noto'g'ri indeksga tashladi.**
+   ix_faol_manba orqali butun faol to'plamni ko'rib chiqadi (4000 id
+   uchun 20 129 ms). `id IN` birinchi bo'lsa PK indeks ishlaydi (405 ms).
+
+Saboq: FTS5 optimallashtirishda "so'rov uzun — OR ga tushadi" degan
+taxmin noto'g'ri edi. Asl qiymat umumiy so'zning postings ro'yxati
+o'lchamida va `ORDER BY rank` baholashida. Har bosqich alohida
+o'lchanmasa, xato manbai ko'rinmaydi.
