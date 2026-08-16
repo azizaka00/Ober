@@ -51,6 +51,7 @@ const KESH_MANZIL = [
   "/ober-ui.css",
   "/tabbar.js",
   "/i18n.js",
+  "/kat-ikonlar.js",
   "/manifest.json",
 ];
 

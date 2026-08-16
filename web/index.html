@@ -1064,6 +1064,45 @@
     .ochilmoqda{opacity:1;transform:none;transition:none}
   }
 
+  /* ── BOZOR BO'LIMLARI — hero ostidagi ikonli to'r (2026-08-16).
+     IndiaMART uslubi: xaridor bo'limni ko'rib, shu bo'yicha qidiradi.
+     Kategoriyalar sahifasining to'liq daraxtiga yo'l ham shu yerda. */
+  .bozor-tor{background:var(--surface);border-bottom:1px solid var(--line)}
+  .bt-ic{width:min(100% - 36px,var(--content));margin-inline:auto;padding:44px 0 50px}
+  .bt-bosh{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:22px}
+  .bt-bosh h2{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;color:var(--navy)}
+  .bt-barcha{color:var(--amber-deep);font-size:12.5px;font-weight:750;text-decoration:none;white-space:nowrap}
+  .bt-barcha:hover{text-decoration:underline}
+  .bt-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+  .bt-karta{
+    display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+    padding:14px 14px 13px;
+    border:1px solid var(--line);border-radius:var(--r-orta);
+    background:rgba(255,255,255,.72);
+    box-shadow:var(--shadow-card);
+    text-decoration:none;
+    transition:transform 120ms var(--ease),border-color 120ms var(--ease),box-shadow 120ms var(--ease);
+  }
+  .bt-karta:hover{transform:translateY(-2px);border-color:var(--amber-line);box-shadow:0 2px 4px rgba(11,37,89,.06),0 14px 34px rgba(245,166,35,.14)}
+  .bt-karta:active{transform:scale(.98)}
+  .bt-ikon{
+    display:grid;place-items:center;
+    width:38px;height:38px;border-radius:var(--r-kichik);
+    background:var(--navy-soft);color:var(--navy);
+    transition:background 120ms var(--ease),color 120ms var(--ease);
+  }
+  .bt-karta:hover .bt-ikon{background:var(--cta-gradient);color:var(--on-cta)}
+  .bt-karta svg{width:22px;height:22px}
+  .bt-nom{margin:0;font-size:13.5px;font-weight:760;letter-spacing:-.01em;color:var(--navy);line-height:1.3}
+  .bt-son{margin:0;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+  @media (max-width:1100px){.bt-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  @media (max-width:760px){.bt-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media (max-width:480px){
+    .bt-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .bt-ic{padding:36px 0 40px}
+  }
+  body.is-results .bozor-tor{display:none}
+
   /* ── OBER QANDAY ISHLAYDI — editorial qatorlar ─────────────────
      2026-08-12: Aziz editorial yo'nalishni tanladi. Raqamlar o'rniga
      "01/02/03" yozuvi + hover'da amber oqim chizig'i. Farq jadvali
@@ -2536,6 +2575,27 @@
   </div>
 </section>
 
+<!-- BOZOR BO'LIMLARI — hero ostidagi ikonli to'r (2026-08-16).
+     IndiaMART uslubi: xaridor bo'limni ko'rib, shu bo'yicha qidiradi.
+     Ikonlar `kat-ikonlar.js` dan — kategoriyalar sahifasi bilan bitta
+     manba. Karta bosilganda bo'lim bo'yicha qidiruv ochiladi. -->
+<section class="bozor-tor ochilmoqda" id="bozor-tor" aria-label="Bozor bo‘limlari">
+  <div class="bt-ic">
+    <div class="bt-bosh">
+      <h2>Bozor bo‘limlari</h2>
+      <a class="bt-barcha" href="/kategoriyalar">Barchasini ko‘rish</a>
+    </div>
+    <div class="bt-grid" id="bt-grid" aria-busy="true">
+      <a class="bt-karta" href="#" aria-hidden="true" tabindex="-1"><span class="bt-ikon"></span><span class="bt-nom">…</span><span class="bt-son">…</span></a>
+      <a class="bt-karta" href="#" aria-hidden="true" tabindex="-1"><span class="bt-ikon"></span><span class="bt-nom">…</span><span class="bt-son">…</span></a>
+      <a class="bt-karta" href="#" aria-hidden="true" tabindex="-1"><span class="bt-ikon"></span><span class="bt-nom">…</span><span class="bt-son">…</span></a>
+      <a class="bt-karta" href="#" aria-hidden="true" tabindex="-1"><span class="bt-ikon"></span><span class="bt-nom">…</span><span class="bt-son">…</span></a>
+      <a class="bt-karta" href="#" aria-hidden="true" tabindex="-1"><span class="bt-ikon"></span><span class="bt-nom">…</span><span class="bt-son">…</span></a>
+      <a class="bt-karta" href="#" aria-hidden="true" tabindex="-1"><span class="bt-ikon"></span><span class="bt-nom">…</span><span class="bt-son">…</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- OBER NIMA QILADI — uch qadam.
      2026-08-02 vizual tekshiruv: bosh sahifada hero va qidiruv
      qutisidan boshqa hech narsa yo'q edi. Birinchi marta kirgan odam
@@ -2603,6 +2663,7 @@
 </footer>
 
 <script src="/i18n.js"></script>
+<script src="/kat-ikonlar.js"></script>
 <script src="/tabbar.js"></script>
 <script>
 "use strict";
@@ -3959,6 +4020,46 @@ if(/^\d+$/.test(saqlanganSorov)){
   saqlanganSorov = "";
 }
 if(saqlanganSorov) $("#takliflar-link").href = "/takliflar";
+
+// BOZOR BO'LIMLARI TO'RI (2026-08-16).
+// `/api/kategoriyalar` — kategoriyalar sahifasi bilan bitta manba,
+// shuning uchun sonlar va nomlar ikki joyda bir-biriga zid keta
+// olmaydi. Karta bosilganda bo'lim bo'yicha qidiruv ochiladi.
+(function () {
+  const grid = $("#bt-grid");
+  if (!grid) return;
+  fetch("/api/kategoriyalar")
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(d => {
+      if (!Array.isArray(d) || !d.length) throw new Error("bo'sh");
+      grid.innerHTML = d.slice(0, 12).map(g => {
+        const ikon = (window.OBER_KAT_IKONLAR || {})[g.slug]
+                     || (window.OBER_KAT_IKONLAR || {}).boshqa || "";
+        const nom = window.OBER_I18N ? window.OBER_I18N.t(g.nom) : g.nom;
+        return `<a class="bt-karta" href="/?q=${encodeURIComponent(g.q)}">
+          <span class="bt-ikon">${ikon}</span>
+          <span class="bt-nom">${esc(nom)}</span>
+          <span class="bt-son">${formatInt(g.elonlar)} ta</span>
+        </a>`;
+      }).join("");
+      grid.setAttribute("aria-busy", "false");
+    })
+    .catch(() => {
+      grid.parentElement.remove();   // to'r yuklanmasa sahifa buzilmaydi
+    });
+})();
+
+// `?sora=1` — tepa paneldagi "So'rov yuborish" tugmasi (2026-08-16).
+// Bosh sahifada so'rash amali qidiruv maydonidan matn oladi, shuning
+// uchun odam shu yerga kelib yozadi va "Sotuvchilardan so'rash"
+// tugmasini bosadi. Placeholder shu rejimda nima kerakligini aytadi.
+if (new URLSearchParams(location.search).get("sora") === "1") {
+  const q = $("#q");
+  if (q) {
+    q.placeholder = window.OBER_I18N ? window.OBER_I18N.t("Nima kerak? Masalan: divan") : "Nima kerak? Masalan: divan";
+    q.focus({preventScroll: true});
+  }
+}
 
 // 2026-08-06 audit: `?q=divan` bilan kelgan havola endi qidiruvni
 // avtomatik boshlaydi — natijalar ulashiladigan va SEO'ga ochiq bo'ladi.

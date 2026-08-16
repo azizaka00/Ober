@@ -556,6 +556,15 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
                              "application/javascript; charset=utf-8")
             return
 
+        # KATEGORIYA IKONLARI (2026-08-16). Bitta manba: kategoriyalar
+        # sahifasi va bosh sahifadagi bozor bo'limlari to'ri bir xil
+        # ikonlarni ko'rsatadi. `tabbar.js` kabi — no-cache + ETag
+        # `_ulashilgan` o'zi qo'shadi.
+        if u.path == "/kat-ikonlar.js":
+            self._ulashilgan("kat-ikonlar.js",
+                             "application/javascript; charset=utf-8")
+            return
+
         # FAVICON — BRAUZER UNI HAR DOIM ILDIZDAN SO'RAYDI (2026-08-12).
         #
         # Sahifalarda `<link rel="icon" href="/brend/icon.png">` bor va

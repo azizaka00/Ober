@@ -81,6 +81,34 @@
     "  .topbar-inner{flex-wrap:wrap;row-gap:8px}",
     "  .ober-top-qidiruv{order:9;flex-basis:100%;margin:0 0 8px;max-width:none}",
     "}",
+    /* TEPA PANELDA "SO'ROV YUBORISH" (2026-08-16) — IndiaMART'ning
+       "Post Requirement" tugmasi. Qidiruv qatorida turadi: odam
+       topilmasa darhol so'ray oladi, boshqa sahifaga o'tmaydi.
+
+       `flex:none` — qidiruv qisqarsin, tugma siqilmasin. Matn
+       ikki qavat: keng ekranda "So'rov yuborish", 600px dan torida
+       "So'rov" (telefonda tepa panelda joy kam). */
+    ".ober-sora-cta{",
+    "  flex:none;display:inline-flex;align-items:center;justify-content:center;",
+    "  min-height:40px;padding:0 16px;border-radius:999px;",
+    "  background:var(--navy,#0a2b63);color:#fff;",
+    "  font-size:12.5px;font-weight:800;white-space:nowrap;",
+    "  text-decoration:none;box-shadow:0 6px 16px rgba(10,43,99,.22),inset 0 1px 0 rgba(255,255,255,.14);",
+    "  transition:transform 120ms var(--ease),box-shadow 120ms var(--ease);",
+    "}",
+    "@media (hover:hover){",
+    "  .ober-sora-cta:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(10,43,99,.28)}",
+    "}",
+    ".ober-sora-cta:active{transform:scale(.97)}",
+    "@media (max-width:600px){",
+    "  .ober-sora-cta{min-height:36px;padding:0 12px;font-size:11.5px}",
+    "}",
+    ".ober-sora-cta .uzun{display:inline}",
+    ".ober-sora-cta .qisqa{display:none}",
+    "@media (max-width:520px){",
+    "  .ober-sora-cta .uzun{display:none}",
+    "  .ober-sora-cta .qisqa{display:inline}",
+    "}",
     /* BOSH SAHIFA — YOPISHQOQ TEPA PANEL + NAVBATLI QIDIRUV
        (2026-08-16).
 
@@ -373,6 +401,30 @@
                                        !korinmoqda);
       }, {rootMargin: "-8px 0px 0px 0px"}).observe(heroQidiruv);
     }
+  }
+  // "SO'ROV YUBORISH" — HAR SAHIFADA TEPA PANELDA (2026-08-16).
+  //
+  // IndiaMART'ning "Post Requirement" tugmasi: qidiruv natijasida
+  // ham, e'lon o'qiyotganda ham, chatda ham — xaridor istalgan
+  // joydan so'rov yuboradi, "topilmasa nima?" degan savolga javob
+  // har doim tepada turadi.
+  //
+  // `/?sora=1` ga yo'naltiradi: bosh sahifa bu parametrni ko'rib
+  // qidiruvga fokus beradi va so'rash amalini ochadi (index.html
+  // oxiridagi qoida).
+  //
+  // `joy` top-actions — hamma sahifada bor (lang-slot orqali
+  // topiladi). Tugma til tugmasi yonida turadi, desktop nav'lar
+  // undan keyin qo'shiladi.
+  if (joy && !document.querySelector(".ober-sora-cta")) {
+    var sora = document.createElement("a");
+    sora.className = "ober-sora-cta";
+    sora.href = "/?sora=1";
+    sora.setAttribute("role", "button");
+    sora.innerHTML = '<span class="uzun">' + tr("So‘rov yuborish")
+      + "</span><span class=\"qisqa\">" + tr("So‘rov") + "</span>";
+    var oldin = joy.querySelector(".lang-slot");
+    if (oldin) joy.insertBefore(sora, oldin); else joy.appendChild(sora);
   }
   if (joy) {
     desktopTablar.forEach(function (x) {

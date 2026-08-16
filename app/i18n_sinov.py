@@ -46,6 +46,16 @@ def main() -> None:
             '"Test xabar yuborildi. Telegramni tekshiring."' in i18n and
             '"Test xabar yuborilmadi. Botni ochib /start bosing, keyin qayta sinang"' in i18n,
             "Telegram test holatlari ruscha lug‘atda bor")
+    # 2026-08-16: tepa paneldagi "So'rov yuborish" tugmasi va bosh
+    # sahifadagi bozor bo'limlari to'ri — rus interfeysda o'zbekcha
+    # qolib ketmasligi uchun.
+    tekshir('"So‘rov yuborish":"Отправить запрос"' in i18n and
+            '"So‘rov":"Запрос"' in i18n,
+            "so'rov yuborish tugmasi ruscha lug‘atda bor")
+    tekshir('"Bozor bo‘limlari":"Разделы рынка"' in i18n and
+            '"Barchasini ko‘rish":"Смотреть все"' in i18n and
+            '"Nima kerak? Masalan: divan":"Что вам нужно? Например: диван"' in i18n,
+            "bozor bo'limlari to'ri ruscha lug‘atda bor")
     # 2026-08-12: elon.html yopilgan-xabar holatlari — JS orqali
     # yoziladi, rus interfeysda o'zbekcha qolib ketmasligi uchun.
     for soz in ('"Bu e‘lon yopilgan":"Это объявление закрыто"',
