@@ -190,6 +190,37 @@
   .empty strong{display:block;color:var(--navy);font-size:19px;margin-bottom:8px}
   .empty>span{display:block;max-width:38ch;margin:0 auto;line-height:1.5}
   .empty a{display:inline-block;margin-top:16px;color:#fff;background:var(--navy);padding:11px 16px;border-radius:var(--r-orta);text-decoration:none;font-weight:800}
+  /* BARK USLUBI — SOTUVCHI BO'SH SUVHATLAR KO'RGANDA (2026-08-16).
+     Bark: "1000's of clients are already waiting". Bizda ham aytishga
+     haqiqiy raqam bor: javobsiz xaridorlar. Suhbat bo'sh bo'lsa ham
+     sotuvchi "bu yerda hech narsa yo'q" deb chiqib ketmasin —
+     xaridor allaqachon yozgan, faqat javob kutmoqda.
+     Sotuvchi sahifasidagi `.talab-quti` bilan bir xil uslub —
+     ikkala joyda ham "kutayotgan talab" haqida gap. */
+  .talab-chat{
+    margin:14px 14px 6px;padding:14px 16px;
+    border:1px solid rgba(8,118,74,.22);border-radius:var(--r-orta);
+    background:rgba(8,118,74,.05);
+  }
+  .talab-chat-bosh{margin:0;font-size:13px;line-height:1.5;color:var(--text)}
+  .talab-chat-bosh b{
+    font-size:21px;color:var(--green);
+    font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  }
+  .talab-chat-royxat{margin:9px 0 0;padding:0;list-style:none;
+    display:flex;flex-direction:column;gap:5px}
+  .talab-chat-royxat li{
+    color:var(--muted);font-size:12.5px;line-height:1.45;
+    padding-left:14px;position:relative;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .talab-chat-royxat li::before{
+    content:"";position:absolute;left:0;top:7px;
+    width:5px;height:5px;border-radius:50%;background:var(--green);
+  }
+  .talab-chat-izoh{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+  .talab-chat-izoh a{color:var(--navy);font-weight:750;text-decoration:none}
+  .talab-chat-izoh a:hover{text-decoration:underline}
   /* BO'SH HOLATDAGI SO'ROV MAYDONI (2026-08-15).
      Bo'sh ekran endi berk ko'cha emas — amal shu yerda bajariladi.
      Maydon va tugma bitta qatorda, telefonda ham: 320px da ham
@@ -792,11 +823,66 @@ async function loadInbox(){
   }
 }
 
+/* BARK USLUBIDAGI TALAB BLOKI (2026-08-16).
+
+   Sotuvchi chat bo'limida bo'sh suhbatlar ko'rsa — bu blok chiqadi.
+   `/api/talab` — sotuvchi sahifasi bilan BIR XIL endpoint: raqam
+   va misollar ikki joyda bir-biriga zid keta olmaydi.
+
+   KO'RSATISH QOIDASI: `javobsiz` NOL bo'lsa jim qolamiz ("0 ta
+   xaridor" yozuvi chaqiruv emas, ogohlantirish — uni ko'rsatish
+   sotuvchini qaytarib yuboradi). Bu sotuvchi sahifasidagi
+   `talabniKorsat` bilan bir xil qoida. */
+async function talabBlokniChiz(){
+  const ro = $("#offer-list");
+  if(!ro) return;
+  ro.innerHTML = '<div class="empty">Yuklanmoqda…</div>';
+  try{
+    const r = await fetch("/api/talab");
+    if(!r.ok) return boShHolat();
+    const d = await r.json();
+    const son = Number(d.javobsiz || 0);
+    if(!son) return boShHolat();
+    const misol = (d.misollar || []).slice(0, 4)
+      .map(m => `<li>${esc(m)}</li>`).join("");
+    // Raqam boshida turadi — tr() ruscha qaytarganda ham raqam
+    // o'sha yerda qoladi (qolip shunday). `<b>` ni alohida o'ramiz:
+    // ikkala tilda raqam katta va to'q bo'ladi.
+    const gap = tr(`${formatInt(son)} ta xaridor shu hafta javob kutdi`);
+    const m = gap.match(/^([\d ]+)/);
+    const bosh = m ? `<b>${m[1]}</b>${gap.slice(m[1].length)}` : gap;
+    ro.innerHTML = `<div class="talab-chat">
+      <p class="talab-chat-bosh">${bosh}</p>
+      <ul class="talab-chat-royxat">${misol}</ul>
+      <p class="talab-chat-izoh">${tr("Suhbatlar bo‘sh ko‘rinsa ham bozor harakatda.")}
+        <a href="/sotuvchi">${tr("Sotuvchi sahifasida")}</a>
+        ${tr("javob yozing — xaridor shu yerda kutmoqda.")}</p>
+    </div>`;
+  }catch(_){ boShHolat(); }
+  function boShHolat(){
+    ro.innerHTML = '<div class="empty"><strong>Hali suhbat yo‘q</strong>Mos sotuvchilar javob berishi bilan shu yerda ko‘rinadi.</div>';
+  }
+}
+
 function renderOffers(items){
   const unread=items.reduce((n,x)=>n+Number(x.oqilmagan||0),0);
   $("#count").textContent=`${items.length} ta suhbat`;
   setNotice(unread);
-  if(!items.length){$("#offer-list").innerHTML='<div class="empty"><strong>Hali suhbat yo‘q</strong>Mos sotuvchilar javob berishi bilan shu yerda ko‘rinadi.</div>';return}
+  if(!items.length){
+    // SOTUVCHI BO'SH SUVHATLAR — BARK USLUBI (2026-08-16).
+    //
+    // Bark birinchi gapni TALAB bilan boshlaydi: "1000's of clients
+    // are already waiting". Bizda haqiqiy raqam bor: bu hafta
+    // javobsiz qolgan xaridorlar. Suhbat bo'sh bo'lsa ham sotuvchi
+    // "bu yerda hech narsa yo'q" deb chiqib ketmasin — xaridor
+    // allaqachon yozgan, faqat javob kutmoqda.
+    //
+    // Xaridor roli uchun bu blok KO'RSATILMAYDI: u o'z so'rovining
+    // javobini kutadi, boshqa xaridorlarning so'rovi unga tegishli
+    // emas. `misollar` ham faqat so'rov MATNI — telefon, ism, token
+    // yo'q (baza.kutayotgan_talab izohi).
+    if(role === "sotuvchi"){ talabBlokniChiz(); return; }
+    $("#offer-list").innerHTML='<div class="empty"><strong>Hali suhbat yo‘q</strong>Mos sotuvchilar javob berishi bilan shu yerda ko‘rinadi.</div>';return}
   $("#offer-list").innerHTML=items.map(x=>{
     const img=safeImage(x.oxirgi_rasm);
     const active=Number(x.suhbat_id)===activeChat;

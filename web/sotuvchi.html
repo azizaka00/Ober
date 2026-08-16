@@ -1236,8 +1236,7 @@ function royxatEkrani(){
 
     <section class="register-card">
       <div class="talab-quti" id="talab-quti" hidden>
-        <p class="talab-bosh"><b id="talab-son">0</b> ta xaridor
-          <span>shu hafta javob kutdi</span></p>
+        <p class="talab-bosh" id="talab-gap">0 ta xaridor shu hafta javob kutdi</p>
         <ul class="talab-royxat" id="talab-royxat"></ul>
       </div>
 
@@ -2177,10 +2176,18 @@ async function talabniKorsat(){
        bor, lekin u rost bo'lmaydi. */
     const son = d.javobsiz || 0;
     if(!son) return;                   // nol bo'lsa jim qolamiz
-    $("#talab-son").textContent = formatInt ? formatInt(son) : son;
+    // Chatdagi talab bloki bilan BIR XIL gap va tarjima (2026-08-16).
+    // Ilgari raqam va matn alohida elementlarda edi — rus tilida
+    // tarjima qilinmasdi (qoldiq kamchilik). Endi butun gap `tr()`
+    // orqali: "22 ta xaridor shu hafta javob kutdi" -> ruscha ko'plik
+    // bilan. Raqam `<b>` ichida — ikkala tilda katta va to'q.
+    const gap = tr(`${formatInt(son)} ta xaridor shu hafta javob kutdi`);
+    const m = gap.match(/^([\d ]+)/);
+    $("#talab-gap").innerHTML = m
+      ? `<b>${m[1]}</b>${gap.slice(m[1].length)}` : gap;
     const ro = $("#talab-royxat");
     ro.innerHTML = (d.misollar || []).slice(0, 4)
-      .map(m => `<li>${esc(m)}</li>`).join("");
+      .map(m2 => `<li>${esc(m2)}</li>`).join("");
     quti.hidden = false;
   }catch(_){ /* talab ko'rsatilmasa sahifa baribir ishlaydi */ }
 }

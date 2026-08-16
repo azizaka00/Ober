@@ -56,6 +56,14 @@ def main() -> None:
             '"Barchasini ko‘rish":"Смотреть все"' in i18n and
             '"Nima kerak? Masalan: divan":"Что вам нужно? Например: диван"' in i18n,
             "bozor bo'limlari to'ri ruscha lug‘atda bor")
+    # 2026-08-16: Bark uslubi — chat va sotuvchi sahifalaridagi talab
+    # bloki. Raqamli ko'plik qoidasi ("22 ta xaridor shu hafta javob
+    # kutdi") va izoh matnlari rus tilida ham bor bo'lishi kerak.
+    tekshir('ta xaridor shu hafta javob kutdi' in i18n and
+            'покупател' in i18n and
+            '"Suhbatlar bo‘sh ko‘rinsa ham bozor harakatda.":"Даже если диалоги пусты — рынок движется."' in i18n and
+            '"Sotuvchi sahifasida":"В кабинете продавца"' in i18n,
+            "Bark talab bloki ruscha lug‘atda bor")
     # 2026-08-12: elon.html yopilgan-xabar holatlari — JS orqali
     # yoziladi, rus interfeysda o'zbekcha qolib ketmasligi uchun.
     for soz in ('"Bu e‘lon yopilgan":"Это объявление закрыто"',

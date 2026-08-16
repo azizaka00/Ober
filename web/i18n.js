@@ -47,6 +47,9 @@
     "Bozor bo‘limlari":"Разделы рынка",
     "Barcha bo‘limlar":"Все разделы",
     "Barchasini ko‘rish":"Смотреть все",
+    "Suhbatlar bo‘sh ko‘rinsa ham bozor harakatda.":"Даже если диалоги пусты — рынок движется.",
+    "Sotuvchi sahifasida":"В кабинете продавца",
+    "javob yozing — xaridor shu yerda kutmoqda.":"напишите ответ — покупатель уже ждёт.",
     "Yangi e'lon":"Новое объявление",
     "Sotuvchi":"Продавец",
     "Profil":"Профиль",
@@ -574,6 +577,12 @@
     if (RU_NORM[normText]) return RU_NORM[normText];
     let match;
     if ((match = text.match(/^(\d+) ta suhbat$/))) return `${match[1]} чатов`;
+    // Bark uslubi: chat va sotuvchi sahifalaridagi talab bloki (2026-08-16).
+    // "22 ta xaridor shu hafta javob kutdi" — raqam bilan ko'plik qoidasi.
+    if ((match = text.match(/^([\d ]+) ta xaridor shu hafta javob kutdi$/))) {
+      const son = parseInt(match[1].replace(/\s/g, ""), 10);
+      return `${match[1]} ${rusPlural(son, ["покупатель ждёт ответа на этой неделе", "покупателя ждут ответа на этой неделе", "покупателей ждут ответа на этой неделе"])}`;
+    }
     if ((match = text.match(/^(\d+) ta ochiq e’lon narxi va jonli sotuvchi javoblari$/))) return `${match[1]} цен открытых объявлений и живых ответов продавцов`;
     if ((match = text.match(/^(\d+) sotuvchi (?:chatda )?javob berdi$/))) return `Ответили продавцы: ${match[1]}`;
     if ((match = text.match(/^(.+) · (\d+) sotuvchi (?:chatda )?javob berdi$/))) return `${match[1]} · Ответили продавцы: ${match[2]}`;
