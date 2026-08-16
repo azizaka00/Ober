@@ -72,6 +72,7 @@ parol.txt
 data/*.db
 data/*.db-wal
 data/*.db-shm
+data/*.db-journal
 data/zaxira/
 
 # Begona saytlardan yuklab olingan HTML nusxalar (debug uchun edi).
