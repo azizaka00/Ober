@@ -582,6 +582,79 @@ def sotuvchi_yoz(nom: str, nima: str, qismlar: list, modellar: list,
     return sotuvchi_id
 
 
+# ── SOTUVCHINI O'CHIRISH — BUTUN ZANJIR (2026-08-16) ───────────────────────
+# Yetim yozuvlar: 47 ta yuborishlar, 24 ta suhbatlar, 3 ta javoblar o'chirilgan
+# sotuvchilarga tegishli edi (CLAUDE.md #5). Hech kimga ko'rinmaydi, lekin
+# sanoqlarni chalg'itadi. Sabab: test skriptlari `DELETE FROM sotuvchilar`
+# bilan faqat sotuvchini o'chirar, bog'liq jadvallarga tegmasdi.
+#
+# Bog'liqlik zanjiri:
+#   sotuvchilar
+#     +-- yuborishlar.sotuvchi_id        (so'rov kimga yuborilgan)
+#     +-- suhbatlar.sotuvchi_id           (yozishma)
+#     |     +-- xabarlar.suhbat_id        (xabarlar)
+#     +-- javoblar.sotuvchi  (TEXT — ichida id, `javob_yoz` shunday yozadi)
+#     +-- push_obunalar (rol='sotuvchi', egasi=id)
+
+
+def sotuvchi_ochir(sotuvchi_id: int) -> None:
+    """Sotuvchini va unga bog'liq BARCHA yozuvlarni o'chiradi.
+
+    Bitta tranzaksiya: yarim o'chirilgan holat qolmasin. Bog'liq
+    yozuvsiz `DELETE FROM sotuvchilar` qiladigan joy qolmasligi kerak.
+    """
+    init()
+    with ulan() as c:
+        c.execute("BEGIN IMMEDIATE")
+        c.execute("DELETE FROM xabarlar WHERE suhbat_id IN"
+                  " (SELECT id FROM suhbatlar WHERE sotuvchi_id=?)",
+                  (sotuvchi_id,))
+        c.execute("DELETE FROM suhbatlar WHERE sotuvchi_id=?", (sotuvchi_id,))
+        c.execute("DELETE FROM javoblar WHERE sotuvchi=?", (str(sotuvchi_id),))
+        c.execute("DELETE FROM yuborishlar WHERE sotuvchi_id=?", (sotuvchi_id,))
+        c.execute("DELETE FROM push_obunalar WHERE rol='sotuvchi'"
+                  " AND egasi=?", (sotuvchi_id,))
+        c.execute("DELETE FROM sotuvchilar WHERE id=?", (sotuvchi_id,))
+        c.commit()
+
+
+def yetimlarni_tozala() -> dict:
+    """O'chirilgan sotuvchilarga tegishli qolib ketgan yozuvlarni o'chiradi.
+
+    `sotuvchi_ochir` dan OLDIN yaratilgan yetimlar uchun bir martalik
+    tozalash (2026-08-16: 47 yuborishlar, 24 suhbatlar, 3 javoblar).
+    Server har ishga tushishda chaqiradi — yangi yetim paydo bo'lmasa
+    hech narsa o'chmaydi, o'lchov arzon (indekslangan subquery).
+    """
+    init()
+    natija: dict = {}
+    with ulan() as c:
+        c.execute("BEGIN IMMEDIATE")
+        natija["xabarlar"] = c.execute(
+            "DELETE FROM xabarlar WHERE suhbat_id IN (SELECT id FROM"
+            " suhbatlar WHERE sotuvchi_id NOT IN"
+            " (SELECT id FROM sotuvchilar))").rowcount
+        natija["suhbatlar"] = c.execute(
+            "DELETE FROM suhbatlar WHERE sotuvchi_id NOT IN"
+            " (SELECT id FROM sotuvchilar)").rowcount
+        # javoblar.sotuvchi — TEXT. Eski yozuvlarda sotuvchi NOMI bo'lishi
+        # mumkin (raqam emas) — ularga tegmaymiz, faqat raqamli ID lar
+        # solishtiriladi. Aks holda nomli eski javob "yetim" deb o'chib
+        # ketardi (2026-08-16 xavfsizlik tekshiruvi).
+        natija["javoblar"] = c.execute(
+            "DELETE FROM javoblar WHERE sotuvchi GLOB '*[0-9]*'"
+            " AND sotuvchi NOT GLOB '*[^0-9]*' AND sotuvchi NOT IN"
+            " (SELECT CAST(id AS TEXT) FROM sotuvchilar)").rowcount
+        natija["yuborishlar"] = c.execute(
+            "DELETE FROM yuborishlar WHERE sotuvchi_id NOT IN"
+            " (SELECT id FROM sotuvchilar)").rowcount
+        natija["push_obunalar"] = c.execute(
+            "DELETE FROM push_obunalar WHERE rol='sotuvchi' AND egasi NOT IN"
+            " (SELECT id FROM sotuvchilar)").rowcount
+        c.commit()
+    return natija
+
+
 # ── KIRISH VA SESSIYA ────────────────────────────────────────────────────────
 # 2026-08-06: kabinet endi telefon raqam + bir martalik kod orqali ochiladi.
 # Oldin faqat localStorage'da ID turardi — boshqa qurilmada kabinet yo'qolardi

@@ -161,12 +161,15 @@ def main() -> None:
         tek(j["nom"] == "Sinov Avto", "sotuvchi nomi ko'rinadi")
 
     # ── Tozalash
+    # Sotuvchilar avval o'chiriladi — `sotuvchi_ochir` ularning
+    # suhbatlari, xabarlari, javoblari va yuborishlarini ham oladi.
+    # Keyin qolgan javoblar so'rov bo'yicha, so'ng so'rovlarning o'zi.
+    for sid in (sotuvchi_id, begona_id, banner_sotuvchi, ikkinchi_id):
+        baza.sotuvchi_ochir(sid)
     with baza.ulan() as c:
         c.execute("DELETE FROM javoblar WHERE sorov_id=?", (sorov_id,))
         c.execute("DELETE FROM sorovlar WHERE id IN (?,?,?)",
                   (sorov_id, banner_sorov, noma_sorov))
-        c.execute("DELETE FROM sotuvchilar WHERE id IN (?,?,?,?)",
-                  (sotuvchi_id, begona_id, banner_sotuvchi, ikkinchi_id))
         c.execute("DELETE FROM qidiruvlar WHERE sorov='sinov-qidiruv'")
 
     print("\n" + "-" * 64)

@@ -92,6 +92,7 @@ def tozala_test_yozuvlari(sorov_ids: list[int], sotuvchi_ids: list[int]) -> None
     """
     if not BAZA.exists():
         return
+    import baza
     c = sqlite3.connect(BAZA)
     c.row_factory = sqlite3.Row
     try:
@@ -120,13 +121,14 @@ def tozala_test_yozuvlari(sorov_ids: list[int], sotuvchi_ids: list[int]) -> None
             "SELECT id FROM sotuvchilar WHERE (aloqa=? OR aloqa=?)"
             " AND nom=?",
             ("+" + TEST_ALOQA, TEST_ALOQA, TEST_NOM))]
-        for sid in sids:
-            c.execute("DELETE FROM yuborishlar WHERE sotuvchi_id=?", (sid,))
-            c.execute("DELETE FROM suhbatlar WHERE sotuvchi_id=?", (sid,))
-            c.execute("DELETE FROM sotuvchilar WHERE id=?", (sid,))
         c.commit()
     finally:
         c.close()
+    # Sotuvchilar ALOHIDA ulanishda — `sotuvchi_ochir` o'z `ulan()` ini
+    # ochadi va bog'liq yozuvlarni ham o'chiradi. Bitta ulanishning
+    # ochiq tranzaksiyasi ichida ikkinchi yozuvchi qulfni kutib qolardi.
+    for sid in sids:
+        baza.sotuvchi_ochir(sid)
 
 
 def main() -> None:

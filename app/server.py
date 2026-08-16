@@ -1830,6 +1830,18 @@ def main() -> None:
 
     baza.init()
 
+    # YETIM YOZUVLAR — o'chirilgan sotuvchilarga tegishli qoldiqlar.
+    # Har startda tozalanadi (CLAUDE.md #5): yuborishlar, suhbatlar,
+    # xabarlar, javoblar, push obunalari. Yangi yetim bo'lmasa hech
+    # narsa o'chmaydi; xato bo'lsa server baribir ko'tariladi.
+    try:
+        tozalangan = baza.yetimlarni_tozala()
+        jami = sum(tozalangan.values())
+        if jami:
+            print(f"  Yetim yozuvlar tozalandi: {tozalangan}")
+    except Exception as e:                        # noqa: BLE001
+        print(f"  Yetim tozalash o'tkazib yuborildi: {type(e).__name__}")
+
     def _indeksni_tekshir() -> None:
         """INDEKS BO'SH QOLIB KETMASIN.
 

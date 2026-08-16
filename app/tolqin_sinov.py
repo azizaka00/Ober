@@ -108,8 +108,11 @@ def main() -> None:
             for sid in yaratilgan_sorovlar:
                 c.execute("DELETE FROM yuborishlar WHERE sorov_id=?", (sid,))
                 c.execute("DELETE FROM sorovlar WHERE id=?", (sid,))
-            for sid in yaratilgan_sotuvchilar:
-                c.execute("DELETE FROM sotuvchilar WHERE id=?", (sid,))
+        # Sotuvchilar alohida — `sotuvchi_ochir` o'z ulanishini ochadi;
+        # yuqoridagi ochiq tranzaksiya ichida ikkinchi yozuvchi qulfni
+        # kutib qolardi (database is locked).
+        for sid in yaratilgan_sotuvchilar:
+            baza.sotuvchi_ochir(sid)
 
     print("\n" + "-" * 62)
     print("  HAMMASI JOYIDA\n" if not XATO else f"  {XATO} TA XATO\n")

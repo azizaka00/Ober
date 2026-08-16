@@ -1002,3 +1002,27 @@ Uchinchi saboq: NAVBATCHI buyrug'i bilan ishlaganda javob.txt
 ESKI yuklash matnini ko'rsatsa, buyruq skript sifatida bajarilganini
 aniqlash uchun skript boshiga MARKER qo'yish kerak — `yuklash`
 va ixtiyoriy skript ikkalasi ham javob yozadi.
+
+
+## 2026-08-16 — Yetim yozuvlar: xom DELETE zanjirni uzadi
+
+O'chirilgan sotuvchilarga tegishli 47 yuborishlar, 24 suhbatlar, 3
+javoblar qolib ketgan edi (CLAUDE.md #5). Sabab: test skriptlari
+`DELETE FROM sotuvchilar` bilan faqat sotuvchini o'chirardi, bog'liq
+jadvallarga tegmasdi.
+
+Ikki saboq:
+1. O'chirish — har doim ZANJIR bo'ylab: xabarlar -> suhbatlar ->
+   javoblar -> yuborishlar -> push_obunalar -> sotuvchilar. Endi
+   `baza.sotuvchi_ochir()` buni bitta tranzaksiyada qiladi, server esa
+   har startda `yetimlarni_tozala()` bilan eski qoldiqlarni yig'ishtiradi.
+2. `sotuvchi_ochir` o'z `ulan()` ini ochadi — uni BOSHQA `with
+   baza.ulan()` ichida chaqirsa "database is locked" chiqadi (SQLite
+   bitta yozuvchi). Test skriptlarida qo'sh ulanish xatosi shundan
+   topildi va tuzatildi.
+
+Uchinchi saboq: `javoblar.sotuvchi` — TEXT ustun, ichida id saqlanadi.
+Eski yozuvlarda NOM bo'lishi mumkin. Tozalashda faqat raqamli qiymatlar
+solishtiriladi (`sotuvchi GLOB '*[0-9]*' AND NOT GLOB '*[^0-9]*'`) —
+nomli eski javob "yetim" deb o'chib ketmasligi uchun sinov bilan
+qo'riqlanadi.

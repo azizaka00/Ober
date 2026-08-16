@@ -232,11 +232,14 @@ talab qiladi.
    bosqichlaridan o'tolmay butun indeks bo'yicha OR qidiruviga
    tushadi (1 so'z 1 ms, 3 so'z 8 ms, 4+ so'z ~200 ms). `bozor_izi`
    bu bosqichni endi so'ramaydi, lekin `qidir()` hali so'raydi.
-5. **Yetim yozuvlar:** 47 ta `yuborishlar`, 24 ta `suhbatlar`, 3 ta
-   `javoblar` o'chirilgan sotuvchilarga tegishli. Hech kimga
-   ko'rinmaydi, lekin sanoqlarni chalg'itishi mumkin. Tozalash
-   kerak — `sotuvchilar` o'chganda bog'liq yozuvlar ham o'chsin
-   (FOREIGN KEY ... ON DELETE CASCADE yoki qo'lda).
+5. ~~**Yetim yozuvlar**~~ — **✅ 2026-08-16 yopildi.**
+   `baza.sotuvchi_ochir()` sotuvchini VA bog'liq yozuvlarni bir
+   tranzaksiyada o'chiradi (xabarlar → suhbatlar → javoblar →
+   yuborishlar → push_obunalar → sotuvchilar). `baza.yetimlarni_tozala()`
+   eski yetimlarni har server startida tozalaydi. Test skriptlari ham
+   endi `sotuvchi_ochir` ni ishlatadi — yangi yetim paydo bo'lmaydi.
+   DIQQAT: `javoblar.sotuvchi` TEXT — eski nomli yozuvlarga tegmaydi,
+   faqat raqamli ID lar solishtiriladi.
 6. **`gilam sotaman` degan sotuvchi `kat:Xizmatlar` yorlig'ini
    oladi.** Indeksda gilam YUVISH xizmati e'lonlari gilamning
    o'zidan ko'p (85%). Moslik baribir ishlaydi — so'z ustma-ustligi
