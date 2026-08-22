@@ -97,6 +97,34 @@ def main() -> int:
                       "apostrof bo'lsa — butun skript yiqiladi. `//` "
                       "ishlating." % (fayl.name, qator(matn, ofset + m.start())))
 
+            # 3b. `throw new Error()` SABABSIZ BO'LMASIN.
+            #
+            #     2026-08-17, jonli saytda o'lchandi. `takliflar.html`
+            #     da shunday qator turardi:
+            #
+            #         if(!r.ok) throw new Error();
+            #
+            #     Natijada 401 ("So'rov sessiyasi topilmadi"), 500 va
+            #     haqiqiy tarmoq uzilishi BIR XIL ko'rinardi. Ekranda
+            #     esa "Chatga ulanib bo'lmadi — Internetni tekshiring"
+            #     yozilardi: agent bergan eskirgan havoladan kelgan
+            #     odam internetini ayblab ketardi, konsolda ham bo'sh
+            #     Error turardi.
+            #
+            #     Dizayn qoidasi 7-bo'limi buni aynan talab qiladi:
+            #     "xato — odamga tushunarli jumla VA konsolga haqiqiy
+            #     sabab". Sababsiz `Error` ikkinchi qismni yo'q qiladi.
+            #
+            #     Argument bo'lishi kifoya: `throw new Error("HTTP "+r.status)`.
+            for m in re.finditer(r"throw\s+new\s+Error\s*\(\s*\)", kod):
+                jami += 1
+                xato += 1
+                print("  XATO %-16s %d-qator: `throw new Error()` sababsiz. "
+                      "401, 500 va tarmoq uzilishi bir xil ko'rinadi va "
+                      "konsolga bo'sh Error tushadi. Sabab yozing: "
+                      "`throw new Error(\"HTTP \"+r.status)`."
+                      % (fayl.name, qator(matn, ofset + m.start())))
+
             # 4. MATN ICHIDA `</script` BO'LMASIN — brauzer blokni
             #    o'sha yerda kesib tashlaydi.
             jami += 1

@@ -575,7 +575,12 @@ const requestedRole = params.get("rol");
 const role = requestedRole === "sotuvchi" ? "sotuvchi"
   : requestedRole === "xaridor" ? "xaridor"
   : requestId ? "xaridor" : storedSeller ? "sotuvchi" : "xaridor";
-const actorId = role === "sotuvchi" ? storedSeller : requestId;
+/* `let`, `const` emas (2026-08-17). Kalit yaroqsiz chiqsa u tozalanadi
+   va 5 soniyalik `setInterval` qayta-qayta 401 olishdan to'xtaydi. */
+let actorId = role === "sotuvchi" ? storedSeller : requestId;
+/* Havola yaroqsiz ekani ANIQLANGANDA yoqiladi — bo'sh holat matni
+   shunga qarab o'zgaradi. */
+let kalitYaroqsiz = false;
 
 function roleHref(yangiRole){
   const q=new URLSearchParams(location.search);
@@ -738,6 +743,16 @@ function renderNoActor(){
        to'g'ridan-to'g'ri natija + so'rash qatoriga tushadi. */
     title="Hali so‘rov yubormagansiz";
     copy="Nima kerakligini shu yerda yozing — mos sotuvchilar javob beradi.";
+    /* HAVOLA YAROQSIZ (2026-08-17). Agent yoki bot bergan `?kalit=`
+       eskirgan bo'lishi mumkin. Ilgari bunday odam "Chatga ulanib
+       bo'lmadi — internetni tekshiring" degan YOLG'ON xatoni ko'rardi.
+       Sabab boshqa, shuning uchun jumla ham boshqa — lekin keyingi
+       amal bir xil: shu yerda yozib, qaytadan so'rasin. */
+    if(kalitYaroqsiz){
+      title="Havola ishlamadi";
+      copy="Bu havola eskirgan yoki noto‘g‘ri. Nima kerakligini shu "
+         + "yerda yozing — mos sotuvchilar javob beradi.";
+    }
     actions.push(
       '<form class="empty-sora" id="empty-sora">'
       + '<input id="empty-sora-matn" placeholder="Masalan: divan kerak, charm"'
@@ -806,7 +821,15 @@ async function loadInbox(){
   }
   try{
     const url = role === "sotuvchi" ? `/api/sotuvchi/suhbatlar?id=${actorId}` : `/api/sorov/takliflar?id=${requestId}`;
-    const r=await fetch(url); if(!r.ok) throw new Error(); const d=await r.json();
+    /* XATO SABABI SAQLANADI (2026-08-17).
+       Ilgari shu yerda sababsiz va matnsiz `Error` tashlanardi.
+       Natijada 401 (kalit yaroqsiz) ham, haqiqiy tarmoq uzilishi
+       ham bir xil "Internetni tekshiring" bo'lib chiqardi, va
+       konsolga ham bo'sh `Error` tushardi. `web_sinov.py` (3b
+       qoidasi) endi bunday qatorni o'tkazmaydi. */
+    const r=await fetch(url);
+    if(!r.ok){const x=new Error("HTTP "+r.status);x.kod=r.status;throw x}
+    const d=await r.json();
     if(role === "xaridor"){
       const s=d.sorov;
       if(s){$("#context").innerHTML=`<h1>${esc(s.matn)}</h1><p>${esc(s.tuman || "O‘zbekiston")} · ${(d.takliflar||[]).length} sotuvchi chatda javob berdi</p>`}
@@ -830,6 +853,24 @@ async function loadInbox(){
     if(window.OBER_BILDIRISH_YANGILA) window.OBER_BILDIRISH_YANGILA();
   }catch(error){
     console.error("[ober-chat] suhbatlar:",error);
+    /* FAQAT ANIQ DALIL TOZALAYDI (2026-08-17).
+
+       401 — server "bunday so'rov sessiyasi yo'q" dedi. Bu ANIQ
+       javob, shuning uchun yaroqsiz kalitni saqlab turishning
+       ma'nosi yo'q: u har 5 soniyada qayta 401 oladi va odam
+       "Internetni tekshiring" degan berk ko'chada qoladi.
+
+       Timeout, 5xx yoki oflayn — HECH QACHON tozalamaydi. Bir
+       soatlik nosozlikda hamma xaridorning suhbati yo'qolardi.
+       Bu `havola_nazorat.py` dagi qoidaning aynan o'zi: yolg'on
+       o'chirish tuzatib bo'lmaydi. */
+    if(error.kod===401 && role==="xaridor"){
+      localStorage.removeItem("ober_sorov");
+      localStorage.removeItem("ober_sorov_id");
+      requestId=""; actorId=""; kalitYaroqsiz=true;
+      renderNoActor();
+      return;
+    }
     renderInboxError();
   }
 }

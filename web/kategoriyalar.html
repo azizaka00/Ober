@@ -589,11 +589,18 @@ addEventListener("popstate", () => {
 });
 
 (async () => {
+  let bosh = false;                 // ro'yxat bo'shmi (tarmoq emas)
   try {
+    /* XATO SABABI SAQLANADI (2026-08-17). Ilgari ikkala holatda ham
+       sababsiz `Error` tashlanardi, va `catch` konsolga hech narsa
+       yozmasdi. Natijada "bo'sh ro'yxat" ham "Internetni tekshiring"
+       bo'lib chiqardi, sabab esa hech qayerda qolmasdi. Aynan shu
+       xato `takliflar.html` da odamni berk ko'chaga tiqib qo'ygan
+       edi (401 -> "internetingizni tekshiring"). */
     const r = await fetch("/api/kategoriyalar");
-    if (!r.ok) throw new Error();
+    if (!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
-    if (!d.length) throw new Error();
+    if (!d.length) { bosh = true; throw new Error("bo'sh ro'yxat"); }
     MALUMOT = d;
     joy.className = "kat-grid";
     const kat = new URLSearchParams(location.search).get("kat");
@@ -605,8 +612,17 @@ addEventListener("popstate", () => {
       chizKartalar();
     }
   } catch (e) {
+    console.error("[ober-kat] bo'limlar:", e);
     joy.className = "";
-    joy.innerHTML = `<div class="error-box" role="alert">
+    /* Ikki sabab — ikki jumla. "Internetni tekshiring" faqat aloqa
+       muammosida to'g'ri; bo'sh ro'yxatda u yolg'on maslahat bo'ladi
+       va odam sahifani behuda yangilayveradi. */
+    joy.innerHTML = bosh
+      ? `<div class="error-box" role="alert">
+      Bo'limlar hozir bo'sh. Kerakli narsani qidiruvdan toping.
+      <br><a href="/">Qidirishga o'tish</a>
+    </div>`
+      : `<div class="error-box" role="alert">
       Bo'limlarni hozir yuklay olmadik. Internetni tekshirib, sahifani yangilang.
     </div>`;
   }

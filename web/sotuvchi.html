@@ -1299,7 +1299,7 @@ function royxatEkrani(){
 async function joylarniOl(){
   try{
     const r = await fetch("/api/holat");
-    if(!r.ok) throw new Error();
+    if(!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
     DARAXT = d.daraxt || [];
     DARAXT.forEach(v => $("#viloyat").add(new Option(v.viloyat, v.viloyat)));
@@ -1311,7 +1311,19 @@ async function joylarniOl(){
       topildi.joylar.forEach(j => select.add(new Option(j, j)));
       select.hidden = false;
     };
-  }catch(_){}
+  }catch(x){
+    /* JIM QOLMAYDI (2026-08-17). Ilgari `catch(_){}` edi: joylar
+       ro'yxati kelmasa viloyat tanlagich BO'SH qolardi, sotuvchi esa
+       "Nom, yo'nalish, joy va telefon raqamini to'ldiring" degan
+       xabarni ko'rib turardi va joyni to'ldira olmasdi — sababsiz
+       berk ko'cha. Endi sabab konsolda, odamga esa nima
+       qilishi aytiladi. */
+    console.error("[ober] joylar:", x);
+    const v = $("#viloyat");
+    if(v && v.options.length <= 1){
+      v.add(new Option("Joylar yuklanmadi — sahifani yangilang", ""));
+    }
+  }
 }
 
 async function royxat(){
@@ -1610,12 +1622,18 @@ async function profilniChiz(){
   </div>`;
   try{
     const r = await fetch("/api/sotuvchi/profil?id=" + encodeURIComponent(MEN));
-    if(!r.ok) throw new Error();
+    if(!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
     profilKesh = {sid: MEN, d};
     const q2 = $("#profil-quti");
     if(q2) q2.innerHTML = profilKarta(d);
   }catch(e){
+    /* Blok YASHIRINADI, lekin sabab konsolda qoladi (2026-08-17).
+       Profil ikkinchi darajali: sessiya tugagan bo'lsa `elonlarim()`
+       401 ni ushlab kirish ekranini ko'rsatadi, ya'ni odam baribir
+       to'g'ri joyga boradi. Ilgari `catch` mutlaqo jim edi va
+       "profil nega yo'q?" degan savolga javob topib bo'lmasdi. */
+    console.error("[ober] profil:", e);
     const q2 = $("#profil-quti");
     if(q2) q2.innerHTML = "";
   }finally{
