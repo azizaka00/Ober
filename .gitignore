@@ -177,3 +177,10 @@ manifest-checksum.txt
 # FUSE/sync disk qoldiqlari — fayl ustida ishlayotgan jarayon borida
 # o'chirilganda paydo bo'ladi (2026-08-16: 76 ta topilgan edi)
 .fuse_hidden*
+
+# Sentry DSN — serverda, git`ga tushmaydi
+data/sentry-dsn.txt
+
+# Vaqtinchalik axlat va tashqi zaxira (2026-08-22)
+_to_delete/
+zaxira-tashqi/*.sql.gz
