@@ -108,6 +108,23 @@ def _yangi_ulanish() -> sqlite3.Connection:
         c.execute("PRAGMA journal_mode=WAL")
         c.execute("PRAGMA synchronous=NORMAL")
         c.execute("PRAGMA busy_timeout=15000")
+        # MMAP — 1.3 GB BAZA 2 MB KESH BILAN O'QILARDI (2026-08-17).
+        #
+        # Aziz "sayt juda sekin" dedi. O'lchov zanjiri:
+        #   server yuki 0.07 (bo'sh), sahifa 679 ms (tez), lekin
+        #   /api/yangi 3 KB uchun 3835 ms, /api/kategoriyalar 3029 ms.
+        # Serverda o'sha funksiyalar: 1906 / 0 / 0 ms — birinchi
+        # chaqiruv soniyalar, keyingisi nol. Ya'ni CPU emas, sovuq
+        # sahifalarni diskdan o'qish.
+        #
+        # `cache_size` standarti -2000 = 2 MB. Baza 1.3 GB. Uni
+        # ko'tarish xavfli: hovuzda 12 ta ulanish bor va har biri
+        # O'ZIGA joy oladi, serverda esa atigi 1.9 GB RAM.
+        #
+        # `mmap_size` boshqacha: sahifalar OS keshi bilan BAHAM
+        # ko'riladi, nusxa olinmaydi. 256 MB — ehtiyotkor qiymat.
+        # O'rnatilmasa ham baza ishlayveradi (pastdagi `except`).
+        c.execute("PRAGMA mmap_size=268435456")
     except sqlite3.DatabaseError as e:
         # 2026-08-15: bu yerda `pass` turardi. Bu uch PRAGMA — WAL
         # rejimi va 15 soniyalik kutish — butun loyihaning bir
@@ -629,6 +646,25 @@ def yetimlarni_tozala() -> dict:
     init()
     natija: dict = {}
     with ulan() as c:
+        # QO'RIQLASH (2026-08-16). Pastdagi shartlar `sotuvchi_id NOT IN
+        # (SELECT id FROM sotuvchilar)` ko'rinishida. SQL'da bo'sh
+        # to'plamga nisbatan `NOT IN` HAR DOIM ROST bo'ladi — ya'ni
+        # `sotuvchilar` bir lahza bo'sh qolsa, bu funksiya BARCHA
+        # suhbat, xabar, yuborish va push obunasini o'chirib yuboradi.
+        #
+        # U har server ishga tushishida chaqiriladi, demak xato
+        # migratsiya yoki yarim tiklangan zaxira shu yo'l bilan
+        # ma'lumotni butunlay yo'q qilishi mumkin edi.
+        #
+        # "Sotuvchi umuman yo'q" — normal holat emas, nosozlik alomati.
+        # Bunday paytda tozalash emas, TO'XTASH to'g'ri.
+        sotuvchi_soni = c.execute(
+            "SELECT COUNT(*) FROM sotuvchilar").fetchone()[0]
+        if not sotuvchi_soni:
+            print("  [tozalash] sotuvchilar jadvali bo'sh — "
+                  "yetim tozalash O'TKAZIB YUBORILDI (xavfsizlik).")
+            return {"otkazildi": 0}
+
         c.execute("BEGIN IMMEDIATE")
         natija["xabarlar"] = c.execute(
             "DELETE FROM xabarlar WHERE suhbat_id IN (SELECT id FROM"
@@ -2077,6 +2113,59 @@ _YANGI_KESH: dict = {"vaqt": 0.0, "n": 0, "royxat": []}
 _KURS_KESH: dict = {"kurs": None, "vaqt": 0.0, "sana": ""}
 
 
+def _kurs_bazadan() -> dict | None:
+    """Bazaga saqlangan oxirgi ma'lum kursni o'qiydi.
+
+    NEGA BAZADA (2026-08-16, Aziz payqadi)
+    --------------------------------------
+    Kesh XOTIRADA edi. Ya'ni server har qayta yoqilganda u yo'qolardi
+    va sahifada "—" turardi — toki `cbu.uz` javob bergunicha. Bugun
+    deploydan keyin aynan shu ko'rindi: kurs joyida bo'lsa ham, bosh
+    sahifada bir necha soniya "—" turdi.
+
+    Yomonrog'i: `cbu.uz` o'sha payt javob bermasa, "—" soatlab
+    qolardi. Kurs bir kunda bir marta o'zgaradi — kechagisini
+    ko'rsatish hech narsa ko'rsatmaslikdan ancha yaxshi.
+
+    Jadval shu yerda yaratiladi (`IF NOT EXISTS`), sxemaga tegmaydi.
+    """
+    try:
+        with ulan() as c:
+            c.execute("CREATE TABLE IF NOT EXISTS sozlama("
+                      "kalit TEXT PRIMARY KEY, qiymat TEXT, vaqt REAL)")
+            r = c.execute("SELECT qiymat FROM sozlama WHERE kalit='kurs'"
+                          ).fetchone()
+        if not r:
+            return None
+        import json as _j
+        d = _j.loads(r["qiymat"])
+        if d.get("kurs"):
+            return {"kurs": int(d["kurs"]), "sana": str(d.get("sana") or "")}
+    except Exception as e:                          # noqa: BLE001
+        print(f"  [kurs] bazadan o'qilmadi: {type(e).__name__}: {e}",
+              flush=True)
+    return None
+
+
+def _kurs_bazaga(kurs: int, sana: str) -> None:
+    """Oxirgi ma'lum kursni saqlaydi. Xato saytni buzmaydi."""
+    try:
+        import json as _j
+        import time as _t
+        with ulan() as c:
+            c.execute("CREATE TABLE IF NOT EXISTS sozlama("
+                      "kalit TEXT PRIMARY KEY, qiymat TEXT, vaqt REAL)")
+            c.execute("INSERT INTO sozlama(kalit,qiymat,vaqt)"
+                      " VALUES('kurs',?,?)"
+                      " ON CONFLICT(kalit) DO UPDATE"
+                      " SET qiymat=excluded.qiymat, vaqt=excluded.vaqt",
+                      (_j.dumps({"kurs": kurs, "sana": sana}), _t.time()))
+            c.commit()
+    except Exception as e:                          # noqa: BLE001
+        print(f"  [kurs] bazaga yozilmadi: {type(e).__name__}: {e}",
+              flush=True)
+
+
 def dollar_kursi() -> dict | None:
     """Markaziy bankning rasmiy USD kursi.
 
@@ -2103,6 +2192,17 @@ def dollar_kursi() -> dict | None:
     # Kuniga bir marta. Markaziy bank ham shuncha yangilaydi.
     if _KURS_KESH["kurs"] and _t.time() - _KURS_KESH["vaqt"] < 6 * 3600:
         return {"kurs": _KURS_KESH["kurs"], "sana": _KURS_KESH["sana"]}
+
+    # SERVER ENDIGINA YOQILGAN BO'LSA — bazadan tiklaymiz (2026-08-16).
+    # Xotira bo'sh, lekin bu "kurs yo'q" degani emas: kechagi qiymat
+    # bazada turibdi. Uni DARHOL keshga qo'yamiz, shunda tarmoq
+    # so'rovi tugashini kutmasdan sahifada raqam chiqadi. Vaqtni
+    # 0 qoldiramiz — quyidagi tarmoq urinishi baribir bajariladi.
+    if not _KURS_KESH["kurs"]:
+        eski = _kurs_bazadan()
+        if eski:
+            _KURS_KESH.update(kurs=eski["kurs"], sana=eski["sana"], vaqt=0.0)
+
     try:
         s = urllib.request.urlopen(
             "https://cbu.uz/uz/arkhiv-kursov-valyut/json/USD/",
@@ -2114,6 +2214,8 @@ def dollar_kursi() -> dict | None:
             raise ValueError(f"kurs shubhali: {kurs}")
         _KURS_KESH.update(kurs=round(kurs), vaqt=_t.time(),
                           sana=str(yozuv.get("Date") or ""))
+        # Bazaga ham yozamiz — keyingi qayta yoqishda darhol tayyor.
+        _kurs_bazaga(_KURS_KESH["kurs"], _KURS_KESH["sana"])
     except Exception as e:                      # noqa: BLE001
         print(f"  [kurs] olinmadi: {type(e).__name__}: {e}", flush=True)
         # Eski qiymat bo'lsa uni beramiz — kechagi kurs kursning

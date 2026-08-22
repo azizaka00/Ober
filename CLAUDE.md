@@ -68,6 +68,33 @@ ruxsati yo'q). Ya'ni bu muhit serverni, API'ni, qidiruvni va
 ballashni tekshiradi — LEKIN ko'rinishni emas. Vizual tekshiruv
 hamon jonli saytda va Azizning brauzerida bo'ladi.
 
+## O'ZINI TIKLASH — O'LIK HAVOLA NAZORATI (2026-08-16)
+
+`app/havola_nazorat.py` — manba sahifasi o'chirilgan e'lonni topadi
+va `faol=0` qiladi. `ober-havola.timer` kuniga 4 marta yugurtiradi
+(03/09/15/21:20, tasodifiy 10 daq kechikish bilan).
+
+Ilgari e'lon faqat BILVOSITA o'chardi (`korilmadi>=3`) — ya'ni
+yig'uvchi ro'yxatidan tushgani. Ro'yxatda qolib sahifasi
+o'chirilgan e'lon faol turaverardi.
+
+**Birinchi o'lchov: 50 tadan 2 tasi o'lik (4%).** 523 000 e'londa
+bu ~20 000 chirigan havola degani.
+
+TAMOYIL — buzilmasin: **faqat aniq dalil o'chiradi.** Nofaollashuv
+uchun manba `404` yoki `410` qaytarishi SHART, va bu IKKI MARTA
+tasdiqlanishi kerak. Timeout, 403, 429, 5xx, 30x — hech qachon
+o'chirmaydi. Sabab: yolg'on o'chirish tuzatib bo'lmaydi. OLX bir
+soat nosoz bo'lsa va 5xx ni "o'lik" desak, o'sha soatda
+tekshirilgan hamma e'lon yo'qolardi.
+
+Manbaga hurmat: 2 soniyada bitta so'rov, `HEAD` (tana yuklanmaydi),
+bir yugurishda 200 ta.
+
+`havola_sinov.py` (26 ta) qo'riqlaydi — ko'pi aynan "tirik e'lon
+o'chmasin" holatlarini tekshiradi. `--quruq` bayrog'i bazaga
+yozmasdan hisobot beradi.
+
 ## FRONTEND ISHIDAN OLDIN — MAJBURIY
 
 `web_sinov.py` har sahifani tekshiradi. Uchta qoida, uchalasi ham

@@ -85,7 +85,7 @@
     "Markaziy bank":"Центральный банк",
     "OLX, Telegram va OBER e’lonlari — bitta qidiruvda.":"Объявления OLX, Telegram и OBER — в одном поиске.",
     "Hozir bozorda":"Сейчас на рынке",
-    "Eng so‘nggi qo‘shilgan e’lonlar":"Последние добавленные объявления",
+    "Har bo‘limdan bittadan — butun bozor bir qatorda":"По одному из каждого раздела — весь рынок в одной строке",
     "Butun bozorni bir joyda ko‘ring":"Весь рынок в одном месте",
     "Sotuvchilardan javob oling":"Получайте ответы продавцов",
     "Nega OBER?":"Почему OBER?",

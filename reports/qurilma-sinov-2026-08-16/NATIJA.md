@@ -87,6 +87,17 @@ bandlarida tekshiriladi.
 
 ## 9. Tezlik (4G/Wi-Fi)
 
+**Server tomondan o'lchov (2026-08-16, ober.uz dan):**
+
+| Tekshiruv | O'lchov (3 ta o'rtacha) | Holat |
+|---|---|---|
+| Bosh sahifa (issiq) | **0.72–0.75 s** | ✅ 3 s me'yoridan ancha past |
+| Qidiruv API ("divan") | **0.73–0.92 s** | ✅ 2 s me'yoridan past |
+| Rasm (logo) | **0.75 s** | ✅ bloklamaydi |
+
+> Server tomondan cheklov yo'q — qolgan tekshiruv haqiqiy 4G
+> qurilmada hissiyot uchun (TTSB ~0.7 s + 4G kechikish).
+
 - [ ] Bosh sahifa 3 soniyada ko'rinadi (issiq kesh)
 - [ ] Qidiruv natijasi 2 soniyada chiqadi
 - [ ] Rasm yuklanishi bloklamaydi

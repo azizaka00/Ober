@@ -32,6 +32,7 @@ from urllib.parse import parse_qs, urlparse
 import baza
 import ai_vision
 import joylar
+import xato_xabar
 from lugat import byudjet_top, modellarni_top, qismlarni_top
 from qidiruv import keshni_tayyorla, qidir
 import tahlil
@@ -272,7 +273,27 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         self._yubor(200, "text/html; charset=utf-8",
                     yol.read_bytes(), boshliqlar)
 
+    # ── XATO QAMROVI (2026-08-16) ──────────────────────────────────
+    #
+    # `do_GET` va `do_POST` ilgari hech narsa bilan o'ralmagandi:
+    # istisno chiqsa `BaseHTTPRequestHandler` uni jurnalga yozardi va
+    # tamom. Jurnal esa serverda, hech kim o'qimaydi.
+    #
+    # Endi istisno Sentry'ga boradi — qaysi yo'lda, qaysi qatorda.
+    # Muhimi: istisno YUTILMAYDI, qayta ko'tariladi. Aks holda
+    # xatolar jimgina yo'qolib, "ishlayapti" degan yolg'on tuyg'u
+    # paydo bo'lardi.
+    def _qamrab(self, amal, nom: str):
+        try:
+            return amal()
+        except Exception as x:                 # noqa: BLE001
+            xato_xabar.xato(x, {"yol": str(self.path)[:200], "usul": nom})
+            raise
+
     def do_GET(self):                          # noqa: N802
+        return self._qamrab(self._get_ich, "GET")
+
+    def _get_ich(self):
         u = urlparse(self.path)
 
         if u.path in ("/", "/index.html"):
@@ -1008,6 +1029,9 @@ Qidiruvdan boshlang - bozor joyida turibdi.</p>
         return natija
 
     def do_POST(self):                         # noqa: N802
+        return self._qamrab(self._post_ich, "POST")
+
+    def _post_ich(self):
         u = urlparse(self.path)
 
         # ODDIY TEZLIK CHEGARASI.
@@ -1789,6 +1813,63 @@ class Server(ThreadingHTTPServer):
 # avtomatik qayta qurish to'xtatildi — bu har 6 soatda 300 000
 # e'lonni bekorga o'qish edi.
 
+# ── KESHNI ISITIB TURISH (2026-08-17) ────────────────────────────────
+#
+# MUAMMO — o'lchangan, taxmin emas. Aziz "sayt juda sekin" dedi va
+# raqamlar shuni ko'rsatdi:
+#
+#   server yuki 0.07 (bo'sh)        sahifaning o'zi 679 ms (tez)
+#   /api/yangi?n=14   3 KB -> 3835 ms
+#   /api/kategoriyalar 2 KB -> 3029 ms
+#   /api/qidiruvlar   0 KB -> 1673 ms
+#
+# Serverda o'sha funksiyalarni to'g'ridan chaqirsak: 1906 / 0 / 0 ms.
+# Birinchi chaqiruv soniyalar, keyingi ikkitasi NOL — ya'ni ish emas,
+# SOVUQ KESH.
+#
+# `yangi_elonlar` da 2 daqiqalik kesh, kategoriyalarda 5 daqiqalik
+# kesh bor. Ular YUK bo'lganda foyda beradi: kimdir sovuq narxni
+# to'laydi, qolgan yuzlab odam issiqdan oladi. OBERda esa hali yuk
+# yo'q — tashrifchilar bir-biridan daqiqalar uzoq keladi, ya'ni
+# DEYARLI HAR TASHRIFCHI sovuq keshga tushadi va 3 soniya kutadi.
+#
+# Bu eng yoqimsiz turdagi muammo: trafik kelsa o'zi yo'qoladi, lekin
+# aynan o'sha trafikni qochiradi.
+#
+# Yechim: keshni ODAM emas, SERVER isitadi. 90 soniya — ikkala
+# TTL'dan (120 s va 300 s) qisqa, ya'ni haqiqiy odam har doim
+# issiqqa tushadi.
+#
+# NEGA HTTP ORQALI, funksiyani to'g'ridan chaqirib emas: kesh ikki
+# joyda (`baza._YANGI_KESH` va `server._KAT_KESH`), va biri
+# ishlovchi metodining ichida. O'z manzilimizga so'rov yuborish
+# ularning HAMMASINI, foydalanuvchi yuradigan aynan yo'l bilan
+# isitadi — kelajakda yangi kesh qo'shilsa ham o'zi qamraladi.
+ISITISH_ORALIQ = 90
+ISITILADIGAN = ("/api/yangi?n=14", "/api/kategoriyalar", "/api/qidiruvlar")
+
+
+def _keshni_isit(oraliq: int = ISITISH_ORALIQ) -> None:
+    """Sovuq keshni odamdan oldin server o'zi isitadi."""
+    import urllib.error
+    import urllib.request
+    # Server hali `serve_forever` ga yetmagan bo'lishi mumkin.
+    time.sleep(3)
+    while True:
+        for yol in ISITILADIGAN:
+            try:
+                soz = urllib.request.Request(
+                    f"http://127.0.0.1:{PORT}{yol}",
+                    headers={"User-Agent": "ober-isitgich"})
+                urllib.request.urlopen(soz, timeout=30).read()
+            except (urllib.error.URLError, OSError, ValueError):
+                # Isitish HECH QACHON saytni buzmasin. Server
+                # ko'tarilmagan yoki so'rov sekin bo'lsa — keyingi
+                # aylanada qayta urinamiz, jimgina.
+                pass
+        time.sleep(oraliq)
+
+
 def _wal_qorovuli(oraliq: int = 600) -> None:
     """WAL faylni vaqti-vaqti bilan qisqartiradi.
 
@@ -1813,6 +1894,11 @@ def _wal_qorovuli(oraliq: int = 600) -> None:
 
 
 def main() -> None:
+    # Xato xabari — DSN bo'lmasa jim qoladi, hech narsa o'zgarmaydi.
+    xato_xabar.ornat()
+    if xato_xabar.yoqilganmi():
+        print("  Xato xabari: Sentry yoqilgan", flush=True)
+
     # IKKI MARTA ISHGA TUSHIRISHNI OLDINI OLAMIZ.
     # 2026-08-01: eski server portni ushlab turgan, yangisi ko'tarilmagan.
     # Natijada sayt ESKI kod bilan ishlayotgani bilinmay qoldi (yangi
@@ -1966,6 +2052,7 @@ def main() -> None:
         print(f"  Web Push ishga tushmadi: {type(e).__name__}: {e}")
 
     threading.Thread(target=_wal_qorovuli, daemon=True).start()
+    threading.Thread(target=_keshni_isit, daemon=True).start()
 
     # ThreadingHTTPServer: bitta sekin so'rov butun saytni to'xtatib
     # qo'ymasligi uchun. Oddiy HTTPServer navbat bilan ishlaydi va

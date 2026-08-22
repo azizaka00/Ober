@@ -34,7 +34,7 @@
      2. O'z JS/CSS'imiz TARMOQDAN birinchi olinadi (pastda).
    Versiyani deploy oldidan qo'lda oshirish SHART EMAS: nom ichida
    sana bor, uni o'zgartirish odat bo'lib qolsin. */
-const CACHE = "ober-2026-08-16k";
+const CACHE = "ober-2026-08-16m";
 
 /* Ofine ochilishi kerak bo'lgan sahifalar va statik manbalar.
  * Dinamik sahifalar (elon/{id}, qidiruv natijalari) keshlanmaydi —

@@ -1,5 +1,44 @@
 # Saboqlar
 
+## 2026-08-16 — Asbobni tuzatayotganda asbobni sindirdim
+
+`buyruq.txt` Windowsda CRLF bilan yoziladi, Linux esa `\r` ni
+buyruqning bir qismi deb o'qiydi: `systemctl restart ober-server`
+-> `"ober-server\x0d not found"`. Aziz DSN qo'yganda shu bo'ldi.
+
+Tuzatish uchun `NAVBATCHI.bat` ga `ssh ... "sed -i 's/\r$//' ..."`
+qatorini qo'shdim va **sinamasdan yubordim**. U ilib qoldi —
+NAVBATCHI butunlay to'xtadi, uch daqiqa javob bermadi. Orqaga
+qaytarishga to'g'ri keldi.
+
+Ikki saboq:
+
+1. **Deploy quvurining o'ziga tegish — alohida xavf toifasi.**
+   Oddiy kod xatosi bir sahifani buzadi; deploy quvuri buzilsa
+   HECH NARSANI tuzatib bo'lmaydi. Unga tegishdan oldin qaytish
+   yo'li tayyor turishi kerak edi.
+2. **`.bat` ichidagi `ssh "..."` qo'shtirnoqlari sinovsiz
+   yozilmaydi.** `bat_sinov.py` qavslarni tekshiradi, lekin ssh
+   qo'shtirnog'i uning ko'rish doirasida emas.
+
+CRLF muammosining to'g'ri yechimi oddiyroq: buyruq faylini MEN
+yozaman (Write asbobi LF beradi), Aziz faqat qiymatni almashtiradi.
+NAVBATCHIga umuman tegilmaydi.
+
+## 2026-08-16 — Tor oyna yolg'on javob beradi
+
+Sentry ulanmagandek ko'rindi: `journalctl -n 8` da "Sentry yoqilgan"
+qatori yo'q edi. Ikki marta tashxis yubordim, Azizni ovora qildim.
+
+Aslida Sentry **kechayoq ulangan edi** — server 18:59 da ishga
+tushgan, men esa oxirgi 8 qatorga va "-30 min" oynasiga qaragandim.
+Ishga tushish qatori o'sha oynadan tashqarida qolgan.
+
+Saboq: "topilmadi" degan natija ikki xil bo'ladi — YO'Q va
+KO'RMADIM. Ularni ajratmasdan xulosa chiqarish xato. Jurnalga
+qaraganda oynani ataylab keng ol (`--since "-24 hours"`), keyin
+toraytir.
+
 ## 2026-08-16 — Bosh sahifada `body` suriladi, oyna emas
 
 Tepa panelga navbatli qidiruv qo'shmoqchi bo'ldim: hero qutisi
@@ -1124,3 +1163,485 @@ Yechim: `saqla()` yangi/qaytgan e'lonni FTS'ga o'zi yozadi
 (`_fts_tez_yoz`, teg tahlilga qoldiriladi). Xulosa: yig'ilgan
 ma'lumot qidiruvga tushmasa, butun yig'ish ma'nosiz — FTS sinxron
 bo'lishi shart, oraliq tahlilga tayanib bo'lmaydi.
+
+## 2026-08-17 — Agent uchun "yaqin natija" — bu yolg'on ma'lumot
+
+MCP `qidir` birinchi sinovda `qidir("zzqqxx yoq narsa")` ga 181 ta
+begona e'lon qaytardi. Sabab ma'lum edi: indeksda aniq moslik
+bo'lmasa `fts_erkin` "kamida bitta so'z" (OR) bosqichiga tushadi,
+"narsa" esa haqiqiy o'zbekcha so'z.
+
+Saytda bu YILLAB muammo bo'lmagan, chunki odam ro'yxatga qarab
+"bu men so'raganim emas" deydi va o'zi filtrlaydi. Agent esa
+filtrlamaydi — u birinchi natijani javob deb foydalanuvchiga
+uzatadi. Ya'ni bir xil kod odam uchun bezovtalik, agent uchun
+YOLG'ON MA'LUMOT. Xulosa: interfeys o'zgarganda mavjud xatoning
+OG'IRLIGI o'zgaradi, xatoning o'zi o'zgarmasa ham.
+
+Tuzatish `qidiruv.py` ga TEGMADI — chegara MCP qatlamida turadi va
+`_yakunla` allaqachon qo'ygan `_ishonchli` bayrog'ini o'qiydi.
+Sayt bir xil ishlaydi, 523k e'lonli qidiruvga regressiya xavfi
+yo'q. Yangi ballash yozish shart emas edi: kerakli signal
+allaqachon hisoblangan, faqat undan foydalanilmagan.
+
+Ikkinchi tuzoq: `_ishonchli` YOLG'ONDAN True bo'lishi mumkin.
+`qidir("zzz vvv yyy")` 1404 natija berdi — "vvv" lug'atda
+`volkswagen`. Model yo'lida `_ishonchli` standart qiymati True,
+ya'ni bayroq "tekshirildi" degani emas, "kesilmadi" degani.
+Qo'shimcha shart: `sozlar` bo'sh bo'lmasin. Xulosa: standart
+qiymati True bo'lgan bayroqni ishonch dalili deb olish mumkin
+emas — u dalil emas, dalil yo'qligi.
+
+O'lchov: 12 ta yolg'on so'rov — 0 xato qabul; 24 ta haqiqiy
+so'rov — 21 qabul. Rad etilgan 3 tasi ("usta santexnik", "divan
+charm", "2 xonali kvartira chilonzor") qo'lda tekshirildi va
+uchalasi ham to'g'ri rad etilgan.
+
+## 2026-08-17 — Sinov mutatsiya bilan tekshirilmasa, hech narsani bilmaydi
+
+`mcp_sinov.py` birinchi yozilganda 56/56 yashil edi. Lekin
+"yolg'on so'rov: hech narsa topilmasin" sinovi sinov bazasida
+BO'SH indeksga urilib o'tardi — u yerda "narsa" so'zi bor e'lon
+yo'q edi, ya'ni OR bosqichi umuman ishga tushmasdi. Sinov yashil,
+lekin qo'riqlaydigan narsasi yo'q.
+
+Tekshirish usuli: ishonch chegarasi kodda ataylab o'chirildi va
+sinov qayta yugurtirildi — nechta qulashi ko'rildi. Avval 7 ta
+qulardi; jonli holatni takrorlaydigan e'lon ("Ishlab turgan narsa
+arzon") qo'shilgach 12 ta quladi. Xulosa: yangi sinov yozganda
+uni bir marta SINDIRIB ko'rish kerak — qulamasa, u sinov emas.
+
+## 2026-08-17 — HTTP qatlamidagi himoya MCP yo'lida yo'q
+
+`/api/sorov` da soatiga 60 ta tezlik chegarasi bor (server.py
+`_TEZLIK_QOIDA`). MCP serveri esa `baza` ni to'g'ridan chaqiradi —
+HTTP orqali o'tmaydi, ya'ni o'sha chegara ham, `_haqiqiy_ip` ham,
+hech qanday validatsiya ham ishlamaydi. Yangi kirish nuqtasi
+ochilganda "himoya bor" deb o'ylash oson, chunki u boshqa yo'lda
+turibdi.
+
+MCP tomonida qaytadan qo'yildi va qattiqroq (soatiga 10,
+daqiqasiga 3): sayt chegarasi butun IP uchun, MCP chegarasi bitta
+agent seansi uchun. Nusxa qo'riqchisi ham qo'shildi — agent qayta
+urinsa sotuvchiga ikki marta xabar bormasin, va nusxa tekshiruvi
+tezlik chegarasidan OLDIN turadi (qayta urinish chegarani
+yemasin).
+
+## 2026-08-17 — Nojo'ya ta'sirni fikstura yashirsa, sinov yolg'on tinchlik beradi
+
+`javoblar` vositasi ataylab `baza.tolqin_yubor(sid)` ni chaqiradi —
+FAQAT o'z so'rovining to'lqinini ochadi. Sayt esa umumiy
+`ochiq_sorovlarni_yurit()` ni chaqiradi, u BARCHA ochiq so'rovlarga
+tegadi. O'qish vositasi begona talablarga ta'sir qilmasligi kerak.
+
+Buni `yuborishlar` jadvalidagi begona qatorlar sonini o'lchab
+tekshirdim. Sinov yashil edi, lekin MUTATSIYA sinovidan o'tib
+ketdi: kodda umumiy chaqiruvga almashtirsam ham hech narsa
+qulamadi. Sabab — `baza.sotuvchi_yoz` yangi sotuvchiga barcha ochiq
+mos talablarni O'ZI yuboradi (`_yangi_sotuvchiga_ochiq_sorovlar`,
+581-qator). Ya'ni fikstura ichida umumiy chaqiruvning qo'shadigan
+narsasi qolmagan edi — nojo'ya ta'sir bor, lekin KO'RINMAYDI.
+
+Yechim: qoidani nojo'ya ta'siri orqali emas, to'g'ridan-to'g'ri
+tekshirish — `baza.ochiq_sorovlarni_yurit` va `baza.tolqin_yubor`
+vaqtincha almashtirilib, qaysi biri va qaysi ID bilan chaqirilgani
+yoziladi. Xulosa: "shu bo'lmasa, nima o'zgaradi?" degan savolga
+fikstura "hech narsa" desa, o'lchov emas, NIYAT tekshirilishi
+kerak.
+
+Ikkinchi o'tib ketgan mutatsiya: `javoblar` raqamli ID ni rad
+etadi, lekin `baza.sorov_id_token` raqamni allaqachon rad etardi —
+ya'ni MCP qatlamidagi qo'riqchini olib tashlasam ham sinov yashil
+qolardi. Qo'riqchi baribir kerak (agentga "topilmadi" emas, aniq
+maslahat beradi), shuning uchun sinov endi maslahat matnini ham
+talab qiladi. Xulosa: ikki qatlamda bir xil himoya bo'lsa, sinov
+qaysi qatlamni tekshirayotganini bilishi kerak.
+
+## 2026-08-17 — 9 ta mutatsiya, 9 tasi ushlandi
+
+MCP sinovi (87 tekshiruv) har bir muhim qoida uchun ataylab
+buzilib tekshirildi:
+
+    ishonch chegarasi o'chirilsa      12 sinov quladi
+    nusxa qo'riqchisi o'chirilsa       3
+    aloqa majburiyligi o'chirilsa      3
+    tezlik chegarasi o'chirilsa        2
+    umumiy to'lqinga o'tilsa           2
+    narx qayta yurishi o'chirilsa      2
+    raqamli ID ga ruxsat berilsa       1
+    ichki maydonlar ochilsa (`**t`)    1
+    `bor`/`oxshash` o'girilmasa        1
+
+Uchtasi birinchi urinishda o'tib ketdi va sinov shu sabab
+tuzatildi. Agar mutatsiya qilinmaganda, sinov 87/87 yashil bo'lib
+turaverar va uchta qoida amalda qo'riqlanmasdi. Xulosa: sinovning
+soni sifat emas — har qoida uchun "buzsam quladimi?" degan savol
+alohida so'ralishi kerak.
+
+## 2026-08-17 — Ichki maydonlarni `**t` bilan uzatish — kelajakdagi sizib chiqish
+
+`javoblar` javobida maydonlar bittalab tanlab olinadi.
+`baza.sorov_takliflari` esa `sotuvchi_id`, `suhbat_id`, `javob_id`
+kabi ichki maydonlarni ham qaytaradi. Bugun ular zararsiz, lekin
+`**t` yozilsa — ertaga o'sha funksiyaga yangi ustun qo'shilgan
+kuni u o'zi agentga chiqib ketadi va buni hech kim sezmaydi.
+Qoida: tashqi qatlamga chiqadigan javob OQ RO'YXAT bilan
+yig'iladi, manba dict'ini yoyib emas.
+
+## 2026-08-17 — `throw new Error()` sababsiz: 401 "Internetni tekshiring" bo'lib chiqdi
+
+Jonli saytda topildi (Azizning brauzerida, `ober.uz/takliflar?kalit=...`
+bilan). Agent yoki Telegram boti bergan havola eskirgan bo'lsa:
+
+    /api/sorov/takliflar -> 401 "So'rov sessiyasi topilmadi"
+    ekranda            -> "Chatga ulanib bo'lmadi.
+                           Internetni tekshirib, yana yuklab ko'ring."
+
+Aybdor `takliflar.html` 809-qatorda edi: `if(!r.ok) throw new Error()`
+— MATNSIZ va KODSIZ. Shuning uchun 401, 404, 500 va haqiqiy tarmoq
+uzilishi bir xil ko'rinardi, va `console.error` ham bo'sh Error
+yozardi (dizayn qoidasi 7-bo'limi buni aynan taqiqlaydi: "xato —
+odamga tushunarli jumla va konsolga haqiqiy sabab").
+
+Ikkinchi, og'irroq qismi: yaroqsiz kalit tekshirilishidan OLDIN
+localStorage'ga yozilardi va u yerda QOLARDI. Sahifadagi 5 soniyalik
+taymer esa har safar qayta 401 olardi. Ya'ni odam berk ko'chada
+qolardi — qayta yuklasa ham o'sha yolg'on xato, chiqish yo'li faqat
+brauzer xotirasini tozalash.
+
+Bu aynan AGENT yo'li: agent havola beradi, havola eskiradi, odam
+"internetim buzuq ekan" deb ketadi.
+
+Tuzatish: xatoga `kod` biriktirildi; 401 da kalit tozalanadi,
+`actorId` bo'shatiladi (taymer to'xtaydi) va "Havola ishlamadi —
+bu havola eskirgan yoki noto'g'ri" degan bo'sh holat chiziladi,
+so'rash maydoni bilan.
+
+MUHIM ASIMMETRIYA — `havola_nazorat.py` qoidasining aynan o'zi:
+**faqat aniq dalil tozalaydi.** 401 — server "bunday sessiya yo'q"
+dedi, bu aniq. Timeout, 5xx, oflayn esa HECH QACHON tozalamaydi:
+bir soatlik nosozlikda hamma xaridorning suhbati yo'qolardi.
+
+O'LCHOV (haqiqiy brauzerda, 13 soniya kuzatildi):
+
+    401 -> "Havola ishlamadi", kalit tozalandi, API'ga 1 ta so'rov
+    500 -> "Chatga ulanib bo'lmadi", kalit SAQLANDI, 3 ta so'rov
+
+Xulosa: bir xil ko'rinadigan xato ekrani turli sabablarni yashiradi.
+`throw new Error()` — eng arzon usulda eng qimmat ma'lumotni
+(nima buzilgani) yo'qotish.
+
+## 2026-08-17 — Mahalliy baza production emas: MCP jimgina bo'shliqqa yozardi
+
+`mcp_server.py` ni Claude Desktop'ga ulash oldidan o'lchandi:
+ishchi kompyuterdagi `data/ober.db` da 126 873 e'lon va 13 sotuvchi,
+eng yangi e'lon 3 kun eski. Saytda esa 523 000+ e'lon.
+
+Ya'ni mahalliy rejimda `sorov_yubor` o'sha eski nusxaga yozardi va
+ober.uz dagi haqiqiy sotuvchilar HECH NARSA ko'rmasdi. Sinov
+yashil, zanjir "ishlayapti", lekin hayotda uzilgan — eng yomon
+turdagi xato, chunki u jimgina.
+
+Yechim: `OBER_API` (standart `https://ober.uz`). Vositalar sayt
+API'siga boradi; `OBER_API=` bo'sh berilsa mahalliy baza
+ishlatiladi (sinov shu rejimda). Standart qiymat ataylab SAYT:
+sozlashni unutish xavfsiz tomonga tushsin.
+
+Production'da tekshirildi — `/api/qidir` `_ishonchli` va `sozlar`
+maydonlarini o'zgartirmasdan qaytaradi, ya'ni ishonch chegarasi
+HTTP yo'lida ham bir xil ishlaydi. Va u yerda muammo kattaroq:
+
+    "zzqqxx yoq narsa" -> mahalliy 181, production 581 natija
+    "zzz vvv yyy"      -> mahalliy 1404, production 2523 natija,
+                          `sozlar` bo'sh, `_ishonchli` 60/60 YOLG'ON
+                          (1-natija: ВАЗ 2106, 11.9 mln so'm)
+
+Xulosa: "mahalliy nusxada sinadim" — production haqida dalil emas.
+Nusxa kichik bo'lsa xato ham kichik ko'rinadi.
+
+## 2026-08-17 — Bir xato tuzatilgach, uni butun kod bo'ylab qidirish
+
+`takliflar.html` dagi sababsiz `Error` tuzatilgach, CLAUDE.md
+qoidasi bo'yicha ("umumiy tamoyilni tuzatganda, u yana qayerda
+buzilganini qidir") butun `web/` qidirildi. Yana to'rtta joy:
+
+    kategoriyalar.html 594  !r.ok       -> "Internetni tekshiring"
+    kategoriyalar.html 596  !d.length   -> "Internetni tekshiring"  (YOLG'ON)
+    sotuvchi.html     1302  /api/holat  -> catch(_){}  butunlay jim
+    sotuvchi.html     1613  /api/profil -> catch jim, konsolga ham yozmaydi
+
+Eng qizig'i `kategoriyalar.html:596`: javob 200, ma'lumot BO'SH —
+tarmoq joyida, lekin odamga "internetni tekshiring" deyilardi.
+Endi ikki sabab ikki jumla: bo'sh ro'yxatda "Bo'limlar hozir bo'sh,
+qidiruvdan toping" + qidiruvga havola.
+
+`sotuvchi.html:1302` boshqacha zarar berardi: joylar ro'yxati
+kelmasa viloyat tanlagich bo'sh qolardi, forma esa "joyni
+to'ldiring" deb turardi — sotuvchi ro'yxatdan o'ta olmasdi va
+sababni bilmasdi. `catch(_){}` — eng jim va eng qimmat qator.
+
+Sotuvchi tomonidagi ASOSIY yo'llar allaqachon to'g'ri edi:
+`elonlarim()` da `if(r.status===401){kirishEkrani();return}` bor.
+Ya'ni bir xil xato bir faylda tuzatilgan, qo'shni funksiyalarda
+qolgan — aynan shu sababdan butun kodni qidirish kerak.
+
+## 2026-08-17 — Qoidani sinovga aylantirmasa, u yana qaytadi
+
+To'rtta joyni tuzatish yetarli emas: ertaga beshinchisi yoziladi.
+`web_sinov.py` ga 3b qoidasi qo'shildi — `throw new Error()`
+argumentsiz bo'lsa sinov qulaydi. Bu `.bat` qavs qo'riqchisi va
+"JS ichida `<!--` bo'lmasin" qoidasi bilan bir uslubda: sodda,
+yuruvchisiz, yolg'on o'tkazmaydigan.
+
+Qoida ataylab DUMMY: JS izohlarini ajratmaydi. Shu sabab o'z
+izohlarim ("ilgari shu yerda `throw new Error()` turardi") ikkita
+YOLG'ON SIGNAL berdi. Yechim izohni qayta yozish bo'ldi, qoidani
+aqlliroq qilish emas — `web_sinov.py` dagi mavjud izoh buni
+allaqachon aytadi: aqlli yuruvchi sinaganda xatoni KO'RMAGAN edi,
+sodda qoida esa ko'radi.
+
+Qo'riqchining o'zi ham sindirib tekshirildi: tuzatilgan qatorni
+ataylab orqaga qaytarganda sinov o'sha qatorni raqami bilan
+ko'rsatdi.
+
+O'LCHOV (haqiqiy brauzerda, kategoriyalar sahifasi):
+
+    bo'sh ro'yxat -> "Bo'limlar hozir bo'sh..." + konsolda
+                     "[ober-kat] bo'limlar: Error: bo'sh ro'yxat"
+    500           -> "Bo'limlarni hozir yuklay olmadik..." (to'g'ri)
+
+## 2026-08-17 — Deploy tekshiruvi service worker keshiga tushdi
+
+`web` yuklangach production'da tekshirdim: `/takliflar` yangi kod
+bilan chiqdi, `/kategoriyalar` va `/sotuvchi` esa ESKI. "Deploy
+yarim o'tibdi" deb o'yladim.
+
+Aslida server to'g'ri edi, sinovim xato edi. `fetch("/kategoriyalar")`
+service worker'ning `stale-while-revalidate` yo'liga tushadi va
+KESHDAN javob beradi. `/takliflar` ni esa tasodifan `?kalit=x` bilan
+so'ragan edim — noyob URL, kesh promashka, tarmoqdan keldi.
+
+Haqiqiy foydalanuvchiga bu ta'sir qilmaydi: `sw.js` da navigatsiya
+(`soz.mode === "navigate"`) TARMOQDAN birinchi olinadi — 2026-08-15
+da aynan shu sabab tuzatilgan. Ya'ni odam sahifani ochsa yangisini
+ko'radi; faqat dasturiy `fetch` keshdan oladi.
+
+Tekshirgach `?v=<vaqt>` qo'shib qayta o'lchadim — uchala sahifa ham
+yangi, production'da sababsiz `throw` qolmagan.
+
+Xulosa: PWA'da "deploy o'tdimi?" degan savolga oddiy `fetch` javob
+BERMAYDI. Kesh qatlamini bilib turmasa, o'lchov o'zi yolg'on
+gapiradi va odam serverni behuda qayta yuklaydi (2026-08-15 da
+Aziz uch marta qayta yuborgan edi — bir xil sabab, boshqa qiyofa).
+
+## 2026-08-17 — "Sayt sekin" ning sababi kesh emas, TRAFIK YO'QLIGI edi
+
+Aziz "sayt juda sekin ishlayapdi" dedi. O'lchov zanjiri taxminni
+ketma-ket kesib tashladi:
+
+    server yuki 0.07, xotira yetarli, hech narsa qizimayapti  -> server emas
+    sahifa TTFB 318 ms, to'liq 679 ms                          -> sahifa emas
+    /api/yangi 3 KB uchun 3835 ms, /api/kategoriyalar 3029 ms  -> API
+
+Serverda o'sha funksiyalarni to'g'ridan chaqirdim:
+
+    yangi_elonlar(14)     1906 / 0 / 0 ms
+    songgi_qidiruvlar(6)   681 / 0 / 0 ms
+
+Birinchi chaqiruv soniyalar, keyingi ikkitasi NOL. Ya'ni ish og'ir
+emas — kesh sovuq. `yangi_elonlar` da 2 daqiqalik, kategoriyalarda
+5 daqiqalik kesh bor.
+
+MANA ASOSIY XULOSA: kesh YUK bo'lganda foyda beradi — kimdir sovuq
+narxni to'laydi, qolgan yuzlab odam issiqdan oladi. OBERda hali yuk
+yo'q, tashrifchilar bir-biridan daqiqalar uzoq keladi, ya'ni
+DEYARLI HAR TASHRIFCHI sovuq keshga tushadi. Kesh o'zi to'g'ri
+yozilgan, faqat u hal qilishi kerak bo'lgan sharoit hali yo'q.
+
+Bu eng yoqimsiz turdagi muammo: trafik kelsa o'zi yo'qoladi, lekin
+aynan o'sha trafikni qochiradi.
+
+Ikki tuzatish:
+  1. `server._keshni_isit` — 90 soniyada bir marta server O'ZI
+     `/api/yangi`, `/api/kategoriyalar`, `/api/qidiruvlar` ni
+     so'raydi. 90 < 120 va < 300, ya'ni odam har doim issiqqa
+     tushadi. HTTP orqali ataylab: kesh ikki modulda va biri
+     ishlovchi metodi ichida — o'z manzilimizga so'rov hammasini,
+     foydalanuvchi yuradigan aynan yo'l bilan isitadi.
+  2. `baza`: `PRAGMA mmap_size=268435456`. Baza 1.3 GB, `cache_size`
+     esa standart -2000 = 2 MB. `cache_size` ni ko'tarish xavfli —
+     hovuzda 12 ta ulanish, har biri O'ZIGA joy oladi, serverda
+     1.9 GB RAM. `mmap` esa OS keshi bilan baham ko'radi.
+
+O'LCHOV (production, ikkalasi birga):
+
+    /api/yangi?n=14      3835 -> 17 ms    (225x)
+    /api/qidiruvlar      1673 -> 13 ms    (129x)
+    /api/kategoriyalar   3029 -> 116 ms   (26x)
+    sahifa TTFB           318 -> 122 ms
+    DOM tayyor            642 -> 432 ms
+
+DIQQAT — QAYTA YOQISHDAN KEYINGI OYNA: restartdan darhol keyin
+o'lchaganda `/api/yangi` hali 1980 ms edi. Isitgich 3 soniyada
+boshlanadi, lekin birinchi sikl o'zi sovuq va `ober-yangilik` ham
+qayta yoqilib bazaga zich yozadi. Bir sikldan keyin 17 ms bo'ldi.
+Ya'ni deploydan keyingi 1-2 daqiqa o'lchov uchun yaroqsiz.
+
+## 2026-08-17 — Mijoz uzilishi Sentry'ga "new issue" bo'lib ketardi
+
+Sentry'dan kelgan birinchi haqiqiy xabar shu edi:
+`ConnectionResetError: [Errno 104] Connection reset by peer`.
+Jurnalda manbasi: `request from ('127.0.0.1', 34656)` — bu Caddy,
+ya'ni KIRUVCHI ulanish. Mijoz javob yozilayotgan payt uzilgan.
+
+`ThreadingHTTPServer` har so'rovni alohida ipda bajaradi,
+`xato_xabar.ornat()` esa `threading.excepthook` qo'yadi — natijada
+odam tabni yopgani, sahifadan chiqqani yoki telefon tarmog'i
+tushgani Sentry'da "new issue" bo'lardi. API'lar 3 soniya javob
+berayotgan paytda bunday uzilish ko'p bo'ladi va Sentry shovqinga
+to'ladi — nazorat vositasi o'zini o'zi ko'r qiladi.
+
+Filtr qo'yildi, lekin CHEGARA ANIQ: faqat izi `socketserver` yoki
+`http.server` ichida tugagan uzilish jim qilinadi. OLX yig'ish yoki
+Telegram yuborishdagi uzilish — HAQIQIY muammo va Sentry'ga boradi.
+Ikkalasi bir xil turdagi istisno, farqi izda. `xato_sinov.py`
+(15 ta) shuni qo'riqlaydi va yarmi aynan "haddan tashqari jim
+qilma" ni tekshiradi: filtrni ochib yuborsam 4 tasi quladi.
+
+Xulosa: har istisno xato emas. Nazorat tizimiga shovqin qo'shish —
+uni o'chirib qo'yish bilan barobar.
+
+## 2026-08-22 — Zaxiraning 95% i keraksiz edi, 5% i esa ko'chirilmagan
+
+Serverda kunlik to'liq zaxira bor edi: `ober-1..7.db`, har biri
+~1.3 GB, 7 kunlik aylanma. Lekin hammasi O'SHA serverning o'zida.
+Ya'ni ular "o'chirib yubordim" holatidan himoya qiladi, "server
+yo'q bo'ldi" holatidan emas. Va 7.5 GB joy egallardi.
+
+1.3 GB ni har kuni tashqariga ko'chirish qimmat, shuning uchun
+umuman ko'chirilmagan edi. Savolni boshqacha qo'yganda yechim
+chiqdi: bazaning qancha qismi QAYTA TIKLAB BO'LMAYDI?
+
+    elonlar        683 995 qator   OLX/Telegramdan qayta yig'iladi
+    elonlar_fts                    indeks, qayta quriladi
+    yigish_holati    3 354 qator   ish holati, qiymati yo'q
+    ---
+    narx_tarix   1 337 477 qator   HECH QACHON — kechagi narxni
+                                   bugun o'lchab bo'lmaydi
+    odamlar          1 233 qator   sotuvchilar, so'rovlar, suhbatlar
+
+Ya'ni qayta tiklab bo'lmaydigan qism gzip'da **19.4 MB**, 1.3 GB
+emas. Uni har kuni tashqariga chiqarish arzon.
+
+`app/zaxira_shaxsiy.py` shu ikki faylni yasaydi, `ober-zaxira-tashqi.timer`
+har kuni 06:45 UTC da yugurtiradi. Sessiya tokenlari va kirish
+kodlari ataylab OLINMAYDI — zaxirada yotgan token qo'shimcha xavf,
+foydasi nol.
+
+Xulosa: "zaxira qimmat" degan xulosa ko'pincha "hammasini
+zaxiralayapmiz" degan taxmindan chiqadi. Nima qayta tiklanadi va
+nima tiklanmaydi — bu savol zaxira hajmini 70 barobar kamaytirdi.
+
+## 2026-08-22 — Zaxira "ko'chirildi" emas, "tiklandi" deb tekshiriladi
+
+Fayllarni serverdan diskka ko'chirish yetarli emas. Ko'chirilgan
+narsa haqiqatan tiklanadimi — bu alohida savol va u sinalmaguncha
+javob noma'lum.
+
+Uch bosqichda tekshirildi:
+  1. SHA-256 serverdagi bilan bayt-bayt mos (ikkala fayl);
+  2. `gzip -t` — arxiv butun;
+  3. BO'SH bazaga to'liq yuklandi va qatorlar sanaldi —
+     narx_tarix 1 337 477, sotuvchilar 14, suhbatlar 21.
+
+Uchinchisi eng muhimi: birinchi ikkitasi fayl butunligini
+tekshiradi, MAZMUN yaroqliligini emas. SQL dump'da bitta buzilgan
+qator bo'lsa gzip ham, SHA ham buni ko'rmaydi.
+
+Yo'lda texnik tuzoq ham chiqdi: fayl NAVBATCHI orqali base64 bilan
+ko'chirildi, lekin 19.35 MB bitta bo'lakda sig'madi (fayl ko'chirish
+chegarasi 20 MB). `split -n 2` bilan ikkiga bo'lindi, keyin
+birlashtirildi — SHA aynan mos chiqdi. `narx_tarix` o'sib borayotgani
+uchun keyingi safar bu chegara yana uriladi; `TIKLASH.md` da yozib
+qo'yildi.
+
+## 2026-08-22 — Oltita manbadan to'rttasi sakkiz kun jim turgan va hech kim bilmagan
+
+Yig'ish quvuriga sinov yozmoqchi edim. Yozishdan oldin holatni
+o'lchadim va sinov topishi kerak bo'lgan narsa ALLAQACHON sodir
+bo'lganini ko'rdim:
+
+    manba      faol e'lon   oxirgi ko'rilgan   24 soatda yangi
+    olx           664 522   hozir                       46 173
+    telegram        3 003   30 daqiqa                      209
+    glotr          12 825   7.8 KUN                          0
+    avizinfo          774   8.2 KUN                          0
+    avtoelon          132   8.9 KUN                          0
+    shahar             78   8.8 KUN                          0
+
+Sabab kodda emas edi. Adapterlarni qo'lda sinaganda hammasi
+ishladi — glotr 56 karta, avtoelon 23, shahar 20 qaytardi.
+Muammo shu: **ularni hech kim chaqirmasdi.** `ober-yangilik`
+faqat `yangilik.py` ni yuritadi (OLX + Telegram), hamma adapterni
+topadigan `yigish.py` esa hech qanday taymerga ulanmagan edi.
+
+Ya'ni yangi manba qo'shish ishi ikki qismdan iborat va ikkinchisi
+unutilgan: adapter YOZILDI, lekin uni YURITADIGAN narsa
+qo'yilmadi. Kod to'g'ri, ishga tushirish yo'q.
+
+BU XATONING TURI MUHIM — u hech qayerda xato bermaydi:
+  * adapter yiqilmaydi, chunki umuman chaqirilmaydi;
+  * `sikl_yakunla` nol natijada hech narsani nofaol qilmaydi
+    (bu ataylab — nol natijali sikl butun manbani o'chirib
+    yuborishi mumkin edi);
+  * saytda e'lonlar turaveradi, faqat eskiradi.
+
+Yig'ish to'xtaganini faqat SUKUNAT bildiradi. Sukunatni esa
+kimdir ataylab kuzatmasa, ko'rinmaydi.
+
+Xulosa: "kod ishlaydimi?" va "kod ishlayaptimi?" — ikki boshqa
+savol. Birinchisiga sinov javob beradi, ikkinchisiga faqat
+kuzatuv.
+
+## 2026-08-22 — Manba qorovuli: signal allaqachon bazada edi
+
+`app/manba_qorovul.py` — har manbaning oxirgi ko'rilgan vaqtini
+tekshiradi, 36 soatdan jim tursa Sentry'ga xabar beradi va
+`reports/manba-jurnali.tsv` ga yozadi. Kunlik systemd taymeri.
+
+Uchta qaror sabab bilan:
+
+**Tarmoqqa chiqmaydi.** Manbani "tirikmi" deb qayta so'rash mumkin
+edi, lekin yig'uvchi har e'londa `oxirgi_korildi` ni yozib boradi —
+signal allaqachon bazada. Qorovul faqat o'qiydi.
+
+**Serverda, noutbukda emas.** `reports/salomatlik-jurnali.tsv`
+(qo'lda yuritilgan kunlik nazorat) 2026-08-18 da to'xtagan va
+sababi jurnalning o'zida yozilgan: "NAVBATCHI.bat ishlamayapti".
+Noutbukka bog'liq nazorat noutbuk yopilganda o'ladi — va aynan
+o'sha kunlar nazoratsiz qoladi.
+
+**Kutilgan manbalar ro'yxati qo'lda yozilmaydi** — u
+`yigish.adapterlar()` dan olinadi. Aks holda yangi adapter
+qo'shilganda uni qorovul ro'yxatiga yozish unutiladi va qorovul
+aynan yangi manbani ko'rmay qoladi. Bu bugungi xatoning aynan
+o'zi bo'lardi.
+
+Birinchi jonli yugurish bitta bo'shliqni ochdi: `telegram`
+`manbalar/` ichida emas (uni `yangilik.py` yig'adi), shuning uchun
+qorovul uni "kutilmagan" deb chetlab o'tdi — ya'ni Telegram
+to'xtasa hech kim bilmasdi. `ADAPTERSIZ` ro'yxati qo'shildi va
+sinov shuni qo'riqlaydi.
+
+`manba_sinov.py` — 28 ta tekshiruv. Yarmi "jim manbani ushlasin",
+yarmi "bexuda shovqin qilmasin": noto'g'ri ogohlantirish ham
+shunday zararli, chunki uni ikki marta ko'rgan odam keyingisini
+o'qimay qo'yadi. Mutatsiya bilan tekshirildi — chegarani cheksiz
+qilsam 6 ta sinov quladi.
+
+NATIJA (bir soat ichida): `yigish.py bosh 1` bir marta
+yugurtirilgach glotr 188 soat jimlikdan 0 ga tushdi (1 526 yangi
+e'lon), avizinfo 198 → 0 (773 ta), avtoelon 213 → 0 (33 ta),
+shahar 212 → 0 (61 ta). Beshta muammodan bittasi qoldi: `asaxiy`
+adapteri hech qachon bitta ham e'lon bermagan — u endi qorovul
+ro'yxatida turibdi va har kuni eslatib turadi.

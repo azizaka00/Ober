@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "uz.ober.app",
+      "sha256_cert_fingerprints": [
+        "66:19:41:AE:D4:D0:31:81:71:9B:25:6F:E8:83:39:1A:80:44:15:E1:62:A8:AC:76:7D:16:71:A3:DC:E5:1D:A3"
+      ]
+    }
+  }
+]
